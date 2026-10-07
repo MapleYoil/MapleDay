@@ -47,9 +47,44 @@ Name: "{autoprograms}\메요일"; Filename: "{app}\MapleDay.exe"
 Name: "{autodesktop}\메요일"; Filename: "{app}\MapleDay.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\MapleDay.exe"; Description: "메요일 실행"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\MapleDay.exe"; Description: "메요일 실행"; Flags: nowait postinstall skipifsilent; Check: not IsAppUpdate
+Filename: "{app}\MapleDay.exe"; Flags: nowait; Check: IsAppUpdate
 
 [Code]
+function OpenProcess(DesiredAccess: LongWord; InheritHandle: Boolean; ProcessId: LongWord): THandle;
+  external 'OpenProcess@kernel32.dll stdcall';
+function WaitForSingleObject(Handle: THandle; Milliseconds: LongWord): LongWord;
+  external 'WaitForSingleObject@kernel32.dll stdcall';
+function CloseHandle(Handle: THandle): Boolean;
+  external 'CloseHandle@kernel32.dll stdcall';
+
+function IsAppUpdate: Boolean;
+begin
+  Result := ExpandConstant('{param:MAPLEDAYUPDATE|0}') = '1';
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  ParentProcess: THandle;
+  ParentId: Integer;
+begin
+  Result := '';
+  if IsAppUpdate then
+  begin
+    ParentId := StrToIntDef(ExpandConstant('{param:MAPLEDAYUPDATEPID|0}'), 0);
+    if ParentId > 0 then
+    begin
+      ParentProcess := OpenProcess($00100000, False, ParentId);
+      if ParentProcess <> 0 then
+      begin
+        if WaitForSingleObject(ParentProcess, 120000) <> 0 then
+          Result := '메요일 종료를 기다리는 시간이 초과되었습니다. 앱을 종료한 뒤 다시 업데이트해주세요.';
+        CloseHandle(ParentProcess);
+      end;
+    end;
+  end;
+end;
+
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   Command: String;

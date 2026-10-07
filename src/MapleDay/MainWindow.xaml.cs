@@ -51,6 +51,7 @@ public sealed partial class MainWindow : Window
         InitializeLevels();
         InitializeWindowsStartup();
         InitializeWindowSizeSettings();
+        InitializeUpdates();
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
         {
             presenter.PreferredMinimumWidth = 420;
@@ -82,6 +83,7 @@ public sealed partial class MainWindow : Window
         _startupInitialized = true;
         _replyTimer.Start();
         _reminderTimer.Start();
+        StartAutomaticUpdates();
         await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
     }
 

@@ -23,10 +23,33 @@ $compilerBin = Join-Path $msvc.FullName 'bin\Hostx64\x64'
 $sdkBin = Join-Path $sdkRoot "bin\$($sdk.Name)\x64"
 
 New-Item -ItemType Directory -Force -Path $appDirectory,$launcherBuild | Out-Null
+if ($PackageVersion -eq 'auto') {
+    [xml]$versionManifest = [IO.File]::ReadAllText((Join-Path $projectDirectory 'packaging\AppxManifest.xml'))
+    $previousVersion = [version]$versionManifest.Package.Identity.Version
+    $lastVersionPath = Join-Path $projectDirectory 'artifacts\build\msix\last-version.txt'
+    if (Test-Path -LiteralPath $lastVersionPath) {
+        $lastVersion = [version]([IO.File]::ReadAllText($lastVersionPath).Trim())
+        if ($lastVersion -gt $previousVersion) { $previousVersion = $lastVersion }
+    }
+    $nextParts = @($previousVersion.Major, $previousVersion.Minor, $previousVersion.Build, 0)
+    for ($partIndex = 2; $partIndex -ge 0; $partIndex--) {
+        if ($nextParts[$partIndex] -lt 65535) { $nextParts[$partIndex]++; break }
+        $nextParts[$partIndex] = 0
+    }
+    if ($nextParts[0] -eq 0) { throw 'Package version range exhausted.' }
+    $PackageVersion = $nextParts -join '.'
+}
+# EXE assembly, installer and MSIX must compare as the same release version.
+$publishVersion = [version]$PackageVersion
+if ($publishVersion.Major -lt 1 -or $publishVersion.Revision -ne 0 -or
+    @($publishVersion.Major,$publishVersion.Minor,$publishVersion.Build,$publishVersion.Revision | Where-Object { $_ -gt 65535 }).Count -gt 0) {
+    throw 'Package version requires four components, a nonzero major version and a zero fourth component.'
+}
 python (Join-Path $PSScriptRoot 'PrepareImageCache.py')
 if ($LASTEXITCODE -ne 0) { throw 'Image cache preparation failed.' }
 dotnet publish (Join-Path $projectDirectory 'src\MapleDay\MapleDay.csproj') `
-    -c $Configuration -p:Platform=x64 -r win-x64 --self-contained true -o $appDirectory
+    -c $Configuration -p:Platform=x64 -r win-x64 --self-contained true -o $appDirectory `
+    "-p:Version=$PackageVersion" "-p:AssemblyVersion=$PackageVersion" "-p:FileVersion=$PackageVersion"
 if ($LASTEXITCODE -ne 0) { throw "MapleDay publish failed (exit $LASTEXITCODE)." }
 & (Join-Path $PSScriptRoot 'Verify-Runtime.ps1') -AppDirectory $appDirectory
 

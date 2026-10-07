@@ -249,6 +249,12 @@ public sealed partial class MainWindow
         {
             if (_closed || _dataDeleting) return;
             RestoreWindow();
+            if (arguments.ContainsKey("update"))
+            {
+                _notificationLandingPage = "settings";
+                NavigateTo("settings");
+                return;
+            }
             if (arguments.ContainsKey("reminder"))
             {
                 _notificationLandingPage = "notifications";
