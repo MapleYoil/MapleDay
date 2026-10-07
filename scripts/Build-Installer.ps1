@@ -18,8 +18,11 @@ if (-not $InnoCompiler) {
 if (-not $InnoCompiler -or -not (Test-Path -LiteralPath $InnoCompiler -PathType Leaf)) {
     throw 'Inno Setup 6 is required to build the EXE installer.'
 }
-[xml]$manifest = Get-Content -LiteralPath (Join-Path $projectDirectory 'packaging\AppxManifest.xml') -Raw
-$version = [version]$manifest.Package.Identity.Version
+$versionPath = Join-Path $projectDirectory 'artifacts\build\msix\last-version.txt'
+if (-not (Test-Path -LiteralPath $versionPath -PathType Leaf)) {
+    throw 'Build the MSIX package first so the installer uses its verified version.'
+}
+$version = [version]([IO.File]::ReadAllText($versionPath).Trim())
 if (-not (Test-Path -LiteralPath (Join-Path $releaseDirectory 'MapleDay.exe')) -or
     -not (Test-Path -LiteralPath (Join-Path $releaseDirectory 'App\MapleDay.dll'))) {
     throw 'Publish the application before building its installer.'

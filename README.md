@@ -114,6 +114,8 @@ GitHub [Releases](https://github.com/MapleYoil/MapleDay/releases)의 `MapleDay-S
 
 .NET 10 SDK와 Windows 빌드 환경이 필요합니다. 솔루션 파일은 `MapleDay.sln`이며 UI 프로젝트는 x64를 대상으로 합니다. Windows App SDK 2.5.1과 WinUI 3을 사용합니다.
 
+EXE 설치 프로그램을 만들려면 Inno Setup 6이 필요합니다. `scripts/Publish.ps1`은 MSIX의 검증된 버전으로 `artifacts/Installer/MapleDay-Setup-버전-x64.exe`도 생성합니다. 기존 게시 폴더에서 설치 프로그램만 다시 만들 때는 `scripts/Build-Installer.ps1`을 실행합니다. 설치는 현재 사용자 계정에 적용되며 제거 시 저장된 사용자 데이터는 유지합니다.
+
 ```powershell
 dotnet build src/MapleDay/MapleDay.csproj -c Release -p:Platform=x64
 dotnet test tests/MapleDay.Core.Tests/MapleDay.Core.Tests.csproj -c Release
