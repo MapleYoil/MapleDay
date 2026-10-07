@@ -38,5 +38,8 @@ $installer = Join-Path $installerDirectory $name
 if (-not (Test-Path -LiteralPath $pendingInstaller) -or (Get-Item -LiteralPath $pendingInstaller).Length -lt 1MB) {
     throw 'Expected installer output is missing or incomplete.'
 }
+if ((Get-Item -LiteralPath $pendingInstaller).VersionInfo.ProductVersion.Trim() -ne $version.ToString()) {
+    throw 'Installer metadata does not match the MSIX version.'
+}
 Move-Item -LiteralPath $pendingInstaller -Destination $installer -Force
 Write-Output $installer
