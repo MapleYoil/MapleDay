@@ -10,6 +10,7 @@ public sealed record AppUpdate(Version Version, string FileName, Uri Download, s
 public static partial class AppUpdatePolicy
 {
     public const long MaximumInstallerSize = 200 * 1024 * 1024;
+    public static string ManifestName(Version version) => $"MapleDay-Update-{version.ToString(4)}-x64.json";
     public const string Repository = "MapleYoil/MapleDay";
     public static readonly Uri LatestRelease = new($"https://api.github.com/repos/{Repository}/releases/latest");
     [GeneratedRegex(@"^v?(\d+\.\d+\.\d+\.\d+)$", RegexOptions.CultureInvariant)]
@@ -25,18 +26,18 @@ public static partial class AppUpdatePolicy
         var tag = release.GetProperty("tag_name").GetString() ?? "";
         var match = VersionTag().Match(tag);
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out var version) || version <= current) return null;
-        var filename = $"MapleDay-Setup-{version.ToString(4)}-x64.exe";
+        var filename = ManifestName(version);
         foreach (var asset in release.GetProperty("assets").EnumerateArray())
         {
             if (asset.GetProperty("name").GetString() != filename || asset.GetProperty("state").GetString() != "uploaded") continue;
             var size = asset.GetProperty("size").GetInt64();
             var digest = asset.TryGetProperty("digest", out var value) ? Digest().Match(value.GetString() ?? "") : null;
             var expected = $"https://github.com/{Repository}/releases/download/{tag}/{filename}";
-            if (size <= 0 || size > MaximumInstallerSize || digest?.Success != true
+            if (size <= 0 || size > 4 * 1024 * 1024 || digest?.Success != true
                 || asset.GetProperty("browser_download_url").GetString() != expected) throw new InvalidDataException("업데이트 파일 정보를 확인하지 못했어요.");
             return new(version, filename, new Uri(expected), digest.Groups[1].Value.ToLowerInvariant(), size);
         }
-        throw new InvalidDataException("새 버전의 x64 설치 파일이 아직 준비되지 않았어요.");
+        throw new InvalidDataException("새 버전의 앱 내부 업데이트 파일이 아직 준비되지 않았어요.");
     }
 
     public static bool IsDownloadHost(Uri uri) => uri.Scheme == Uri.UriSchemeHttps && uri.IsDefaultPort
@@ -88,7 +89,7 @@ public sealed class AppUpdateClient : IDisposable
         var matchingUrl = update.Download.AbsoluteUri == $"{expectedPath}v{update.Version.ToString(4)}/{update.FileName}"
             || update.Download.AbsoluteUri == $"{expectedPath}{update.Version.ToString(4)}/{update.FileName}";
         if (!matchingUrl || !AppUpdatePolicy.IsDownloadHost(update.Download) || update.Size <= 0 || update.Size > AppUpdatePolicy.MaximumInstallerSize
-            || update.FileName != $"MapleDay-Setup-{update.Version.ToString(4)}-x64.exe" || !Regex.IsMatch(update.Sha256, "^[a-fA-F0-9]{64}$"))
+            || update.FileName != AppUpdatePolicy.ManifestName(update.Version) || !Regex.IsMatch(update.Sha256, "^[a-fA-F0-9]{64}$"))
             throw new InvalidDataException("업데이트 파일 정보가 올바르지 않습니다.");
         Directory.CreateDirectory(directory);
         var file = Path.Combine(directory, update.FileName);

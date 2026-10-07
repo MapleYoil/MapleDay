@@ -2,6 +2,8 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <shellapi.h>
+#include "update.h"
 
 // Only Windows system DLLs are needed by this launcher; WinUI/.NET live in App.
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR arguments, int)
@@ -12,13 +14,47 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR arguments, int)
     const std::wstring executable(buffer.data(), length);
     const auto separator = executable.find_last_of(L"\\/");
     if (separator == std::wstring::npos) return 2;
-    const auto appDirectory = executable.substr(0, separator) + L"\\App";
+    const auto root = executable.substr(0, separator);
+    int argumentCount = 0;
+    auto argv = CommandLineToArgvW(GetCommandLineW(), &argumentCount);
+    if (!argv) return 2;
+    if (argumentCount >= 3 && (std::wstring(argv[1]) == L"--apply-update" || std::wstring(argv[1]) == L"--recover-update")) {
+        const bool recover = std::wstring(argv[1]) == L"--recover-update";
+        const auto job = std::filesystem::path(argv[2]);
+        const auto pid = argumentCount == 4 ? wcstoul(argv[3], nullptr, 10) : 0;
+        LocalFree(argv);
+        return updates::worker(job, pid, recover);
+    }
+    LocalFree(argv);
+    const auto appDirectory = root + L"\\App";
     const auto appPath = appDirectory + L"\\MapleDay.exe";
     const std::wstring forwarded = arguments ? arguments : L"";
     const auto first = forwarded.find_first_not_of(L" \t\r\n");
     const auto last = forwarded.find_last_not_of(L" \t\r\n");
     const auto trimmed = first == std::wstring::npos ? L"" : forwarded.substr(first, last - first + 1);
     const bool verifyOnly = trimmed == L"--verify";
+    if (!verifyOnly) {
+        // Do not launch while DLLs are being replaced. A crash/power loss recovers first.
+        for (int attempt = 0; attempt < 2400; ++attempt) {
+            HANDLE lock = CreateFileW((appDirectory + L"\\.update-lock").c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            if (lock != INVALID_HANDLE_VALUE) { CloseHandle(lock); break; }
+            if (GetLastError() != ERROR_SHARING_VIOLATION) break;
+            Sleep(50);
+            if (attempt == 2399) return 4;
+        }
+        const auto recovery = std::filesystem::path(appDirectory) / L".update-job";
+        if (std::filesystem::exists(recovery)) {
+            try {
+                const auto job = std::filesystem::path(updates::read(recovery));
+                if (_wcsicmp(updates::read(job / L"root.txt").c_str(), root.c_str()) != 0) return 4;
+                const auto helper = job / L"worker.exe";
+                auto command = L"\"" + helper.wstring() + L"\" --recover-update \"" + job.wstring() + L"\"";
+                STARTUPINFOW startup{}; startup.cb = sizeof(startup); PROCESS_INFORMATION process{};
+                if (!CreateProcessW(helper.c_str(), command.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, job.c_str(), &startup, &process)) return 4;
+                CloseHandle(process.hThread); CloseHandle(process.hProcess); return 0;
+            } catch (...) { return 4; }
+        }
+    }
     for (const auto* required : { L"MapleDay.exe", L"MapleDay.dll", L"MapleDay.pri", L"coreclr.dll", L"Microsoft.UI.Xaml.dll" })
     {
         const auto path = appDirectory + L"\\" + required;

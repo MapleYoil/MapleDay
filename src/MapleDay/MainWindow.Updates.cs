@@ -10,11 +10,12 @@ namespace MapleDay;
 public sealed partial class MainWindow
 {
     private readonly AppUpdateClient _updates = new();
+    private readonly IncrementalUpdateClient _incrementalUpdates = new();
     private readonly DispatcherTimer _updateTimer = new() { Interval = TimeSpan.FromHours(6) };
     private CancellationTokenSource? _updateRequest;
     private bool _updatesInitialized, _updateChecking, _updateInstalling;
     private AppUpdate? _readyUpdate;
-    private string? _readyInstaller;
+    private PreparedUpdate? _preparedUpdate;
     private Version? _notifiedUpdateVersion;
     private bool IsStoreInstall => WindowsStartup.IsPackaged && Windows.ApplicationModel.Package.Current.SignatureKind == Windows.ApplicationModel.PackageSignatureKind.Store;
     private Version CurrentAppVersion
@@ -39,7 +40,7 @@ public sealed partial class MainWindow
             UpdateStatusText.Text = IsStoreInstall ? "Microsoft Store에서 자동 업데이트를 관리합니다."
                 : "직접 설치한 MSIX는 릴리즈에서 새 MSIX를 받아 설치해주세요. 저장된 데이터는 유지됩니다.";
         }
-        else UpdateStatusText.Text = "실행 시와 6시간마다 새 버전을 확인합니다. 다운로드 후 버튼을 눌러 적용할 수 있습니다.";
+        else UpdateStatusText.Text = "실행 시와 6시간마다 새 버전을 확인하고 변경된 파일만 내려받습니다. 설치기 없이 적용 후 다시 시작합니다.";
         _updateTimer.Tick += (_, _) => StartAutomaticUpdates();
         Closed += (_, _) => StopUpdates();
         _updatesInitialized = true;
@@ -100,7 +101,8 @@ public sealed partial class MainWindow
         {
             var update = await _updates.CheckAsync(CurrentAppVersion, request.Token);
             if (_closed || _dataDeleting) return;
-            _readyUpdate = null; _readyInstaller = null;
+            _readyUpdate = null;
+            if (_preparedUpdate is { } previous) { Directory.Delete(previous.Directory, true); _preparedUpdate = null; }
             InstallUpdateButton.Visibility = UpdateReadyButton.Visibility = Visibility.Collapsed;
             if (update is null) { UpdateStatusText.Text = "최신 버전을 사용 중입니다."; return; }
             UpdateDownloadProgress.Value = 0;
@@ -111,11 +113,17 @@ public sealed partial class MainWindow
                 if (!_closed && !_dataDeleting && !request.IsCancellationRequested) UpdateDownloadProgress.Value = value;
             });
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MapleDay", "updates");
-            var installer = await _updates.DownloadAsync(update, directory, progress, request.Token);
+            var launcher = WindowsStartup.FindLauncher(AppContext.BaseDirectory)
+                ?? throw new InvalidDataException("배포 폴더의 MapleDay.exe로 실행한 뒤 업데이트해주세요.");
+            var manifestFile = await _updates.DownloadAsync(update, directory, null, request.Token);
+            if (new FileInfo(manifestFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("업데이트 파일 목록이 너무 큽니다.");
+            var manifest = IncrementalUpdatePolicy.Parse(await File.ReadAllTextAsync(manifestFile, request.Token), update);
+            UpdateStatusText.Text = $"{update.Version} 변경된 파일 확인 및 다운로드 중…";
+            var prepared = await _incrementalUpdates.PrepareAsync(manifest, Path.GetDirectoryName(launcher)!, directory, progress, request.Token);
             if (_closed || _dataDeleting) return;
-            _readyUpdate = update; _readyInstaller = installer;
+            _readyUpdate = update; _preparedUpdate = prepared;
             InstallUpdateButton.Visibility = UpdateReadyButton.Visibility = Visibility.Visible;
-            UpdateStatusText.Text = $"{update.Version} 업데이트 준비 완료. 다시 시작하면 적용됩니다. 저장된 데이터는 유지됩니다.";
+            UpdateStatusText.Text = $"{update.Version} 준비 완료 · 변경 {prepared.ChangedFiles}개 · 다운로드 {prepared.DownloadSize / 1024.0 / 1024.0:0.0}MB. 설치기 없이 적용하고 다시 시작합니다.";
             if (_notifiedUpdateVersion != update.Version && _notificationReady
                 && _windowsNotifications.Show("메요일 · 새 버전이 준비됐어요", [$"{update.Version} 업데이트를 내려받았습니다. 클릭해서 적용하세요."], new Dictionary<string, string> { ["update"] = "1" }))
                 _notifiedUpdateVersion = update.Version;
@@ -141,7 +149,7 @@ public sealed partial class MainWindow
 
     private async void InstallUpdateButton_Click(object sender, RoutedEventArgs args)
     {
-        if (_readyUpdate is not { } update || _readyInstaller is not { } installer || _updateChecking || _updateInstalling || _closed || _dataDeleting) return;
+        if (_readyUpdate is null || _preparedUpdate is not { } prepared || _updateChecking || _updateInstalling || _closed || _dataDeleting) return;
         if (_supportSubmitting || !string.IsNullOrWhiteSpace(SupportSubject.Text) || !string.IsNullOrWhiteSpace(SupportBody.Text))
         { UpdateStatusText.Text = "작성 중인 문의를 보내거나 내용을 비운 뒤 업데이트해주세요."; return; }
         var launcher = WindowsStartup.FindLauncher(AppContext.BaseDirectory);
@@ -151,13 +159,24 @@ public sealed partial class MainWindow
         InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = false;
         try
         {
-            if (!await AppUpdateClient.VerifyAsync(installer, update, CancellationToken.None))
-                throw new InvalidDataException("설치 파일이 변경되었어요. 업데이트 확인을 다시 눌러주세요.");
             if (_closed || _dataDeleting) return;
-            var start = new ProcessStartInfo(installer) { UseShellExecute = true };
-            foreach (var argument in new[] { "/SILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/MAPLEDAYUPDATE=1", $"/MAPLEDAYUPDATEPID={Environment.ProcessId}", $"/DIR={Path.GetDirectoryName(launcher)}" })
+            var status = Path.Combine(prepared.Directory, "status.txt");
+            if (File.Exists(status)) File.Delete(status);
+            var start = new ProcessStartInfo(Path.Combine(prepared.Directory, "worker.exe")) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = prepared.Directory };
+            foreach (var argument in new[] { "--apply-update", prepared.Directory, Environment.ProcessId.ToString() })
                 start.ArgumentList.Add(argument);
-            using var process = Process.Start(start) ?? throw new InvalidOperationException("설치 프로그램을 실행하지 못했어요.");
+            using var process = Process.Start(start) ?? throw new InvalidOperationException("업데이트를 시작하지 못했어요.");
+            var deadline = DateTime.UtcNow.AddSeconds(15);
+            string? ready = null;
+            while (ready is null && !process.HasExited && DateTime.UtcNow < deadline)
+            {
+                try { if (File.Exists(status)) { var value = await File.ReadAllTextAsync(status); if (value is "ready" or "error") ready = value; } }
+                catch (IOException) { /* Native writer is finishing the flushed status file. */ }
+                if (ready is null) await Task.Delay(50);
+            }
+            if (ready != "ready")
+                throw new InvalidDataException("업데이트 적용을 준비하지 못했어요. 기존 앱은 그대로 유지됩니다.");
+            UpdateStatusText.Text = "변경된 파일을 적용하고 다시 시작합니다…";
             Root.IsHitTestVisible = false;
             StopUpdates();
             StopTelemetry();
@@ -170,7 +189,7 @@ public sealed partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            UpdateStatusText.Text = error is InvalidDataException ? error.Message : "설치 프로그램을 실행하지 못했어요. 업데이트를 다시 시도해주세요.";
+            UpdateStatusText.Text = error is InvalidDataException ? error.Message : "업데이트를 시작하지 못했어요. 다시 시도해주세요.";
             _updateInstalling = false;
             Root.IsHitTestVisible = true;
             InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = true;

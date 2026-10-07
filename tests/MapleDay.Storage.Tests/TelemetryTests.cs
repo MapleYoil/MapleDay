@@ -12,6 +12,7 @@ public sealed class TelemetryTests : IDisposable
     {
         var previous=JsonSerializer.Deserialize<AppSettings>("{\"CloseToTray\":true}")!;
         Assert.True(previous.UsageAnalyticsEnabled);Assert.True(previous.AutomaticErrorReports);
+        Assert.False(previous.AnonymousUsageAnalytics);
         previous.UsageAnalyticsEnabled=false;previous.AutomaticErrorReports=false;
         var restored=JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(previous))!;
         Assert.False(restored.UsageAnalyticsEnabled);Assert.False(restored.AutomaticErrorReports);
@@ -36,16 +37,31 @@ public sealed class TelemetryTests : IDisposable
         var path=Path.Combine(_root,"identity.dat");var queue=new DiagnosticQueue(Path.Combine(_root,"errors"));
         using(var client=new TelemetryClient(http,path))
         {
-            await client.SendAsync(["최고캐릭터"],new(1,0,35,0),queue,true,default);
-            await client.SendAsync(["새로운최고"],new(1,0,35,0),queue,true,default);
+            await client.SendAsync(["최고캐릭터"],new(1,0,35,0),queue,true,default,anonymous:true);
+            await client.SendAsync(["새로운최고"],new(1,0,35,0),queue,true,default,anonymous:true);
         }
         using var http2=new HttpClient(server){BaseAddress=new("https://test/api/mapleday/")};
-        using(var client=new TelemetryClient(http2,path))await client.SendAsync(["새로운최고"],new(1,0,35,0),queue,true,default);
+        using(var client=new TelemetryClient(http2,path))await client.SendAsync(["새로운최고"],new(1,0,35,0),queue,true,default,anonymous:true);
         var bodies=server.Requests.Select(request=>JsonDocument.Parse(request.Body)).ToArray();
         Assert.Equal(bodies[0].RootElement.GetProperty("installation").GetString(),bodies[2].RootElement.GetProperty("installation").GetString());
         Assert.Equal(2,bodies[2].RootElement.GetProperty("aliases").GetArrayLength());
         Assert.All(server.Requests,request=>{Assert.DoesNotContain("최고캐릭터",request.Body);Assert.DoesNotContain("새로운최고",request.Body);});
         foreach(var body in bodies)body.Dispose();
+    }
+    [Fact]
+    public async Task DefaultIncludesNicknameAndAnonymousToggleKeepsSameIdentityWithoutRawName()
+    {
+        var server=new Server();using var http=new HttpClient(server){BaseAddress=new("https://test/api/mapleday/")};
+        using var client=new TelemetryClient(http,Path.Combine(_root,"identity.dat"));
+        var queue=new DiagnosticQueue(Path.Combine(_root,"errors"));
+        await client.SendAsync(["현재최고"],new(1,0,36,0),queue,true,default);
+        await client.SendAsync(["현재최고"],new(1,0,36,0),queue,true,default,anonymous:true);
+        using var first=JsonDocument.Parse(server.Requests[0].Body);using var second=JsonDocument.Parse(server.Requests[1].Body);
+        Assert.Equal("현재최고",first.RootElement.GetProperty("nicknames")[0].GetString());
+        Assert.False(first.RootElement.GetProperty("anonymous").GetBoolean());
+        Assert.Empty(second.RootElement.GetProperty("nicknames").EnumerateArray());
+        Assert.Equal(first.RootElement.GetProperty("installation").GetString(),second.RootElement.GetProperty("installation").GetString());
+        Assert.Equal(first.RootElement.GetProperty("aliases")[0].GetString(),second.RootElement.GetProperty("aliases")[0].GetString());
     }
     [Fact]
     public async Task FailedErrorUploadRetainsQueueAndOptOutStopsUsageRequest()

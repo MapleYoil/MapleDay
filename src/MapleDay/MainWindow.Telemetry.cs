@@ -14,6 +14,8 @@ public sealed partial class MainWindow
     private void InitializeTelemetry()
     {
         UsageAnalyticsToggle.IsOn = _settings.UsageAnalyticsEnabled;
+        AnonymousUsageToggle.IsOn = _settings.AnonymousUsageAnalytics;
+        AnonymousUsageToggle.IsEnabled = _settings.UsageAnalyticsEnabled;
         ErrorReportingToggle.IsOn = _settings.AutomaticErrorReports;
         App.Diagnostics.SetEnabled(_settings.AutomaticErrorReports);
         _telemetryTimer.Tick += async (_, _) => await SendTelemetryAsync();
@@ -59,7 +61,7 @@ public sealed partial class MainWindow
             }
             var highest = UsageIdentity.HighestNickname(candidates);
             await _telemetry.SendAsync(highest is null ? [] : [highest], CurrentAppVersion, App.Diagnostics,
-                _settings.UsageAnalyticsEnabled, request.Token);
+                _settings.UsageAnalyticsEnabled, request.Token, _settings.AnonymousUsageAnalytics);
         }
         catch (Exception) { /* Retry offline failures without interrupting the app or reporting themselves. */ }
         finally
@@ -73,21 +75,26 @@ public sealed partial class MainWindow
         if (!_telemetryInitialized || _closed || _dataDeleting) return;
         var usage = _settings.UsageAnalyticsEnabled;
         var reports = _settings.AutomaticErrorReports;
+        var anonymous = _settings.AnonymousUsageAnalytics;
         _settings.UsageAnalyticsEnabled = UsageAnalyticsToggle.IsOn;
         _settings.AutomaticErrorReports = ErrorReportingToggle.IsOn;
+        _settings.AnonymousUsageAnalytics = AnonymousUsageToggle.IsOn;
         try { _settings.Save(); }
         catch (Exception error) when (IsStorageError(error))
         {
-            _settings.UsageAnalyticsEnabled = usage; _settings.AutomaticErrorReports = reports;
+            _settings.UsageAnalyticsEnabled = usage; _settings.AutomaticErrorReports = reports; _settings.AnonymousUsageAnalytics = anonymous;
             _telemetryInitialized = false;
             UsageAnalyticsToggle.IsOn = usage; ErrorReportingToggle.IsOn = reports;
+            AnonymousUsageToggle.IsOn = anonymous;
             _telemetryInitialized = true;
             TelemetryStatus.Text = "설정을 저장하지 못했어요. 저장 공간을 확인해주세요.";
             return;
         }
         App.Diagnostics.SetEnabled(_settings.AutomaticErrorReports);
         _telemetryRequest?.Cancel();
-        TelemetryStatus.Text = "설정을 저장했습니다. 닉네임 원문과 API 키는 집계·오류 서버로 전송하지 않습니다.";
+        AnonymousUsageToggle.IsEnabled = _settings.UsageAnalyticsEnabled;
+        TelemetryStatus.Text = !_settings.UsageAnalyticsEnabled ? "사용자 집계를 껐습니다."
+            : _settings.AnonymousUsageAnalytics ? "익명 집계로 설정했습니다. 닉네임 원문을 보내지 않습니다." : "닉네임을 함께 보내도록 설정했습니다. API 키는 보내지 않습니다.";
         _ = SendTelemetryAsync();
     }
 }

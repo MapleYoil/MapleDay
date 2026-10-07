@@ -124,7 +124,7 @@ public sealed partial class MainWindow
             await _support.SubmitAsync(kind, character.Name, subject, body, _supportLifetime.Token);
             if (_closed) return;
             SupportSubject.Text = SupportBody.Text = "";
-            ShowSupportMessage(kind == "suggestion" ? "건의사항이 접수됐어요. 운영자에게 메일로 전달됩니다." : "문의가 접수됐어요. 답장이 도착하면 이곳과 Windows 알림에서 확인할 수 있어요.", InfoBarSeverity.Success);
+            ShowSupportMessage(kind == "suggestion" ? "건의사항이 접수됐어요. 운영자가 관리자 콘솔에서 확인합니다." : "문의가 접수됐어요. 답변이 도착하면 이곳과 Windows 알림에서 확인할 수 있어요.", InfoBarSeverity.Success);
             await RefreshSupportAsync(showErrors: false);
         }
         catch (Exception error) when (IsSupportError(error))

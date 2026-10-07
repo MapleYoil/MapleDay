@@ -10,6 +10,7 @@ public sealed class AppSettings
     public bool WindowsStartupToTray { get; set; } = true;
     public bool AutomaticUpdates { get; set; } = true;
     public bool UsageAnalyticsEnabled { get; set; } = true;
+    public bool AnonymousUsageAnalytics { get; set; }
     public bool AutomaticErrorReports { get; set; } = true;
     public int WindowWidth { get; set; } = 1200;
     public int WindowHeight { get; set; } = 800;

@@ -822,7 +822,8 @@
                     <StackPanel Spacing="12">
                         <TextBlock Text="개인정보처리방침" FontSize="18" FontWeight="SemiBold" />
                         <ToggleSwitch x:Name="UsageAnalyticsToggle" Header="사용자·설치 수 집계" OnContent="켜짐" OffContent="꺼짐" Toggled="TelemetryToggle_Toggled" />
-                        <TextBlock Text="등록한 키의 최고 레벨 캐릭터 닉네임을 해시로 집계합니다. 닉네임 원문은 전송하지 않으며 관리자 화면에는 합계만 보입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <TextBlock Text="등록한 키의 최고 레벨 캐릭터 닉네임을 함께 보냅니다. 대표 캐릭터가 바뀌어도 같은 사용자로 집계하며 관리자 화면에는 합계만 보입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <ToggleSwitch x:Name="AnonymousUsageToggle" Header="집계를 익명으로 보내기" OnContent="닉네임 원문 보내지 않음" OffContent="닉네임 함께 보내기" Toggled="TelemetryToggle_Toggled" />
                         <ToggleSwitch x:Name="ErrorReportingToggle" Header="오류 자동 보고" OnContent="켜짐" OffContent="꺼짐" Toggled="TelemetryToggle_Toggled" />
                         <TextBlock Text="오류 종류, 앱 내부 위치, 버전만 전송합니다. API 키·닉네임·문의 내용·오류 메시지·파일 경로는 포함하지 않습니다. 종료 오류는 다음 실행에 전송합니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         <TextBlock x:Name="TelemetryStatus" Text="집계와 오류 보고는 각각 끌 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />

@@ -26,7 +26,7 @@ public sealed class TelemetryClient : IDisposable
         _http.DefaultRequestHeaders.UserAgent.ParseAdd("MapleDay-Telemetry/1.0");
     }
 
-    public async Task SendAsync(IEnumerable<string> highestNicknames, Version version, DiagnosticQueue queue, bool usageEnabled, CancellationToken token)
+    public async Task SendAsync(IEnumerable<string> highestNicknames, Version version, DiagnosticQueue queue, bool usageEnabled, CancellationToken token, bool anonymous = false)
     {
         await _gate.WaitAsync(token);
         try
@@ -36,13 +36,15 @@ public sealed class TelemetryClient : IDisposable
                 var saved = await _store.LoadAsync();
                 _identity = saved is null ? new() : JsonSerializer.Deserialize<UsageState>(saved) ?? new();
             }
-            var aliases = highestNicknames.Where(name => !string.IsNullOrWhiteSpace(name)).Select(UsageIdentity.NicknameHash);
+            var nicknames = highestNicknames.Where(name => !string.IsNullOrWhiteSpace(name)).Distinct().ToArray();
+            var aliases = nicknames.Select(UsageIdentity.NicknameHash);
             _identity.Aliases = _identity.Aliases.Concat(aliases).Distinct(StringComparer.Ordinal).TakeLast(64).ToList();
             // Persist identity and old/new aliases before network requests, including offline launches.
             await _store.SaveAsync(JsonSerializer.Serialize(_identity), token);
             if (usageEnabled)
             {
-                using var response = await _http.PostAsJsonAsync("usage", new { _identity.Installation, Version = version.ToString(4), Aliases = _identity.Aliases }, _json, token);
+                using var response = await _http.PostAsJsonAsync("usage", new { _identity.Installation, Version = version.ToString(4), Aliases = _identity.Aliases,
+                    Anonymous = anonymous, Nicknames = anonymous ? Array.Empty<string>() : nicknames }, _json, token);
                 response.EnsureSuccessStatusCode();
             }
             foreach (var pending in queue.Pending())

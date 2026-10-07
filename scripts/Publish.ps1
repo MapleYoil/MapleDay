@@ -66,8 +66,15 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Launcher resource compilation failed.' }
     & (Join-Path $compilerBin 'cl.exe') /nologo /O2 /W4 /MT /EHsc /std:c++17 /utf-8 /DUNICODE /D_UNICODE `
         "/Fo$(Join-Path $launcherBuild 'MapleDay.obj')" "/Fe$launcherPath" main.cpp $resourceFile `
-        /link /SUBSYSTEM:WINDOWS /MANIFEST:EMBED kernel32.lib user32.lib
+        /link /SUBSYSTEM:WINDOWS /MANIFEST:EMBED kernel32.lib user32.lib shell32.lib bcrypt.lib
     if ($LASTEXITCODE -ne 0) { throw 'Launcher compilation failed.' }
+    $updaterTest = Join-Path $launcherBuild 'update-tests.exe'
+    & (Join-Path $compilerBin 'cl.exe') /nologo /O2 /W4 /MT /EHsc /std:c++17 /utf-8 /DUNICODE /D_UNICODE `
+        "/Fo$(Join-Path $launcherBuild 'update-tests.obj')" "/Fe$updaterTest" update-tests.cpp `
+        /link /SUBSYSTEM:CONSOLE kernel32.lib bcrypt.lib
+    if ($LASTEXITCODE -ne 0) { throw 'Native update tests compilation failed.' }
+    & $updaterTest (Join-Path $launcherBuild 'update-fixture')
+    if ($LASTEXITCODE -ne 0) { throw 'Native update replacement/rollback tests failed.' }
 } finally {
     Pop-Location
     $env:INCLUDE = $previousInclude
@@ -75,6 +82,8 @@ try {
     $env:PATH = $previousPath
 }
 
+python (Join-Path $PSScriptRoot 'Build-Update.py') $releaseDirectory (Join-Path $projectDirectory 'artifacts\Updates') $PackageVersion
+if ($LASTEXITCODE -ne 0) { throw 'Incremental update archive build failed.' }
 & (Join-Path $PSScriptRoot 'Build-MSIX.ps1') -AppDirectory $appDirectory -SdkBin $sdkBin `
     -PackageVersion $PackageVersion -CertificateThumbprint $CertificateThumbprint
 & (Join-Path $PSScriptRoot 'Build-Installer.ps1')

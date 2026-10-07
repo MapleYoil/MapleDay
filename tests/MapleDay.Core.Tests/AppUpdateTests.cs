@@ -13,14 +13,14 @@ public sealed class AppUpdateTests
         string? url = null, string? digest = null, long? size = null, string? name = null) => JsonSerializer.Serialize(new
     {
         tag_name = version, draft, prerelease,
-        assets = new[] { new { name = name ?? "MapleDay-Setup-1.0.34.0-x64.exe", state = "uploaded", size = size ?? Installer.Length,
+        assets = new[] { new { name = name ?? "MapleDay-Update-1.0.34.0-x64.json", state = "uploaded", size = size ?? Installer.Length,
             digest = digest ?? "sha256:" + Hash,
-            browser_download_url = url ?? "https://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Setup-1.0.34.0-x64.exe" } }
+            browser_download_url = url ?? "https://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json" } }
     });
     private static AppUpdate Update() => AppUpdatePolicy.Parse(Release(), new Version(1, 0, 33, 0))!;
 
     [Fact]
-    public void SelectsStableInstallerWithExactVersionAndHash()
+    public void SelectsStableManifestWithExactVersionAndHash()
     {
         var result = Update();
         Assert.Equal(new Version(1, 0, 34, 0), result.Version);
@@ -43,10 +43,10 @@ public sealed class AppUpdateTests
         => Assert.Null(AppUpdatePolicy.Parse(Release(draft: draft, prerelease: prerelease), new Version(1, 0, 33, 0)));
 
     [Theory]
-    [InlineData("https://github.com/Someone/MapleDay/releases/download/v1.0.34.0/MapleDay-Setup-1.0.34.0-x64.exe")]
-    [InlineData("https://github.com.evil.test/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Setup-1.0.34.0-x64.exe")]
-    [InlineData("http://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Setup-1.0.34.0-x64.exe")]
-    [InlineData("https://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Setup-1.0.34.0-x64.exe?file=other")]
+    [InlineData("https://github.com/Someone/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json")]
+    [InlineData("https://github.com.evil.test/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json")]
+    [InlineData("http://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json")]
+    [InlineData("https://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json?file=other")]
     public void RejectsUntrustedOrModifiedDownloadUrls(string url)
         => Assert.Throws<InvalidDataException>(() => AppUpdatePolicy.Parse(Release(url: url), new Version(1, 0, 33, 0)));
 
@@ -59,7 +59,7 @@ public sealed class AppUpdateTests
         => Assert.Throws<InvalidDataException>(() => AppUpdatePolicy.Parse(Release(digest: digest, size: size), new Version(1, 0, 33, 0)));
 
     [Fact]
-    public void DoesNotUseMSIXOrUnrelatedReleaseAssetsAsInstaller()
+    public void DoesNotUseMSIXOrUnrelatedReleaseAssetsAsManifest()
         => Assert.Throws<InvalidDataException>(() => AppUpdatePolicy.Parse(Release(name: "MapleDay.msix"), new Version(1, 0, 33, 0)));
 
     private sealed class Handler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> respond) : HttpMessageHandler
