@@ -9,6 +9,7 @@
 AppId={{07CD2C71-5D46-4A1F-A330-4722417E9042}
 AppName=메요일
 AppVersion={#PackageVersion}
+LicenseFile=..\LICENSE
 AppPublisher=MapleYoil
 AppPublisherURL=https://github.com/MapleYoil/MapleDay
 AppSupportURL=https://github.com/MapleYoil/MapleDay/issues

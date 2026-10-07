@@ -22,7 +22,7 @@ public sealed class ExperienceLineChart : UserControl
         Visibility = Visibility.Collapsed;
         SizeChanged += (_, _) => Draw();
         Loaded += (_, _) => Draw();
-        AutomationProperties.SetName(this, "최근 7일 일별 획득 경험치 선 그래프");
+        AutomationProperties.SetName(this, "최근 7일 보유 경험치 선 그래프");
     }
 
     public void SetSamples(IReadOnlyList<ExperienceChartSample> samples)
@@ -42,7 +42,7 @@ public sealed class ExperienceLineChart : UserControl
         var layout = ExperienceChart.Build(_samples);
         var points = layout.Segments.SelectMany(segment => segment).ToArray();
         AutomationProperties.SetHelpText(this, string.Join("; ", _samples.Select(sample =>
-            $"{sample.Date:MM/dd}: {(sample.Gained is { } value ? ExperienceHistory.Amount(value) : "기록 없음")}")));
+            $"{sample.Date:MM/dd}: {(sample.Experience is { } value ? ExperienceHistory.Amount(value).TrimStart('+') : "기록 없음")}")));
 
         if (points.Length > 0)
         {
@@ -74,7 +74,9 @@ public sealed class ExperienceLineChart : UserControl
             }
             foreach (var point in points)
             {
-                var caption = $"{point.Date:yyyy-MM-dd} · {ExperienceHistory.Amount(point.Gained)} 경험치";
+                var caption = $"{point.Date:yyyy-MM-dd} · 보유 경험치 {point.Experience:N0}"
+                    + (point.Level is { } level ? $" · Lv. {level}" : "")
+                    + (point.Percent is { } percent ? $" ({percent:0.###}%)" : "");
                 var marker = new Button
                 {
                     Width = 24, Height = 24, MinWidth = 0, MinHeight = 0, Padding = new Thickness(0),
@@ -107,7 +109,7 @@ public sealed class ExperienceLineChart : UserControl
             var date = new TextBlock { Text = sample.Date.ToString("MM/dd"), Width = 44,
                 FontSize = 11, Foreground = _muted, TextAlignment = TextAlignment.Center };
             Add(date, x - 22, top + height + 14);
-            if (sample.Gained is not null) continue;
+            if (sample.Experience is not null) continue;
             var missing = new TextBlock { Text = "—", Width = 20, Foreground = _muted, TextAlignment = TextAlignment.Center };
             ToolTipService.SetToolTip(missing, $"{sample.Date:yyyy-MM-dd} · 비교 기록 없음");
             Add(missing, x - 10, top + height - 20);

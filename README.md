@@ -4,6 +4,10 @@ WinUI 3 기반 메이플스토리 유틸리티입니다.
 
 GitHub: [MapleYoil/MapleDay](https://github.com/MapleYoil/MapleDay) · 앱의 설정에서도 저장소 주소를 열 수 있습니다.
 
+## 라이선스
+
+**수정하거나 배포할 경우 ‘메요일 (MapleDay) — MapleYoil’과 원본 저장소 주소를 반드시 표시해야 하며, 상업적 이용은 절대 금지합니다.** 무료 배포나 출처표시만으로 상업적 이용이 허용되지 않습니다. 수정본에는 수정 사실을 밝히고 라이선스와 기존 출처 고지를 유지해야 합니다. 전체 조건은 [LICENSE](LICENSE)를 확인하세요. 폰트·게임 에셋·외부 라이브러리는 [제3자 자료 고지](THIRD_PARTY_NOTICES.md)에 따라 각 권리자의 이용 조건이 적용됩니다.
+
 ## 실행
 
 GitHub [Releases](https://github.com/MapleYoil/MapleDay/releases)의 `MapleDay-Setup-버전-x64.exe`로 설치할 수 있습니다. 설치 프로그램은 현재 Windows 사용자 계정의 앱 폴더에 설치하고 시작 메뉴 바로 가기와 제거 기능을 제공합니다. 바탕 화면 바로 가기는 선택 사항입니다. 개발용 MSIX를 직접 설치할 때는 릴리즈의 공개 인증서와 설치 안내를 확인해주세요.

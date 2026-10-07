@@ -23,6 +23,11 @@
     <Description>메이플스토리 캐릭터 목록 유틸리티</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="..\..\LICENSE;..\..\THIRD_PARTY_NOTICES.md">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <EmbeddedResource Include="..\..\docs\privacy-policy.txt" LogicalName="MapleDay.PrivacyPolicy.txt" />
     <Content Include="Assets\Decoded\**\*.bgra;Assets\Decoded\manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
