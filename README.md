@@ -4,6 +4,14 @@ WinUI 3 기반 메이플스토리 유틸리티입니다.
 
 GitHub: [MapleYoil/MapleDay](https://github.com/MapleYoil/MapleDay) · 앱의 설정에서도 저장소 주소를 열 수 있습니다.
 
+## 26초로 보는 메요일
+
+[![메요일 소개 영상: 캐릭터, 주간 보스 스케줄러, 수익 캘린더, 경험치 그래프, 알림](docs/media/mapleday-intro-preview.gif)](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4)
+
+[피아노 BGM이 포함된 영상 보기](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4) · [1080p / 60fps 원본 다운로드](https://github.com/MapleYoil/MapleDay/releases/download/v1.0.33.0/MapleDay-Intro-26s-Piano-1080p60.mp4) · [설치 프로그램 받기](https://github.com/MapleYoil/MapleDay/releases/latest)
+
+미리보기는 소리 없이 반복 재생됩니다. 원본 영상은 테스트 API의 실제 데이터와 앱 에셋으로 구성했으며, 스케줄러에는 주간 보스의 난이도와 파티 인원을 표시합니다.
+
 ## 라이선스
 
 **수정하거나 배포할 경우 ‘메요일 (MapleDay) — MapleYoil’과 원본 저장소 주소를 반드시 표시해야 하며, 상업적 이용은 절대 금지합니다.** 무료 배포나 출처표시만으로 상업적 이용이 허용되지 않습니다. 수정본에는 수정 사실을 밝히고 라이선스와 기존 출처 고지를 유지해야 합니다. 전체 조건은 [LICENSE](LICENSE)를 확인하세요. 폰트·게임 에셋·외부 라이브러리는 [제3자 자료 고지](THIRD_PARTY_NOTICES.md)에 따라 각 권리자의 이용 조건이 적용됩니다.
