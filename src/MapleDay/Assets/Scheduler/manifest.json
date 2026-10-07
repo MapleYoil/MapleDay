@@ -1,0 +1,412 @@
+[
+  {
+    "kind": "bossIcon",
+    "id": "0",
+    "name": "발록",
+    "file": "Bosses/icon_0.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/0/normal/0",
+    "sha256": "65b2e89d33c1400c673d520746a27c9fc0babace7e24ab125c94af9055b750cf"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "1",
+    "name": "자쿰",
+    "file": "Bosses/icon_1.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/1/normal/0",
+    "sha256": "d6593b12f4119244b26c2fc03a95bf76c778fe1ebc7f52c5d2b6deeaa24e8b1d"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "2",
+    "name": "혼테일",
+    "file": "Bosses/icon_2.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/2/normal/0",
+    "sha256": "5ca19cda10a2f46c90886212b090de4cf60b5f0b88b05f1ccfcee1e032544d1a"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "3",
+    "name": "힐라",
+    "file": "Bosses/icon_3.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/3/normal/0",
+    "sha256": "d7a811e05c2965bc0c2d50a4917965ee90967b5d620976dec5273b4e55de9a9a"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "4",
+    "name": "피에르",
+    "file": "Bosses/icon_4.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/4/normal/0",
+    "sha256": "7b3b496a60ede4be795cde01e859508b6f0d061da9f8fa33862ca48c7e73c56d"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "5",
+    "name": "반반",
+    "file": "Bosses/icon_5.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/5/normal/0",
+    "sha256": "390858089ffa75c38b2b30e4f017277c8b502a6ea2342259bdd6e1b3e36d0848"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "6",
+    "name": "블러디퀸",
+    "file": "Bosses/icon_6.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/6/normal/0",
+    "sha256": "d35ab995d976f61b67148e3f29ffcd80d4b83de41167761ef2df56d618ac9de2"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "7",
+    "name": "벨룸",
+    "file": "Bosses/icon_7.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/7/normal/0",
+    "sha256": "c934fd8163189451ca3b4ea316a37038493b0bb6d3f05727e13ce017962c56c3"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "8",
+    "name": "반 레온",
+    "file": "Bosses/icon_8.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/8/normal/0",
+    "sha256": "b3140944cb2d289baa0dcb43b86c780dc6b32d27ba51901c0866546075a02287"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "9",
+    "name": "아카이럼",
+    "file": "Bosses/icon_9.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/9/normal/0",
+    "sha256": "58edea1bbc1da79c093cc71c39f5f44b84b4a4b272c67ba5c81f4ae9126fda19"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "10",
+    "name": "매그너스",
+    "file": "Bosses/icon_10.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/10/normal/0",
+    "sha256": "407f252236c27f65bf8a538218bcd0a2675e9cd9a9b1e521d5d76727300eb70c"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "11",
+    "name": "핑크빈",
+    "file": "Bosses/icon_11.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/11/normal/0",
+    "sha256": "f6b823f8b4cce5e3387860c7a88239e06169c238b80e89fdf7c6e1b8f3386ff7"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "12",
+    "name": "시그너스",
+    "file": "Bosses/icon_12.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/12/normal/0",
+    "sha256": "5f942a92bbfac37160dd50cfb4f2118b61791fa1f2b0665e385719fa4854191a"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "13",
+    "name": "스우",
+    "file": "Bosses/icon_13.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/13/normal/0",
+    "sha256": "88cc3b3a0707ce3e9e39cc4278d84b1aba6cdff9579951b01e6f4d6c3751b653"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "15",
+    "name": "데미안",
+    "file": "Bosses/icon_15.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/15/normal/0",
+    "sha256": "6b7ae8a016118e319c3b2b645fb57200420a6d83721af868f1604729550df638"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "19",
+    "name": "루시드",
+    "file": "Bosses/icon_19.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/19/normal/0",
+    "sha256": "fa0d6d9a714ed84501ebef44a597132a45f5218dfd792cccac3f89224209484b"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "21",
+    "name": "카웅",
+    "file": "Bosses/icon_21.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/21/normal/0",
+    "sha256": "e38715865b06eb22694f20241c89447978e1699fd63aa5da82e41c9af994fdfd"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "22",
+    "name": "파풀라투스",
+    "file": "Bosses/icon_22.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/22/normal/0",
+    "sha256": "c2e6dc23abef3c9d368fd9aee43c07f87d3d3024d9096eef8c96560ead46dd78"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "23",
+    "name": "윌",
+    "file": "Bosses/icon_23.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/23/normal/0",
+    "sha256": "885bd61a98abffbf78e204c373661e0413ce53d893d63306f45c239a11d47d56"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "24",
+    "name": "진 힐라",
+    "file": "Bosses/icon_24.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/24/normal/0",
+    "sha256": "b0694dbafdc7180aec12ea816e6346977b160f3ce1cde530554fe2d277a99a4b"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "25",
+    "name": "검은 마법사",
+    "file": "Bosses/icon_25.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/25/normal/0",
+    "sha256": "40d94753f35c7e95bd4f5a78761e403a2cb069b4439de08e5caed0640e7fd48e"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "26",
+    "name": "더스크",
+    "file": "Bosses/icon_26.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/26/normal/0",
+    "sha256": "2e8d8193e0be61063079ba9a925097b910590d1929f28a8e7a2e21d48c5cd6c2"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "27",
+    "name": "듄켈",
+    "file": "Bosses/icon_27.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/27/normal/0",
+    "sha256": "b5d9c80fb411792e1395c3cb7eccf6764e8c4b245f6d83b7e9753e3e93ad612f"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "28",
+    "name": "선택받은 세렌",
+    "file": "Bosses/icon_28.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/28/normal/0",
+    "sha256": "bb9eaa5372c8fc47c398042c541b236c6612e93ac83ecd28eae977aaae7f6ba5"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "29",
+    "name": "가디언 엔젤 슬라임",
+    "file": "Bosses/icon_29.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/29/normal/0",
+    "sha256": "f4d96a1c5302f83c7e1b3d1d0dcf688ac904c9ab5c2eb4ae6d67bf8004458f35"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "30",
+    "name": "감시자 칼로스",
+    "file": "Bosses/icon_30.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/30/normal/0",
+    "sha256": "a750602b150727b4386e320ae2b2ce50797dd4ad6b25c678cfe9230b0b03182f"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "31",
+    "name": "카링",
+    "file": "Bosses/icon_31.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/31/normal/0",
+    "sha256": "293f9bffff69f4b1c12403bf1ec59f54b1f00d6beb1ffd16788453b9cf568648"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "32",
+    "name": "몬스터파크 익스트림",
+    "file": "Bosses/icon_32.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/UIMapleScheduler.img/main/entity/bossIcon/32/normal/0",
+    "sha256": "a83a4b251d3a908ee81406319a473ca81cf98e082be7ebfe1c45b0c905248486"
+  },
+  {
+    "kind": "difficulty",
+    "id": "easy",
+    "name": "easy",
+    "file": "Difficulty/easy.png",
+    "width": 60,
+    "height": 18,
+    "source": "UI/UIMapleScheduler.img/main/entity/difficulty/easy",
+    "sha256": "20a5e2d79d6548b240431fdf2d847e8360690571d30c00f5df18146045d6a7ee"
+  },
+  {
+    "kind": "difficulty",
+    "id": "normal",
+    "name": "normal",
+    "file": "Difficulty/normal.png",
+    "width": 60,
+    "height": 18,
+    "source": "UI/UIMapleScheduler.img/main/entity/difficulty/normal",
+    "sha256": "2ce39f096b6fc8e0a4a1846914b1005ad4c4e2bf668d2967c6c52e57918e538a"
+  },
+  {
+    "kind": "difficulty",
+    "id": "hard",
+    "name": "hard",
+    "file": "Difficulty/hard.png",
+    "width": 60,
+    "height": 18,
+    "source": "UI/UIMapleScheduler.img/main/entity/difficulty/hard",
+    "sha256": "0671b5d6db2a5a6ccfc3a44f4ebe31ef0cb8cbdef0494c0131ab9d058871e755"
+  },
+  {
+    "kind": "difficulty",
+    "id": "chaos",
+    "name": "chaos",
+    "file": "Difficulty/chaos.png",
+    "width": 60,
+    "height": 18,
+    "source": "UI/UIMapleScheduler.img/main/entity/difficulty/chaos",
+    "sha256": "05127f24fd27a3eced03e818e5b026f491dcd00b00b3ff868cb064ef3c55354e"
+  },
+  {
+    "kind": "difficulty",
+    "id": "extreme",
+    "name": "extreme",
+    "file": "Difficulty/extreme.png",
+    "width": 60,
+    "height": 18,
+    "source": "UI/UIMapleScheduler.img/main/entity/difficulty/extreme",
+    "sha256": "120c9787875223da382e3f76bce3da0caeb4146217b58a8f66c4e852c37f5502"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "33",
+    "name": "림보",
+    "file": "Bosses/icon_33.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/33/Icon/normal/0",
+    "sha256": "ddbe2249d389cc3d7e7fea69dbd467adf48016e123ad3d9a52c707eb9309bead"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "34",
+    "name": "발드릭스",
+    "file": "Bosses/icon_34.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/34/Icon/normal/0",
+    "sha256": "d7b05320e0df756620fbfdbf675b968cf3301a1acbe26137f43c5cc9b3db9862"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "35",
+    "name": "최초의 대적자",
+    "file": "Bosses/icon_35.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/35/Icon/normal/0",
+    "sha256": "e53284326ead15b2eb0ff5e27445e3beba90d65151dd5246132fd3ed85c323c6"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "36",
+    "name": "카이",
+    "file": "Bosses/icon_36.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/36/Icon/normal/0",
+    "sha256": "adf34b6a3698932fe6296c413ed3f20047b0739fbaa187de6554cdaaef71cafc"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "37",
+    "name": "찬란한 흉성",
+    "file": "Bosses/icon_37.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/37/Icon/normal/0",
+    "sha256": "0137a44a6c339e4e434a130f84774d7d2a7149cc579b51e803eddcf9cfd26aa0"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "38",
+    "name": "유피테르",
+    "file": "Bosses/icon_38.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/38/Icon/normal/0",
+    "sha256": "c39a83f6c08ee05acb7798b9b8490d49494a6f934a7113e11f2acb249dd9fa85"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "40",
+    "name": "메이린",
+    "file": "Bosses/icon_40.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/40/Icon/normal/0",
+    "sha256": "dcbebea50e358a8acd928b53cfa00c78740bdb93bba65a5f54c4224c2a045e81"
+  },
+  {
+    "kind": "bossIcon",
+    "id": "41",
+    "name": "벨로나",
+    "file": "Bosses/icon_41.png",
+    "width": 25,
+    "height": 25,
+    "source": "UI/_Canvas/UIBoss.img/BossList/41/Icon/normal/0",
+    "sha256": "6b6b47550b1ada5b5d0e8bedee07bd3834ca03aa12f4fd374c85e7c38c9d5657"
+  }
+]

@@ -1,0 +1,105 @@
+<UserControl
+    x:Class="MapleDay.Views.SchedulerBoard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:services="using:MapleDay.Services"
+    xmlns:models="using:MapleDay.Models"
+    xmlns:views="using:MapleDay.Views">
+    <UserControl.Resources>
+        <FontFamily x:Key="SchedulerNameFont">ms-appx:///Assets/Fonts/NanumGothic.ttf#NanumGothic</FontFamily>
+        <Style x:Key="ImageButton" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver"><VisualState.Setters><Setter Target="Presenter.Opacity" Value="0.8" /></VisualState.Setters></VisualState>
+                                    <VisualState x:Name="Pressed"><VisualState.Setters><Setter Target="Presenter.Opacity" Value="0.6" /></VisualState.Setters></VisualState>
+                                    <VisualState x:Name="Disabled"><VisualState.Setters><Setter Target="Presenter.Opacity" Value="0.5" /></VisualState.Setters></VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="Presenter" Content="{TemplateBinding Content}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PartyImageButton" TargetType="Button" BasedOn="{StaticResource ImageButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="SchedulerRowTemplate" x:DataType="models:SchedulerRow">
+            <Canvas Width="352" Height="38" AutomationProperties.Name="{x:Bind AccessibleName}" ToolTipService.ToolTip="{x:Bind Tooltip}">
+                <Image services:CachedImage.File="{x:Bind BackgroundImage}" Width="352" Height="37" Stretch="None" />
+                <Border Width="350" Height="35" Margin="1" Background="#A5AFB5" CornerRadius="2" Visibility="{x:Bind HeaderTextVisibility}">
+                    <TextBlock Text="{x:Bind HeaderText}" Foreground="White" FontSize="12" FontFamily="{StaticResource SchedulerNameFont}" Margin="11,9,0,0" />
+                </Border>
+                <Canvas Width="352" Height="37" Visibility="{x:Bind QuestHeaderVisibility}">
+                    <Image Canvas.Left="207" Canvas.Top="7" Width="66" Height="22" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_btStartAll_disabled_0.png" />
+                    <Image Canvas.Left="279" Canvas.Top="7" Width="66" Height="22" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_btCompleteAll_disabled_0.png" />
+                </Canvas>
+                <Canvas Width="352" Height="37" Visibility="{x:Bind WeeklyLimitVisibility}">
+                    <Image Canvas.Left="153" Canvas.Top="9" Width="193" Height="19" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_weeklyLimitBase.png" />
+                    <views:SchedulerNumber Canvas.Left="282" Canvas.Top="11" Width="25" Height="18" Number="{x:Bind WeeklyCount}" White="True" />
+                    <views:SchedulerNumber Canvas.Left="314" Canvas.Top="11" Width="20" Height="18" Number="{x:Bind WeeklyLimit}" White="True" Center="True" Opacity="0.575" />
+                </Canvas>
+                <Canvas Width="352" Height="37" Visibility="{x:Bind ContentVisibility}">
+                    <views:SchedulerLabel Canvas.Left="12" Canvas.Top="10" Width="165" Height="18" Text="{x:Bind Tile.Name}" TextBrush="{x:Bind Tile.NameForeground}" StrokeStrength="{x:Bind Tile.NameStrokeStrength}" />
+                    <views:SchedulerNumber Canvas.Left="178" Canvas.Top="11" Width="86" Height="18" Number="{x:Bind Tile.Progress}" Unit="{x:Bind Tile.ProgressUnit}" Visibility="{x:Bind Tile.ProgressVisibility}" />
+                    <Image Canvas.Left="279" Canvas.Top="7" Width="66" Height="22" Stretch="None" services:CachedImage.File="{x:Bind Tile.RowActionImage}" Visibility="{x:Bind Tile.ContentActionVisibility}" />
+                    <Image Canvas.Left="301" Canvas.Top="6" Width="22" Height="23" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_iconUnabled.png" Visibility="{x:Bind Tile.LevelBlockedVisibility}" />
+                    <Image Canvas.Left="1" Canvas.Top="1" Width="350" Height="36" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_complete.png" Visibility="{x:Bind Tile.CompletionVisibility}" IsHitTestVisible="False" />
+                </Canvas>
+                <Canvas Width="352" Height="37" Visibility="{x:Bind BossVisibility}">
+                    <Image Canvas.Left="17" Canvas.Top="5" Width="25" Height="25" Stretch="None" Source="{x:Bind Tile.BossIcon}" />
+                    <Image Canvas.Left="53" Canvas.Top="9" Width="60" Height="18" Stretch="None" Source="{x:Bind Tile.DifficultyIcon}" />
+                    <views:SchedulerLabel Canvas.Left="126" Canvas.Top="10" Width="112" Height="18" Text="{x:Bind Tile.Name}" TextBrush="{x:Bind Tile.NameForeground}" StrokeStrength="{x:Bind Tile.NameStrokeStrength}" />
+                    <views:SchedulerNumber Canvas.Left="242" Canvas.Top="11" Width="33" Height="18" Number="{x:Bind Tile.PartyCount, Mode=OneWay}" Unit="인" />
+                    <Image Canvas.Top="1" Width="351" Height="36" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_completeBoss.png" Visibility="{x:Bind Tile.CompletionVisibility}" IsHitTestVisible="False" />
+                    <views:SchedulerPartyButton Canvas.Left="279" Canvas.Top="7" Width="66" Height="22" Style="{StaticResource PartyImageButton}" Tag="{x:Bind Tile}" Click="PartySize_Click" Completed="{x:Bind Tile.IsComplete}"
+                            IsEnabled="{x:Bind Tile.CanSetPartySize}" Visibility="{x:Bind Tile.BossActionVisibility}" AutomationProperties.Name="{x:Bind Tile.PartyAccessibleName, Mode=OneWay}" ToolTipService.ToolTip="파티 인원 설정">
+                    </views:SchedulerPartyButton>
+                    <Image Canvas.Left="301" Canvas.Top="6" Width="22" Height="23" Stretch="None" services:CachedImage.File="Scheduler/UI/main_entity_iconUnabled.png" Visibility="{x:Bind Tile.LevelBlockedVisibility}" />
+                </Canvas>
+            </Canvas>
+        </DataTemplate>
+    </UserControl.Resources>
+    <!-- Positions and sizes use the original WZ canvas origins, without scaling. -->
+    <Canvas Width="786" Height="622" HorizontalAlignment="Left" AutomationProperties.Name="메이플 스케줄러">
+        <Image services:CachedImage.File="Scheduler/UI/main_backgrnd.png" Width="786" Height="622" Stretch="None" />
+        <Image Canvas.Left="22" Canvas.Top="78" services:CachedImage.File="Scheduler/UI/main_dailyContents_wnd_backgrnd.png" Width="361" Height="227" Stretch="None" />
+        <Image Canvas.Left="22" Canvas.Top="344" services:CachedImage.File="Scheduler/UI/main_weeklyContents_wnd_backgrnd.png" Width="361" Height="227" Stretch="None" />
+        <Image Canvas.Left="402" Canvas.Top="78" services:CachedImage.File="Scheduler/UI/main_bossContents_wnd_backgrnd.png" Width="361" Height="493" Stretch="None" />
+        <Image Canvas.Left="22" Canvas.Top="78" services:CachedImage.File="Scheduler/UI/main_layer_noDailyContents.png" Width="362" Height="227" Stretch="None" Visibility="{Binding NoDailyVisibility}" />
+        <Image Canvas.Left="22" Canvas.Top="344" services:CachedImage.File="Scheduler/UI/main_layer_noWeeklyContents.png" Width="362" Height="227" Stretch="None" Visibility="{Binding NoWeeklyVisibility}" />
+        <Image Canvas.Left="402" Canvas.Top="78" services:CachedImage.File="Scheduler/UI/main_layer_noBossContents.png" Width="362" Height="493" Stretch="None" Visibility="{Binding NoBossVisibility}" />
+        <views:SchedulerList Canvas.Left="22" Canvas.Top="78" Height="227" Rows="{Binding DailyRows}" RowTemplate="{StaticResource SchedulerRowTemplate}" AutomationProperties.Name="일일 콘텐츠" />
+        <views:SchedulerList Canvas.Left="22" Canvas.Top="344" Height="227" Rows="{Binding WeeklyRows}" RowTemplate="{StaticResource SchedulerRowTemplate}" AutomationProperties.Name="주간 콘텐츠" />
+        <views:SchedulerList Canvas.Left="402" Canvas.Top="78" Height="493" Rows="{Binding BossRows}" RowTemplate="{StaticResource SchedulerRowTemplate}" AutomationProperties.Name="보스 콘텐츠" />
+        <Image Canvas.Left="355" Canvas.Top="47" Width="28" Height="27" Stretch="None" services:CachedImage.File="Scheduler/UI/main_button_setting_dailyContents_normal_0.png" ToolTipService.ToolTip="등록 설정은 게임 내 메이플 스케줄러에서 변경할 수 있어요." />
+        <Image Canvas.Left="355" Canvas.Top="313" Width="28" Height="27" Stretch="None" services:CachedImage.File="Scheduler/UI/main_button_setting_weeklyContents_normal_0.png" ToolTipService.ToolTip="등록 설정은 게임 내 메이플 스케줄러에서 변경할 수 있어요." />
+        <Image Canvas.Left="704" Canvas.Top="47" Width="28" Height="27" Stretch="None" services:CachedImage.File="Scheduler/UI/main_button_setting_bossContents_normal_0.png" ToolTipService.ToolTip="등록 설정은 게임 내 메이플 스케줄러에서 변경할 수 있어요." />
+        <Button Canvas.Left="735" Canvas.Top="47" Width="28" Height="27" Style="{StaticResource ImageButton}" Click="NextCharacter_Click" ToolTipService.ToolTip="다음 캐릭터" AutomationProperties.Name="다음 캐릭터">
+            <Image Width="28" Height="27" Stretch="None" services:CachedImage.File="Scheduler/UI/main_btEnterCrossWorld_normal_0.png" />
+        </Button>
+        <Button Canvas.Left="763" Canvas.Top="12" Width="11" Height="11" Style="{StaticResource ImageButton}" Click="ChooseCharacter_Click" ToolTipService.ToolTip="캐릭터 선택으로 돌아가기" AutomationProperties.Name="캐릭터 선택으로 돌아가기">
+            <Image Width="11" Height="11" Stretch="None" services:CachedImage.File="Scheduler/UI/main_button_close_normal_0.png" />
+        </Button>
+        <Button Canvas.Left="10" Canvas.Top="591" Width="36" Height="24" Style="{StaticResource ImageButton}" AutomationProperties.Name="스케줄러 도움말">
+            <Image Width="36" Height="24" Stretch="None" services:CachedImage.File="Scheduler/UI/main_button_help_normal_0.png" />
+            <Button.Flyout><Flyout><TextBlock MaxWidth="320" TextWrapping="Wrap" Text="게임의 스케줄러 등록과 진행 상황을 표시합니다. 새로고침으로 갱신할 수 있어요. 완료한 항목은 회색 배경과 흰색 체크로 표시됩니다. 미등록 보스의 클리어 기록은 보스 목록 아래에 따로 표시됩니다." /></Flyout></Button.Flyout>
+        </Button>
+    </Canvas>
+</UserControl>

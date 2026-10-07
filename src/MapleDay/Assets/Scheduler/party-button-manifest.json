@@ -1,0 +1,82 @@
+[
+  {
+    "button": "btMove",
+    "state": "normal",
+    "file": "UI/main_entity_btMove_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/normal/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMove/normal/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "3382917c8a43613ea347bc4fbbcc5d7d6140d4c117d6204c042d7361cc094189"
+  },
+  {
+    "button": "btMove",
+    "state": "mouseOver",
+    "file": "UI/main_entity_btMove_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/mouseOver/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMove/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "526a3d84d2d7ff53fa19d0ced517b4e84a12ac67a5e66a188e19a1b74de3ef6b"
+  },
+  {
+    "button": "btMove",
+    "state": "pressed",
+    "file": "UI/main_entity_btMove_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/pressed/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMove/pressed/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "05907e410c5f4936e99586bd8cbf5213cac12a3434db2d3ffa2baf5cd71bc193"
+  },
+  {
+    "button": "btMove",
+    "state": "disabled",
+    "file": "UI/main_entity_btMove_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/disabled/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMove/disabled/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "1c4e12c32b7913d14dfd23d26cca3491a6ce50a7ac3648e8749df5ead198d01f"
+  },
+  {
+    "button": "btMoveCompleted",
+    "state": "normal",
+    "file": "UI/main_entity_btMoveCompleted_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/normal/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMoveCompleted/normal/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "c5d7e31f5949ec7a80c17063a1373f850b91b15f27140cabbac1e2c26f33314f"
+  },
+  {
+    "button": "btMoveCompleted",
+    "state": "mouseOver",
+    "file": "UI/main_entity_btMoveCompleted_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/mouseOver/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMoveCompleted/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "5bdc24681f9360b3fd7d570b9db1a26c2537b591cc080beca5823a4fb04a9556"
+  },
+  {
+    "button": "btMoveCompleted",
+    "state": "pressed",
+    "file": "UI/main_entity_btMoveCompleted_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/pressed/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMoveCompleted/pressed/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "5a483a5a6ed53fe385e8f9b49f3d69ace68219aec7ce76567b146d045e76d2cd"
+  },
+  {
+    "button": "btMoveCompleted",
+    "state": "disabled",
+    "file": "UI/main_entity_btMoveCompleted_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/disabled/0",
+    "canvasSource": "UI/_Canvas/UIMapleScheduler.img/main/entity/btMoveCompleted/disabled/0",
+    "width": 66,
+    "height": 22,
+    "sha256": "77ac9d9ddce2ee24c138e91a59d9f188a75fbd7d79bfe2a1aa6a0f12dd780d78"
+  }
+]

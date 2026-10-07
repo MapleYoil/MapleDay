@@ -1,0 +1,716 @@
+[
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 75100000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 71300000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 25500000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 12700000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1273000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1230000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 280000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 238000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 4104000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 505000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 479000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 9200000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-07-01",
+    "Meso": 8740000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-10-01",
+    "Meso": 5680000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 700000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-07-01",
+    "Meso": 665000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-10-01",
+    "Meso": 465000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 69800000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 66300000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 44000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 22000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 48900000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 46400000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 17500000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 8750000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 94400000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 89600000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 47500000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 23700000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 29800000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 14900000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 62900000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 59700000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 35600000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 17800000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "림보",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 2385000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "림보",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1026000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "림보",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 995000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "매그너스",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 8560000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "매그너스",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4280000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "반반",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 8150000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "반반",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4070000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "발드릭스",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 3078000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "발드릭스",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1368000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "발드릭스",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1320000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-08-20",
+    "Meso": 440000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 396000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-08-20",
+    "Meso": 2950000000,
+    "Source": "https://namu.moe/w/%EA%B0%95%EB%A0%AC%ED%95%9C%20%ED%9E%98%EC%9D%98%20%EA%B2%B0%EC%A0%95"
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-08-20",
+    "Meso": 850000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 824000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨룸",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 9280000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "벨룸",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4640000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "블러디퀸",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 8140000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "블러디퀸",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4070000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 2835000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1840000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 356000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 302000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 239000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 167000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 574000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 545000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 51500000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 48900000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 16700000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 8350000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 32300000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 16100000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 77100000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 73200000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 41100000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 20500000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "유피테르",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 4845000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "유피테르",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1615000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "유피테르",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1560000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "자쿰",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 8080000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "자쿰",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4040000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 106000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 100000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 71200000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 67600000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "찬란한 흉성",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 2678000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "찬란한 흉성",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 625000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "찬란한 흉성",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 576000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 308000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 261000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 4712000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1435000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1390000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 560000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 532000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 377000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "easy",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 320000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "extreme",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 5387000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 1739000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "hard",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 1560000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 678000000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "normal",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 593000000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "파풀라투스",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 13100000,
+    "Source": "https://maplestory.nexon.com/News/Update/806"
+  },
+  {
+    "Name": "파풀라투스",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 6550000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "피에르",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-06-18",
+    "Meso": 8170000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  },
+  {
+    "Name": "피에르",
+    "Difficulty": "chaos",
+    "EffectiveFrom": "2026-09-17",
+    "Meso": 4080000,
+    "Source": "https://maplestory.nexon.com/news/update/813"
+  }
+]

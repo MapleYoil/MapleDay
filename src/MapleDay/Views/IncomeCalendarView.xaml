@@ -1,0 +1,64 @@
+<UserControl
+    x:Class="MapleDay.Views.IncomeCalendarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:MapleDay.Models"
+    xmlns:services="using:MapleDay.Services">
+    <StackPanel Spacing="12">
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="MonthTitle" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button x:Name="PreviousButton" Grid.Column="1" Click="Previous_Click" AutomationProperties.Name="이전 달" ToolTipService.ToolTip="이전 달"><FontIcon Glyph="&#xE76B;" FontSize="12"/></Button>
+            <Button Grid.Column="2" Content="오늘" Click="Today_Click"/>
+            <Button x:Name="NextButton" Grid.Column="3" Click="Next_Click" AutomationProperties.Name="다음 달" ToolTipService.ToolTip="다음 달"><FontIcon Glyph="&#xE76C;" FontSize="12"/></Button>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <TextBlock Text="일" HorizontalAlignment="Center" Foreground="#BD3B3B"/>
+            <TextBlock Grid.Column="1" Text="월" HorizontalAlignment="Center"/><TextBlock Grid.Column="2" Text="화" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="3" Text="수" HorizontalAlignment="Center"/><TextBlock Grid.Column="4" Text="목" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="5" Text="금" HorizontalAlignment="Center"/><TextBlock Grid.Column="6" Text="토" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+        </Grid>
+        <ItemsRepeater ItemsSource="{x:Bind Days}">
+            <ItemsRepeater.Layout><UniformGridLayout Orientation="Horizontal" MaximumRowsOrColumns="7" MinItemWidth="98" MinItemHeight="90" ItemsStretch="Fill"/></ItemsRepeater.Layout>
+            <ItemsRepeater.ItemTemplate>
+                <DataTemplate x:DataType="models:IncomeCalendarDay">
+                    <Button Tag="{x:Bind Date}" Click="Day_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                            Padding="9,7" Margin="2" CornerRadius="8" Background="{x:Bind Background}" BorderBrush="{x:Bind BorderBrush}" BorderThickness="{x:Bind BorderThickness}"
+                            IsEnabled="{x:Bind Enabled}" Opacity="{x:Bind Opacity}" AutomationProperties.Name="{x:Bind AccessibleName}" ToolTipService.ToolTip="{x:Bind Tooltip}">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Bind Day}" FontSize="12"/>
+                            <TextBlock Text="{x:Bind Amount}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            <TextBlock Text="{x:Bind Note}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+        <TextBlock x:Name="MonthAmount" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+        <TextBlock Text="기록이 없는 날은 수익을 확정할 수 없어요." Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap"/>
+        <Border Background="{StaticResource LineBrush}" Height="1" Margin="0,4"/>
+        <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="SelectedTitle" FontSize="17" FontWeight="SemiBold"/>
+            <TextBlock x:Name="SelectedAmount" Grid.Column="1" Foreground="{StaticResource AccentBrush}" FontSize="17"/>
+        </Grid>
+        <TextBlock x:Name="DayStatus" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+        <ItemsControl ItemsSource="{x:Bind Bosses}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:IncomeCalendarBoss">
+                    <Grid Padding="8,10" ColumnSpacing="10" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <Image services:CachedImage.File="{x:Bind IconFile}" Width="25" Height="25" Stretch="None" VerticalAlignment="Top"/>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="{x:Bind Name}" FontWeight="Medium"/>
+                            <TextBlock Text="{x:Bind CharacterName}" FontSize="12"/>
+                            <TextBlock Text="{x:Bind Details}" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="2" Text="{x:Bind Amount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

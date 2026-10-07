@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+artifacts/
+*.user
+*.suo
+TestResults/
+__pycache__/
+*.pyc
+*.pfx
+*.p12
+*.key
+*.pem
+.env
+.env.*

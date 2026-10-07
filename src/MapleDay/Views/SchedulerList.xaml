@@ -1,0 +1,27 @@
+<UserControl
+    x:Class="MapleDay.Views.SchedulerList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:services="using:MapleDay.Services"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+    Width="362" IsTabStop="True" UseSystemFocusVisuals="True" KeyDown="List_KeyDown" SizeChanged="List_SizeChanged">
+    <Grid>
+        <primitives:ScrollPresenter x:Name="Scroller" Width="352" HorizontalAlignment="Left"
+                      ContentOrientation="Vertical" VerticalScrollMode="Disabled" HorizontalScrollMode="Disabled"
+                      ZoomMode="Disabled" IgnoredInputKinds="All"
+                      ScrollAnimationStarting="Scroller_ScrollAnimationStarting" ScrollCompleted="Scroller_ScrollCompleted"
+                      ExtentChanged="Scroller_ExtentChanged" SizeChanged="Scroller_SizeChanged">
+            <ItemsControl ItemsSource="{x:Bind Rows, Mode=OneWay}" ItemTemplate="{x:Bind RowTemplate, Mode=OneWay}" HorizontalAlignment="Left" />
+        </primitives:ScrollPresenter>
+        <Canvas x:Name="TrackCanvas" Width="8" HorizontalAlignment="Right" Background="Transparent" PointerPressed="Track_PointerPressed">
+            <Image x:Name="TrackImage" Width="7" Canvas.Top="2" services:CachedImage.File="Scheduler/Scrollbar/track.png" Stretch="Fill" NineGrid="0,2,0,2" IsHitTestVisible="False" />
+            <Thumb x:Name="ScrollThumb" Width="8" Height="29" Visibility="Collapsed" Canvas.Top="2" DragStarted="Thumb_DragStarted" DragDelta="Thumb_DragDelta" DragCompleted="Thumb_DragCompleted" PointerEntered="Thumb_PointerEntered" PointerExited="Thumb_PointerExited" AutomationProperties.Name="스크롤 위치" IsTabStop="False">
+                <Thumb.Template>
+                    <ControlTemplate TargetType="Thumb">
+                        <Rectangle Fill="{TemplateBinding Background}" />
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+        </Canvas>
+    </Grid>
+</UserControl>

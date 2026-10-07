@@ -1,0 +1,26 @@
+[
+  {
+    "file": "Scrollbar/thumb_normal.png",
+    "width": 6,
+    "height": 29,
+    "source": "UI/GuildUI2.img/guild/main/popup/gradeSetting/list/scroll:List/enabled/thumb0"
+  },
+  {
+    "file": "Scrollbar/thumb_hover.png",
+    "width": 6,
+    "height": 29,
+    "source": "UI/GuildUI2.img/guild/main/popup/gradeSetting/list/scroll:List/enabled/thumb2"
+  },
+  {
+    "file": "Scrollbar/thumb_pressed.png",
+    "width": 6,
+    "height": 29,
+    "source": "UI/GuildUI2.img/guild/main/popup/gradeSetting/list/scroll:List/enabled/thumb1"
+  },
+  {
+    "file": "Scrollbar/track.png",
+    "width": 7,
+    "height": 227,
+    "source": "UI/GuildUI2.img/popup/groupList/list/scroll:List/enabled/base"
+  }
+]

@@ -1,0 +1,11 @@
+<UserControl
+    x:Class="MapleDay.Views.CircularBossProgress"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="176" Height="176" IsTabStop="False" IsHitTestVisible="False">
+    <Grid>
+        <Ellipse Margin="4" Stroke="{StaticResource LineBrush}" StrokeThickness="4" />
+        <Path x:Name="ProgressArc" Stroke="{StaticResource AccentBrush}" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+        <Ellipse x:Name="CompletedCircle" Margin="4" Stroke="{StaticResource AccentBrush}" StrokeThickness="4" Visibility="Collapsed" />
+    </Grid>
+</UserControl>

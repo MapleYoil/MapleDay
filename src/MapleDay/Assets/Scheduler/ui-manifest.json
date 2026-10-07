@@ -1,0 +1,762 @@
+[
+  {
+    "file": "UI/main_backgrnd.png",
+    "source": "UI/UIMapleScheduler.img/main/backgrnd",
+    "width": 786,
+    "height": 622,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_layer_noDailyContents.png",
+    "source": "UI/UIMapleScheduler.img/main/layer:noDailyContents",
+    "width": 362,
+    "height": 227,
+    "originX": -22,
+    "originY": -78
+  },
+  {
+    "file": "UI/main_layer_noWeeklyContents.png",
+    "source": "UI/UIMapleScheduler.img/main/layer:noWeeklyContents",
+    "width": 362,
+    "height": 227,
+    "originX": -22,
+    "originY": -344
+  },
+  {
+    "file": "UI/main_layer_noBossContents.png",
+    "source": "UI/UIMapleScheduler.img/main/layer:noBossContents",
+    "width": 362,
+    "height": 493,
+    "originX": -402,
+    "originY": -78
+  },
+  {
+    "file": "UI/main_button_close_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:close/normal/0",
+    "width": 11,
+    "height": 11,
+    "originX": -763,
+    "originY": -12
+  },
+  {
+    "file": "UI/main_button_close_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:close/pressed/0",
+    "width": 11,
+    "height": 11,
+    "originX": -763,
+    "originY": -12
+  },
+  {
+    "file": "UI/main_button_close_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:close/disabled/0",
+    "width": 11,
+    "height": 11,
+    "originX": -763,
+    "originY": -12
+  },
+  {
+    "file": "UI/main_button_close_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:close/mouseOver/0",
+    "width": 11,
+    "height": 11,
+    "originX": -763,
+    "originY": -12
+  },
+  {
+    "file": "UI/main_button_help_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:help/normal/0",
+    "width": 36,
+    "height": 24,
+    "originX": -10,
+    "originY": -591
+  },
+  {
+    "file": "UI/main_button_help_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:help/pressed/0",
+    "width": 36,
+    "height": 24,
+    "originX": -10,
+    "originY": -591
+  },
+  {
+    "file": "UI/main_button_help_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:help/disabled/0",
+    "width": 36,
+    "height": 24,
+    "originX": -10,
+    "originY": -591
+  },
+  {
+    "file": "UI/main_button_help_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:help/mouseOver/0",
+    "width": 36,
+    "height": 24,
+    "originX": -10,
+    "originY": -591
+  },
+  {
+    "file": "UI/main_button_setting_dailyContents_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_dailyContents/normal/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_dailyContents_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_dailyContents/pressed/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_dailyContents_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_dailyContents/disabled/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_dailyContents_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_dailyContents/mouseOver/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_weeklyContents_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_weeklyContents/normal/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -313
+  },
+  {
+    "file": "UI/main_button_setting_weeklyContents_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_weeklyContents/pressed/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -313
+  },
+  {
+    "file": "UI/main_button_setting_weeklyContents_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_weeklyContents/disabled/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -313
+  },
+  {
+    "file": "UI/main_button_setting_weeklyContents_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_weeklyContents/mouseOver/0",
+    "width": 28,
+    "height": 27,
+    "originX": -355,
+    "originY": -313
+  },
+  {
+    "file": "UI/main_button_setting_bossContents_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_bossContents/normal/0",
+    "width": 28,
+    "height": 27,
+    "originX": -704,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_bossContents_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_bossContents/pressed/0",
+    "width": 28,
+    "height": 27,
+    "originX": -704,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_bossContents_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_bossContents/disabled/0",
+    "width": 28,
+    "height": 27,
+    "originX": -704,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_button_setting_bossContents_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/button:setting_bossContents/mouseOver/0",
+    "width": 28,
+    "height": 27,
+    "originX": -704,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_btEnterCrossWorld_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/btEnterCrossWorld/normal/0",
+    "width": 28,
+    "height": 27,
+    "originX": -735,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_btEnterCrossWorld_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/btEnterCrossWorld/pressed/0",
+    "width": 28,
+    "height": 27,
+    "originX": -735,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_btEnterCrossWorld_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/btEnterCrossWorld/disabled/0",
+    "width": 28,
+    "height": 27,
+    "originX": -735,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_btEnterCrossWorld_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/btEnterCrossWorld/mouseOver/0",
+    "width": 28,
+    "height": 27,
+    "originX": -735,
+    "originY": -47
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_backgrnd.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/backgrnd",
+    "width": 361,
+    "height": 227,
+    "originX": -22,
+    "originY": -78
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_prev0.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/prev0",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_prev1.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/prev1",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_prev2.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/prev2",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_next0.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/next0",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_next1.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/next1",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_next2.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/next2",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_thumb0.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/thumb0",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_thumb1.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/thumb1",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_thumb2.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/thumb2",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_enabled_base.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/enabled/base",
+    "width": 7,
+    "height": 227,
+    "originX": -354,
+    "originY": -2
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_disabled_prev.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/disabled/prev",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_disabled_next.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/disabled/next",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_dailyContents_wnd_scroll_list_disabled_base.png",
+    "source": "UI/UIMapleScheduler.img/main/dailyContents_wnd/scroll:list/disabled/base",
+    "width": 7,
+    "height": 227,
+    "originX": -354,
+    "originY": -2
+  },
+  {
+    "file": "UI/main_weeklyContents_wnd_backgrnd.png",
+    "source": "UI/UIMapleScheduler.img/main/weeklyContents_wnd/backgrnd",
+    "width": 361,
+    "height": 227,
+    "originX": -22,
+    "originY": -344
+  },
+  {
+    "file": "UI/main_bossContents_wnd_backgrnd.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/backgrnd",
+    "width": 361,
+    "height": 493,
+    "originX": -402,
+    "originY": -78
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_prev0.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/prev0",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_prev1.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/prev1",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_prev2.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/prev2",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_next0.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/next0",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_next1.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/next1",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_next2.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/next2",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_thumb0.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/thumb0",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_thumb1.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/thumb1",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_thumb2.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/thumb2",
+    "width": 6,
+    "height": 29,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_enabled_base.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/enabled/base",
+    "width": 7,
+    "height": 493,
+    "originX": -356,
+    "originY": -2
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_disabled_prev.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/disabled/prev",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_disabled_next.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/disabled/next",
+    "width": 8,
+    "height": 1,
+    "originX": 4,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_bossContents_wnd_scroll_list_disabled_base.png",
+    "source": "UI/UIMapleScheduler.img/main/bossContents_wnd/scroll:list/disabled/base",
+    "width": 7,
+    "height": 493,
+    "originX": -356,
+    "originY": -2
+  },
+  {
+    "file": "UI/main_entity_back_contents.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/contents",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_quest.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/quest",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_list.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/list",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_listBoss.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/listBoss",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_daily.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/daily",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_weekly.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/weekly",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_monthly.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/monthly",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_back_blank.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/back/blank",
+    "width": 352,
+    "height": 37,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_complete.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/complete",
+    "width": 350,
+    "height": 36,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_completeBoss.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/completeBoss",
+    "width": 351,
+    "height": 36,
+    "originX": 0,
+    "originY": 0
+  },
+  {
+    "file": "UI/main_entity_name.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/name",
+    "width": 165,
+    "height": 14,
+    "originX": -12,
+    "originY": -10
+  },
+  {
+    "file": "UI/main_entity_nameBoss.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/nameBoss",
+    "width": 122,
+    "height": 18,
+    "originX": -126,
+    "originY": -9
+  },
+  {
+    "file": "UI/main_entity_iconUnabled.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/iconUnabled",
+    "width": 22,
+    "height": 23,
+    "originX": -301,
+    "originY": -6
+  },
+  {
+    "file": "UI/main_entity_btStartAll_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStartAll/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -207,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStartAll_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStartAll/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -207,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStartAll_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStartAll/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -207,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStartAll_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStartAll/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -207,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btCompleteAll_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btCompleteAll/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btCompleteAll_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btCompleteAll/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btCompleteAll_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btCompleteAll/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btCompleteAll_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btCompleteAll/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStart_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStart/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStart_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStart/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStart_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStart/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btStart_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btStart/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btComplete_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btComplete/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btComplete_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btComplete/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btComplete_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btComplete/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btComplete_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btComplete/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMove_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMove_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMove_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMove_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMove/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMoveCompleted_normal_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/normal/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMoveCompleted_pressed_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/pressed/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMoveCompleted_disabled_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/disabled/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_btMoveCompleted_mouseOver_0.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/btMoveCompleted/mouseOver/0",
+    "width": 66,
+    "height": 22,
+    "originX": -279,
+    "originY": -7
+  },
+  {
+    "file": "UI/main_entity_weeklyLimitBase.png",
+    "source": "UI/UIMapleScheduler.img/main/entity/weeklyLimitBase",
+    "width": 193,
+    "height": 19,
+    "originX": 0,
+    "originY": 0
+  }
+]

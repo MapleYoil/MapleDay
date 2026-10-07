@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+         xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         IgnorableNamespaces="uap uap5 desktop com rescap">
+  <Identity Name="ABB731EC.2576917430647" Publisher="CN=6E3CA1EF-722B-49DC-A96F-96F95E7B9BB8" Version="1.0.0.0" ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>메요일</DisplayName>
+    <PublisherDisplayName>메요일</PublisherDisplayName>
+    <Logo>PackageAssets\StoreLogo.png</Logo>
+  </Properties>
+  <Resources><Resource Language="ko-kr" /></Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Applications>
+    <Application Id="MapleDay" Executable="MapleDay.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="메요일" Description="메이플스토리 유틸리티"
+                          BackgroundColor="transparent" Square150x150Logo="PackageAssets\Square150x150Logo.png"
+                          Square44x44Logo="PackageAssets\Square44x44Logo.png" />
+      <Extensions>
+        <uap5:Extension Category="windows.startupTask" Executable="MapleDay.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:StartupTask TaskId="MapleDayStartup" Enabled="true" DisplayName="메요일" />
+        </uap5:Extension>
+        <desktop:Extension Category="windows.toastNotificationActivation">
+          <desktop:ToastNotificationActivation ToastActivatorCLSID="7CE4CEB8-8EC4-47F6-AFAA-16AB6227C6E8" />
+        </desktop:Extension>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="MapleDay.exe" DisplayName="메요일" Arguments="----AppNotificationActivated:">
+              <com:Class Id="7CE4CEB8-8EC4-47F6-AFAA-16AB6227C6E8" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
