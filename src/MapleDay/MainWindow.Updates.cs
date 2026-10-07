@@ -160,10 +160,11 @@ public sealed partial class MainWindow
             using var process = Process.Start(start) ?? throw new InvalidOperationException("설치 프로그램을 실행하지 못했어요.");
             Root.IsHitTestVisible = false;
             StopUpdates();
+            StopTelemetry();
             _replyTimer.Stop(); _reminderTimer.Stop();
             _reminderLifetime.Cancel(); _loadCts?.Cancel();
             CancelScheduler(); CancelLevels(); _supportLifetime.Cancel();
-            while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportRefreshing || _reminderChecking || _windowsStartupApplying)
+            while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportRefreshing || _reminderChecking || _windowsStartupApplying || _telemetryBusy)
                 await Task.Delay(50);
             ExitApp();
         }

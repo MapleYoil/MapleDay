@@ -271,8 +271,8 @@ public sealed partial class MainWindow
                     SchedulerHistoryResult? result = null;
                     string? error = null;
                     try { result = await new SchedulerHistoryLoader(_api, _schedulerHistory).LoadAsync(character.Ocid, key, DateTimeOffset.UtcNow, token); }
-                    catch (NexonApiException exception) { error = exception.Message; }
-                    catch (HttpRequestException) { error = "서버에 연결할 수 없어요. 잠시 후 새로고침해주세요."; }
+                    catch (NexonApiException exception) { error = exception.Message; if (!exception.IsAuthenticationError) ReportDiagnostic(exception, "scheduler"); }
+                    catch (HttpRequestException exception) { error = "서버에 연결할 수 없어요. 잠시 후 새로고침해주세요."; ReportDiagnostic(exception, "scheduler"); }
                     catch (OperationCanceledException) when (!token.IsCancellationRequested) { error = "응답 시간이 초과됐어요. 새로고침해주세요."; }
                     token.ThrowIfCancellationRequested();
                     await OnUiAsync(() =>

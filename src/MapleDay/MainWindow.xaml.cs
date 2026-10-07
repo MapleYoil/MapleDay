@@ -52,6 +52,7 @@ public sealed partial class MainWindow : Window
         InitializeWindowsStartup();
         InitializeWindowSizeSettings();
         InitializeUpdates();
+        InitializeTelemetry();
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
         {
             presenter.PreferredMinimumWidth = 420;
@@ -84,7 +85,9 @@ public sealed partial class MainWindow : Window
         _replyTimer.Start();
         _reminderTimer.Start();
         StartAutomaticUpdates();
+        StartTelemetry();
         await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
+        _ = SendTelemetryAsync();
     }
 
     private async Task InitializeCharactersForLaunchAsync()
@@ -419,8 +422,11 @@ public sealed partial class MainWindow : Window
             token.ThrowIfCancellationRequested();
             UpdateRepresentativeCharacter();
             await SaveKeyProfilesAsync();
+            _ = SendTelemetryAsync();
             if (failed > 0)
+            {
                 ShowError($"캐릭터 {failed}개의 기본 정보를 불러오지 못했어요", "목록 정보는 그대로 표시했습니다. 새로고침으로 다시 조회할 수 있어요.", false, characterListOnly: true);
+            }
             else if (failedImages > 0)
                 ShowError($"캐릭터 {failedImages}개의 이미지를 불러오지 못했어요", "캐릭터 정보는 그대로 표시했습니다. 새로고침으로 다시 조회할 수 있어요.", false, characterListOnly: true);
         }
@@ -434,6 +440,7 @@ public sealed partial class MainWindow : Window
         }
         catch (NexonApiException ex)
         {
+            if (!ex.IsAuthenticationError) ReportDiagnostic(ex, "characters");
             if (_loadCts == cts && !_closed)
             {
                 foreach (var card in Characters) card.MarkCanceled();
@@ -448,8 +455,9 @@ public sealed partial class MainWindow : Window
                 else ShowError("캐릭터를 불러오지 못했어요", ex.Message, true);
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException error)
         {
+            ReportDiagnostic(error, "characters");
             if (_loadCts == cts && !_closed)
                 ShowError("서버에 연결할 수 없어요", "인터넷 연결을 확인한 뒤 다시 조회해주세요.", true);
         }

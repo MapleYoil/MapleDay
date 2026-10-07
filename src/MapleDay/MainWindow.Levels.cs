@@ -168,6 +168,7 @@ public sealed partial class MainWindow
                     {
                         if (!Current(character)) return;
                         character.Failed(error is NexonApiException apiError ? apiError.Message : "경험치 기록을 불러오지 못했어요. 새로고침으로 다시 조회해주세요.");
+                        ReportDiagnostic(error, "level");
                         if (character.Ocid == _levelSelectedOcid) RefreshLevelDetails();
                     });
                 }

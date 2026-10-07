@@ -130,6 +130,7 @@ public sealed partial class MainWindow
         catch (Exception error) when (IsSupportError(error))
         {
             if (!_closed) ShowSupportMessage(error is System.Net.Http.HttpRequestException ? error.Message : "접수 결과를 확인하지 못했어요. 같은 내용으로 다시 보내면 중복 접수를 방지합니다.", InfoBarSeverity.Error);
+            ReportDiagnostic(error, "support");
         }
         finally
         {
@@ -190,6 +191,7 @@ public sealed partial class MainWindow
         catch (Exception error) when (IsSupportError(error))
         {
             if (showErrors && !_closed) ShowSupportMessage("답변을 불러오지 못했어요. 잠시 후 새로고침해주세요.", InfoBarSeverity.Warning);
+            ReportDiagnostic(error, "support");
         }
         finally
         {

@@ -214,6 +214,7 @@ public sealed partial class MainWindow
         if (await dialog.ShowAsync() != ContentDialogResult.Primary || !AppDataStore.IsDeleteConfirmation(input.Text)) return;
         _dataDeleting = true;
         StopUpdates();
+        StopTelemetry();
         AppDataSize.Text = "데이터 삭제 중…";
         ShellNavigation.IsEnabled = false;
         Root.IsHitTestVisible = false;
@@ -225,7 +226,7 @@ public sealed partial class MainWindow
         CancelLevels();
         _supportLifetime.Cancel();
         // Wait for cancelled writers before removing files so no task recreates them.
-        while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportSubmitting || _supportRefreshing || _reminderChecking || _windowsStartupApplying || _updateChecking)
+        while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportSubmitting || _supportRefreshing || _reminderChecking || _windowsStartupApplying || _updateChecking || _telemetryBusy)
             await Task.Delay(50);
         try
         {

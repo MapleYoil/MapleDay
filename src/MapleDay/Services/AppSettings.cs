@@ -9,6 +9,8 @@ public sealed class AppSettings
     public bool AutoStartWindows { get; set; } = true;
     public bool WindowsStartupToTray { get; set; } = true;
     public bool AutomaticUpdates { get; set; } = true;
+    public bool UsageAnalyticsEnabled { get; set; } = true;
+    public bool AutomaticErrorReports { get; set; } = true;
     public int WindowWidth { get; set; } = 1200;
     public int WindowHeight { get; set; } = 800;
     public int ValidWindowWidth => WindowWidth is >= 420 and <= 10000 ? WindowWidth : 1200;
