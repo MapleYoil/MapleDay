@@ -51,13 +51,18 @@ public sealed partial class MainWindow
         _settings.CheckedReminders ??= []; _settings.ReminderNotices ??= [];
         foreach (var kind in Enum.GetValues<ReminderKind>())
             ReminderOption(kind).HoursBefore = Math.Clamp(ReminderOption(kind).HoursBefore, 1, SchedulerReminders.MaximumHours(kind, ReminderOption(kind)));
-        if (!Enum.IsDefined(_settings.WeeklyBossReminder.Day)) _settings.WeeklyBossReminder.Day = DayOfWeek.Wednesday;
+        foreach (var kind in new[] { ReminderKind.WeeklyQuest, ReminderKind.WeeklyBoss })
+            if (!Enum.IsDefined(ReminderOption(kind).Day)) ReminderOption(kind).Day = DayOfWeek.Wednesday;
         AllRemindersToggle.IsOn = _settings.RemindersEnabled;
         StartupRemindersToggle.IsOn = _settings.RemindOnStartup;
         _startupRemindersEnabledForLaunch = _settings.RemindOnStartup;
         DailyReminderToggle.IsOn = _settings.DailyQuestReminder.Enabled; DailyReminderHours.Value = _settings.DailyQuestReminder.HoursBefore;
         UnionQuestReminderToggle.IsOn = _settings.UnionQuestReminderEnabled;
-        WeeklyQuestReminderToggle.IsOn = _settings.WeeklyQuestReminder.Enabled; WeeklyQuestReminderHours.Value = _settings.WeeklyQuestReminder.HoursBefore;
+        WeeklyQuestReminderToggle.IsOn = _settings.WeeklyQuestReminder.Enabled;
+        WeeklyQuestReminderDayMode.SelectedIndex = _settings.WeeklyQuestReminder.RestrictToDay ? 1 : 0;
+        WeeklyQuestReminderDay.SelectedIndex = (int)_settings.WeeklyQuestReminder.Day;
+        WeeklyQuestReminderHours.Maximum = SchedulerReminders.MaximumHours(ReminderKind.WeeklyQuest, _settings.WeeklyQuestReminder);
+        WeeklyQuestReminderHours.Value = _settings.WeeklyQuestReminder.HoursBefore;
         WeeklyBossReminderToggle.IsOn = _settings.WeeklyBossReminder.Enabled;
         WeeklyBossReminderDayMode.SelectedIndex = _settings.WeeklyBossReminder.RestrictToDay ? 1 : 0;
         WeeklyBossReminderDay.SelectedIndex = (int)_settings.WeeklyBossReminder.Day;
@@ -74,10 +79,13 @@ public sealed partial class MainWindow
     private void ReminderDay_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_reminderSettingsReady || _dataDeleting) return;
-        var maximum = WeeklyBossReminderDayMode.SelectedIndex == 1 ? 24 : 167;
         _reminderSettingsReady = false;
-        WeeklyBossReminderHours.Maximum = maximum;
-        if (double.IsFinite(WeeklyBossReminderHours.Value)) WeeklyBossReminderHours.Value = Math.Clamp(WeeklyBossReminderHours.Value, 1, maximum);
+        foreach (var (mode, hours) in new[] { (WeeklyQuestReminderDayMode, WeeklyQuestReminderHours), (WeeklyBossReminderDayMode, WeeklyBossReminderHours) })
+        {
+            var maximum = mode.SelectedIndex == 1 ? 24 : 167;
+            hours.Maximum = maximum;
+            if (double.IsFinite(hours.Value)) hours.Value = Math.Clamp(hours.Value, 1, maximum);
+        }
         _reminderSettingsReady = true;
         SaveReminderPreferences();
     }
@@ -86,7 +94,9 @@ public sealed partial class MainWindow
         if (!_reminderSettingsReady || _dataDeleting) return;
         var numbers = new[] { DailyReminderHours.Value, WeeklyQuestReminderHours.Value, WeeklyBossReminderHours.Value };
         var bossMaximum = WeeklyBossReminderDayMode.SelectedIndex == 1 ? 24 : 167;
-        if (numbers.Any(value => !double.IsFinite(value) || value != Math.Truncate(value)) || numbers[0] is < 1 or > 23 || numbers[1] is < 1 or > 167 || numbers[2] < 1 || numbers[2] > bossMaximum)
+        var questMaximum = WeeklyQuestReminderDayMode.SelectedIndex == 1 ? 24 : 167;
+        if (numbers.Any(value => !double.IsFinite(value) || value != Math.Truncate(value)) || numbers[0] is < 1 or > 23
+            || numbers[1] < 1 || numbers[1] > questMaximum || numbers[2] < 1 || numbers[2] > bossMaximum)
         { ShowReminderMessage("알림 시간은 정수로 입력해주세요.", InfoBarSeverity.Warning); return; }
         _settings.RemindersEnabled = AllRemindersToggle.IsOn;
         _settings.RemindOnStartup = StartupRemindersToggle.IsOn;
@@ -100,6 +110,9 @@ public sealed partial class MainWindow
         _settings.WeeklyBossReminder.RestrictToDay = WeeklyBossReminderDayMode.SelectedIndex == 1;
         _settings.WeeklyBossReminder.Day = WeeklyBossReminderDay.SelectedIndex is >= 0 and <= 6
             ? (DayOfWeek)WeeklyBossReminderDay.SelectedIndex : DayOfWeek.Wednesday;
+        _settings.WeeklyQuestReminder.RestrictToDay = WeeklyQuestReminderDayMode.SelectedIndex == 1;
+        _settings.WeeklyQuestReminder.Day = WeeklyQuestReminderDay.SelectedIndex is >= 0 and <= 6
+            ? (DayOfWeek)WeeklyQuestReminderDay.SelectedIndex : DayOfWeek.Wednesday;
         try { _settings.Save(); ReminderMessage.IsOpen = false; }
         catch (Exception error) when (IsStorageError(error)) { ShowReminderMessage("알림 설정을 저장하지 못했어요. 이번 실행에만 적용됩니다.", InfoBarSeverity.Warning); }
         UpdateReminderSchedule();
@@ -113,16 +126,20 @@ public sealed partial class MainWindow
         {
             var option = ReminderOption(kind);
             controls[(int)kind].Text = !_settings.RemindersEnabled || !option.Enabled ? "알림 꺼짐"
-                : $"다음 예정: {SchedulerReminders.NextDue(kind, now, option).ToOffset(SchedulerReminders.Korea):MM-dd (ddd) HH:mm} · {(kind == ReminderKind.WeeklyBoss && option.RestrictToDay ? "다음 자정" : "초기화")} {option.HoursBefore}시간 전";
+                : $"다음 예정: {SchedulerReminders.NextDue(kind, now, option).ToOffset(SchedulerReminders.Korea):MM-dd (ddd) HH:mm} · {(kind != ReminderKind.DailyQuest && option.RestrictToDay ? "다음 자정" : "초기화")} {option.HoursBefore}시간 전";
         }
         DailyReminderHours.IsEnabled = _settings.RemindersEnabled && _settings.DailyQuestReminder.Enabled;
         UnionQuestReminderToggle.IsEnabled = _settings.RemindersEnabled && _settings.WeeklyQuestReminder.Enabled;
         WeeklyQuestReminderHours.IsEnabled = _settings.RemindersEnabled && _settings.WeeklyQuestReminder.Enabled;
         WeeklyBossReminderHours.IsEnabled = _settings.RemindersEnabled && _settings.WeeklyBossReminder.Enabled;
-        WeeklyBossReminderDayMode.IsEnabled = WeeklyBossReminderHours.IsEnabled;
-        WeeklyBossReminderDay.IsEnabled = WeeklyBossReminderHours.IsEnabled;
-        WeeklyBossReminderDay.Visibility = _settings.WeeklyBossReminder.RestrictToDay ? Visibility.Visible : Visibility.Collapsed;
-        WeeklyBossReminderHours.Header = _settings.WeeklyBossReminder.RestrictToDay ? "다음 자정 몇 시간 전에 알릴까요?" : "초기화 몇 시간 전에 알릴까요?";
+        foreach (var (kind, mode, day, hours) in new[] {
+            (ReminderKind.WeeklyQuest, WeeklyQuestReminderDayMode, WeeklyQuestReminderDay, WeeklyQuestReminderHours),
+            (ReminderKind.WeeklyBoss, WeeklyBossReminderDayMode, WeeklyBossReminderDay, WeeklyBossReminderHours) })
+        {
+            mode.IsEnabled = day.IsEnabled = hours.IsEnabled;
+            day.Visibility = ReminderOption(kind).RestrictToDay ? Visibility.Visible : Visibility.Collapsed;
+            hours.Header = ReminderOption(kind).RestrictToDay ? "다음 자정 몇 시간 전에 알릴까요?" : "초기화 몇 시간 전에 알릴까요?";
+        }
         StartupRemindersToggle.IsEnabled = _settings.RemindersEnabled;
         var reminderStatus = !_settings.RemindersEnabled ? "전체 알림이 꺼져 있어요."
             : _schedulerCharacters.Count == 0 ? "스케줄러에 캐릭터를 추가하면 미완료 항목 알림을 받을 수 있어요."

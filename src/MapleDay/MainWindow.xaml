@@ -662,7 +662,7 @@
                         <StackPanel Spacing="16">
                             <ToggleSwitch x:Name="AllRemindersToggle" Header="전체 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
                             <ToggleSwitch x:Name="StartupRemindersToggle" Header="앱 실행 시 바로 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
-                            <TextBlock Text="켜두면 앱을 새로 시작할 때 미완료 항목을 확인해 한 번 알립니다. 전체·종류별 알림과 주간 보스의 요일 설정을 따르며, 변경은 다음 실행부터 적용됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <TextBlock Text="켜두면 앱을 새로 시작할 때 미완료 항목을 확인해 한 번 알립니다. 전체·종류별 알림과 주간 알림의 요일 설정을 따르며, 변경은 다음 실행부터 적용됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <TextBlock x:Name="ReminderRuntimeStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <Button Content="Windows 알림 다시 연결" Click="ReconnectNotifications_Click" HorizontalAlignment="Left" />
                         </StackPanel>
@@ -680,7 +680,21 @@
                             <ToggleSwitch x:Name="WeeklyQuestReminderToggle" Header="주간 퀘스트" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
                             <ToggleSwitch x:Name="UnionQuestReminderToggle" Header="메이플 유니온 퀘스트 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
                             <TextBlock Text="목요일 00:00 초기화 · 한국 시간" Style="{StaticResource SecondaryText}" />
-                            <NumberBox x:Name="WeeklyQuestReminderHours" Header="초기화 몇 시간 전에 알릴까요?" Minimum="1" Maximum="167" SmallChange="1" LargeChange="1" SpinButtonPlacementMode="Inline" ValueChanged="ReminderHours_ValueChanged" Width="260" HorizontalAlignment="Left" />
+                            <ComboBox x:Name="WeeklyQuestReminderDayMode" Header="알림 요일" SelectionChanged="ReminderDay_SelectionChanged" Width="260" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="요일 제한 없음" />
+                                <ComboBoxItem Content="지정 요일만" />
+                            </ComboBox>
+                            <ComboBox x:Name="WeeklyQuestReminderDay" Header="알림 받을 요일" SelectionChanged="ReminderDay_SelectionChanged" Width="260" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="일요일" />
+                                <ComboBoxItem Content="월요일" />
+                                <ComboBoxItem Content="화요일" />
+                                <ComboBoxItem Content="수요일" />
+                                <ComboBoxItem Content="목요일" />
+                                <ComboBoxItem Content="금요일" />
+                                <ComboBoxItem Content="토요일" />
+                            </ComboBox>
+                            <TextBlock Text="모든 주간 퀘스트에 적용되며, 앱 시작 알림도 지정한 요일에만 보냅니다. 기본은 수요일 오후 10시입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <NumberBox x:Name="WeeklyQuestReminderHours" Header="다음 자정 몇 시간 전에 알릴까요?" Minimum="1" Maximum="24" SmallChange="1" LargeChange="1" SpinButtonPlacementMode="Inline" ValueChanged="ReminderHours_ValueChanged" Width="260" HorizontalAlignment="Left" />
                             <TextBlock x:Name="WeeklyQuestReminderNext" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>

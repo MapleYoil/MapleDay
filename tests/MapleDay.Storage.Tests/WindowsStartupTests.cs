@@ -158,4 +158,20 @@ public sealed class WindowsStartupTests
         Assert.True(JsonSerializer.Deserialize<AppSettings>("{\"RemindOnStartup\":true}")!.RemindOnStartup);
         Assert.False(new AppSettings().RemindOnStartup);
     }
+
+    [Fact]
+    public void ExistingWeeklyQuestPreferencesDefaultToWednesdayAndKindsRemainIndependent()
+    {
+        var settings = JsonSerializer.Deserialize<AppSettings>("{\"WeeklyQuestReminder\":{\"Enabled\":false,\"HoursBefore\":8},\"WeeklyBossReminder\":{\"RestrictToDay\":false,\"Day\":5}}")!;
+        Assert.True(settings.WeeklyQuestReminder.RestrictToDay);
+        Assert.Equal(DayOfWeek.Wednesday, settings.WeeklyQuestReminder.Day);
+        Assert.False(settings.WeeklyQuestReminder.Enabled);
+        Assert.Equal(8, settings.WeeklyQuestReminder.HoursBefore);
+        settings.WeeklyQuestReminder.Day = DayOfWeek.Monday;
+        var restored = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(settings))!;
+        Assert.True(restored.WeeklyQuestReminder.RestrictToDay);
+        Assert.Equal(DayOfWeek.Monday, restored.WeeklyQuestReminder.Day);
+        Assert.False(restored.WeeklyBossReminder.RestrictToDay);
+        Assert.Equal(DayOfWeek.Friday, restored.WeeklyBossReminder.Day);
+    }
 }

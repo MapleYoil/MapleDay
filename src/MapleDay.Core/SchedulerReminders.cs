@@ -46,7 +46,7 @@ public static class SchedulerReminders
     public static int MaximumHours(ReminderKind kind, ReminderOptions? options = null) => kind switch
     {
         ReminderKind.DailyQuest => 23,
-        ReminderKind.WeeklyBoss when options?.RestrictToDay != false => 24,
+        ReminderKind.WeeklyQuest or ReminderKind.WeeklyBoss when options?.RestrictToDay != false => 24,
         _ => 167
     };
     public static bool ShouldCheck(ReminderWindow window, DateTimeOffset now, bool periodChecked, bool startupPending) =>
@@ -71,7 +71,7 @@ public static class SchedulerReminders
             : SchedulerBossHistory.Start(BossCycle.Weekly, date).AddDays(7);
         var reset = new DateTimeOffset(resetDate.ToDateTime(TimeOnly.MinValue), Korea);
         var hours = Math.Clamp(options.HoursBefore, 1, MaximumHours(kind, options));
-        if (kind == ReminderKind.WeeklyBoss && options.RestrictToDay)
+        if (kind != ReminderKind.DailyQuest && options.RestrictToDay)
         {
             var day = Enum.IsDefined(options.Day) ? options.Day : DayOfWeek.Wednesday;
             var offset = ((int)day - (int)DayOfWeek.Thursday + 7) % 7;
