@@ -1,8 +1,11 @@
 using System.Collections.ObjectModel;
 using MapleDay.Core;
 using MapleDay.Models;
+using MapleDay.Services;
+using MapleDay.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace MapleDay;
 
@@ -40,6 +43,68 @@ public sealed partial class MainWindow
     }
 
     private void IncomeOpenScheduler_Click(object sender, RoutedEventArgs e) => NavigateTo("scheduler");
+
+    private void IncomeCalendar_PartySizeRequested(object? sender, IncomePartySizeRequest request)
+    {
+        var record = request.Record;
+        if (_dataDeleting || !_schedulerCharacters.TryGetValue(record.Ocid, out var owner) || owner.History is not { } history) return;
+        _partyFlyout?.Hide();
+        var maximum = BossParty.Maximum(record.Boss.Name);
+        var number = new NumberBox { Header = $"파티 인원 (1~{maximum}인)", Minimum = 1, Maximum = maximum,
+            Value = record.Boss.PartySize, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
+        var all = new CheckBox { Content = new TextBlock { Text = "첫 기록부터 같은 보스의 전체 기록에 적용", TextWrapping = TextWrapping.Wrap, MaxWidth = 300 } };
+        var first = history.Snapshots.Where(day => day.Date >= SchedulerBossHistory.FirstDate && day.Date <= history.Today)
+            .Select(day => day.Date).DefaultIfEmpty(record.Boss.Date).Min();
+        var range = new TextBlock { Text = $"{owner.Name} · {first:yyyy.MM.dd} ~ {history.Today:yyyy.MM.dd}\n체크하지 않으면 {record.Boss.Date:yyyy.MM.dd} 기록만 변경합니다.",
+            TextWrapping = TextWrapping.Wrap, FontSize = 12 };
+        var errorText = new TextBlock { TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed,
+            Foreground = AppTheme.Brush("DangerTextBrush") };
+        var apply = new Button { Content = "적용", HorizontalAlignment = HorizontalAlignment.Right,
+            Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
+        var content = new StackPanel { Spacing = 12, Width = 350 };
+        content.Children.Add(new TextBlock { Text = $"{record.Boss.Name} · {record.Boss.DifficultyLabel}", FontSize = 18, TextWrapping = TextWrapping.Wrap });
+        content.Children.Add(number); content.Children.Add(all); content.Children.Add(range); content.Children.Add(errorText); content.Children.Add(apply);
+        var flyout = new Flyout { Content = content, Placement = FlyoutPlacementMode.Top };
+        _partyFlyout = flyout;
+        void Cleanup()
+        {
+            request.Anchor.Unloaded -= AnchorUnloaded;
+            if (ReferenceEquals(_partyFlyout, flyout)) _partyFlyout = null;
+        }
+        void AnchorUnloaded(object sender, RoutedEventArgs args) { flyout.Hide(); Cleanup(); }
+        request.Anchor.Unloaded += AnchorUnloaded;
+        flyout.Closed += (_, _) => Cleanup();
+        number.ValueChanged += (_, _) => apply.IsEnabled = double.IsFinite(number.Value)
+            && number.Value == Math.Truncate(number.Value) && number.Value >= 1 && number.Value <= maximum;
+        apply.Click += (_, _) =>
+        {
+            if (_closed || _dataDeleting || !apply.IsEnabled || !_schedulerCharacters.TryGetValue(record.Ocid, out var active)
+                || !ReferenceEquals(active, owner)) { flyout.Hide(); return; }
+            var ids = all.IsChecked == true && owner.History is { } latest
+                ? BossParty.SavedRecordIds(latest.Snapshots, record.Boss.Name, record.Boss.Cycle, latest.Today).Append(record.Boss.Id).Distinct().ToArray()
+                : [record.Boss.Id];
+            var previous = _settings.BossPartySizes;
+            var updated = new Dictionary<string, int>(previous);
+            foreach (var id in ids) updated[record.Ocid + "|" + id] = (int)number.Value;
+            _settings.BossPartySizes = updated;
+            try { _settings.Save(); }
+            catch (Exception error) when (IsStorageError(error))
+            {
+                _settings.BossPartySizes = previous;
+                errorText.Text = "인원을 저장하지 못했어요. 저장 공간과 접근 권한을 확인한 뒤 다시 시도해주세요.";
+                errorText.Visibility = Visibility.Visible;
+                return;
+            }
+            owner.RefreshIncome(id => PartySize(owner.Ocid, id));
+            flyout.Hide();
+            RefreshIncomeOverview();
+        };
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            if (_closed || _dataDeleting || !request.Anchor.IsLoaded || !ReferenceEquals(_partyFlyout, flyout)) { Cleanup(); return; }
+            flyout.ShowAt(request.Anchor);
+        });
+    }
 
     private void RefreshIncomeOverview()
     {

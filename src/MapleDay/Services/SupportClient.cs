@@ -21,13 +21,18 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public string Subject { get; set; } = "";
     public string Body { get; set; } = "";
     public string State { get; set; } = "";
+    public string Kind { get; set; } = "inquiry";
+    public long? Completed { get; set; }
     public long Created { get; set; }
     public List<SupportReply> Replies { get; set; } = [];
-    public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm}";
+    public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm} · {(Kind == "suggestion" ? "건의사항" : "1:1 문의")}";
     [JsonIgnore] public bool IsRead { get; private set; }
-    public string StatusText => Replies.Count > 0 ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
+    public string StatusText => Kind == "suggestion" ? State switch
     {
-        "queued" or "sending" => "발송 대기", "sent" => "답변 대기", _ => "발송 확인 필요"
+        "implemented" => "반영 완료", "rejected" => "반려", _ => Completed is not null ? "처리 완료" : "접수"
+    } : Replies.Count > 0 ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
+    {
+        "queued" or "sending" => "발송 대기", "sent" or "received" => "답변 대기", _ => "발송 확인 필요"
     }) + (IsRead ? " · 읽음" : "");
     public event PropertyChangedEventHandler? PropertyChanged;
     public void RestoreReadState(bool opened, long readReplyId)
@@ -37,8 +42,12 @@ public sealed class SupportTicket : INotifyPropertyChanged
         IsRead = read;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
-    public string Conversation => $"[{Nickname} · 문의]\n{Body}" + string.Concat(Replies.Select(reply =>
-        $"\n\n[운영자 답변 · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
+    public string NotificationTitle => Kind == "suggestion" ? State switch
+    {
+        "implemented" => "메요일 · 건의사항이 반영됐어요", "rejected" => "메요일 · 건의사항이 반려됐어요", _ => "메요일 · 건의사항 처리 결과가 도착했어요"
+    } : "메요일 · 문의 답변이 도착했어요";
+    public string Conversation => $"[{Nickname} · {(Kind == "suggestion" ? "건의사항" : "문의")}]\n{Body}" + string.Concat(Replies.Select(reply =>
+        $"\n\n[{(Kind == "suggestion" ? "처리 결과" : "운영자 답변")} · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
 }
 public sealed record SupportInbox(List<SupportTicket> Tickets);
 public sealed record SupportReceipt(string Id, string State);

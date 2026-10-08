@@ -6,8 +6,11 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace MapleDay.Views;
 
+public sealed record IncomePartySizeRequest(CalendarBossRecord Record, FrameworkElement Anchor);
+
 public sealed partial class IncomeCalendarView : UserControl
 {
+    public event EventHandler<IncomePartySizeRequest>? PartySizeRequested;
     public ObservableCollection<IncomeCalendarDay> Days { get; } = [];
     public ObservableCollection<IncomeCalendarBoss> Bosses { get; } = [];
     private DateOnly _today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
@@ -65,6 +68,11 @@ public sealed partial class IncomeCalendarView : UserControl
         _selectedDate = date;
         _month = FirstOfMonth(date);
         Refresh();
+    }
+    private void PartySize_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: IncomeCalendarBoss boss } anchor)
+            PartySizeRequested?.Invoke(this, new(boss.Record, anchor));
     }
     private void MoveMonth(int delta)
     {

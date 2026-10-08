@@ -300,7 +300,7 @@
             <StackPanel Padding="24" Spacing="20">
                 <StackPanel Spacing="6">
                     <TextBlock Text="1:1 문의 / 건의사항" FontSize="28" FontWeight="SemiBold" />
-                    <TextBlock Text="문의 답변은 이곳에서 확인할 수 있어요. 건의사항은 운영자에게 전달됩니다."
+                    <TextBlock Text="문의 답변과 건의사항의 완료·반려 결과는 이곳과 Windows 알림에서 확인할 수 있어요."
                                Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                 </StackPanel>
                 <InfoBar x:Name="SupportMessage" IsOpen="False" IsClosable="True" />
@@ -332,10 +332,10 @@
                     </StackPanel>
                 </Border>
                 <Grid>
-                    <TextBlock Text="내 문의" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <Button x:Name="SupportRefreshButton" Content="답변 새로고침" HorizontalAlignment="Right" Click="SupportRefreshButton_Click" />
+                    <TextBlock Text="내 문의 / 건의사항" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Button x:Name="SupportRefreshButton" Content="결과 새로고침" HorizontalAlignment="Right" Click="SupportRefreshButton_Click" />
                 </Grid>
-                <TextBlock x:Name="SupportEmpty" Text="아직 보낸 문의가 없어요." Style="{StaticResource SecondaryText}" />
+                <TextBlock x:Name="SupportEmpty" Text="아직 보낸 문의·건의사항이 없어요." Style="{StaticResource SecondaryText}" />
                 <ListView x:Name="SupportTickets" ItemsSource="{x:Bind Tickets}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="SupportTickets_ItemClick" MaxHeight="240">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="services:SupportTicket">
@@ -501,7 +501,7 @@
                             </Grid>
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
                             <TextBlock Text="주간은 목요일 00시, 월간은 매월 1일 00시 (한국 시간) 기준입니다. 각 기간에 확인한 주간·월간 결정 수익을 함께 합산합니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
-                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" />
+                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" />
                             
                             <Expander Header="수익 계산 기준 · 결정 가격표" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                 <StackPanel Spacing="10">

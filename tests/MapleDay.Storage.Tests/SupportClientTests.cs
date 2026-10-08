@@ -7,6 +7,33 @@ namespace MapleDay.Storage.Tests;
 
 public sealed class SupportClientTests
 {
+    [Theory]
+    [InlineData("implemented", "반영 완료", "반영됐어요")]
+    [InlineData("rejected", "반려", "반려됐어요")]
+    public void SuggestionResultUsesItsStatusAndReadCursor(string state, string label, string title)
+    {
+        var json = $$"""{"id":"suggestion","kind":"suggestion","state":"{{state}}","completed":1800000000,"body":"건의 내용","replies":[{"id":42,"body":"처리 결과","created":1800000000}]}""";
+        var ticket = JsonSerializer.Deserialize<SupportTicket>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        Assert.Equal(label, ticket.StatusText);
+        Assert.Contains(title, ticket.NotificationTitle);
+        Assert.Contains("건의사항", ticket.Conversation);
+        Assert.Contains("처리 결과", ticket.Conversation);
+        ticket.RestoreReadState(true, 41);
+        Assert.False(ticket.IsRead);
+        ticket.RestoreReadState(true, 42);
+        Assert.True(ticket.IsRead);
+    }
+
+    [Fact]
+    public void OldInquiryPayloadRemainsCompatibleAndPendingSuggestionsShowReceived()
+    {
+        var old = JsonSerializer.Deserialize<SupportTicket>("{\"state\":\"received\"}", new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        Assert.Equal("inquiry", old.Kind);
+        Assert.Equal("답변 대기", old.StatusText);
+        Assert.Equal("메요일 · 문의 답변이 도착했어요", old.NotificationTitle);
+        Assert.Equal("접수", new SupportTicket { Kind = "suggestion", State = "received" }.StatusText);
+    }
+
     [Fact]
     public void ReadTicketRemainsReadAfterRefreshButANewReplyBecomesUnread()
     {

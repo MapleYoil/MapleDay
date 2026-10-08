@@ -124,7 +124,7 @@ public sealed partial class MainWindow
             await _support.SubmitAsync(kind, character.Name, subject, body, _supportLifetime.Token);
             if (_closed) return;
             SupportSubject.Text = SupportBody.Text = "";
-            ShowSupportMessage(kind == "suggestion" ? "건의사항이 접수됐어요. 운영자가 관리자 콘솔에서 확인합니다." : "문의가 접수됐어요. 답변이 도착하면 이곳과 Windows 알림에서 확인할 수 있어요.", InfoBarSeverity.Success);
+            ShowSupportMessage(kind == "suggestion" ? "건의사항이 접수됐어요. 완료·반려 결과는 이곳과 Windows 알림에서 확인할 수 있어요." : "문의가 접수됐어요. 답변이 도착하면 이곳과 Windows 알림에서 확인할 수 있어요.", InfoBarSeverity.Success);
             await RefreshSupportAsync(showErrors: false);
         }
         catch (Exception error) when (IsSupportError(error))
@@ -178,7 +178,7 @@ public sealed partial class MainWindow
             {
                 foreach (var item in replies.GroupBy(item => item.Ticket.Id).Select(group => group.Last()))
                 {
-                    if (!_windowsNotifications.Show("메요일 · 문의 답변이 도착했어요",
+                    if (!_windowsNotifications.Show(item.Ticket.NotificationTitle,
                         [item.Ticket.Subject, item.Reply.Body.Length > 100 ? item.Reply.Body[..100] + "…" : item.Reply.Body],
                         new Dictionary<string, string> { ["ticket"] = item.Ticket.Id }))
                         throw new InvalidOperationException(_windowsNotifications.Status);

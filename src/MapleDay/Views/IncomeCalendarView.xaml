@@ -44,6 +44,7 @@
             <TextBlock x:Name="SelectedAmount" Grid.Column="1" Foreground="{StaticResource AccentBrush}" FontSize="17"/>
         </Grid>
         <TextBlock x:Name="DayStatus" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+        <TextBlock Text="보스의 ‘인원 수정’에서 해당 기록을 수정하거나, 첫 기록부터 같은 보스의 전체 기록에 일괄 적용할 수 있어요." FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
         <ItemsControl ItemsSource="{x:Bind Bosses}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:IncomeCalendarBoss">
@@ -55,7 +56,10 @@
                             <TextBlock Text="{x:Bind CharacterName}" FontSize="12"/>
                             <TextBlock Text="{x:Bind Details}" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="2" Text="{x:Bind Amount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Column="2" Spacing="8" HorizontalAlignment="Right">
+                            <TextBlock Text="{x:Bind Amount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                            <Button Content="인원 수정" Tag="{x:Bind}" Click="PartySize_Click" AutomationProperties.Name="{x:Bind EditLabel}"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

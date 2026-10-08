@@ -28,10 +28,12 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
 
 public sealed class IncomeCalendarBoss(CalendarBossRecord record)
 {
-    public string CharacterName => record.CharacterName;
-    public string Name => $"{record.Boss.Name} · {record.Boss.DifficultyLabel}";
-    public string? IconFile => SchedulerIconAssets.BossFile(record.Boss.Name) is { } file ? "Scheduler/" + file : null;
-    public string Amount => record.Boss.Meso is { } meso ? IncomeCalendar.CompactMoney(meso) : "가격 확인 필요";
-    public string Details => $"{(record.Boss.Cycle == BossCycle.Weekly ? "주간" : "월간")} · {record.Boss.PartySize}인 · "
-        + (!record.Boss.Included ? "주간 12개 상한에서 제외" : record.Boss.Meso is null ? "합산 제외" : BossIncome.Money(record.Boss.Meso.Value));
+    public CalendarBossRecord Record { get; } = record;
+    public string CharacterName => Record.CharacterName;
+    public string EditLabel => $"{Record.CharacterName} · {Record.Boss.Name} · {Record.Boss.Date:yyyy.MM.dd} 인원 수정";
+    public string Name => $"{Record.Boss.Name} · {Record.Boss.DifficultyLabel}";
+    public string? IconFile => SchedulerIconAssets.BossFile(Record.Boss.Name) is { } file ? "Scheduler/" + file : null;
+    public string Amount => Record.Boss.Meso is { } meso ? IncomeCalendar.CompactMoney(meso) : "가격 확인 필요";
+    public string Details => $"{(Record.Boss.Cycle == BossCycle.Weekly ? "주간" : "월간")} · {Record.Boss.PartySize}인 · "
+        + (!Record.Boss.Included ? "주간 12개 상한에서 제외" : Record.Boss.Meso is null ? "합산 제외" : BossIncome.Money(Record.Boss.Meso.Value));
 }
