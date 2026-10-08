@@ -3,6 +3,8 @@ using System.Text.Json;
 using MapleDay.Core;
 using MapleDay.Services;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 
 namespace MapleDay;
@@ -16,7 +18,7 @@ public sealed partial class MainWindow
     private bool _updatesInitialized, _updateChecking, _updateInstalling;
     private AppUpdate? _readyUpdate;
     private PreparedUpdate? _preparedUpdate;
-    private Version? _notifiedUpdateVersion;
+    private TaskbarUpdateBadge? _taskbarUpdateBadge;
     private bool IsStoreInstall => WindowsStartup.IsPackaged && Windows.ApplicationModel.Package.Current.SignatureKind == Windows.ApplicationModel.PackageSignatureKind.Store;
     private Version CurrentAppVersion
     {
@@ -30,6 +32,7 @@ public sealed partial class MainWindow
 
     private void InitializeUpdates()
     {
+        _taskbarUpdateBadge = new TaskbarUpdateBadge(WinRT.Interop.WindowNative.GetWindowHandle(this));
         AppVersionText.Text = $"현재 버전 {CurrentAppVersion.ToString(4)}";
         AutomaticUpdatesToggle.IsOn = _settings.AutomaticUpdates;
         UpdateNotificationsToggle.IsOn = _settings.UpdateNotifications;
@@ -44,7 +47,7 @@ public sealed partial class MainWindow
         }
         else UpdateStatusText.Text = "실행 시와 6시간마다 새 버전을 확인하고 변경된 파일만 내려받습니다. 설치기 없이 적용 후 다시 시작합니다.";
         _updateTimer.Tick += (_, _) => StartAutomaticUpdates();
-        Closed += (_, _) => StopUpdates();
+        Closed += (_, _) => { StopUpdates(); _taskbarUpdateBadge?.Dispose(); };
         _updatesInitialized = true;
     }
 
@@ -103,21 +106,21 @@ public sealed partial class MainWindow
             _updatesInitialized = false;
             UpdateNotificationsToggle.IsOn = previous;
             _updatesInitialized = true;
-            UpdateStatusText.Text = "새 버전 알림 설정을 저장하지 못했어요.";
+            UpdateStatusText.Text = "새 버전 표시 설정을 저장하지 못했어요.";
             return;
         }
-        NotifyReadyUpdate();
+        RefreshUpdateBadge();
     }
 
-    private void NotifyReadyUpdate()
+    private void RefreshUpdateBadge()
     {
-        var ready = _readyUpdate is { } && _preparedUpdate is { };
-        UpdateReadyButton.Visibility = ready && _settings.UpdateNotifications ? Visibility.Visible : Visibility.Collapsed;
-        if (!ready || !_settings.UpdateNotifications || _closed || _dataDeleting) return;
-        var update = _readyUpdate!;
-        if (_notifiedUpdateVersion != update.Version && _notificationReady
-            && _windowsNotifications.Show("메요일 · 새 버전이 준비됐어요", [$"{update.Version} 업데이트를 내려받았습니다. 클릭해서 적용하세요."], new Dictionary<string, string> { ["update"] = "1" }))
-            _notifiedUpdateVersion = update.Version;
+        var visible = _readyUpdate is not null && _preparedUpdate is not null && _settings.UpdateNotifications
+            && !_closed && !_dataDeleting && !_updateInstalling;
+        SettingsUpdateBadge.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        AutomationProperties.SetName(SettingsNavigationItem, visible ? "설정, 새 버전 준비됨. 업데이트할 수 있습니다." : "설정");
+        ToolTipService.SetToolTip(SettingsNavigationItem, visible ? "① 새 버전 준비됨 · 설정에서 업데이트" : "설정");
+        _tray?.SetUpdateAvailable(visible);
+        _taskbarUpdateBadge?.SetVisible(visible);
     }
 
     private async Task CheckForUpdatesAsync()
@@ -134,7 +137,8 @@ public sealed partial class MainWindow
             if (_closed || _dataDeleting) return;
             _readyUpdate = null;
             if (_preparedUpdate is { } previous) { Directory.Delete(previous.Directory, true); _preparedUpdate = null; }
-            InstallUpdateButton.Visibility = UpdateReadyButton.Visibility = Visibility.Collapsed;
+            InstallUpdateButton.Visibility = Visibility.Collapsed;
+            RefreshUpdateBadge();
             if (update is null) { UpdateStatusText.Text = "최신 버전을 사용 중입니다."; return; }
             UpdateDownloadProgress.Value = 0;
             UpdateDownloadProgress.Visibility = Visibility.Visible;
@@ -155,7 +159,7 @@ public sealed partial class MainWindow
             _readyUpdate = update; _preparedUpdate = prepared;
             InstallUpdateButton.Visibility = Visibility.Visible;
             UpdateStatusText.Text = $"{update.Version} 준비 완료 · 변경 {prepared.ChangedFiles}개 · 다운로드 {prepared.DownloadSize / 1024.0 / 1024.0:0.0}MB. 설치기 없이 적용하고 다시 시작합니다.";
-            NotifyReadyUpdate();
+            RefreshUpdateBadge();
         }
         catch (OperationCanceledException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = request.IsCancellationRequested ? "업데이트 다운로드를 중단했습니다." : "연결 시간이 초과됐어요. 업데이트 확인을 다시 눌러주세요."; }
@@ -170,11 +174,10 @@ public sealed partial class MainWindow
             {
                 CheckUpdateButton.IsEnabled = InstallUpdateButton.IsEnabled = true;
                 UpdateDownloadProgress.Visibility = Visibility.Collapsed;
+                RefreshUpdateBadge();
             }
         }
     }
-
-    private void UpdateReadyButton_Click(object sender, RoutedEventArgs args) => NavigateTo("settings");
 
     private async void InstallUpdateButton_Click(object sender, RoutedEventArgs args)
     {
@@ -205,6 +208,7 @@ public sealed partial class MainWindow
             }
             if (ready != "ready")
                 throw new InvalidDataException("업데이트 적용을 준비하지 못했어요. 기존 앱은 그대로 유지됩니다.");
+            RefreshUpdateBadge();
             UpdateStatusText.Text = "변경된 파일을 적용하고 다시 시작합니다…";
             Root.IsHitTestVisible = false;
             StopUpdates();
@@ -220,6 +224,7 @@ public sealed partial class MainWindow
         {
             UpdateStatusText.Text = error is InvalidDataException ? error.Message : "업데이트를 시작하지 못했어요. 다시 시도해주세요.";
             _updateInstalling = false;
+            RefreshUpdateBadge();
             Root.IsHitTestVisible = true;
             InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = UpdateNotificationsToggle.IsEnabled = true;
         }

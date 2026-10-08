@@ -25,7 +25,7 @@ public sealed partial class MainWindow
 
     private void InitializeSupport()
     {
-        _tray = new TrayIcon(RestoreWindow, ExitApp);
+        _tray = new TrayIcon(RestoreWindow, ExitApp, () => { RestoreWindow(); NavigateTo("settings"); });
         _settings.ReadTickets ??= [];
         StartPageSelector.SelectedItem = StartPageSelector.Items.Cast<ComboBoxItem>().First(item => (string)item.Tag == _settings.ValidStartPage);
         CloseBehavior.SelectedIndex = _settings.CloseToTray ? 0 : 1;

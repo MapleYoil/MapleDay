@@ -23,12 +23,14 @@
     <Compile Include="../../src/MapleDay/Services/WindowsStartup.cs" Link="WindowsStartup.cs" />
     <Compile Include="../../src/MapleDay/Services/CharacterImageLoader.cs" Link="CharacterImageLoader.cs" />
     <Compile Include="../../src/MapleDay/Services/SchedulerLabelPixels.cs" Link="SchedulerLabelPixels.cs" />
+    <Compile Include="../../src/MapleDay/Services/UpdateBadgeIcon.cs" Link="UpdateBadgeIcon.cs" />
     <Compile Include="../../src/MapleDay/Services/SchedulerHistoryStore.cs" Link="SchedulerHistoryStore.cs" />
     <Compile Include="../../src/MapleDay/Services/SchedulerHistoryLoader.cs" Link="SchedulerHistoryLoader.cs" />
     <Compile Include="../../src/MapleDay/Services/ExperienceHistoryStore.cs" Link="ExperienceHistoryStore.cs" />
     <Compile Include="../../src/MapleDay/Services/ExperienceHistoryLoader.cs" Link="ExperienceHistoryLoader.cs" />
     <Compile Include="../../src/MapleDay/Services/AppDataStore.cs" Link="AppDataStore.cs" />
     <Content Include="../../src/MapleDay/Assets/Fonts/NanumGothicBold.ttf" Link="NanumGothicBold.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../src/MapleDay/Assets/Branding/mapleday.ico" Link="mapleday.ico" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/MapleDay.Core/MapleDay.Core.csproj" />
     <Using Include="Xunit" />
   </ItemGroup>

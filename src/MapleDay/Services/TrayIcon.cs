@@ -8,16 +8,18 @@ public sealed class TrayIcon : IDisposable
     private const uint TrayMessage = 0x8001;
     private readonly WindowProcedure _procedure;
     private readonly IntPtr _window, _icon;
-    private readonly Action _show, _exit;
+    private readonly Action _show, _exit, _update;
+    private IntPtr _updateIcon;
+    private bool _updateAvailable;
     private readonly string _className = "MapleDayTray." + Guid.NewGuid().ToString("N");
     private NotifyIconData _data;
     private bool _disposed;
     public bool Available { get; }
     private readonly uint _taskbarCreated;
 
-    public TrayIcon(Action show, Action exit)
+    public TrayIcon(Action show, Action exit, Action update)
     {
-        _show = show; _exit = exit;
+        _show = show; _exit = exit; _update = update;
         _procedure = ProcessMessage;
         _taskbarCreated = RegisterWindowMessage("TaskbarCreated");
         var windowClass = new WindowClass { Size = (uint)Marshal.SizeOf<WindowClass>(), Procedure = _procedure, ClassName = _className, Instance = GetModuleHandle(null) };
@@ -42,18 +44,31 @@ public sealed class TrayIcon : IDisposable
                 try
                 {
                     AppendMenu(menu, 0, 1, "메요일 열기");
+                    if (_updateAvailable) AppendMenu(menu, 0, 3, "① 새 버전 준비됨 · 업데이트");
                     AppendMenu(menu, 0, 2, "앱 종료");
                     GetCursorPos(out var point);
                     SetForegroundWindow(window);
                     var selected = TrackPopupMenu(menu, 0x100 | 0x2, point.X, point.Y, 0, window, IntPtr.Zero);
                     if (selected == 1) _show();
                     if (selected == 2) _exit();
+                    if (selected == 3) _update();
                     PostMessage(window, 0, IntPtr.Zero, IntPtr.Zero);
                 }
                 finally { DestroyMenu(menu); }
             }
         }
         return DefWindowProc(window, message, wParam, lParam);
+    }
+
+    public void SetUpdateAvailable(bool available)
+    {
+        if (_disposed || _updateAvailable == available) return;
+        _updateAvailable = available;
+        if (available && _updateIcon == IntPtr.Zero)
+            _updateIcon = UpdateBadgeIcon.Create(32, Path.Combine(AppContext.BaseDirectory, "Assets", "Branding", "mapleday.ico"));
+        _data.Icon = available ? _updateIcon : _icon;
+        _data.Tip = available ? "메요일 · ① 새 버전 준비됨 · 설정에서 업데이트" : "메요일 · MapleDay";
+        if (Available) ShellNotifyIcon(1, ref _data);
     }
 
     public void Dispose()
@@ -63,6 +78,7 @@ public sealed class TrayIcon : IDisposable
         if (Available) ShellNotifyIcon(2, ref _data);
         if (_window != IntPtr.Zero) DestroyWindow(_window);
         if (_icon != IntPtr.Zero) DestroyIcon(_icon);
+        UpdateBadgeIcon.Destroy(_updateIcon);
         UnregisterClass(_className, GetModuleHandle(null));
         GC.KeepAlive(_procedure);
     }
