@@ -6,6 +6,7 @@ namespace MapleDay.Services;
 public sealed class AppSettings
 {
     public bool CloseToTray { get; set; } = true;
+    public bool DarkMode { get; set; }
     public bool AutoStartWindows { get; set; } = true;
     public bool WindowsStartupToTray { get; set; } = true;
     public bool AutomaticUpdates { get; set; } = true;

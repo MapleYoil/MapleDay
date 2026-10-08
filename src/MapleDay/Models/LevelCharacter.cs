@@ -23,7 +23,7 @@ public sealed class LevelCharacter(CharacterCard character) : INotifyPropertyCha
     public bool Loading { get; private set; }
     public string Status { get; private set; } = "경험치 기록 조회 대기";
     public bool Selected { get; private set; }
-    public Brush Background => new SolidColorBrush(Selected ? Microsoft.UI.ColorHelper.FromArgb(255, 238, 238, 238) : Microsoft.UI.Colors.White);
+    public Brush Background => AppTheme.Brush(Selected ? "SchedulerSelectedBrush" : "CardBrush");
     public string LevelText => History?.Current is { } value ? $"Lv. {value.Level} ({value.Percent:0.###}%)" : Character.LevelText;
     public double Percent => (double)(History?.Current?.Percent ?? 0);
     public string TodayAmount
@@ -97,7 +97,6 @@ public sealed class LevelGainBar(ExperienceDay? day, DateOnly date, decimal maxi
     public string Date => date.ToString("MM/dd");
     public string Amount => day?.Gained is { } gain ? ExperienceHistory.Amount(gain) : "—";
     public double Height => day?.Gained is { } gain && maximum > 0 ? (double)(Math.Abs(gain) / maximum) * 72 : 0;
-    public Brush Color => new SolidColorBrush(day?.Gained < 0 ? Microsoft.UI.ColorHelper.FromArgb(255, 196, 91, 38)
-        : Microsoft.UI.ColorHelper.FromArgb(255, 55, 125, 255));
+    public Brush Color => AppTheme.Brush(day?.Gained < 0 ? "NegativeBrush" : "AccentBrush");
     public string Tooltip => $"{date:yyyy-MM-dd} · 일일 경험치 변화 {Amount}";
 }

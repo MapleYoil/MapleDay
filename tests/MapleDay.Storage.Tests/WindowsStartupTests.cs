@@ -119,6 +119,8 @@ public sealed class WindowsStartupTests
         Assert.False(restored.RemindOnStartup);
         Assert.False(restored.WeeklyBossReminder.Enabled);
         Assert.Equal(8, restored.WeeklyBossReminder.HoursBefore);
+        Assert.True(restored.WeeklyBossReminder.RestrictToDay);
+        Assert.Equal(DayOfWeek.Wednesday, restored.WeeklyBossReminder.Day);
         Assert.Equal(reset, restored.CheckedReminders.Single().Value);
         Assert.True(restored.ReminderNotices[0].Read);
         Assert.True(restored.ReminderNotices[0].IsStartup);
@@ -133,6 +135,21 @@ public sealed class WindowsStartupTests
         Assert.False(restored.RemindOnStartup);
         Assert.False(restored.WeeklyBossReminder.Enabled);
         Assert.Equal(8, restored.WeeklyBossReminder.HoursBefore);
+        Assert.True(restored.WeeklyBossReminder.RestrictToDay);
+        Assert.Equal(DayOfWeek.Wednesday, restored.WeeklyBossReminder.Day);
+    }
+
+    [Theory]
+    [InlineData(true, DayOfWeek.Friday)]
+    [InlineData(false, DayOfWeek.Wednesday)]
+    public void WeeklyBossDayPreferencesSurviveSerialization(bool restricted, DayOfWeek day)
+    {
+        var settings = new AppSettings { WeeklyBossReminder = new() { RestrictToDay = restricted, Day = day, HoursBefore = 2 } };
+        var restored = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(settings))!;
+        Assert.Equal(restricted, restored.WeeklyBossReminder.RestrictToDay);
+        Assert.Equal(day, restored.WeeklyBossReminder.Day);
+        Assert.Equal(2, restored.WeeklyBossReminder.HoursBefore);
+        Assert.True(new AppSettings().WeeklyBossReminder.RestrictToDay);
     }
 
     [Fact]

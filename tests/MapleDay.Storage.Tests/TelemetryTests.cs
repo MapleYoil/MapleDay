@@ -22,11 +22,14 @@ public sealed class TelemetryTests : IDisposable
     {
         public List<(string Path,string Body)> Requests { get; }=[];
         public bool Fail { get; set; }
+        public string? RejectProfiles { get; set; }
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken token)
         {
             Assert.Null(request.Headers.Authorization);
             Assert.False(request.Headers.Contains("x-nxopen-api-key"));
             Requests.Add((request.RequestUri!.AbsolutePath,await request.Content!.ReadAsStringAsync(token)));
+            if (RejectProfiles is { } message && Requests[^1].Body.Contains("\"profiles\""))
+                return new(HttpStatusCode.BadRequest) { Content = System.Net.Http.Json.JsonContent.Create(new { error = message }) };
             return new(Fail?HttpStatusCode.ServiceUnavailable:HttpStatusCode.OK);
         }
     }
@@ -75,6 +78,39 @@ public sealed class TelemetryTests : IDisposable
         Assert.EndsWith("/errors",server.Requests[0].Path);Assert.DoesNotContain("secret path",server.Requests[0].Body);
         server.Fail=false;await client.SendAsync([],new(1,0,35,0),queue,false,default);
         Assert.Empty(queue.Pending());
+    }
+    [Fact]
+    public async Task SharedProfileUsesHighestCharacterWhileAnonymousAndDisabledUsageNeverSendMetadata()
+    {
+        var server=new Server();using var http=new HttpClient(server){BaseAddress=new("https://test/api/mapleday/")};
+        using var client=new TelemetryClient(http,Path.Combine(_root,"profile.dat"));
+        var queue=new DiagnosticQueue(Path.Combine(_root,"errors"));var profile=new UsageCharacter("현재최고",291,"오로라");
+        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile);
+        using var shared=JsonDocument.Parse(server.Requests[0].Body);
+        Assert.Equal(291,shared.RootElement.GetProperty("profiles")[0].GetProperty("level").GetInt32());
+        Assert.Equal("오로라",shared.RootElement.GetProperty("profiles")[0].GetProperty("world").GetString());
+        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,anonymous:true,character:profile);
+        using var anonymous=JsonDocument.Parse(server.Requests[1].Body);
+        Assert.False(anonymous.RootElement.TryGetProperty("profiles",out _));
+        Assert.DoesNotContain(profile.Nickname,server.Requests[1].Body);Assert.DoesNotContain(profile.World,server.Requests[1].Body);
+        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,false,default,character:profile);
+        Assert.Equal(2,server.Requests.Count);
+    }
+    [Fact]
+    public async Task LegacyServerRetriesNicknamePayloadButProfileValidationErrorsAreNotBypassed()
+    {
+        var server=new Server { RejectProfiles="허용되지 않은 집계 정보입니다." };
+        using var http=new HttpClient(server){BaseAddress=new("https://test/api/mapleday/")};
+        using var client=new TelemetryClient(http,Path.Combine(_root,"legacy-profile.dat"));
+        var queue=new DiagnosticQueue(Path.Combine(_root,"errors"));var profile=new UsageCharacter("현재최고",291,"오로라");
+        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile);
+        Assert.Equal(2,server.Requests.Count);
+        using var fallback=JsonDocument.Parse(server.Requests[1].Body);
+        Assert.False(fallback.RootElement.TryGetProperty("profiles",out _));
+        Assert.Equal(profile.Nickname,fallback.RootElement.GetProperty("nicknames")[0].GetString());
+        server.RejectProfiles="집계 캐릭터 정보를 확인해주세요.";
+        await Assert.ThrowsAsync<HttpRequestException>(()=>client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile));
+        Assert.Equal(3,server.Requests.Count);
     }
     [Fact]
     public void QueueDeduplicatesAndDisableClearsPendingButSuspendKeepsCrashReports()

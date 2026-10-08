@@ -5,10 +5,13 @@ public sealed class ReminderOptions
 {
     public bool Enabled { get; set; } = true;
     public int HoursBefore { get; set; } = 2;
+    public bool RestrictToDay { get; set; } = true;
+    public DayOfWeek Day { get; set; } = DayOfWeek.Wednesday;
 }
-public sealed record ReminderWindow(ReminderKind Kind, DateTimeOffset Due, DateTimeOffset Reset)
+public sealed record ReminderWindow(ReminderKind Kind, DateTimeOffset Due, DateTimeOffset Reset, DayOfWeek? AllowedDay = null)
 {
-    public bool IsDue(DateTimeOffset now) => now >= Due && now < Reset;
+    public bool AllowsDay(DateTimeOffset now) => AllowedDay is null || now.ToOffset(SchedulerReminders.Korea).DayOfWeek == AllowedDay;
+    public bool IsDue(DateTimeOffset now) => AllowsDay(now) && now >= Due && now < Reset;
     public string PeriodKey => $"{Kind}:{Reset:yyyy-MM-dd}";
 }
 public sealed class ReminderCharacter
@@ -40,9 +43,14 @@ public sealed class ReminderNotice
 public static class SchedulerReminders
 {
     public static readonly TimeSpan Korea = TimeSpan.FromHours(9);
-    public static int MaximumHours(ReminderKind kind) => kind == ReminderKind.DailyQuest ? 23 : 167;
+    public static int MaximumHours(ReminderKind kind, ReminderOptions? options = null) => kind switch
+    {
+        ReminderKind.DailyQuest => 23,
+        ReminderKind.WeeklyBoss when options?.RestrictToDay != false => 24,
+        _ => 167
+    };
     public static bool ShouldCheck(ReminderWindow window, DateTimeOffset now, bool periodChecked, bool startupPending) =>
-        startupPending || window.IsDue(now) && !periodChecked;
+        window.AllowsDay(now) && (startupPending || window.IsDue(now) && !periodChecked);
     public static bool HasData(ReminderKind kind, SchedulerState state) => kind switch
     {
         ReminderKind.DailyQuest => state.Daily is not null,
@@ -54,17 +62,30 @@ public static class SchedulerReminders
         ReminderKind.DailyQuest => "일일 퀘스트", ReminderKind.WeeklyQuest => "주간 퀘스트", _ => "주간 보스"
     };
     public static ReminderWindow Window(ReminderKind kind, DateTimeOffset now, int hoursBefore)
+        => Window(kind, now, new ReminderOptions { HoursBefore = hoursBefore });
+    public static ReminderWindow Window(ReminderKind kind, DateTimeOffset now, ReminderOptions options)
     {
         var korean = now.ToOffset(Korea);
         var date = DateOnly.FromDateTime(korean.DateTime);
         var resetDate = kind == ReminderKind.DailyQuest ? date.AddDays(1)
             : SchedulerBossHistory.Start(BossCycle.Weekly, date).AddDays(7);
         var reset = new DateTimeOffset(resetDate.ToDateTime(TimeOnly.MinValue), Korea);
-        return new(kind, reset.AddHours(-Math.Clamp(hoursBefore, 1, MaximumHours(kind))), reset);
+        var hours = Math.Clamp(options.HoursBefore, 1, MaximumHours(kind, options));
+        if (kind == ReminderKind.WeeklyBoss && options.RestrictToDay)
+        {
+            var day = Enum.IsDefined(options.Day) ? options.Day : DayOfWeek.Wednesday;
+            var offset = ((int)day - (int)DayOfWeek.Thursday + 7) % 7;
+            // Keep the chosen day's clock time inside this Thursday-to-Wednesday reset period.
+            var due = reset.AddDays(-7 + offset).AddHours(24 - hours);
+            return new(kind, due, reset, day);
+        }
+        return new(kind, reset.AddHours(-hours), reset);
     }
     public static DateTimeOffset NextDue(ReminderKind kind, DateTimeOffset now, int hoursBefore)
+        => NextDue(kind, now, new ReminderOptions { HoursBefore = hoursBefore });
+    public static DateTimeOffset NextDue(ReminderKind kind, DateTimeOffset now, ReminderOptions options)
     {
-        var window = Window(kind, now, hoursBefore);
+        var window = Window(kind, now, options);
         return window.Due > now ? window.Due : window.Due.AddDays(kind == ReminderKind.DailyQuest ? 1 : 7);
     }
     public static bool IsExtremeMonsterParkQuest(string name) => name.Contains("익스트림 몬스터파커", StringComparison.Ordinal);

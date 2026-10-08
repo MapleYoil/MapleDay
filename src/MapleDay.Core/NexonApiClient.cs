@@ -43,10 +43,10 @@ public sealed class NexonApiClient : IDisposable
         return basic.Level is null ? null : basic;
     }
 
-    public Task<SchedulerState> GetSchedulerAsync(string ocid, string apiKey, CancellationToken token = default)
+    public Task<SchedulerState> GetSchedulerAsync(string ocid, string apiKey, CancellationToken token = default, bool allowEmpty = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ocid);
-        return GetAsync<SchedulerState>($"maplestory/v1/scheduler/character-state?ocid={Uri.EscapeDataString(ocid)}", apiKey, token);
+        return GetAsync<SchedulerState>($"maplestory/v1/scheduler/character-state?ocid={Uri.EscapeDataString(ocid)}", apiKey, token, allowEmptyScheduler: allowEmpty);
     }
 
     public async Task<SchedulerState?> GetSchedulerAtAsync(string ocid, string apiKey, DateOnly date, CancellationToken token = default)

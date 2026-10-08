@@ -12,6 +12,13 @@
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#E8F0FE" />
     <SolidColorBrush x:Key="SchedulerSelectedBrush" Color="#ECECEC" />
     <SolidColorBrush x:Key="AccentTextBrush" Color="#225EBF" />
+    <SolidColorBrush x:Key="ReadBrush" Color="#F0EFEC" />
+    <SolidColorBrush x:Key="ReadTextBrush" Color="#70736E" />
+    <SolidColorBrush x:Key="DangerTextBrush" Color="#C42B1C" />
+    <SolidColorBrush x:Key="DangerSoftBrush" Color="#FDE7E9" />
+    <SolidColorBrush x:Key="DangerLineBrush" Color="#F1B3AD" />
+    <SolidColorBrush x:Key="NegativeBrush" Color="#C45B26" />
+    <SolidColorBrush x:Key="TransparentBrush" Color="Transparent" />
     <StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="AccentTextBrush" />
     <StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="AccentTextBrush" />
     <StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="AccentTextBrush" />

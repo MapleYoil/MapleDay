@@ -44,24 +44,27 @@ public sealed partial class MainWindow
         _telemetryRequest = request;
         try
         {
-            var candidates = new List<(string Name, int Level)>();
+            var candidates = new List<(string Name, int Level, string World)>();
             if (_settings.UsageAnalyticsEnabled)
             {
-                candidates.AddRange(Characters.Select(character => (character.Name, character.Level)));
+                candidates.AddRange(Characters.Select(character => (character.Name, character.Level, character.World)));
                 foreach (var profile in SavedApiKeys.ToArray().Where(profile => profile.Key != _apiKey))
                 {
                     try
                     {
                         var cache = await _characterCache.LoadAsync(profile.Key);
                         if (cache is not null) candidates.AddRange(cache.Characters.Select(character =>
-                            (character.Basic?.Name ?? character.Summary.Name, character.Basic?.Level ?? character.Summary.Level)));
+                            (character.Basic?.Name ?? character.Summary.Name, character.Basic?.Level ?? character.Summary.Level,
+                                character.Basic?.World ?? character.Summary.World)));
                     }
                     catch (Exception error) when (IsStorageError(error) || error is System.Text.Json.JsonException) { }
                 }
             }
-            var highest = UsageIdentity.HighestNickname(candidates);
+            var highest = UsageIdentity.HighestNickname(candidates.Select(character => (character.Name, character.Level)));
+            var selected = candidates.Where(character => character.Name == highest).OrderByDescending(character => character.Level).FirstOrDefault();
+            var usageProfile = highest is null ? null : new UsageCharacter(highest, selected.Level, selected.World);
             await _telemetry.SendAsync(highest is null ? [] : [highest], CurrentAppVersion, App.Diagnostics,
-                _settings.UsageAnalyticsEnabled, request.Token, _settings.AnonymousUsageAnalytics);
+                _settings.UsageAnalyticsEnabled, request.Token, _settings.AnonymousUsageAnalytics, usageProfile);
         }
         catch (Exception) { /* Retry offline failures without interrupting the app or reporting themselves. */ }
         finally
@@ -94,7 +97,7 @@ public sealed partial class MainWindow
         _telemetryRequest?.Cancel();
         AnonymousUsageToggle.IsEnabled = _settings.UsageAnalyticsEnabled;
         TelemetryStatus.Text = !_settings.UsageAnalyticsEnabled ? "사용자 집계를 껐습니다."
-            : _settings.AnonymousUsageAnalytics ? "익명 집계로 설정했습니다. 닉네임 원문을 보내지 않습니다." : "닉네임을 함께 보내도록 설정했습니다. API 키는 보내지 않습니다.";
+            : _settings.AnonymousUsageAnalytics ? "익명 집계로 설정했습니다. 닉네임 원문·레벨·서버 정보를 보내지 않습니다." : "최고 레벨 캐릭터의 닉네임·레벨·서버를 함께 보내도록 설정했습니다. API 키는 보내지 않습니다.";
         _ = SendTelemetryAsync();
     }
 }

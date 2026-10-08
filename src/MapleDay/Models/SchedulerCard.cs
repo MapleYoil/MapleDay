@@ -234,6 +234,8 @@ public sealed class SchedulerCharacter(CharacterCard character) : INotifyPropert
         var count = entries.Count;
         Status = count == 0 ? $"등록된 콘텐츠나 미등록 보스 클리어 기록이 없어요. · {UpdatedAt:HH:mm} 조회"
             : $"{entries.Count(entry => entry.Complete)} / {count} 완료 · {UpdatedAt:HH:mm} 조회";
+        if (history.FallbackDate is { } savedDate)
+            Status = $"현재 접속 데이터 없음 · {savedDate:yyyy.MM.dd} 저장 기준 · 초기화 반영";
         Loading = false;
         LoadingVisibility = Visibility.Collapsed;
         Notify();

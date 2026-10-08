@@ -1,4 +1,5 @@
 using MapleDay.Core;
+using MapleDay.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
@@ -18,10 +19,8 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
     public double Opacity => day.InMonth ? 1 : 0.4;
     public string Amount => day.Bosses.Count > 0 || day.KnownCharacters > 0 ? IncomeCalendar.CompactMoney(day.Meso) : "";
     public string Note => day.Bosses.Count > 0 ? $"{day.Bosses.Count}마리" : Enabled && day.KnownCharacters == 0 ? "기록 없음" : "";
-    public Brush Background { get; } = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255,
-        day.Date == selectedDate ? (byte)232 : (byte)255, day.Date == selectedDate ? (byte)240 : (byte)255, 255));
-    public Brush BorderBrush { get; } = new SolidColorBrush(day.Date == selectedDate
-        ? Microsoft.UI.ColorHelper.FromArgb(255, 55, 125, 255) : Microsoft.UI.ColorHelper.FromArgb(255, 232, 232, 232));
+    public Brush Background { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentSoftBrush" : "CardBrush");
+    public Brush BorderBrush { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentBrush" : "LineBrush");
     public Thickness BorderThickness => new(day.Date == selectedDate ? 2 : 1);
     public string AccessibleName => $"{day.Date:yyyy년 M월 d일}, {BossIncome.Money(day.Meso)}, 보스 {day.Bosses.Count}마리";
     public string Tooltip => AccessibleName + $"\n조회 기록 {day.KnownCharacters}/{expectedCharacters}캐릭터";

@@ -12,7 +12,9 @@ public partial class App : Application
 
     public App()
     {
-        Diagnostics.SetEnabled(AppSettings.Load().AutomaticErrorReports);
+        var settings = AppSettings.Load();
+        RequestedTheme = settings.DarkMode ? ApplicationTheme.Dark : ApplicationTheme.Light;
+        Diagnostics.SetEnabled(settings.AutomaticErrorReports);
         UnhandledException += (_, args) => Capture(args.Exception, "unhandled", true);
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         { if (args.ExceptionObject is Exception error) Capture(error, "unhandled", true); };

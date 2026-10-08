@@ -25,9 +25,6 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public List<SupportReply> Replies { get; set; } = [];
     public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm}";
     [JsonIgnore] public bool IsRead { get; private set; }
-    [JsonIgnore] public string RowBackground => IsRead ? "#F0EFEC" : "Transparent";
-    [JsonIgnore] public string RowForeground => IsRead ? "#70736E" : "#272822";
-    [JsonIgnore] public string StatusForeground => IsRead ? "#70736E" : "#225EBF";
     public string StatusText => Replies.Count > 0 ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
     {
         "queued" or "sending" => "발송 대기", "sent" => "답변 대기", _ => "발송 확인 필요"

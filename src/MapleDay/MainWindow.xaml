@@ -9,6 +9,7 @@
     Title="메요일 · MapleDay">
     <Grid x:Name="Root" Background="{StaticResource PageBrush}" RequestedTheme="Light" KeyDown="Root_KeyDown">
         <Grid.Resources>
+            <services:ReadTicketBrushConverter x:Key="ReadTicketBrush" />
             <DataTemplate x:Key="CharacterIdentityTemplate" x:DataType="models:CharacterCard">
                 <Grid RowSpacing="4" VerticalAlignment="Top">
                     <Grid.RowDefinitions>
@@ -101,6 +102,10 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
+                <NavigationViewItem x:Name="ThemeNavigationItem" Content="다크 모드 · 끔" Tag="theme" SelectsOnInvoked="False"
+                                    AutomationProperties.AutomationId="DarkModeToggleButton" AutomationProperties.Name="다크 모드로 전환">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE708;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem x:Name="KeyNavigationItem" Content="API 키" Tag="key"
                                     AutomationProperties.AutomationId="KeyNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE192;" /></NavigationViewItem.Icon>
@@ -334,12 +339,12 @@
                 <ListView x:Name="SupportTickets" ItemsSource="{x:Bind Tickets}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="SupportTickets_ItemClick" MaxHeight="240">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="services:SupportTicket">
-                            <Grid Padding="10" ColumnSpacing="16" CornerRadius="8" Background="{x:Bind RowBackground, Mode=OneWay}">
+                            <Grid Padding="10" ColumnSpacing="16" CornerRadius="8" Background="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadBrush|TransparentBrush'}">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                <StackPanel Spacing="4"><TextBlock Text="{x:Bind Subject}" Foreground="{x:Bind RowForeground, Mode=OneWay}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                    <TextBlock Text="{x:Bind Summary}" Foreground="{x:Bind RowForeground, Mode=OneWay}" FontSize="12" />
+                                <StackPanel Spacing="4"><TextBlock Text="{x:Bind Subject}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Bind Summary}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontSize="12" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" Text="{x:Bind StatusText, Mode=OneWay}" Foreground="{x:Bind StatusForeground, Mode=OneWay}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind StatusText, Mode=OneWay}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|AccentTextBrush'}" VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -540,8 +545,8 @@
                     <ListView x:Name="LevelCharacterList" ItemsSource="{x:Bind LevelCharacters}" SelectionChanged="LevelCharacterList_SelectionChanged"
                               SelectionMode="Single" MaxHeight="380" ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutomationProperties.Name="등록한 캐릭터의 레벨">
                         <ListView.Resources>
-                            <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="#EEEEEE"/>
-                            <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="#E8E8E8"/>
+                            <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="SchedulerSelectedBrush"/>
+                            <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="SchedulerSelectedBrush"/>
                         </ListView.Resources>
                         <ListView.ItemContainerStyle><Style TargetType="ListViewItem"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0,0,0,8"/></Style></ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
@@ -657,7 +662,7 @@
                         <StackPanel Spacing="16">
                             <ToggleSwitch x:Name="AllRemindersToggle" Header="전체 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
                             <ToggleSwitch x:Name="StartupRemindersToggle" Header="앱 실행 시 바로 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
-                            <TextBlock Text="켜두면 앱을 새로 시작할 때 미완료 항목을 확인해 한 번 알립니다. 전체·종류별 알림 설정을 따르며, 변경은 다음 실행부터 적용됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <TextBlock Text="켜두면 앱을 새로 시작할 때 미완료 항목을 확인해 한 번 알립니다. 전체·종류별 알림과 주간 보스의 요일 설정을 따르며, 변경은 다음 실행부터 적용됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <TextBlock x:Name="ReminderRuntimeStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <Button Content="Windows 알림 다시 연결" Click="ReconnectNotifications_Click" HorizontalAlignment="Left" />
                         </StackPanel>
@@ -683,7 +688,21 @@
                         <StackPanel Spacing="12">
                             <ToggleSwitch x:Name="WeeklyBossReminderToggle" Header="주간 보스" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
                             <TextBlock Text="목요일 00:00 초기화 · 한국 시간" Style="{StaticResource SecondaryText}" />
-                            <NumberBox x:Name="WeeklyBossReminderHours" Header="초기화 몇 시간 전에 알릴까요?" Minimum="1" Maximum="167" SmallChange="1" LargeChange="1" SpinButtonPlacementMode="Inline" ValueChanged="ReminderHours_ValueChanged" Width="260" HorizontalAlignment="Left" />
+                            <ComboBox x:Name="WeeklyBossReminderDayMode" Header="알림 요일" SelectionChanged="ReminderDay_SelectionChanged" Width="260" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="요일 제한 없음" />
+                                <ComboBoxItem Content="지정 요일만" />
+                            </ComboBox>
+                            <ComboBox x:Name="WeeklyBossReminderDay" Header="알림 받을 요일" SelectionChanged="ReminderDay_SelectionChanged" Width="260" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="일요일" />
+                                <ComboBoxItem Content="월요일" />
+                                <ComboBoxItem Content="화요일" />
+                                <ComboBoxItem Content="수요일" />
+                                <ComboBoxItem Content="목요일" />
+                                <ComboBoxItem Content="금요일" />
+                                <ComboBoxItem Content="토요일" />
+                            </ComboBox>
+                            <TextBlock Text="지정 요일만 선택하면 앱 시작 알림도 그 요일에만 보냅니다. 기본은 수요일 오후 10시입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <NumberBox x:Name="WeeklyBossReminderHours" Header="다음 자정 몇 시간 전에 알릴까요?" Minimum="1" Maximum="24" SmallChange="1" LargeChange="1" SpinButtonPlacementMode="Inline" ValueChanged="ReminderHours_ValueChanged" Width="260" HorizontalAlignment="Left" />
                             <TextBlock x:Name="WeeklyBossReminderNext" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>
@@ -815,15 +834,15 @@
                             <Button Content="용량 새로고침" Click="AppDataRefreshButton_Click" />
                         </StackPanel>
                         <TextBlock Text="이 PC에 저장된 캐릭터 목록, 스케줄러 기록, API 키와 설정 등의 용량입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="#C42B1C" Background="#FDE7E9" BorderBrush="#F1B3AD" HorizontalAlignment="Left" />
+                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="{StaticResource DangerTextBrush}" Background="{StaticResource DangerSoftBrush}" BorderBrush="{StaticResource DangerLineBrush}" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Border>
                 <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="개인정보처리방침" FontSize="18" FontWeight="SemiBold" />
                         <ToggleSwitch x:Name="UsageAnalyticsToggle" Header="사용자·설치 수 집계" OnContent="켜짐" OffContent="꺼짐" Toggled="TelemetryToggle_Toggled" />
-                        <TextBlock Text="등록한 키의 최고 레벨 캐릭터 닉네임을 함께 보냅니다. 대표 캐릭터가 바뀌어도 같은 사용자로 집계하며 관리자 화면에는 합계만 보입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                        <ToggleSwitch x:Name="AnonymousUsageToggle" Header="집계를 익명으로 보내기" OnContent="닉네임 원문 보내지 않음" OffContent="닉네임 함께 보내기" Toggled="TelemetryToggle_Toggled" />
+                        <TextBlock Text="등록한 키의 최고 레벨 캐릭터 닉네임·레벨·서버를 함께 보냅니다. 관리자 콘솔의 유저 목록과 평균 레벨·서버 분포에 사용하며, 대표 캐릭터가 바뀌어도 같은 사용자로 집계합니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <ToggleSwitch x:Name="AnonymousUsageToggle" Header="집계를 익명으로 보내기" OnContent="캐릭터 정보 보내지 않음" OffContent="닉네임·레벨·서버 함께 보내기" Toggled="TelemetryToggle_Toggled" />
                         <ToggleSwitch x:Name="ErrorReportingToggle" Header="오류 자동 보고" OnContent="켜짐" OffContent="꺼짐" Toggled="TelemetryToggle_Toggled" />
                         <TextBlock Text="오류 종류, 앱 내부 위치, 버전만 전송합니다. API 키·닉네임·문의 내용·오류 메시지·파일 경로는 포함하지 않습니다. 종료 오류는 다음 실행에 전송합니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         <TextBlock x:Name="TelemetryStatus" Text="집계와 오류 보고는 각각 끌 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />

@@ -38,8 +38,8 @@ public sealed partial class MainWindow : Window
             AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
             AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
             AppWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
-            AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 39, 40, 34);
         }
+        ApplyTheme();
         TitleBar.SizeChanged += (_, _) => UpdateCaptionInset();
         ShellNavigation.SelectedItem = KeyNavigationItem;
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Branding", "mapleday.ico"));
@@ -190,6 +190,7 @@ public sealed partial class MainWindow : Window
 
     private void ShellNavigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
+        if (args.InvokedItemContainer == ThemeNavigationItem) { ToggleDarkMode(); return; }
         if (args.InvokedItemContainer?.Tag is string page) NavigateTo(page);
     }
 

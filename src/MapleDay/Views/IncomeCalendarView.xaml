@@ -14,7 +14,7 @@
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-            <TextBlock Text="일" HorizontalAlignment="Center" Foreground="#BD3B3B"/>
+            <TextBlock Text="일" HorizontalAlignment="Center" Foreground="{StaticResource DangerTextBrush}"/>
             <TextBlock Grid.Column="1" Text="월" HorizontalAlignment="Center"/><TextBlock Grid.Column="2" Text="화" HorizontalAlignment="Center"/>
             <TextBlock Grid.Column="3" Text="수" HorizontalAlignment="Center"/><TextBlock Grid.Column="4" Text="목" HorizontalAlignment="Center"/>
             <TextBlock Grid.Column="5" Text="금" HorizontalAlignment="Center"/><TextBlock Grid.Column="6" Text="토" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>

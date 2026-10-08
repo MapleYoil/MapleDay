@@ -24,10 +24,106 @@ public sealed class SchedulerRemindersTests
     public void LeadTimeCanCrossDayBoundaryAndNextScheduleDoesNotShowPastTime()
     {
         var now = DateTimeOffset.Parse("2026-10-06T12:00:00+09:00");
-        var weekly = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, 30);
+        var options = new ReminderOptions { RestrictToDay = false, HoursBefore = 30 };
+        var weekly = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, options);
         Assert.Equal(DateTimeOffset.Parse("2026-10-06T18:00:00+09:00"), weekly.Due);
-        Assert.Equal(weekly.Due.AddDays(7), SchedulerReminders.NextDue(ReminderKind.WeeklyBoss, weekly.Due.AddSeconds(1), 30));
+        Assert.Equal(weekly.Due.AddDays(7), SchedulerReminders.NextDue(ReminderKind.WeeklyBoss, weekly.Due.AddSeconds(1), options));
         Assert.Equal(23, (SchedulerReminders.Window(ReminderKind.DailyQuest, now, 1000).Reset - SchedulerReminders.Window(ReminderKind.DailyQuest, now, 1000).Due).TotalHours);
+    }
+
+    [Theory]
+    [InlineData("2026-10-08T10:40:00+09:00", false)]
+    [InlineData("2026-10-09T22:00:00+09:00", false)]
+    [InlineData("2026-10-10T22:00:00+09:00", false)]
+    [InlineData("2026-10-11T22:00:00+09:00", false)]
+    [InlineData("2026-10-12T22:00:00+09:00", false)]
+    [InlineData("2026-10-13T22:00:00+09:00", false)]
+    [InlineData("2026-10-14T09:00:00+09:00", true)]
+    [InlineData("2026-10-13T14:59:59Z", false)]
+    [InlineData("2026-10-13T15:00:00Z", true)]
+    [InlineData("2026-10-14T14:59:59Z", true)]
+    [InlineData("2026-10-14T15:00:00Z", false)]
+    public void DefaultWeeklyBossStartupOnlyChecksOnKoreanWednesday(string timestamp, bool allowed)
+    {
+        var now = DateTimeOffset.Parse(timestamp);
+        var window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, new ReminderOptions());
+        Assert.Equal(allowed, window.AllowsDay(now));
+        Assert.Equal(allowed, SchedulerReminders.ShouldCheck(window, now, false, true));
+        Assert.Equal(allowed, SchedulerReminders.ShouldCheck(window, now, true, true));
+    }
+
+    [Fact]
+    public void ScheduledWednesdayWindowStopsAtKoreanThursdayMidnight()
+    {
+        var before = DateTimeOffset.Parse("2026-10-14T21:59:59+09:00");
+        var window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, before, 2);
+        Assert.False(SchedulerReminders.ShouldCheck(window, before, false, false));
+        Assert.True(SchedulerReminders.ShouldCheck(window, window.Due, false, false));
+        Assert.False(SchedulerReminders.ShouldCheck(window, window.Due, true, false));
+        Assert.False(window.IsDue(window.Reset));
+        Assert.False(SchedulerReminders.ShouldCheck(window, window.Reset, false, true));
+        Assert.False(SchedulerReminders.ShouldCheck(SchedulerReminders.Window(ReminderKind.WeeklyBoss, window.Reset, 2), window.Reset, false, true));
+        Assert.Equal(window.Due.AddDays(7), SchedulerReminders.NextDue(ReminderKind.WeeklyBoss, window.Reset, 2));
+    }
+
+    [Theory]
+    [InlineData(DayOfWeek.Thursday, 8)]
+    [InlineData(DayOfWeek.Friday, 9)]
+    [InlineData(DayOfWeek.Saturday, 10)]
+    [InlineData(DayOfWeek.Sunday, 11)]
+    [InlineData(DayOfWeek.Monday, 12)]
+    [InlineData(DayOfWeek.Tuesday, 13)]
+    [InlineData(DayOfWeek.Wednesday, 14)]
+    public void ChosenWeekdaySchedulesAtTenPmWithinItsThursdayResetPeriod(DayOfWeek day, int date)
+    {
+        var now = DateTimeOffset.Parse("2026-10-08T00:00:00+09:00");
+        var options = new ReminderOptions { Day = day };
+        var window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, options);
+        Assert.Equal(new DateTimeOffset(2026, 10, date, 22, 0, 0, SchedulerReminders.Korea), window.Due);
+        Assert.Equal(DateTimeOffset.Parse("2026-10-15T00:00:00+09:00"), window.Reset);
+        Assert.Equal(window.Due, SchedulerReminders.NextDue(ReminderKind.WeeklyBoss, now, options));
+        Assert.True(window.IsDue(window.Due));
+        Assert.False(window.IsDue(window.Due.AddDays(1)));
+        Assert.False(SchedulerReminders.ShouldCheck(window, window.Due.AddDays(1), false, true));
+        Assert.Equal(window.Due.AddDays(7), SchedulerReminders.NextDue(ReminderKind.WeeklyBoss, window.Due.AddMinutes(1), options));
+    }
+
+    [Fact]
+    public void DayRestrictionClampsLongLeadTimeAndUnrestrictedModeAllowsThursdayStartup()
+    {
+        var now = DateTimeOffset.Parse("2026-10-08T10:40:00+09:00");
+        var options = new ReminderOptions { HoursBefore = 167 };
+        var window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, options);
+        Assert.Equal(DateTimeOffset.Parse("2026-10-14T00:00:00+09:00"), window.Due);
+        Assert.False(SchedulerReminders.ShouldCheck(window, now, false, true));
+        options.RestrictToDay = false;
+        window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, options);
+        Assert.Null(window.AllowedDay);
+        Assert.True(SchedulerReminders.ShouldCheck(window, now, false, true));
+        Assert.True(window.IsDue(now));
+        Assert.True(SchedulerReminders.ShouldCheck(window, now, false, false));
+        Assert.False(SchedulerReminders.ShouldCheck(window, now, true, false));
+        Assert.True(SchedulerReminders.ShouldCheck(window, now, true, true));
+    }
+
+    [Theory]
+    [InlineData(ReminderKind.DailyQuest)]
+    [InlineData(ReminderKind.WeeklyQuest)]
+    public void BossDayPreferenceDoesNotRestrictQuestStartup(ReminderKind kind)
+    {
+        var now = DateTimeOffset.Parse("2026-10-08T10:40:00+09:00");
+        var window = SchedulerReminders.Window(kind, now, new ReminderOptions());
+        Assert.Null(window.AllowedDay);
+        Assert.True(SchedulerReminders.ShouldCheck(window, now, false, true));
+    }
+
+    [Fact]
+    public void InvalidStoredWeekdayFallsBackToWednesday()
+    {
+        var now = DateTimeOffset.Parse("2026-10-08T10:40:00+09:00");
+        var window = SchedulerReminders.Window(ReminderKind.WeeklyBoss, now, new ReminderOptions { Day = (DayOfWeek)123 });
+        Assert.Equal(DayOfWeek.Wednesday, window.AllowedDay);
+        Assert.False(SchedulerReminders.ShouldCheck(window, now, false, true));
     }
 
     [Fact]

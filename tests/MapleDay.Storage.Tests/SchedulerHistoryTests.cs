@@ -121,6 +121,56 @@ public sealed class SchedulerHistoryTests
         finally { Directory.Delete(directory, true); }
     }
 
+    [Fact]
+    public async Task NoLoginUsesOldSavedRosterWithoutWritingProjectedTodayAndLiveResponseReplacesIt()
+    {
+        var directory = Temporary();
+        try
+        {
+            var store = new SchedulerHistoryStore(directory);
+            var savedDate = new DateOnly(2026, 8, 1);
+            var saved = JsonSerializer.Deserialize<SchedulerState>("""{"character_name":"캐릭터","daily_contents":[{"content_name":"일일 퀘스트","type":"quest","now_count":100,"max_count":100,"quest_state":"2","registration_flag":true}],"boss_contents":[{"content_name":"스우","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true}]}""")!;
+            await store.SaveAsync("key", "id", new(savedDate, saved, true, DateTimeOffset.UtcNow), default);
+            var available = false;
+            using var http = new HttpClient(new Handler((request, _) => Task.FromResult(Json(
+                available && !request.RequestUri!.Query.Contains("date=") ? """{"character_name":"캐릭터","daily_contents":[],"boss_contents":[]}""" : """{"character_name":null}"""))));
+            using var api = new NexonApiClient(http);
+            var loader = new SchedulerHistoryLoader(api, store);
+            var now = DateTimeOffset.Parse("2026-10-08T00:00:00+09:00");
+            var result = await loader.LoadAsync("id", "key", now, default);
+            Assert.Equal(savedDate, result.FallbackDate);
+            Assert.Equal("0", result.Current.Daily![0].QuestState);
+            Assert.False(SchedulerEntries.Flag(result.Current.Bosses![0].Complete));
+            Assert.Null(result.Snapshots.Single(snapshot => snapshot.Date == new DateOnly(2026, 10, 8)).State);
+            Assert.Null((await store.LoadAsync("key", "id", default)).Single(snapshot => snapshot.Date == new DateOnly(2026, 10, 8)).State);
+            Assert.True(SchedulerEntries.Flag((await store.LoadAsync("key", "id", default)).Single(snapshot => snapshot.Date == savedDate).State!.Bosses![0].Complete));
+            available = true;
+            var live = await loader.LoadAsync("id", "key", now.AddMinutes(1), default);
+            Assert.Null(live.FallbackDate);
+            Assert.Empty(live.Current.Bosses!);
+        }
+        finally { Directory.Delete(directory, true); }
+    }
+
+    [Fact]
+    public async Task FirstNoLoginFetchStillFindsPastRosterAndMissingAllRecordsDoesNotInventContent()
+    {
+        var directory = Temporary();
+        try
+        {
+            var hasHistory = true;
+            using var http = new HttpClient(new Handler((request, _) => Task.FromResult(Json(hasHistory && request.RequestUri!.Query.Contains("date=2026-10-07")
+                ? """{"character_name":"캐릭터","daily_contents":[],"boss_contents":[]}""" : """{"character_name":null}"""))));
+            using var api = new NexonApiClient(http);
+            var now = DateTimeOffset.Parse("2026-10-08T03:00:00Z");
+            var result = await new SchedulerHistoryLoader(api, new(directory)).LoadAsync("id", "key", now, default);
+            Assert.Equal(new DateOnly(2026, 10, 7), result.FallbackDate);
+            hasHistory = false;
+            await Assert.ThrowsAsync<NexonApiException>(() => new SchedulerHistoryLoader(api, new(directory)).LoadAsync("different-id", "key", now, default));
+        }
+        finally { Directory.Delete(directory, true); }
+    }
+
     private static HttpResponseMessage Json(string text) => new(HttpStatusCode.OK) { Content = new StringContent(text, Encoding.UTF8, "application/json") };
     private sealed class Handler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> respond) : HttpMessageHandler
     {

@@ -4,7 +4,10 @@ using MapleDay.Core;
 
 namespace MapleDay.Services;
 
-public sealed record SchedulerHistoryResult(SchedulerState Current, IReadOnlyList<SchedulerSnapshot> Snapshots, DateOnly Today, int FailedDates, bool StorageFailed);
+public sealed record SchedulerHistoryResult(SchedulerState Current, IReadOnlyList<SchedulerSnapshot> Snapshots, DateOnly Today, int FailedDates, bool StorageFailed)
+{
+    public DateOnly? FallbackDate { get; init; }
+}
 
 public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryStore store)
 {
@@ -15,9 +18,17 @@ public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryS
         List<SchedulerSnapshot> cached;
         try { cached = await store.LoadAsync(apiKey, ocid, token); }
         catch (Exception error) when (StorageError(error)) { cached = []; storageFailed = 1; }
-        var current = await api.GetSchedulerAsync(ocid, apiKey, token);
+        SchedulerState? current;
+        try
+        {
+            current = await api.GetSchedulerAsync(ocid, apiKey, token, allowEmpty: true);
+            if (string.IsNullOrWhiteSpace(current.Name)) current = null;
+        }
+        catch (NexonApiException error) when (error.Code == "OPENAPI00009") { current = null; }
         var snapshots = new ConcurrentDictionary<DateOnly, SchedulerSnapshot>(cached.ToDictionary(snapshot => snapshot.Date));
-        var live = WithCompletionEvidence(new SchedulerSnapshot(today, current, false, now));
+        // Keep genuine same-day observations, but never write a projected previous-day state.
+        var observed = current ?? snapshots.GetValueOrDefault(today)?.State;
+        var live = WithCompletionEvidence(new SchedulerSnapshot(today, observed, false, now));
         snapshots[today] = live;
         await Save(live);
         var dates = new List<DateOnly>();
@@ -37,7 +48,16 @@ public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryS
             catch (HttpRequestException) { Interlocked.Increment(ref failed); }
             catch (OperationCanceledException) when (!cancellation.IsCancellationRequested) { Interlocked.Increment(ref failed); }
         });
-        return new(current, snapshots.Values.OrderBy(snapshot => snapshot.Date).ToArray(), today, failed, storageFailed != 0);
+        DateOnly? fallbackDate = null;
+        if (current is null)
+        {
+            var source = SchedulerLastState.Latest(snapshots.Values, today)
+                ?? throw new NexonApiException(System.Net.HttpStatusCode.OK, null, "조회할 스케줄러 기록이 없습니다. 캐릭터 접속 후 다시 조회해주세요.");
+            current = SchedulerLastState.Project(source, today);
+            fallbackDate = source.Date;
+        }
+        return new(current, snapshots.Values.OrderBy(snapshot => snapshot.Date).ToArray(), today, failed, storageFailed != 0)
+            { FallbackDate = fallbackDate };
 
         SchedulerSnapshot WithCompletionEvidence(SchedulerSnapshot snapshot) => snapshot with
         {

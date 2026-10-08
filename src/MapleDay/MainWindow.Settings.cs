@@ -27,7 +27,7 @@ public sealed partial class MainWindow
             var policy = await reader.ReadToEndAsync();
             await new ContentDialog
             {
-                XamlRoot = Root.XamlRoot, Title = "개인정보처리방침", CloseButtonText = "닫기",
+                XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme, Title = "개인정보처리방침", CloseButtonText = "닫기",
                 Content = new ScrollViewer
                 {
                     MaxHeight = Math.Max(180, Math.Min(480, Root.ActualHeight - 200)),
@@ -202,7 +202,7 @@ public sealed partial class MainWindow
         contents.Children.Add(input);
         var dialog = new ContentDialog
         {
-            XamlRoot = Root.XamlRoot, Title = "앱 데이터 삭제", Content = contents,
+            XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme, Title = "앱 데이터 삭제", Content = contents,
             PrimaryButtonText = "데이터 삭제", CloseButtonText = "취소", IsPrimaryButtonEnabled = false,
             DefaultButton = ContentDialogButton.Close
         };
@@ -240,7 +240,7 @@ public sealed partial class MainWindow
             Root.IsHitTestVisible = true;
             await new ContentDialog
             {
-                XamlRoot = Root.XamlRoot, Title = "일부 데이터를 삭제하지 못했어요",
+                XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme, Title = "일부 데이터를 삭제하지 못했어요",
                 Content = "파일 사용 상태나 폴더 권한을 확인한 뒤 앱을 다시 실행해서 시도해주세요.", CloseButtonText = "앱 종료"
             }.ShowAsync();
         }
