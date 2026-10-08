@@ -32,10 +32,12 @@ public sealed partial class MainWindow
     {
         AppVersionText.Text = $"현재 버전 {CurrentAppVersion.ToString(4)}";
         AutomaticUpdatesToggle.IsOn = _settings.AutomaticUpdates;
+        UpdateNotificationsToggle.IsOn = _settings.UpdateNotifications;
         AutomaticUpdatesToggle.IsEnabled = !WindowsStartup.IsPackaged;
         if (WindowsStartup.IsPackaged)
         {
             AutomaticUpdatesToggle.Visibility = Visibility.Collapsed;
+            UpdateNotificationsToggle.Visibility = UpdateNotificationsHint.Visibility = Visibility.Collapsed;
             CheckUpdateButton.Content = IsStoreInstall ? "Microsoft Store에서 업데이트 확인" : "새 MSIX 다운로드 페이지";
             UpdateStatusText.Text = IsStoreInstall ? "Microsoft Store에서 자동 업데이트를 관리합니다."
                 : "직접 설치한 MSIX는 릴리즈에서 새 MSIX를 받아 설치해주세요. 저장된 데이터는 유지됩니다.";
@@ -89,6 +91,35 @@ public sealed partial class MainWindow
         else await CheckForUpdatesAsync();
     }
 
+    private void UpdateNotificationsToggle_Toggled(object sender, RoutedEventArgs args)
+    {
+        if (!_updatesInitialized || _dataDeleting || _updateInstalling) return;
+        var previous = _settings.UpdateNotifications;
+        _settings.UpdateNotifications = UpdateNotificationsToggle.IsOn;
+        try { _settings.Save(); }
+        catch (Exception error) when (IsStorageError(error))
+        {
+            _settings.UpdateNotifications = previous;
+            _updatesInitialized = false;
+            UpdateNotificationsToggle.IsOn = previous;
+            _updatesInitialized = true;
+            UpdateStatusText.Text = "새 버전 알림 설정을 저장하지 못했어요.";
+            return;
+        }
+        NotifyReadyUpdate();
+    }
+
+    private void NotifyReadyUpdate()
+    {
+        var ready = _readyUpdate is { } && _preparedUpdate is { };
+        UpdateReadyButton.Visibility = ready && _settings.UpdateNotifications ? Visibility.Visible : Visibility.Collapsed;
+        if (!ready || !_settings.UpdateNotifications || _closed || _dataDeleting) return;
+        var update = _readyUpdate!;
+        if (_notifiedUpdateVersion != update.Version && _notificationReady
+            && _windowsNotifications.Show("메요일 · 새 버전이 준비됐어요", [$"{update.Version} 업데이트를 내려받았습니다. 클릭해서 적용하세요."], new Dictionary<string, string> { ["update"] = "1" }))
+            _notifiedUpdateVersion = update.Version;
+    }
+
     private async Task CheckForUpdatesAsync()
     {
         if (_updateChecking || _updateInstalling || _closed || _dataDeleting) return;
@@ -122,11 +153,9 @@ public sealed partial class MainWindow
             var prepared = await _incrementalUpdates.PrepareAsync(manifest, Path.GetDirectoryName(launcher)!, directory, progress, request.Token);
             if (_closed || _dataDeleting) return;
             _readyUpdate = update; _preparedUpdate = prepared;
-            InstallUpdateButton.Visibility = UpdateReadyButton.Visibility = Visibility.Visible;
+            InstallUpdateButton.Visibility = Visibility.Visible;
             UpdateStatusText.Text = $"{update.Version} 준비 완료 · 변경 {prepared.ChangedFiles}개 · 다운로드 {prepared.DownloadSize / 1024.0 / 1024.0:0.0}MB. 설치기 없이 적용하고 다시 시작합니다.";
-            if (_notifiedUpdateVersion != update.Version && _notificationReady
-                && _windowsNotifications.Show("메요일 · 새 버전이 준비됐어요", [$"{update.Version} 업데이트를 내려받았습니다. 클릭해서 적용하세요."], new Dictionary<string, string> { ["update"] = "1" }))
-                _notifiedUpdateVersion = update.Version;
+            NotifyReadyUpdate();
         }
         catch (OperationCanceledException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = request.IsCancellationRequested ? "업데이트 다운로드를 중단했습니다." : "연결 시간이 초과됐어요. 업데이트 확인을 다시 눌러주세요."; }
@@ -156,7 +185,7 @@ public sealed partial class MainWindow
         if (launcher is null) { UpdateStatusText.Text = "배포 폴더의 MapleDay.exe로 실행한 뒤 업데이트해주세요."; return; }
         _updateInstalling = true;
         Root.IsHitTestVisible = false;
-        InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = false;
+        InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = UpdateNotificationsToggle.IsEnabled = false;
         try
         {
             if (_closed || _dataDeleting) return;
@@ -192,7 +221,7 @@ public sealed partial class MainWindow
             UpdateStatusText.Text = error is InvalidDataException ? error.Message : "업데이트를 시작하지 못했어요. 다시 시도해주세요.";
             _updateInstalling = false;
             Root.IsHitTestVisible = true;
-            InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = true;
+            InstallUpdateButton.IsEnabled = CheckUpdateButton.IsEnabled = AutomaticUpdatesToggle.IsEnabled = UpdateNotificationsToggle.IsEnabled = true;
         }
     }
 }
