@@ -49,7 +49,8 @@ public sealed class SchedulerTile(SchedulerEntry entry, int characterLevel, stri
     public string? Cycle => entry.Cycle;
     public Visibility ContentActionVisibility => IsComplete || IsLevelBlocked ? Visibility.Collapsed : Visibility.Visible;
     public Visibility BossActionVisibility => IsLevelBlocked ? Visibility.Collapsed : Visibility.Visible;
-    public Visibility ProgressVisibility => IsComplete || IsLevelBlocked ? Visibility.Collapsed : Visibility.Visible;
+    public Visibility ProgressVisibility => IsComplete || IsLevelBlocked || SchedulerReminders.IsExtremeMonsterParkQuest(Name)
+        ? Visibility.Collapsed : Visibility.Visible;
     public string RowActionImage => $"ms-appx:///Assets/Scheduler/UI/main_entity_{(IsQuest ? SchedulerRequirements.IsQuestReady(entry) ? "btComplete_normal" : entry.QuestState switch { "1" => "btComplete_disabled", "2" => "btMoveCompleted_normal", _ => "btStart_normal" } : IsComplete ? "btMoveCompleted_normal" : "btMove_normal")}_0.png";
     public string Progress => Name.Contains("에픽 던전") ? $"STAGE {SchedulerNumberFormat.Count(entry.Now)}" : SchedulerNumberFormat.Count(entry.Now);
     public string ProgressUnit => Name.Contains("에픽 던전") ? ""
