@@ -278,23 +278,23 @@ def income_timeline():return json.loads((HERE/'income-replay-timeline.json').rea
 
 def income_hero(t):
     # Give the count-up, falling sprites, and the final settled heap distinct readable beats.
-    phase=max(0,min(1,(t-.22)/3.7))
+    phase=max(0,min(1,(t-.15)/2.15))
     clock=10*phase**1.35
     index=round(clock/10*420)
     im=income_plate(index).copy()
     total=income_timeline()[index]['Total']
-    arrival=.22+3.7*.8**(1/1.35)
+    arrival=.15+2.15*.8**(1/1.35)
     q=max(0,t-arrival)
     pulse=math.sin(min(1,q/.65)*math.pi)*math.exp(-q*.7) if q>0 else 0
     rr(im,(39,449,686,601),12,'#0E1726')
     glow=Image.new('RGBA',im.size)
     ImageDraw.Draw(glow).ellipse((40,470,624,565),fill=(68,154,255,round(24+pulse*55)))
     im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(30)))
-    amount=f'{total/1e12:.3f}조' if total>=1e12 else f'{total/1e8:.2f}억'
+    amount=f'{total/1e12:.2f}조' if total>=1e12 else f'{total/1e8:.2f}억'
     size=min(119,590/max(1,font(119,740).getlength(amount))*119)
     txt(im,(55,525),amount,round(size*(1+pulse*.075)),740,'#81BAFF' if total>=1e12 else '#F1F5FC',anchor='lm')
-    # A very slow push-in keeps the entire ledger visible and settles on the 5T result.
-    scale=1+.009*ease(t/6.4)
+    # A very slow push-in keeps the entire ledger visible and settles on the final result.
+    scale=1+.009*ease(t/3)
     if scale>1:
         im=im.resize((round(W*scale),round(H*scale)),RESAMPLE)
         im=im.crop(((im.width-W)//2,(im.height-H)//2,(im.width+W)//2,(im.height+H)//2))
@@ -371,9 +371,10 @@ def scene(index,t):
         txt(im,(960,1007),'MapleYoil  ·  Data based on NEXON Open API',14,400,'#999FA5',anchor='mm')
     return im
 
-# Five seconds for income, leaving readable time for the other features in the 15s film.
-STARTS=[0,1.35,2.65,4.1,9.1,11.3,13.1]
-SPEEDS=[1.5,1.65,1.6,1,1.2,1.4,1.6]
+# Give the character list and scheduler 2.5 seconds each, with a settled reading beat.
+# Income stays at three seconds; the whole film stays at fifteen seconds.
+STARTS=[0,1,3.5,6,9,11,13.3]
+SPEEDS=[1.85,1.25,1.3,1,1.4,1.4,1.6]
 def frame(t):
     i=max(index for index,start in enumerate(STARTS) if t>=start)
     local=t-STARTS[i];im=scene(i,local*SPEEDS[i])
@@ -390,7 +391,7 @@ def audio():
     return render_score(DURATION)
 
 def storyboard():
-    times=[1.15,2.5,3.9,4.95,8.65,10.8,12.8,14.7]
+    times=[.85,3.1,5.6,6.65,8.7,10.6,12.9,14.7]
     sheet=Image.new('RGB',(1440,4*450),'#ECEDE9')
     for idx,t in enumerate(times):
         shot=frame(t).resize((720,405),RESAMPLE);sheet.paste(shot,((idx%2)*720,(idx//2)*450))

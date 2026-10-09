@@ -68,12 +68,12 @@ public sealed record BossIncomeResult(IReadOnlyList<BossIncomeRecord> Records, D
 public static class BossIncome
 {
     public const int WeeklyCap = 12;
-    public static string Money(long meso) => (meso / 100_000_000m).ToString("0.########", CultureInfo.InvariantCulture) + "억 메소";
+    public static string Money(long meso) => (meso / 100_000_000m).ToString("0.##", CultureInfo.InvariantCulture) + "억 메소";
 
     // Each call is one character. The cap is applied per Thursday period before
     // calendar-month filtering, including when a week crosses a month boundary.
     public static BossIncomeResult Calculate(IEnumerable<SchedulerSnapshot> snapshots, DateOnly today,
-        Func<string, int>? partySize = null, IEnumerable<ManualWeeklyClear>? manual = null)
+        Func<string, int>? partySize = null, IEnumerable<ManualWeeklyClear>? manual = null, IEnumerable<BossClearChange>? changes = null)
     {
         var days = snapshots.Where(snapshot => snapshot.Date >= SchedulerBossHistory.FirstDate && snapshot.Date <= today)
             .GroupBy(snapshot => snapshot.Date).Select(group => group.MaxBy(snapshot => snapshot.FetchedAt)!)
@@ -113,6 +113,22 @@ public static class BossIncome
             if (!ManualWeeklyHistory.Valid(clear)) continue;
             var id = ManualWeeklyHistory.Id(clear);
             if (!existing.Add(id)) continue;
+            var difficulty = CrystalPrices.DifficultyKey(clear.Difficulty);
+            var price = CrystalPrices.Find(clear.Name, difficulty, clear.Date);
+            var party = BossParty.Clamp(clear.Name, partySize?.Invoke(id) ?? 1);
+            records.Add(new(id, clear.Name, difficulty, clear.Cycle, SchedulerBossHistory.Start(clear.Cycle, clear.Date),
+                clear.Date, clear.Date, false, price, party, price?.Meso / party, true) { Manual = true });
+        }
+        var corrections = (changes ?? []).GroupBy(change => change.OriginalId).Select(group => group.Last())
+            .Where(change => !string.IsNullOrEmpty(change.OriginalId) && (change.Replacement is null
+                || ManualWeeklyHistory.Valid(change.Replacement) && change.Replacement.Ocid == change.Ocid
+                    && change.Replacement.Date >= SchedulerBossHistory.FirstDate && change.Replacement.Date <= today)).ToArray();
+        var hidden = corrections.Select(change => change.OriginalId).Concat(corrections.Where(change => change.Replacement is not null)
+            .Select(change => ManualWeeklyHistory.Id(change.Replacement!))).ToHashSet(StringComparer.Ordinal);
+        records.RemoveAll(record => hidden.Contains(record.Id));
+        foreach (var clear in corrections.Select(change => change.Replacement).OfType<ManualWeeklyClear>().DistinctBy(ManualWeeklyHistory.Id))
+        {
+            var id = ManualWeeklyHistory.Id(clear);
             var difficulty = CrystalPrices.DifficultyKey(clear.Difficulty);
             var price = CrystalPrices.Find(clear.Name, difficulty, clear.Date);
             var party = BossParty.Clamp(clear.Name, partySize?.Invoke(id) ?? 1);

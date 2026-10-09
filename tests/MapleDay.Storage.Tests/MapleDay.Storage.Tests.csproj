@@ -15,6 +15,7 @@
     <Compile Include="../../src/MapleDay/Services/ApiKeyStore.cs" Link="ApiKeyStore.cs" />
     <Compile Include="../../src/MapleDay/Services/ApiKeyProfileStore.cs" Link="ApiKeyProfileStore.cs" />
     <Compile Include="../../src/MapleDay/Services/SupportClient.cs" Link="SupportClient.cs" />
+    <Compile Include="../../src/MapleDay/Services/LootMarketClient.cs" Link="LootMarketClient.cs" />
     <Compile Include="../../src/MapleDay/Services/TelemetryClient.cs" Link="TelemetryClient.cs" />
     <Compile Include="../../src/MapleDay/Services/DiagnosticQueue.cs" Link="DiagnosticQueue.cs" />
     <Compile Include="../../src/MapleDay/Services/CharacterCacheStore.cs" Link="CharacterCacheStore.cs" />

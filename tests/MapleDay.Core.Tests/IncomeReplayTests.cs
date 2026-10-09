@@ -3,11 +3,29 @@ namespace MapleDay.Core.Tests;
 public sealed class IncomeReplayTests
 {
     [Fact]
+    public void All_rewards_from_one_clear_appear_together_and_count_as_one_kill()
+    {
+        var date = new DateOnly(2026, 10, 8);
+        var clear = new BossIncomeRecord("clear", "림보", "hard", BossCycle.Weekly, date, date, date, false, null, 2, 100, true);
+        var items = BossLootCatalog.ForBoss("림보", "hard");
+        var loot = items.Select((item, i) => new BossLootRecord("loot" + i, "owner", date, "림보", item.Id, item.Name,
+            "equal", 1_000, 2, Difficulty: "hard", ClearId: "clear")).ToArray();
+        var replay = new IncomeReplay(new[] { ("owner", clear) }, loot.Concat(loot));
+        Assert.Single(replay.Clears);
+        Assert.Equal(items.Count, replay.At(.5).Loot!.Count);
+        Assert.Equal(100 + items.Count * 500, replay.At(1).Total);
+        Assert.Equal(1, replay.At(1).Count);
+        Assert.Equal(1, replay.At(1).Bosses.Single().Count);
+        var standalone = new IncomeReplay(Array.Empty<(string, BossIncomeRecord)>(), loot);
+        Assert.Equal(items.Count * 500, standalone.At(1).Total);
+        Assert.Equal(0, standalone.At(1).Count);
+    }
+    [Fact]
     public void Large_replay_income_uses_trillion_units_without_changing_the_amount()
     {
-        Assert.Equal("4.250조", IncomeReplay.CompactMeso(4_250_000_000_000));
-        Assert.Equal("1.000조", IncomeReplay.CompactMeso(1_000_000_000_000));
-        Assert.Equal("40.50억", IncomeReplay.CompactMeso(4_050_000_000));
+        Assert.Equal("4.25조", IncomeReplay.CompactMeso(4_250_000_000_000));
+        Assert.Equal("1조", IncomeReplay.CompactMeso(1_000_000_000_000));
+        Assert.Equal("40.5억", IncomeReplay.CompactMeso(4_050_000_000));
         Assert.Equal("150.0만", IncomeReplay.CompactMeso(1_500_000));
     }
     [Fact]

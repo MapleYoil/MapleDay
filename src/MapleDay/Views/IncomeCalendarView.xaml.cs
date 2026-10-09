@@ -13,6 +13,7 @@ public sealed partial class IncomeCalendarView : UserControl
     public event EventHandler<IncomePartySizeRequest>? PartySizeRequested;
     public event EventHandler<DateOnly>? BossAddRequested;
     public event EventHandler<CalendarBossRecord>? LootRequested;
+    public event EventHandler<CalendarBossRecord>? BossEditRequested;
     public void ShowActionStatus(string message) => ActionStatus.Text = message;
     public ObservableCollection<IncomeCalendarDay> Days { get; } = [];
     public ObservableCollection<IncomeCalendarBoss> Bosses { get; } = [];
@@ -91,6 +92,10 @@ public sealed partial class IncomeCalendarView : UserControl
             PartySizeRequested?.Invoke(this, new(boss.Record, anchor));
     }
     private void AddBoss_Click(object sender, RoutedEventArgs e) => BossAddRequested?.Invoke(this, _selectedDate);
+    private void EditBoss_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: IncomeCalendarBoss boss }) BossEditRequested?.Invoke(this, boss.Record);
+    }
     private void Loot_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { Tag: IncomeCalendarBoss boss }) LootRequested?.Invoke(this, boss.Record);

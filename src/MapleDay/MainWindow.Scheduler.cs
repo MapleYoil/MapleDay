@@ -27,6 +27,7 @@ public sealed partial class MainWindow
         _settings.SchedulerOcids ??= [];
         _settings.BossPartySizes ??= [];
         _settings.ManualWeeklyClears ??= [];
+        _settings.BossClearChanges ??= [];
         UpdateSchedulerCharacters();
         _schedulerDayTimer.Tick += async (_, _) =>
         {
@@ -43,7 +44,8 @@ public sealed partial class MainWindow
         CancelScheduler();
         _schedulerCharacters.Clear();
         foreach (var character in Characters.Where(character => _settings.SchedulerOcids.Contains(character.Ocid)))
-            _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid));
+            _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
+                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid));
         foreach (var character in Characters) character.SetSchedulerAdded(_schedulerCharacters.ContainsKey(character.Ocid));
         RebuildSchedulerViews();
         UpdateSchedulerLogin();
@@ -107,7 +109,8 @@ public sealed partial class MainWindow
         if (!_hasLoadedCharacters || !Characters.Contains(character) || _schedulerCharacters.ContainsKey(character.Ocid)) return false;
         CancelScheduler();
         if (!_settings.SchedulerOcids.Contains(character.Ocid)) _settings.SchedulerOcids.Add(character.Ocid);
-        _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid));
+        _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
+                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid));
         character.SetSchedulerAdded(true);
         SaveSchedulerSelection();
         RebuildSchedulerViews();

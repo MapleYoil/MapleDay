@@ -7,6 +7,14 @@ namespace MapleDay.Storage.Tests;
 public sealed class WebAndIncomeSettingsTests
 {
     [Fact]
+    public void Clear_edits_and_deletions_round_trip_and_old_settings_start_empty()
+    {
+        var settings = new AppSettings { BossClearChanges = [new("c", "old", new("c", "스우", "normal", new(2026, 10, 1))), new("d", "deleted", null)] };
+        var loaded = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(settings))!;
+        Assert.Equal(settings.BossClearChanges, loaded.BossClearChanges);
+        Assert.Empty(JsonSerializer.Deserialize<AppSettings>("{}")!.BossClearChanges);
+    }
+    [Fact]
     public void Single_monthly_clear_and_associated_loot_preserve_links_and_legacy_defaults()
     {
         var clear = new ManualWeeklyClear("c", "검은 마법사", "hard", new(2026, 10, 1), BossCycle.Monthly);

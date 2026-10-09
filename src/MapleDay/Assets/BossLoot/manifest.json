@@ -202,6 +202,24 @@
       "sha256": "c6f58a3a5efeb293c4885502ee8bce2c1169304437c7822c4b7d7dd3309281e6"
     },
     {
+      "Id": "2539001",
+      "Name": "\uC0DD\uBA85\uC758 \uC5F0\uB9C8\uC11D",
+      "sourceName": "\uC0DD\uBA85\uC758 \uC5F0\uB9C8\uC11D",
+      "source": "Item/Consume/0253.img/02539001/info/icon",
+      "width": 34,
+      "height": 34,
+      "sha256": "6e0308c128669d3b680891ad60afdb0fd2cda357cf33a19e063b1f0651f3c153"
+    },
+    {
+      "Id": "2539003",
+      "Name": "\uC2E0\uB150\uC758 \uC5F0\uB9C8\uC11D",
+      "sourceName": "\uC2E0\uB150\uC758 \uC5F0\uB9C8\uC11D",
+      "source": "Item/Consume/0253.img/02539003/info/icon",
+      "width": 34,
+      "height": 33,
+      "sha256": "f5d27ea7d09639775dade26b33030c59e0c38acc50eaf891d8c6a7ce95ca7c0e"
+    },
+    {
       "Id": "2539020",
       "Name": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
       "sourceName": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",

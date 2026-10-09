@@ -4,13 +4,14 @@ public sealed class MesoInputTests
 {
     [Theory]
     [InlineData(0, "0억 메소")]
-    [InlineData(1, "0.00000001억 메소")]
-    [InlineData(8_350_000, "0.0835억 메소")]
-    [InlineData(132_500_000, "1.325억 메소")]
+    [InlineData(1, "0억 메소")]
+    [InlineData(8_350_000, "0.08억 메소")]
+    [InlineData(132_500_000, "1.33억 메소")]
+    [InlineData(132_560_001, "1.33억 메소")]
     [InlineData(2_000_000_000, "20억 메소")]
     [InlineData(1_000_000_000_000, "10000억 메소")]
     [InlineData(1_000_000_000_000_000, "10000000억 메소")]
-    public void Eok_display_retains_the_full_meso_amount(long amount, string expected)
+    public void Eok_display_uses_at_most_two_decimals(long amount, string expected)
         => Assert.Equal(expected, BossIncome.Money(amount));
 
     [Theory]

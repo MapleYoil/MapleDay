@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.ComponentModel;
+using System.Net.WebSockets;
+using System.Text;
 
 namespace MapleDay.Services;
 
@@ -13,6 +15,8 @@ public sealed class SupportReply
     public long Id { get; set; }
     public string Body { get; set; } = "";
     public long Created { get; set; }
+    public string Author { get; set; } = "admin";
+    [JsonIgnore] public bool IsAdmin => Author != "user";
 }
 public sealed class SupportTicket : INotifyPropertyChanged
 {
@@ -30,14 +34,14 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public string StatusText => Kind == "suggestion" ? State switch
     {
         "implemented" => "반영 완료", "rejected" => "반려", _ => Completed is not null ? "처리 완료" : "접수"
-    } : Replies.Count > 0 ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
+    } : Completed is not null ? "처리 완료" : Replies.Any(reply => reply.IsAdmin) ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
     {
         "queued" or "sending" => "발송 대기", "sent" or "received" => "답변 대기", _ => "발송 확인 필요"
     }) + (IsRead ? " · 읽음" : "");
     public event PropertyChangedEventHandler? PropertyChanged;
     public void RestoreReadState(bool opened, long readReplyId)
     {
-        var read = opened && !Replies.Any(reply => reply.Id > readReplyId);
+        var read = opened && !Replies.Any(reply => reply.IsAdmin && reply.Id > readReplyId);
         if (IsRead == read) return;
         IsRead = read;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
@@ -47,7 +51,7 @@ public sealed class SupportTicket : INotifyPropertyChanged
         "implemented" => "메요일 · 건의사항이 반영됐어요", "rejected" => "메요일 · 건의사항이 반려됐어요", _ => "메요일 · 건의사항 처리 결과가 도착했어요"
     } : "메요일 · 문의 답변이 도착했어요";
     public string Conversation => $"[{Nickname} · {(Kind == "suggestion" ? "건의사항" : "문의")}]\n{Body}" + string.Concat(Replies.Select(reply =>
-        $"\n\n[{(Kind == "suggestion" ? "처리 결과" : "운영자 답변")} · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
+        $"\n\n[{(!reply.IsAdmin ? "내 답장" : Kind == "suggestion" ? "처리 결과" : "운영자 답변")} · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
 }
 public sealed record SupportInbox(List<SupportTicket> Tickets);
 public sealed record SupportReceipt(string Id, string State);
@@ -119,6 +123,48 @@ public sealed class SupportClient : IDisposable
     {
         var raw = await _draft.LoadAsync();
         return raw is null ? null : JsonSerializer.Deserialize<SupportDraft>(raw, JsonOptions);
+    }
+
+    public async Task ReplyAsync(string ticketId, string requestId, string body, CancellationToken token)
+    {
+        await InitializeAsync(token);
+        using var request = Request(HttpMethod.Post, "support/" + ticketId + "/reply");
+        request.Content = JsonContent.Create(new { id = requestId, body });
+        using var response = await _http.SendAsync(request, token);
+        await EnsureSuccessAsync(response, token);
+    }
+
+    public async Task WatchAsync(Action changed, CancellationToken token)
+    {
+        var retry = 1;
+        while (!token.IsCancellationRequested)
+        {
+            try
+            {
+                await InitializeAsync(token);
+                using var socket = new ClientWebSocket();
+                socket.Options.SetRequestHeader("Authorization", "Bearer " + _token);
+                socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
+                socket.Options.KeepAliveTimeout = TimeSpan.FromSeconds(15);
+                var uri = new UriBuilder(new Uri(_http.BaseAddress!, "support/events")) { Scheme = _http.BaseAddress!.Scheme == "https" ? "wss" : "ws" };
+                await socket.ConnectAsync(uri.Uri, token);
+                retry = 1;
+                var buffer = new byte[256];
+                while (socket.State == WebSocketState.Open)
+                {
+                    var result = await socket.ReceiveAsync(buffer.AsMemory(), token);
+                    if (result.MessageType == WebSocketMessageType.Close) break;
+                    if (!result.EndOfMessage || result.MessageType != WebSocketMessageType.Text) throw new WebSocketException("Invalid event");
+                    var signal = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    if (signal is "ready" or "changed") changed();
+                }
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested) { break; }
+            catch (Exception error) when (error is WebSocketException or HttpRequestException or IOException or OperationCanceledException) { }
+            try { await Task.Delay(TimeSpan.FromSeconds(retry), token); }
+            catch (OperationCanceledException) { break; }
+            retry = Math.Min(30, retry * 2);
+        }
     }
 
     private HttpRequestMessage Request(HttpMethod method, string path)

@@ -16,6 +16,7 @@ public sealed class IncomeReplayRenderer : IDisposable
     private IncomeDisplay _display;
     private readonly string _scope;
     private readonly Dictionary<string, Image> _icons = [];
+    private readonly Dictionary<string, Image> _lootIcons = [];
     private readonly Dictionary<string, (double From, double To, double At)> _positions = [];
     private readonly Dictionary<string, (PointF From, PointF To, double At)> _gridPositions = [];
     private readonly PrivateFontCollection _fonts = new();
@@ -36,6 +37,12 @@ public sealed class IncomeReplayRenderer : IDisposable
             if (SchedulerIconAssets.BossFile(name) is not { } file) continue;
             var path = Path.Combine(assets, "Scheduler", file.Replace('/', Path.DirectorySeparatorChar));
             if (File.Exists(path)) _icons[name] = Image.FromFile(path);
+        }
+        foreach (var item in replay.Clears.SelectMany(clear => clear.Loot ?? []).DistinctBy(item => item.Icon))
+        {
+            if (string.IsNullOrEmpty(item.Icon)) continue;
+            var path = Path.Combine(assets, item.Icon.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(path)) _lootIcons[item.Icon] = Image.FromFile(path);
         }
     }
     public void SetDisplay(IncomeDisplay display) => _display = display;
@@ -74,7 +81,7 @@ public sealed class IncomeReplayRenderer : IDisposable
             g.FillRoundedRectangle(veil, new RectangleF(24, 218, 440, 354), 12);
         }
         Text(g, "MAPLEDAY", 36, 27, 18, Blue, FontStyle.Bold);
-        Text(g, "주간 보스 수익", 36, 64, 32, White, FontStyle.Bold);
+        Text(g, "보스 · 물욕템 수익", 36, 64, 32, White, FontStyle.Bold);
         Text(g, _scope, 36, 110, 18, Muted);
         Text(g, frame.Date?.ToString("yyyy.MM.dd") ?? "저장된 기록 없음", 36, 230, 20, Muted);
         var main = _display.ValidMode == "cash" ? _display.CashText(frame.Total) : IncomeReplay.CompactMeso(frame.Total);
@@ -92,10 +99,28 @@ public sealed class IncomeReplayRenderer : IDisposable
         Text(g, main, 32, 301, mainSize, frame.Total >= 1_000_000_000_000 ? Blue : White, FontStyle.Bold);
         g.Restore(moneyState);
         if (_display.ValidMode == "both") Text(g, _display.CashText(frame.Total), 36, 398, 32, Blue, FontStyle.Bold);
-        Text(g, $"주간 보스 {frame.Count:N0}마리", 36, 456, 22, White);
-        using (var track = new SolidBrush(Color.FromArgb(38, 51, 71))) g.FillRectangle(track, 36, 498, 408, 3);
-        using (var fill = new SolidBrush(Blue)) g.FillRectangle(fill, 36, 498, (float)(408 * progress), 3);
-        Text(g, $"{_replay.Clears.FirstOrDefault()?.Date:yyyy.MM.dd} — {_replay.Clears.LastOrDefault()?.Date:yyyy.MM.dd}", 36, 526, 17, Muted);
+        Text(g, $"주간 보스 {frame.Count:N0}마리", 36, 170, 22, White);
+        using (var track = new SolidBrush(Color.FromArgb(38, 51, 71))) g.FillRectangle(track, 36, 557, 408, 3);
+        using (var fill = new SolidBrush(Blue)) g.FillRectangle(fill, 36, 557, (float)(408 * progress), 3);
+        if (frame.Loot is { Count: > 0 } loot)
+        {
+            Text(g, frame.LootBoss + " · 물욕템", 36, 438, 17, White, FontStyle.Bold);
+            // All rewards from the same clear appear together, including rings and soul ether.
+            var lootRows = (int)Math.Ceiling(loot.Count / 2d);
+            var rowHeight = Math.Min(32f, 87f / lootRows);
+            for (var i = 0; i < loot.Count; i++)
+            {
+                var item = loot[i]; var x = 36 + (i % 2) * 205; var y = 467 + (i / 2) * rowHeight;
+                if (_lootIcons.TryGetValue(item.Icon, out var image))
+                {
+                    var iconState = g.Save(); g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    g.DrawImage(image, x, y, rowHeight - 4, rowHeight - 4); g.Restore(iconState);
+                }
+                CenterText(g, item.Name, new RectangleF(x + rowHeight, y, 199 - rowHeight, rowHeight * .53f), Math.Min(12, rowHeight * .42f), White, true);
+                CenterText(g, "+" + IncomeReplay.CompactMeso(item.Meso), new RectangleF(x + rowHeight, y + rowHeight * .5f, 199 - rowHeight, rowHeight * .5f), Math.Min(11, rowHeight * .4f), Blue, true);
+            }
+        }
+        else Text(g, "결정석 수익 집계", 36, 468, 18, Muted);
         var rows = Math.Max(1, (int)Math.Ceiling(count / (double)columns));
         const float gap = 12;
         var side = Math.Min(230f, Math.Min((750 - gap * (columns - 1)) / columns, (480 - gap * (rows - 1)) / rows));
@@ -163,7 +188,7 @@ public sealed class IncomeReplayRenderer : IDisposable
         }
         finally { bitmap.UnlockBits(data); }
     }
-    public void Dispose() { _mesoRain.Dispose(); foreach (var icon in _icons.Values) icon.Dispose(); _fonts.Dispose(); }
+    public void Dispose() { _mesoRain.Dispose(); foreach (var icon in _icons.Values) icon.Dispose(); foreach (var icon in _lootIcons.Values) icon.Dispose(); _fonts.Dispose(); }
 }
 
 internal static class ReplayDrawing

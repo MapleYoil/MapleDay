@@ -4,5 +4,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup><EmbeddedResource Include="CrystalPrices.json;BossLootItems.json;BossLootDifficulty.json" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="CrystalPrices.json;BossLootItems.json;BossLootDifficulty.json;BossHealth.json" /></ItemGroup>
 </Project>

@@ -9,6 +9,7 @@ namespace MapleDay;
 public sealed partial class MainWindow
 {
     private bool _lootDialogOpen;
+    private readonly LootMarketClient _lootMarket = new();
     private void IncomeCalendar_BossAddRequested(object? sender, DateOnly date) => OpenLootDialog(null, addDate: date);
     private void IncomeCalendar_LootRequested(object? sender, CalendarBossRecord clear)
         => OpenLootDialog(StoredLoot.FirstOrDefault(loot => BossLoot.ForClear(loot, clear.Ocid, clear.Boss)), clear);
@@ -28,11 +29,15 @@ public sealed partial class MainWindow
             if (addDate is { } selectedDay) { date.Header = "클리어 날짜"; date.Date = Offset(selectedDay); date.IsEnabled = false; date.MinDate = Offset(SchedulerBossHistory.FirstDate); }
             else if (existing is null && source is not null) date.Date = Offset(source.Boss.Date);
             var boss = new ComboBox { Header = "보스", HorizontalAlignment = HorizontalAlignment.Stretch };
-            var bossNames = source is not null ? new[] { source.Boss.Name } : ManualWeeklyHistory.SingleChoices.Select(price => price.Name).Distinct().ToArray();
+            var bossNames = source is not null ? new[] { source.Boss.Name } : addDate is not null
+                ? BossRecordChoices.Single.Select(choice => choice.Name).Distinct().ToArray()
+                : ManualWeeklyHistory.SingleChoices.Select(price => price.Name).Distinct().ToArray();
             foreach (var name in bossNames) boss.Items.Add(name);
             boss.IsEnabled = source is null;
             var difficulty = new ComboBox { Header = "난이도", HorizontalAlignment = HorizontalAlignment.Stretch };
             difficulty.IsEnabled = source is null;
+            var clearChoice = new ComboBox { Header = "보스·난이도", ItemsSource = BossRecordChoices.Single,
+                DisplayMemberPath = "Label", HorizontalAlignment = HorizontalAlignment.Stretch };
             var item = new ComboBox { Header = "획득 아이템", HorizontalAlignment = HorizontalAlignment.Stretch };
             var mode = new ComboBox { Header = "수익 입력 방식", HorizontalAlignment = HorizontalAlignment.Stretch };
             mode.Items.Add("균등 분배"); mode.Items.Add("비율 분배"); mode.Items.Add("수령액 직접 입력");
@@ -41,6 +46,13 @@ public sealed partial class MainWindow
             var amount = new TextBox { Header = "분배할 총액 (메소)", Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture),
                 PlaceholderText = "예: 2000000000", MaxLength = 24 };
             var amountHint = new TextBlock { FontSize = 14, Foreground = AppTheme.Brush("AccentBrush"), TextWrapping = TextWrapping.Wrap };
+            var marketChoice = new ComboBox { Header = "참고 시세", DisplayMemberPath = "Label", HorizontalAlignment = HorizontalAlignment.Stretch };
+            var marketHint = new TextBlock { Text = "시세를 불러오는 중…", FontSize = 12, TextWrapping = TextWrapping.Wrap };
+            var marketApply = new Button { Content = "시세를 총액으로 입력", IsEnabled = false };
+            var marketPanel = new StackPanel { Spacing = 6 };
+            foreach (var control in new FrameworkElement[] { marketChoice, marketHint, marketApply }) marketPanel.Children.Add(control);
+            LootMarketSnapshot? market = null;
+            var marketFailed = false;
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(amount, "메소 정수를 입력하면 아래에 억 단위로 즉시 표시합니다.");
             var ratio = new TextBox { Header = "분배 비율", Text = existing?.Ratios ?? "1:1", PlaceholderText = "예: 2:1:1", MaxLength = 120 };
             var member = new NumberBox { Header = "내 순번 (비율의 왼쪽부터)", Minimum = 1, Maximum = 6,
@@ -56,7 +68,13 @@ public sealed partial class MainWindow
                     recordChoice.Items.Add(new ComboBoxItem { Content = $"{saved.ItemName} · {saved.Date:MM.dd} · {CurrentIncomeDisplay.Format(saved.Received)}", Tag = saved });
             recordChoice.SelectedItem = recordChoice.Items.Cast<ComboBoxItem>().FirstOrDefault(option => option.Tag is BossLootRecord saved && saved.Id == existing?.Id) ?? recordChoice.Items[0];
             var content = new StackPanel { Spacing = 12, MinWidth = 340 };
-            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
+            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, marketPanel, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
+            if (source is not null) { content.Children.Remove(character); content.Children.Remove(boss); content.Children.Remove(difficulty); }
+            if (addDate is not null)
+            {
+                content.Children.Remove(boss); content.Children.Remove(difficulty); content.Children.Insert(2, clearChoice);
+                content.Children.Insert(3, new TextBlock { Text = "하드 스우 이상 체력 · 체력 낮은 순서", FontSize = 12, TextWrapping = TextWrapping.Wrap });
+            }
             content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정의 주간 12개 제한과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 기록", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
@@ -69,7 +87,8 @@ public sealed partial class MainWindow
                     throw new ArgumentException("캐릭터, 날짜, 보스를 선택하세요.");
                 var key = (difficulty.SelectedItem as ComboBoxItem)?.Tag as string ?? "";
                 var clear = new ManualWeeklyClear(owner.Ocid, name, key, DateOnly.FromDateTime(date.Date.Value.DateTime), ManualWeeklyHistory.CycleFor(name));
-                if (!ManualWeeklyHistory.Valid(clear) || clear.Date < SchedulerBossHistory.FirstDate || clear.Date > today)
+                if (!ManualWeeklyHistory.Valid(clear) || !BossRecordChoices.Allows(name, key)
+                    || clear.Date < SchedulerBossHistory.FirstDate || clear.Date > today)
                     throw new ArgumentException("날짜와 보스 난이도를 확인해주세요.");
                 if (!double.IsFinite(party.Value) || party.Value != Math.Truncate(party.Value) || party.Value < 1 || party.Value > BossParty.Maximum(name))
                     throw new ArgumentException($"파티 인원은 1~{BossParty.Maximum(name)}인으로 입력하세요.");
@@ -118,6 +137,23 @@ public sealed partial class MainWindow
                 }
                 catch (ArgumentException error) { preview.Text = ""; errorText.Text = error.Message; dialog.IsPrimaryButtonEnabled = false; }
             }
+            void UpdateMarket()
+            {
+                marketPanel.Visibility = lootEnabled.IsChecked == true && mode.SelectedIndex != 2 ? Visibility.Visible : Visibility.Collapsed;
+                var chosen = (item.SelectedItem as ComboBoxItem)?.Tag as BossLootItem;
+                var owner = character.SelectedItem as SchedulerCharacter;
+                var previous = marketChoice.SelectedItem as LootMarketPrice;
+                var prices = chosen is not null && owner is not null ? market?.ForItem(chosen.Id, owner.Character.World) ?? [] : [];
+                marketChoice.ItemsSource = prices;
+                marketChoice.SelectedItem = prices.FirstOrDefault(value => value.Variant == previous?.Variant) ?? prices.FirstOrDefault();
+                marketChoice.Visibility = prices.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                marketApply.IsEnabled = marketChoice.SelectedItem is LootMarketPrice;
+                var region = owner?.Character.World.StartsWith("챌린저", StringComparison.Ordinal) == true ? "챌린저스" : "본 서버";
+                marketHint.Text = marketFailed ? "시세를 불러오지 못했어요. 금액을 직접 입력할 수 있습니다."
+                    : market is null ? "시세를 불러오는 중…" : prices.Count == 0 ? "이 아이템의 등록된 시세가 없습니다."
+                    : $"{region} 참고 시세 · 서버에서 하루 한 번 갱신합니다. 실제 거래·분배 금액을 확인해주세요."
+                    + (chosen?.Name.EndsWith("링 4레벨", StringComparison.Ordinal) == true ? " 사이트의 반지 대표 시세이며 레벨 구분은 제공하지 않습니다." : "");
+            }
             void UpdateMode()
             {
                 var proportional = mode.SelectedIndex == 1;
@@ -126,6 +162,7 @@ public sealed partial class MainWindow
                 ratio.Visibility = member.Visibility = ratioHint.Visibility = enabled && proportional ? Visibility.Visible : Visibility.Collapsed;
                 item.Visibility = enabled && mode.SelectedIndex != 2 ? Visibility.Visible : Visibility.Collapsed;
                 amount.Header = mode.SelectedIndex == 2 ? "실제 받은 금액 (메소)" : "분배할 총액 (메소)";
+                UpdateMarket();
                 UpdatePreview();
             }
             void ReloadItems()
@@ -150,7 +187,9 @@ public sealed partial class MainWindow
             {
                 var name = boss.SelectedItem as string ?? "";
                 difficulty.Items.Clear();
-                IReadOnlyList<string> keys = source is not null ? [source.Boss.Difficulty] : ManualWeeklyHistory.SingleChoices.Where(price => SchedulerBossHistory.BossKey(price.Name) == SchedulerBossHistory.BossKey(name)).Select(price => price.Difficulty).ToArray();
+                IReadOnlyList<string> keys = source is not null ? [source.Boss.Difficulty]
+                    : addDate is not null && clearChoice.SelectedItem is BossRecordChoice selectedChoice ? [selectedChoice.Difficulty]
+                    : ManualWeeklyHistory.SingleChoices.Where(price => SchedulerBossHistory.BossKey(price.Name) == SchedulerBossHistory.BossKey(name)).Select(price => price.Difficulty).ToArray();
                 if (keys.Count == 0) keys = CrystalPrices.All.Where(price => SchedulerBossHistory.BossKey(price.Name) == SchedulerBossHistory.BossKey(name))
                     .Select(price => price.Difficulty).Distinct().ToArray();
                 if (keys.Count == 0) keys = ["normal"];
@@ -171,6 +210,11 @@ public sealed partial class MainWindow
                 UpdatePreview();
             }
             boss.SelectionChanged += (_, _) => ReloadDifficulty();
+            clearChoice.SelectionChanged += (_, _) =>
+            {
+                if (clearChoice.SelectedItem is not BossRecordChoice choice) return;
+                boss.SelectedItem = choice.Name; ReloadDifficulty();
+            };
             difficulty.SelectionChanged += (_, _) => ReloadItems();
             item.SelectionChanged += (_, _) => UpdateMode();
             character.SelectionChanged += (_, _) => ReloadDifficulty(); date.DateChanged += (_, _) => UpdatePreview();
@@ -178,6 +222,8 @@ public sealed partial class MainWindow
             amount.TextChanged += (_, _) => UpdatePreview(); party.ValueChanged += (_, _) => { if (double.IsFinite(party.Value)) member.Maximum = Math.Max(1, party.Value); UpdatePreview(); };
             member.ValueChanged += (_, _) => UpdatePreview(); mode.SelectionChanged += (_, _) => UpdateMode();
             lootEnabled.Checked += (_, _) => UpdateMode(); lootEnabled.Unchecked += (_, _) => UpdateMode();
+            marketChoice.SelectionChanged += (_, _) => marketApply.IsEnabled = marketChoice.SelectedItem is LootMarketPrice;
+            marketApply.Click += (_, _) => { if (marketChoice.SelectedItem is LootMarketPrice price) amount.Text = price.WholeEokPrice.ToString(System.Globalization.CultureInfo.InvariantCulture); };
             recordChoice.SelectionChanged += (_, _) =>
             {
                 if (source is null) return;
@@ -190,8 +236,16 @@ public sealed partial class MainWindow
                 ReloadItems();
             };
             mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, _ => 0 };
-            boss.SelectedItem = bossNames.FirstOrDefault(name => SchedulerBossHistory.BossKey(name) == SchedulerBossHistory.BossKey(existing?.Boss ?? "")) ?? bossNames.First();
+            if (addDate is not null) clearChoice.SelectedIndex = 0;
+            else boss.SelectedItem = bossNames.FirstOrDefault(name => SchedulerBossHistory.BossKey(name) == SchedulerBossHistory.BossKey(existing?.Boss ?? "")) ?? bossNames.First();
             UpdateMode();
+            async Task LoadMarket()
+            {
+                try { market = await _lootMarket.GetAsync(_supportLifetime.Token); }
+                catch (Exception error) when (error is System.Net.Http.HttpRequestException or System.Text.Json.JsonException or InvalidDataException or OperationCanceledException) { marketFailed = true; }
+                if (!_closed && _lootDialogOpen) UpdateMarket();
+            }
+            _ = LoadMarket();
             dialog.PrimaryButtonClick += (_, args) =>
             {
                 args.Cancel = true;
@@ -204,14 +258,16 @@ public sealed partial class MainWindow
                     if (!_schedulerCharacters.ContainsKey(ocid)) throw new ArgumentException("스케줄러에 등록한 캐릭터를 선택해주세요.");
                     var previous = _settings.BossLootRecords ?? [];
                     var previousClears = _settings.ManualWeeklyClears;
+                    var previousChanges = _settings.BossClearChanges;
                     var previousParties = _settings.BossPartySizes;
                     if (record is not null) _settings.BossLootRecords = previous.Where(item => item.Id != record.Id).Append(record).ToList();
                     if (clear is not null)
                     {
                         _settings.ManualWeeklyClears = previousClears.Append(clear).ToList();
+                        _settings.BossClearChanges = BossClearHistory.Restore(previousChanges, [clear]);
                         _settings.BossPartySizes = new(previousParties) { [ManualWeeklyHistory.Key(clear)] = (int)party.Value };
                     }
-                    try { _settings.Save(); } catch { _settings.BossLootRecords = previous; _settings.ManualWeeklyClears = previousClears; _settings.BossPartySizes = previousParties; throw; }
+                    try { _settings.Save(); } catch { _settings.BossLootRecords = previous; _settings.ManualWeeklyClears = previousClears; _settings.BossPartySizes = previousParties; _settings.BossClearChanges = previousChanges; throw; }
                     RefreshManualIncome(); IncomeCalendarPanel.ShowActionStatus(clear is null ? "물욕템 기록을 저장했어요." : "선택한 날짜에 보스 기록을 추가했어요."); args.Cancel = false;
                 }
                 catch (ArgumentException error) { errorText.Text = error.Message; }

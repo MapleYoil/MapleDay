@@ -18,37 +18,40 @@ if (demo)
     var top = ManualWeeklyHistory.Choices.Select(price => CrystalPrices.Find(price.Name, price.Difficulty, today)!)
         .GroupBy(price => SchedulerBossHistory.BossKey(price.Name))
         .Select(group => group.MaxBy(price => price.Meso)!).OrderByDescending(price => price.Meso).Take(12).ToArray();
-    var fullSets = target / top.Sum(price => price.Meso);
-    long Gcd(long a, long b) { while (b != 0) (a, b) = (b, a % b); return a; }
-    var unit = top.Select(price => price.Meso).Aggregate(Gcd);
-    var remaining = target - fullSets * top.Sum(price => price.Meso);
-    if (remaining % unit != 0) throw new InvalidOperationException("Target is not divisible by the price catalog's unit.");
-    var size = checked((int)(remaining / unit));
-    var counts = top.Select(_ => (int)fullSets).ToArray();
-    var dp = Enumerable.Repeat(int.MaxValue / 2, size + 1).ToArray();
-    var picked = Enumerable.Repeat(-1, size + 1).ToArray(); dp[0] = 0;
-    for (var amount = 1; amount <= size; amount++)
-        for (var i = 0; i < top.Length; i++)
-        {
-            var coin = (int)(top[i].Meso / unit);
-            if (coin <= amount && dp[amount - coin] + 1 < dp[amount]) { dp[amount] = dp[amount - coin] + 1; picked[amount] = i; }
-        }
-    for (var amount = size; amount > 0;)
-    {
-        var i = picked[amount]; if (i < 0) throw new InvalidOperationException("No exact whole-kill total exists.");
-        counts[i]++; amount -= (int)(top[i].Meso / unit);
-    }
-    var dates = ManualWeeklyHistory.Dates(SchedulerBossHistory.FirstDate, today, today);
-    clears = top.SelectMany((price, i) => Enumerable.Range(0, counts[i])
-        .Select(kill => new ReplayClear(dates[kill % dates.Count], price.Name, price.Meso))).ToArray();
-    if (clears.Sum(clear => clear.Meso) != target || top.Length != 12) throw new InvalidOperationException("Invalid demonstration calculation.");
-    var plan = new { targetMeso = target, totalKills = counts.Sum(), partySize = 1, priceDate = today,
-        bosses = top.Select((price, i) => new { price.Name, price.Difficulty, crystalMeso = price.Meso, kills = counts[i], totalMeso = price.Meso * counts[i], price.Source }) };
-    File.WriteAllText(Path.Combine(source, "demo-5trillion-plan.json"), JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
+    var dates = ManualWeeklyHistory.Dates(SchedulerBossHistory.FirstDate, today, today).TakeLast(2).ToArray();
+    // Example loot settlements, not a claim about market prices or drop probabilities.
+    // Every eligible reward from a boss can appear in the same clear; no one-item limit.
+    var events = dates.SelectMany((date, week) => top.Select((boss, rank) => new {
+        Date = date, Boss = boss, Weight = (decimal)(1 + week * week) * (top.Length - rank),
+        Items = BossLootCatalog.ForBoss(boss.Name, boss.Difficulty)
+    })).Where(entry => entry.Items.Count > 0).OrderBy(entry => entry.Date).ThenBy(entry => entry.Boss.Name, StringComparer.Ordinal).ToArray();
+    var crystalIncome = events.Sum(entry => entry.Boss.Meso);
+    var lootTarget = target - crystalIncome;
+    if (lootTarget <= 0) throw new InvalidOperationException("Demonstration total must exceed the solo crystal income.");
+    var weightTotal = events.Sum(entry => entry.Weight);
+    var allocated = 0L;
+    clears = events.Select((entry, index) => {
+        var budget = index == events.Length - 1 ? lootTarget - allocated : (long)decimal.Floor(lootTarget * entry.Weight / weightTotal);
+        allocated += budget;
+        var rewardWeight = entry.Items.Select((_, item) => entry.Items.Count - item).Sum();
+        var paid = 0L;
+        var drops = entry.Items.Select((item, number) => {
+            var amount = number == entry.Items.Count - 1 ? budget - paid
+                : (long)decimal.Floor(budget * (decimal)(entry.Items.Count - number) / rewardWeight);
+            paid += amount;
+            return new ReplayLoot(item.Name, amount, item.Icon);
+        }).ToArray();
+        return new ReplayClear(entry.Date, entry.Boss.Name, entry.Boss.Meso + budget, drops);
+    }).ToArray();
+    if (clears.Sum(clear => clear.Meso) != target || clears.Select(clear => clear.Boss).Distinct().Count() != 12)
+        throw new InvalidOperationException("Invalid demonstration calculation.");
+    var plan = new { targetMeso = target, totalKills = clears.Length, examplePrices = true, crystalIncome, partySize = 1,
+        settlements = clears.Select(clear => new { clear.Date, clear.Boss, clear.Meso, clear.Loot }) };
+    File.WriteAllText(Path.Combine(source, "demo-income-plan.json"), JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
 }
 var replay = new IncomeReplay(clears);
 var output = Path.Combine(source, "income-replay-frames"); Directory.CreateDirectory(output);
-using var renderer = new IncomeReplayRenderer(replay, new("meso"), demo ? "상위 12종 · 1인 기준 집계 시연" : "저장된 주간 보스 기록", Path.Combine(root, "src", "MapleDay", "Assets"));
+using var renderer = new IncomeReplayRenderer(replay, new("meso"), demo ? "상위 12종 결정 + 물욕템 · 예시" : "저장된 주간 보스 기록", Path.Combine(root, "src", "MapleDay", "Assets"));
 const int frameCount = 421;
 var timeline = new List<object>();
 for (var frame = 0; frame < frameCount; frame++)

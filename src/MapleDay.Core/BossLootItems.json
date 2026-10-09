@@ -213,6 +213,29 @@
     "Icon": "BossLoot/1182285.png"
   },
   {
+    "Id": "2539001",
+    "Name": "\uC0DD\uBA85\uC758 \uC5F0\uB9C8\uC11D",
+    "Bosses": [
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4",
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790",
+      "\uCE74\uB9C1",
+      "\uBCA8\uB85C\uB098",
+      "\uCC2C\uB780\uD55C \uD749\uC131",
+      "\uB9BC\uBCF4"
+    ],
+    "Icon": "BossLoot/2539001.png"
+  },
+  {
+    "Id": "2539003",
+    "Name": "\uC2E0\uB150\uC758 \uC5F0\uB9C8\uC11D",
+    "Bosses": [
+      "\uB9BC\uBCF4",
+      "\uBC1C\uB4DC\uB9AD\uC2A4",
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/2539003.png"
+  },
+  {
     "Id": "2539020",
     "Name": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
     "Bosses": [

@@ -10,6 +10,24 @@ namespace MapleDay.Storage.Tests;
 
 public sealed class IncomeExportTests
 {
+    [Fact]
+    public void Loot_settlements_drop_all_actual_items_without_generating_meso_coins()
+    {
+        var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
+        var drops = BossLootCatalog.ForBoss("유피테르", "hard")
+            .Select(item => new ReplayLoot(item.Name, 10_000_000_000, item.Icon)).ToArray();
+        var clear = new ReplayClear(new(2026, 10, 8), "유피테르", drops.Sum(item => item.Meso), drops);
+        using var lootRain = new IncomeMesoRain(new IncomeReplay([clear]), assets);
+        Assert.Equal(drops.Length, lootRain.LootDropCount);
+        Assert.Equal(0, lootRain.GoldDropCount); Assert.Equal(0, lootRain.RepresentedMeso);
+        using var mixed = new IncomeMesoRain(new IncomeReplay([clear with { Meso = clear.Meso + 2_500_000_000 }]), assets);
+        Assert.Equal(drops.Length, mixed.LootDropCount);
+        Assert.Equal(2, mixed.GoldDropCount); Assert.Equal(2_000_000_000, mixed.RepresentedMeso);
+        var output = Path.Combine(Root, "artifacts", "build", "replay-preview"); Directory.CreateDirectory(output);
+        using var renderer = new IncomeReplayRenderer(new IncomeReplay([clear]), new("meso"), "물욕템 시연", assets);
+        using var image = renderer.Render(10);
+        image.Save(Path.Combine(output, "loot-rain.png"), ImageFormat.Png);
+    }
     private static string Root => Directory.GetParent(typeof(IncomeExportTests).Assembly.Location)!.Ancestors()
         .First(directory => File.Exists(Path.Combine(directory.FullName, "AGENTS.md"))).FullName;
     private static IncomeReplay Replay => new(Enumerable.Range(0, 15).Select(index => new ReplayClear(
@@ -22,10 +40,10 @@ public sealed class IncomeExportTests
     {
         var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
         using var tiers = new IncomeMesoRain(new IncomeReplay([new ReplayClear(new(2026, 10, 1), "스우", 111_100_000_000)]), assets);
-        Assert.Equal(1111, tiers.DropCount); Assert.Equal(111_100_000_000, tiers.RepresentedMeso);
+        Assert.Equal(111, tiers.DropCount); Assert.Equal(111_000_000_000, tiers.RepresentedMeso);
         using var carry = new IncomeMesoRain(new IncomeReplay([
-            new ReplayClear(new(2026, 10, 1), "스우", 60_000_000), new ReplayClear(new(2026, 10, 2), "스우", 60_000_000)]), assets);
-        Assert.Equal(1, carry.DropCount); Assert.Equal(100_000_000, carry.RepresentedMeso);
+            new ReplayClear(new(2026, 10, 1), "스우", 600_000_000), new ReplayClear(new(2026, 10, 2), "스우", 600_000_000)]), assets);
+        Assert.Equal(1, carry.DropCount); Assert.Equal(1_000_000_000, carry.RepresentedMeso);
     }
     [Fact]
     public void Trillion_meso_heap_grows_over_the_timeline_instead_of_filling_immediately()
@@ -35,7 +53,8 @@ public sealed class IncomeExportTests
             new ReplayClear(new(2026, 10, 1), "스우", 50_000_000_000)));
         using var rain = new IncomeMesoRain(replay, assets);
         Assert.Equal(5_000_000_000_000, rain.RepresentedMeso);
-        Assert.InRange(rain.DropCount, 700, 850);
+        Assert.Equal(5000, rain.DropCount);
+        Assert.Equal(5000, rain.GoldDropCount);
         using var early = new Bitmap(1280, 720); using var settled = new Bitmap(1280, 720);
         using (var graphics = Graphics.FromImage(early)) rain.Draw(graphics, 2);
         using (var graphics = Graphics.FromImage(settled)) rain.Draw(graphics, 10);
@@ -44,7 +63,7 @@ public sealed class IncomeExportTests
         Assert.True(Filled(settled) > Filled(early) * 1.5, "A large total must build the heap progressively.");
     }
     [Fact]
-    public void Meso_heap_is_seekable_and_keeps_all_four_game_sprites_in_preview()
+    public void Gold_meso_heap_is_seekable_and_fills_the_floor()
     {
         var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
         var replay = MesoShowcase;

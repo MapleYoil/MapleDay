@@ -32,6 +32,7 @@ public sealed class AppSettings
     public List<string> SchedulerOcids { get; set; } = [];
     public Dictionary<string, int> BossPartySizes { get; set; } = [];
     public List<ManualWeeklyClear> ManualWeeklyClears { get; set; } = [];
+    public List<BossClearChange> BossClearChanges { get; set; } = [];
     public List<BossLootRecord> BossLootRecords { get; set; } = [];
     public bool RemindersEnabled { get; set; } = true;
     public bool RemindOnStartup { get; set; }

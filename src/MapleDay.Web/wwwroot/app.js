@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 let data=null,page='scheduler',selected=null,timer=null,loading=false;
 let month=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));month.setDate(1);
 const titles={scheduler:'스케줄러',income:'수익',level:'레벨'};
-function incomeMoney(n,compact=false){const meso=compact?money(n):(n/100000000).toFixed(8).replace(/\.?0+$/,'')+'억 메소';const cash=Math.floor(n/100000000*(data.cashRate||1500)+0.5).toLocaleString('ko-KR')+'원';return data.incomeMode==='cash'?cash:data.incomeMode==='both'?meso+(compact?'\n':' · ')+cash:meso;}
+function incomeMoney(n,compact=false){const meso=compact?money(n):(n/100000000).toFixed(2).replace(/\.?0+$/,'')+'억 메소';const cash=Math.floor(n/100000000*(data.cashRate||1500)+0.5).toLocaleString('ko-KR')+'원';return data.incomeMode==='cash'?cash:data.incomeMode==='both'?meso+(compact?'\n':' · ')+cash:meso;}
 function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
 function append(parent,...children){children.forEach(c=>parent.append(c));return parent;}
 function money(n){if(n>=100000000)return (n/100000000).toFixed(1).replace(/\.0$/,'')+'억';if(n>=10000)return (n/10000).toFixed(1).replace(/\.0$/,'')+'만';return n.toLocaleString('ko-KR');}

@@ -103,7 +103,8 @@ public sealed class SchedulerRow
     private static string Image(string kind) => $"ms-appx:///Assets/Scheduler/UI/main_entity_back_{kind}.png";
 }
 
-public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable<ManualWeeklyClear>>? manualClears = null) : INotifyPropertyChanged
+public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable<ManualWeeklyClear>>? manualClears = null,
+    Func<IEnumerable<BossClearChange>>? clearChanges = null) : INotifyPropertyChanged
 {
     public CharacterCard Character => character;
     public string Ocid => character.Ocid;
@@ -246,10 +247,11 @@ public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable
     public void RefreshIncome(Func<string, int>? partySize = null)
     {
         var manual = manualClears?.Invoke().ToArray() ?? [];
+        var changes = clearChanges?.Invoke().ToArray() ?? [];
         var history = _incomeHistory;
-        if (history is null && manual.Length == 0) return;
+        if (history is null && manual.Length == 0 && changes.Length == 0) return;
         foreach (var tile in Bosses.Concat(UnregisteredBosses)) tile.SetPartySize(partySize?.Invoke(tile.PartyId) ?? 1);
-        Income = BossIncome.Calculate(history?.Snapshots ?? [], SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow), partySize, manual);
+        Income = BossIncome.Calculate(history?.Snapshots ?? [], SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow), partySize, manual, changes);
         IncomeSummary = $"이번 주 {BossIncome.Money(Income.Weekly)} · 이번 달 {BossIncome.Money(Income.Monthly)} · 누적 {BossIncome.Money(Income.Total)}";
         IncomeStatus = $"{Income.FirstDate:yyyy-MM-dd}부터 저장된 기록 · 일일 결정 제외";
         if (!Income.CompleteRange(BossCycle.Monthly) || !Income.CompleteRange(BossCycle.Weekly)) IncomeStatus += " · 일부 기간의 기록이 없어 합계가 적게 표시될 수 있어요";

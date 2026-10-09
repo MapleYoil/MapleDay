@@ -1,0 +1,272 @@
+[
+  {
+    "Name": "자쿰",
+    "Difficulty": "chaos",
+    "Health": 56700000000
+  },
+  {
+    "Name": "피에르",
+    "Difficulty": "chaos",
+    "Health": 80000000000
+  },
+  {
+    "Name": "매그너스",
+    "Difficulty": "hard",
+    "Health": 81960000000
+  },
+  {
+    "Name": "반반",
+    "Difficulty": "chaos",
+    "Health": 100000000000
+  },
+  {
+    "Name": "블러디퀸",
+    "Difficulty": "chaos",
+    "Health": 140000000000
+  },
+  {
+    "Name": "벨룸",
+    "Difficulty": "chaos",
+    "Health": 200000000000
+  },
+  {
+    "Name": "파풀라투스",
+    "Difficulty": "chaos",
+    "Health": 346248000000
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "normal",
+    "Health": 822000000000
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "normal",
+    "Health": 1073700000000
+  },
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "normal",
+    "Health": 3430000000000
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "easy",
+    "Health": 8220000000000
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "easy",
+    "Health": 11272800000000
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "normal",
+    "Health": 16440000000000
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "normal",
+    "Health": 16909200000000
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "normal",
+    "Health": 17196900000000
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "normal",
+    "Health": 18033750000000
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "hard",
+    "Health": 22800000000000
+  },
+  {
+    "Name": "데미안",
+    "Difficulty": "hard",
+    "Health": 24660000000000
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "normal",
+    "Health": 61225500000000
+  },
+  {
+    "Name": "가디언 엔젤 슬라임",
+    "Difficulty": "chaos",
+    "Health": 61740000000000
+  },
+  {
+    "Name": "윌",
+    "Difficulty": "hard",
+    "Health": 84546000000000
+  },
+  {
+    "Name": "더스크",
+    "Difficulty": "chaos",
+    "Health": 86068000000000
+  },
+  {
+    "Name": "루시드",
+    "Difficulty": "hard",
+    "Health": 87732000000000
+  },
+  {
+    "Name": "듄켈",
+    "Difficulty": "hard",
+    "Health": 108202500000000
+  },
+  {
+    "Name": "진 힐라",
+    "Difficulty": "hard",
+    "Health": 122451000000000
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "normal",
+    "Health": 141164100000000
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "hard",
+    "Health": 165847500000000
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "easy",
+    "Health": 238476000000000
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "hard",
+    "Health": 327957000000000
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "easy",
+    "Health": 386460000000000
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "easy",
+    "Health": 529400000000000
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "normal",
+    "Health": 708408000000000
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "easy",
+    "Health": 779000000000000
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "normal",
+    "Health": 1118700000000000
+  },
+  {
+    "Name": "스우",
+    "Difficulty": "extreme",
+    "Health": 1227200000000000
+  },
+  {
+    "Name": "찬란한 흉성",
+    "Difficulty": "normal",
+    "Health": 2235840000000000
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "normal",
+    "Health": 2254100000000000
+  },
+  {
+    "Name": "검은 마법사",
+    "Difficulty": "extreme",
+    "Health": 3257047000000000
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "chaos",
+    "Health": 3394776000000000
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "normal",
+    "Health": 4122000000000000
+  },
+  {
+    "Name": "선택받은 세렌",
+    "Difficulty": "extreme",
+    "Health": 4392451000000000
+  },
+  {
+    "Name": "림보",
+    "Difficulty": "normal",
+    "Health": 4368600000000000
+  },
+  {
+    "Name": "발드릭스",
+    "Difficulty": "normal",
+    "Health": 5621976000000000
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "hard",
+    "Health": 6873300000000000
+  },
+  {
+    "Name": "유피테르",
+    "Difficulty": "normal",
+    "Health": 6980880000000000
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "hard",
+    "Health": 7085100000000000
+  },
+  {
+    "Name": "림보",
+    "Difficulty": "hard",
+    "Health": 8391600000000000
+  },
+  {
+    "Name": "찬란한 흉성",
+    "Difficulty": "hard",
+    "Health": 10023200000000000
+  },
+  {
+    "Name": "발드릭스",
+    "Difficulty": "hard",
+    "Health": 12629784000000000
+  },
+  {
+    "Name": "벨로나",
+    "Difficulty": "hard",
+    "Health": 13716000000000000
+  },
+  {
+    "Name": "감시자 칼로스",
+    "Difficulty": "extreme",
+    "Health": 14225728000000000
+  },
+  {
+    "Name": "최초의 대적자",
+    "Difficulty": "extreme",
+    "Health": 21818040000000000
+  },
+  {
+    "Name": "카링",
+    "Difficulty": "extreme",
+    "Health": 31915400000000000
+  },
+  {
+    "Name": "유피테르",
+    "Difficulty": "hard",
+    "Health": 32202800000000000
+  }
+]

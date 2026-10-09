@@ -55,9 +55,10 @@ public sealed partial class MainWindow
     private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
         var characters = SchedulerAvatars.Where(character => _incomeSelectedOcid is null || character.Ocid == _incomeSelectedOcid).ToArray();
-        var records = characters.SelectMany(character => character.Income?.Records ?? []).ToArray();
+        var records = characters.SelectMany(character => (character.Income?.Records ?? []).Select(clear => (character.Ocid, Clear: clear))).ToArray();
+        var ocids = characters.Select(character => character.Ocid).ToHashSet(StringComparer.Ordinal);
         IncomeReplayPanel.Visibility = Visibility.Visible;
-        IncomeReplayPanel.SetRecords(records, CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터");
+        IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid))), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터");
     }
 
     public ObservableCollection<string> CrystalPriceRows { get; } = new(CrystalPrices.All

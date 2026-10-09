@@ -28,15 +28,15 @@ public sealed partial class IncomeReplayView : UserControl
         InitializeComponent(); _timer.Tick += (_, _) => DrawFrame();
         Unloaded += (_, _) => { Pause(); _exportCancellation?.Cancel(); _renderer?.Dispose(); _renderer = null; };
     }
-    public void SetRecords(IEnumerable<BossIncomeRecord> records, IncomeDisplay display, string scope)
+    public void SetRecords(IncomeReplay replay, IncomeDisplay display, string scope)
     {
         if (_exportTask is { IsCompleted: false }) { Status.Text = "현재 내보내기를 마친 뒤 새 집계를 재생하세요."; return; }
-        _replay = new(records); _display = display; _scope = scope;
+        _replay = replay; _display = display; _scope = scope;
         _renderer?.Dispose(); _renderer = new(_replay, _display, _scope, Path.Combine(AppContext.BaseDirectory, "Assets"));
         _bitmap = new(IncomeReplayRenderer.PreviewWidth, IncomeReplayRenderer.PreviewHeight); Preview.Source = _bitmap;
         Mp4Button.IsEnabled = GifButton.IsEnabled = PlayButton.IsEnabled = PauseButton.IsEnabled = _replay.Clears.Count > 0;
         Status.Text = _replay.Clears.Count > 0 ? $"{IncomeReplayRenderer.Duration:0}초 · 미리보기 1080p · MP4 1080p/60fps · GIF 720p/25fps"
-            : "집계할 확정 주간 보스 수익 기록이 없습니다.";
+            : "집계할 주간 보스·물욕템 수익 기록이 없습니다.";
         _clock.Restart(); DrawFrame(); if (_replay.Clears.Count > 0) _timer.Start(); else _clock.Stop();
     }
     public void SetDisplay(IncomeDisplay display) { _display = display; _renderer?.SetDisplay(display); if (!_timer.IsEnabled) DrawFrame(); }

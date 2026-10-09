@@ -167,7 +167,7 @@ public sealed class BossIncomeTests
         Assert.Equal(16700000L + 8350000L, result.Total);
         Assert.Equal(8350000L, result.Weekly);
         Assert.True(result.CompleteRange(BossCycle.Weekly));
-        Assert.Equal("0.0835억 메소", BossIncome.Money(result.Weekly));
+        Assert.Equal("0.08억 메소", BossIncome.Money(result.Weekly));
     }
 
     [Fact]

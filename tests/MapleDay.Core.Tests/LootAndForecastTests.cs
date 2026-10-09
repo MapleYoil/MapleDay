@@ -102,9 +102,26 @@ public class LootAndForecastTests
     [Fact]
     public void ExtractedCatalogHasUniqueSafeResourcesAndMatchesBossAliases()
     {
-        Assert.Equal(52, BossLootCatalog.Items.Count);
-        Assert.Equal(52, BossLootCatalog.Items.DistinctBy(item => item.Id).Count());
+        Assert.Equal(54, BossLootCatalog.Items.Count);
+        Assert.Equal(54, BossLootCatalog.Items.DistinctBy(item => item.Id).Count());
         Assert.All(BossLootCatalog.Items, item => { Assert.NotEmpty(item.Bosses); Assert.DoesNotContain("로이드", item.Name); Assert.DoesNotContain("앱솔랩스", item.Name); Assert.DoesNotContain("아케인셰이드", item.Name); Assert.DoesNotContain(item.Name.Replace(" ", ""), new[] { "태초의정수", "루인포스실드", "저주받은카이세리움" }); Assert.Matches(@"^BossLoot/\d+\.png$", item.Icon); });
         Assert.Equal(BossLootCatalog.ForBoss("검은 마법사"), BossLootCatalog.ForBoss("검은마법사"));
     }
+    [Theory]
+    [InlineData("감시자 칼로스", "easy", "생명의 연마석", false)]
+    [InlineData("감시자 칼로스", "normal", "생명의 연마석", true)]
+    [InlineData("최초의 대적자", "hard", "생명의 연마석", true)]
+    [InlineData("카링", "normal", "생명의 연마석", true)]
+    [InlineData("찬란한 흉성", "hard", "생명의 연마석", true)]
+    [InlineData("벨로나", "easy", "생명의 연마석", false)]
+    [InlineData("벨로나", "hard", "생명의 연마석", true)]
+    [InlineData("벨로나", "hard", "신념의 연마석", false)]
+    [InlineData("림보", "normal", "생명의 연마석", true)]
+    [InlineData("림보", "normal", "신념의 연마석", false)]
+    [InlineData("림보", "hard", "신념의 연마석", true)]
+    [InlineData("림보", "hard", "생명의 연마석", false)]
+    [InlineData("발드릭스", "normal", "신념의 연마석", true)]
+    [InlineData("유피테르", "normal", "신념의 연마석", true)]
+    public void PolishingStonesMatchOfficialDifficultyRewards(string boss, string difficulty, string name, bool available)
+        => Assert.Equal(available, BossLootCatalog.ForBoss(boss, difficulty).Any(item => item.Name == name));
 }

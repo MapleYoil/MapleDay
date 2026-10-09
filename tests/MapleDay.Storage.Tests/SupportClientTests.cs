@@ -7,6 +7,32 @@ namespace MapleDay.Storage.Tests;
 
 public sealed class SupportClientTests
 {
+    [Fact]
+    public async Task Live_changes_refresh_immediately_and_watch_stops_on_cancellation()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "MapleDay-Support-Stream-" + Guid.NewGuid().ToString("N"));
+        using var reserve = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
+        reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
+        using var listener = new HttpListener(); listener.Prefixes.Add($"http://localhost:{port}/"); listener.Start();
+        using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        try
+        {
+            using var client = new SupportClient(new HttpClient { BaseAddress = new Uri($"http://localhost:{port}/") }, directory);
+            var received = System.Threading.Channels.Channel.CreateUnbounded<bool>();
+            var watch = client.WatchAsync(() => received.Writer.TryWrite(true), cancellation.Token);
+            var context = await listener.GetContextAsync().WaitAsync(cancellation.Token);
+            Assert.Equal("/support/events", context.Request.Url!.AbsolutePath);
+            Assert.Matches("^Bearer [a-f0-9]{64}$", context.Request.Headers["Authorization"]!);
+            Assert.Empty(context.Request.Url.Query);
+            using var socket = (await context.AcceptWebSocketAsync(null)).WebSocket;
+            await socket.SendAsync(Encoding.UTF8.GetBytes("ready"), System.Net.WebSockets.WebSocketMessageType.Text, true, cancellation.Token);
+            await received.Reader.ReadAsync(cancellation.Token);
+            await socket.SendAsync(Encoding.UTF8.GetBytes("changed"), System.Net.WebSockets.WebSocketMessageType.Text, true, cancellation.Token);
+            await received.Reader.ReadAsync(cancellation.Token);
+            cancellation.Cancel(); await watch.WaitAsync(TimeSpan.FromSeconds(3));
+        }
+        finally { cancellation.Cancel(); if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true); }
+    }
     [Theory]
     [InlineData("implemented", "반영 완료", "반영됐어요")]
     [InlineData("rejected", "반려", "반려됐어요")]
@@ -88,6 +114,22 @@ public sealed class SupportClientTests
         }
         private static HttpResponseMessage Json(string body, HttpStatusCode status = HttpStatusCode.OK) =>
             new(status) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
+    }
+
+    [Fact]
+    public void Own_followup_is_not_an_unread_admin_reply_or_notification()
+    {
+        var ticket = new SupportTicket { Id = "one", State = "received", Replies = [new() { Id = 12, Body = "내 답장", Author = "user" }] };
+        ticket.RestoreReadState(true, 0);
+        Assert.True(ticket.IsRead);
+        Assert.DoesNotContain("답변 도착", ticket.StatusText);
+        Assert.Contains("내 답장", ticket.Conversation);
+        ticket.Replies.Add(new() { Id = 13, Body = "운영자 답변" });
+        ticket.RestoreReadState(true, 12);
+        Assert.False(ticket.IsRead);
+        Assert.Equal("답변 도착", ticket.StatusText);
+        ticket.RestoreReadState(true, 13);
+        Assert.True(ticket.IsRead);
     }
 
     [Fact]
