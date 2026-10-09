@@ -19,12 +19,20 @@ if (demo)
         .GroupBy(price => SchedulerBossHistory.BossKey(price.Name))
         .Select(group => group.MaxBy(price => price.Meso)!).OrderByDescending(price => price.Meso).Take(12).ToArray();
     var dates = ManualWeeklyHistory.Dates(SchedulerBossHistory.FirstDate, today, today).TakeLast(2).ToArray();
+    using var market = JsonDocument.Parse(File.ReadAllText(Path.Combine(source, "market-prices.json")));
+    var pricedItems = market.RootElement.GetProperty("prices").EnumerateArray()
+        .Where(price => price.GetProperty("region").GetString() == "normal" && price.GetProperty("priceEok").GetInt64() > 0)
+        .Select(price => price.GetProperty("itemId").GetString()!).ToHashSet(StringComparer.Ordinal);
+    if (pricedItems.Count == 0) throw new InvalidOperationException("The demo requires a verified market snapshot with positive prices.");
     // Example loot settlements, not a claim about market prices or drop probabilities.
     // Every eligible reward from a boss can appear in the same clear; no one-item limit.
     var events = dates.SelectMany((date, week) => top.Select((boss, rank) => new {
         Date = date, Boss = boss, Weight = (decimal)(1 + week * week) * (top.Length - rank),
         Items = BossLootCatalog.ForBoss(boss.Name, boss.Difficulty)
-    })).Where(entry => entry.Items.Count > 0).OrderBy(entry => entry.Date).ThenBy(entry => entry.Boss.Name, StringComparer.Ordinal).ToArray();
+            .Where(item => pricedItems.Contains(item.Id)).ToArray()
+    })).OrderBy(entry => entry.Date).ThenBy(entry => entry.Boss.Name, StringComparer.Ordinal).ToArray();
+    if (events.Any(entry => entry.Items.Length == 0))
+        throw new InvalidOperationException("Every featured boss must have a reward with a verified positive price.");
     var crystalIncome = events.Sum(entry => entry.Boss.Meso);
     var lootTarget = target - crystalIncome;
     if (lootTarget <= 0) throw new InvalidOperationException("Demonstration total must exceed the solo crystal income.");
@@ -33,11 +41,11 @@ if (demo)
     clears = events.Select((entry, index) => {
         var budget = index == events.Length - 1 ? lootTarget - allocated : (long)decimal.Floor(lootTarget * entry.Weight / weightTotal);
         allocated += budget;
-        var rewardWeight = entry.Items.Select((_, item) => entry.Items.Count - item).Sum();
+        var rewardWeight = entry.Items.Select((_, item) => entry.Items.Length - item).Sum();
         var paid = 0L;
         var drops = entry.Items.Select((item, number) => {
-            var amount = number == entry.Items.Count - 1 ? budget - paid
-                : (long)decimal.Floor(budget * (decimal)(entry.Items.Count - number) / rewardWeight);
+            var amount = number == entry.Items.Length - 1 ? budget - paid
+                : (long)decimal.Floor(budget * (decimal)(entry.Items.Length - number) / rewardWeight);
             paid += amount;
             return new ReplayLoot(item.Name, amount, item.Icon);
         }).ToArray();
@@ -45,7 +53,8 @@ if (demo)
     }).ToArray();
     if (clears.Sum(clear => clear.Meso) != target || clears.Select(clear => clear.Boss).Distinct().Count() != 12)
         throw new InvalidOperationException("Invalid demonstration calculation.");
-    var plan = new { targetMeso = target, totalKills = clears.Length, examplePrices = true, crystalIncome, partySize = 1,
+    var plan = new { targetMeso = target, totalKills = clears.Length, exampleSettlements = true, crystalIncome, partySize = 1,
+        pricedItemIds = pricedItems.Order(StringComparer.Ordinal).ToArray(), marketCheckedAt = market.RootElement.GetProperty("fetchedAt").GetString(),
         settlements = clears.Select(clear => new { clear.Date, clear.Boss, clear.Meso, clear.Loot }) };
     File.WriteAllText(Path.Combine(source, "demo-income-plan.json"), JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
 }
