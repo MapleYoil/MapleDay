@@ -528,7 +528,6 @@
                                 </StackPanel>
                             </Border>
                             <TextBlock Text="주간은 목요일 00시, 월간은 매월 1일 00시 (한국 시간) 기준입니다. 주간·월간 결정 수익과 기록한 물욕템 수령액을 함께 합산합니다. 남은 예상 수익은 합계에 넣지 않습니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
-                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
                             <Expander Header="수익 계산 기준 · 결정 가격표" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="클리어 기록으로 계산한 예상 수익입니다. 실제 결정 판매 여부는 API에 없으며, 파티 인원은 기본 1인입니다. 보스 오른쪽 버튼에서 개별 설정할 수 있습니다." TextWrapping="Wrap" FontSize="12" />
@@ -548,6 +547,7 @@
                                 </StackPanel>
                             </Expander>
                             </StackPanel>
+                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
                             <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
                             <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" ReplayRequested="HuntingIncome_ReplayRequested" />
                         </StackPanel>

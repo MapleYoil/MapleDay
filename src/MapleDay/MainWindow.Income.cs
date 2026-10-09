@@ -217,7 +217,8 @@ public sealed partial class MainWindow
                 || !character.Income.CompleteRange(BossCycle.Monthly) || character.Income.Today != today)
                 ? "일부 날짜의 기록이나 결정 가격을 확인하지 못했어요. 캘린더의 날짜를 눌러 상세 내역을 확인할 수 있습니다." : "";
         WeeklyCrystalCount.Text = $"이번 주 주간 보스 {loaded.Sum(character => character.Income!.Records.Count(record => record.Included && record.Cycle == BossCycle.Weekly && record.PeriodStart == weekStart))} / {selected.Length * BossIncome.WeeklyCap} · 캐릭터당 최대 12마리 기준";
-        IncomeCalendarPanel.SetCharacters(selected, CurrentIncomeDisplay, loot);
+        IncomeBulkAddButton.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
+        IncomeCalendarPanel.SetCharacters(selected, CurrentIncomeDisplay, loot, hunting, (IncomeCalendarCategory)_incomeMode);
         IncomeOverview.Visibility = selected.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         IncomeEmpty.Visibility = _hasLoadedCharacters && SchedulerAvatars.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }

@@ -5,6 +5,7 @@
     xmlns:models="using:MapleDay.Models"
     xmlns:services="using:MapleDay.Services">
     <StackPanel Spacing="12">
+        <TextBlock x:Name="CalendarTitle" FontSize="20" FontWeight="SemiBold"/>
         <Grid ColumnSpacing="8">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <TextBlock x:Name="MonthTitle" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
@@ -29,7 +30,7 @@
                         <StackPanel Spacing="4">
                             <TextBlock Text="{x:Bind Day}" FontSize="12"/>
                             <TextBlock Text="{x:Bind Amount}" FontSize="{x:Bind AmountFontSize}" TextWrapping="Wrap" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
-                            <TextBlock Text="{x:Bind Note}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBlock Text="{x:Bind Note}" FontSize="10" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Button>
                 </DataTemplate>
@@ -46,7 +47,7 @@
         <TextBlock x:Name="DayStatus" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
         <Button x:Name="AddBossButton" Content="보스 기록 추가" Click="AddBoss_Click" HorizontalAlignment="Left" />
         <TextBlock x:Name="ActionStatus" FontSize="12" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
-        <TextBlock Text="보스의 ‘인원 수정’에서 해당 기록을 수정하거나, 첫 기록부터 같은 보스의 전체 기록에 일괄 적용할 수 있어요." FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+        <TextBlock x:Name="BossHint" Text="보스의 ‘인원 수정’에서 해당 기록을 수정하거나, 첫 기록부터 같은 보스의 전체 기록에 일괄 적용할 수 있어요." FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
         <ItemsControl ItemsSource="{x:Bind Bosses}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:IncomeCalendarBoss">
@@ -97,6 +98,23 @@
                             <TextBlock Text="{x:Bind Amount}" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
                             <Button Content="보스의 물욕템 기록 열기" Tag="{x:Bind}" Click="Loot_Click" IsEnabled="{x:Bind CanEdit}" HorizontalAlignment="Left" />
                         </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{x:Bind Hunting}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:IncomeCalendarHunting">
+                    <Grid Padding="8,10" ColumnSpacing="12" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Bind CharacterName}" FontWeight="SemiBold"/>
+                            <TextBlock Text="사냥 수익" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBlock Text="{x:Bind Meso}" FontSize="12" TextWrapping="Wrap"/>
+                            <TextBlock Text="{x:Bind Fragments}" FontSize="12" TextWrapping="Wrap"/>
+                            <TextBlock Text="{x:Bind UnitPrice}" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{x:Bind Amount}" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Top"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
