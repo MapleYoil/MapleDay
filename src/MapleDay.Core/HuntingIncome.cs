@@ -1,7 +1,7 @@
 namespace MapleDay.Core;
 
 public sealed record HuntingIncomeRecord(string Id, string Ocid, DateOnly Date, long Meso,
-    int Fragments, long FragmentUnitPrice, decimal MesoBonus = 0, decimal? LimitPercent = null, int Level = 0)
+    int Fragments, long FragmentUnitPrice, decimal MesoBonus = 0, decimal? LimitPercent = null, int Level = 0, long? LimitMeso = null)
 {
     public long Total => checked(Meso + Fragments * FragmentUnitPrice);
 }
@@ -23,6 +23,15 @@ public static class HuntingIncome
         if (percent is < 0 or > 100 || bonus is < 0 or > 10000) throw new ArgumentOutOfRangeException(nameof(percent));
         return (long)decimal.Floor(DailyLimit(level) * percent / 100 * (1 + bonus / 100));
     }
+    public static long FromLimitAmount(int level, long amount, decimal bonus)
+    {
+        if (amount < 0 || amount > DailyLimit(level) || bonus is < 0 or > 10000)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        return (long)decimal.Floor(amount * (1 + bonus / 100));
+    }
+    public static long? LimitUsage(HuntingIncomeRecord record) => record.LimitMeso
+        ?? (record.LimitPercent is { } percent && record.Level is >= 1 and <= 300
+            ? (long)decimal.Floor(DailyLimit(record.Level) * percent / 100) : null);
     public static long FragmentPrice(int tenThousands)
         => tenThousands is >= 1 and <= 9999 ? tenThousands * 10_000L : throw new ArgumentOutOfRangeException(nameof(tenThousands));
     public static bool Valid(HuntingIncomeRecord record) => !string.IsNullOrWhiteSpace(record.Id)
@@ -30,6 +39,7 @@ public static class HuntingIncome
         && record.Fragments is >= 0 and <= 1_000_000 && record.FragmentUnitPrice is >= 10_000 and <= 99_990_000
         && record.FragmentUnitPrice % 10_000 == 0 && record.MesoBonus is >= 0 and <= 10000
         && (record.LimitPercent is null || record.LimitPercent is >= 0 and <= 100)
+        && (record.LimitMeso is null || (record.Level is >= 1 and <= 300 && record.LimitMeso >= 0 && record.LimitMeso <= DailyLimit(record.Level)))
         && (record.Meso > 0 || record.Fragments > 0);
     public static long Sum(IEnumerable<HuntingIncomeRecord> records, DateOnly start, DateOnly end)
         => records.Where(Valid).Where(record => record.Date >= start && record.Date <= end).DistinctBy(record => record.Id).Sum(record => record.Total);

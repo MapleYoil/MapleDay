@@ -53,6 +53,31 @@ public class HuntingIncomeTests
         Assert.Throws<ArgumentOutOfRangeException>(() => HuntingIncome.FromLimit(291, 101, 0));
     }
     [Fact]
+    public void Direct_limit_amount_applies_bonus_and_rejects_usage_above_character_maximum()
+    {
+        Assert.Equal(380000000, HuntingIncome.FromLimitAmount(300, 100000000, 280));
+        Assert.Equal(874000000, HuntingIncome.FromLimitAmount(300, HuntingIncome.DailyLimit(300), 280));
+        Assert.Equal(100000000, HuntingIncome.FromLimitAmount(300, 100000000, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => HuntingIncome.FromLimitAmount(300, 230000001, 280));
+        Assert.Throws<ArgumentOutOfRangeException>(() => HuntingIncome.FromLimitAmount(300, -1, 0));
+        var record = new HuntingIncomeRecord("id", "owner", new(2026, 10, 9), 380000000, 0, 10000, 280, null, 300, 100000000);
+        Assert.True(HuntingIncome.Valid(record));
+        Assert.Equal(100000000, HuntingIncome.LimitUsage(record));
+        Assert.False(HuntingIncome.Valid(record with { LimitMeso = 230000001 }));
+        Assert.False(HuntingIncome.Valid(record with { Level = 0 }));
+        var result = HuntingIncome.Bulk([], record, record.Date.AddDays(-1), record.Date, record.Date);
+        Assert.All(result.Records, row => { Assert.Equal(100000000, row.LimitMeso); Assert.Equal(380000000, row.Meso); });
+    }
+    [Fact]
+    public void Existing_percent_records_restore_base_usage_without_changing_saved_income()
+    {
+        var old = new HuntingIncomeRecord("id", "owner", new(2026, 10, 9), 399000000, 0, 10000, 280, 50, 291);
+        Assert.Equal(105000000, HuntingIncome.LimitUsage(old));
+        Assert.Equal(old.Meso, HuntingIncome.FromLimitAmount(old.Level, HuntingIncome.LimitUsage(old)!.Value, old.MesoBonus));
+        Assert.Equal(210000000, HuntingIncome.LimitUsage(old with { LimitPercent = 100 }));
+        Assert.Null(HuntingIncome.LimitUsage(old with { LimitPercent = null }));
+    }
+    [Fact]
     public void Stored_prices_are_fixed_and_combined_periods_do_not_double_count()
     {
         var record = new HuntingIncomeRecord("one", "character", new(2026, 10, 8), 420000000, 20, 1230000, 100, 100, 291);

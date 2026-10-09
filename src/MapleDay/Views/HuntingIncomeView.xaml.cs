@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.UI.Xaml.Media;
 using MapleDay.Core;
 using MapleDay.Models;
 using MapleDay.Services;
@@ -17,6 +19,8 @@ public sealed partial class HuntingIncomeView : UserControl
     private IncomeDisplay _display = new();
     private readonly LootMarketClient _market = new();
     private FragmentMarketPrice? _price;
+    private readonly Dictionary<NumberBox, TextBox> _editors = [];
+    private readonly Dictionary<NumberBox, string> _liveNumbers = [];
     private bool _ready;
     private bool _loading;
     private bool _saving;
@@ -25,6 +29,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private List<HuntingIncomeRecord>? _bulkApplied;
     private HuntCharacter? Character => CharacterInput.SelectedItem as HuntCharacter;
     private DateOnly Date => DateOnly.FromDateTime((DateInput.Date ?? DateTimeOffset.Now).DateTime);
+    private int RecordLevel => Existing?.Level is >= 1 and <= 300 ? Existing.Level : Character?.Level ?? 300;
     private HuntingIncomeRecord? Existing => (_settings?.HuntingIncomeRecords ?? []).FirstOrDefault(row => row.Ocid == Character?.Ocid && row.Date == Date);
     public HuntingIncomeView() { InitializeComponent(); }
     public void SetContext(AppSettings settings, IEnumerable<SchedulerCharacter> characters, string? selectedOcid, IncomeDisplay display)
@@ -50,33 +55,72 @@ public sealed partial class HuntingIncomeView : UserControl
     { if (MesoInputs is null || FragmentInputs is null) return; MesoInputs.Visibility = InputTabs.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed; FragmentInputs.Visibility = InputTabs.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed; }
     private void LoadDay()
     {
-        _loading = true;
+        _loading = true; _liveNumbers.Clear();
         var row = Existing;
         MesoInput.Value = row?.Meso ?? 0; FragmentCount.Value = row?.Fragments ?? 0;
         FragmentPrice.Value = row is null ? Math.Clamp(_settings?.HuntingFragmentPriceMan ?? 1, 1, 9999) : row.FragmentUnitPrice / 10000d;
         BonusInput.Value = (double)(row?.MesoBonus ?? Math.Clamp(_settings?.HuntingMesoBonus ?? 0, 0, 10000));
-        LimitPercent.Value = (double)(row?.LimitPercent ?? 0); UseLimit.IsChecked = row?.LimitPercent is not null;
+        var limit = HuntingIncome.DailyLimit(RecordLevel);
+        var usage = row is null ? null : HuntingIncome.LimitUsage(row);
+        LimitAmount.Maximum = limit; LimitAmount.Value = usage ?? 0;
+        MaximumLimit.IsChecked = usage == limit; UseLimit.IsChecked = usage is not null;
         _loading = false; Status.Text = ""; Calculate();
     }
-    private void Input_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args) { if (_ready && !_loading) Calculate(); }
+    private static TextBox? FindEditor(DependencyObject root)
+    {
+        if (root is TextBox editor) return editor;
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+            if (FindEditor(VisualTreeHelper.GetChild(root, i)) is { } found) return found;
+        return null;
+    }
+    private void Number_Loaded(object sender, RoutedEventArgs args)
+    {
+        if (sender is not NumberBox box || FindEditor(box) is not { } editor) return;
+        if (_editors.TryGetValue(box, out var previous))
+        {
+            if (ReferenceEquals(previous, editor)) return;
+            previous.TextChanged -= LiveNumber_Changed;
+        }
+        _editors[box] = editor; editor.TextChanged += LiveNumber_Changed;
+    }
+    private void LiveNumber_Changed(object sender, TextChangedEventArgs args)
+    {
+        var box = _editors.FirstOrDefault(pair => ReferenceEquals(pair.Value, sender)).Key;
+        if (box is null) return;
+        if (!_ready || _loading) { _liveNumbers.Remove(box); return; }
+        _liveNumbers[box] = ((TextBox)sender).Text;
+        Calculate();
+    }
+    private double NumberValue(NumberBox box) => !_liveNumbers.TryGetValue(box, out var text) ? box.Value
+        : double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out var value) ? value : double.NaN;
+    private void Input_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    { _liveNumbers.Remove(sender); if (_ready && !_loading) Calculate(); }
     private void Limit_Changed(object sender, RoutedEventArgs args) { if (_ready && !_loading) Calculate(); }
     private HuntingIncomeRecord Draft()
     {
-        if (Character is not { } owner || !double.IsFinite(MesoInput.Value) || !double.IsFinite(FragmentCount.Value)
-            || !double.IsFinite(FragmentPrice.Value) || !double.IsFinite(BonusInput.Value) || !double.IsFinite(LimitPercent.Value))
+        if (Character is not { } owner || !double.IsFinite(NumberValue(MesoInput)) || !double.IsFinite(NumberValue(FragmentCount))
+            || !double.IsFinite(NumberValue(FragmentPrice)) || !double.IsFinite(NumberValue(BonusInput)) || !double.IsFinite(NumberValue(LimitAmount)))
             throw new ArgumentException();
-        if (FragmentPrice.Value != Math.Truncate(FragmentPrice.Value) || FragmentCount.Value != Math.Truncate(FragmentCount.Value) || MesoInput.Value != Math.Truncate(MesoInput.Value)) throw new ArgumentException();
-        var bonus = (decimal)BonusInput.Value;
-        var percent = UseLimit.IsChecked == true ? (decimal?)LimitPercent.Value : null;
-        var level = Existing?.Level is >= 1 and <= 300 ? Existing.Level : owner.Level;
-        var meso = percent is { } value ? HuntingIncome.FromLimit(level, value, bonus) : checked((long)MesoInput.Value);
+        if (NumberValue(FragmentPrice) != Math.Truncate(NumberValue(FragmentPrice)) || NumberValue(FragmentCount) != Math.Truncate(NumberValue(FragmentCount)) || NumberValue(MesoInput) != Math.Truncate(NumberValue(MesoInput))) throw new ArgumentException();
+        var bonus = (decimal)NumberValue(BonusInput);
+        var level = RecordLevel;
+        long? usage = null;
+        if (UseLimit.IsChecked == true)
+        {
+            if (NumberValue(LimitAmount) != Math.Truncate(NumberValue(LimitAmount))) throw new ArgumentException();
+            usage = MaximumLimit.IsChecked == true ? HuntingIncome.DailyLimit(level) : checked((long)NumberValue(LimitAmount));
+        }
+        var meso = usage is { } amount ? HuntingIncome.FromLimitAmount(level, amount, bonus) : checked((long)NumberValue(MesoInput));
         return new(Existing?.Id ?? Guid.NewGuid().ToString("N"), owner.Ocid, Date, meso,
-            checked((int)FragmentCount.Value), HuntingIncome.FragmentPrice(checked((int)FragmentPrice.Value)), bonus, percent, level);
+            checked((int)NumberValue(FragmentCount)), HuntingIncome.FragmentPrice(checked((int)NumberValue(FragmentPrice))), bonus, null, level, usage);
     }
     private void Calculate()
     {
         LimitInputs.Visibility = UseLimit.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
         MesoInput.IsEnabled = UseLimit.IsChecked != true;
+        LimitAmount.IsEnabled = MaximumLimit.IsChecked != true;
+        if (MaximumLimit.IsChecked == true)
+        { _loading = true; _liveNumbers.Remove(LimitAmount); LimitAmount.Value = HuntingIncome.DailyLimit(RecordLevel); _loading = false; }
         DeleteButton.IsEnabled = Existing is not null;
         try
         {

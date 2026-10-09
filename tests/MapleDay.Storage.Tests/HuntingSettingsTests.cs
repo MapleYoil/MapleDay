@@ -18,4 +18,17 @@ public class HuntingSettingsTests
         restored.HuntingFragmentPriceMan = 9999;
         Assert.Equal(444600000, restored.HuntingIncomeRecords[0].Total);
     }
+    [Fact]
+    public void Absolute_limit_usage_round_trips_and_legacy_percent_remains_readable()
+    {
+        var record = new HuntingIncomeRecord("record", "owner", new(2026, 10, 9), 874000000, 20, 5990000, 280, null, 300, 230000000);
+        var restored = JsonSerializer.Deserialize<HuntingIncomeRecord>(JsonSerializer.Serialize(record))!;
+        Assert.Equal(record, restored); Assert.Equal(230000000, HuntingIncome.LimitUsage(restored));
+        var legacy = JsonSerializer.Serialize(record with { LimitPercent = 100, LimitMeso = null });
+        using var parsed = JsonDocument.Parse(legacy);
+        var fields = parsed.RootElement.EnumerateObject().Where(field => field.Name != "LimitMeso").ToDictionary(field => field.Name, field => field.Value.Clone());
+        restored = JsonSerializer.Deserialize<HuntingIncomeRecord>(JsonSerializer.Serialize(fields))!;
+        Assert.Null(restored.LimitMeso); Assert.Equal(230000000, HuntingIncome.LimitUsage(restored)); Assert.Equal(874000000, restored.Meso);
+    }
+
 }
