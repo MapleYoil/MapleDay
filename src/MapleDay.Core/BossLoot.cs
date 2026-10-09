@@ -46,6 +46,14 @@ public static class BossLoot
             : loot.ClearId == clear.Id)
         && (string.IsNullOrEmpty(loot.Difficulty) || CrystalPrices.DifficultyKey(loot.Difficulty) == clear.Difficulty);
     public const long MaximumAmount = 1_000_000_000_000_000;
+    public static bool TryParseAmount(string? text, out long amount)
+    {
+        amount = 0;
+        var value = text?.Trim() ?? "";
+        if (!System.Text.RegularExpressions.Regex.IsMatch(value, @"^(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)$")) return false;
+        return long.TryParse(value.Replace(",", ""), NumberStyles.None, CultureInfo.InvariantCulture, out amount)
+            && amount <= MaximumAmount;
+    }
     public static long Calculate(string mode, long amount, int partySize, string ratios = "", int ownMember = 1)
     {
         if (amount < 0 || amount > MaximumAmount) throw new ArgumentException("금액은 0~1000조 메소의 정수로 입력하세요.");

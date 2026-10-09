@@ -123,7 +123,7 @@ public sealed class IncomeReplayRenderer : IDisposable
                 g.DrawImage(icon, x + (side - size) / 2, y + iconTop, size, size); g.Restore(state);
             }
             CenterText(g, row.Name, new RectangleF(x + 6, y + (compact ? 43 : side * .46f), side - 12, compact ? 31 : side * .25f), headingSize, White);
-            var value = _display.ValidMode == "cash" ? _display.CashText(row.Meso) : IncomeReplay.CompactMeso(row.Meso);
+            var value = _display.ValidMode == "cash" ? _display.CashText(row.Meso) : (row.Meso / 100_000_000m).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "억";
             CenterText(g, value, new RectangleF(x + 6, y + (compact ? 74 : side * (both ? .72f : .77f)), side - 12, compact ? 19 : side * .16f), amountSize, Blue, true);
             if (both) CenterText(g, _display.CashText(row.Meso), new RectangleF(x + 6, y + (compact ? 94 : side * .87f), side - 12, compact ? 14 : side * .12f), smallSize, Muted, true);
         }

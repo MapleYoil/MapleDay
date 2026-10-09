@@ -38,8 +38,10 @@ public sealed partial class MainWindow
             mode.Items.Add("균등 분배"); mode.Items.Add("비율 분배"); mode.Items.Add("수령액 직접 입력");
             var party = new NumberBox { Header = "파티 인원 (인)", Value = existing?.PartySize ?? source?.Boss.PartySize ?? 1, Minimum = 1,
                 Maximum = 6, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
-            var amount = new NumberBox { Header = "분배할 총액 (메소)", Value = existing?.Amount ?? 0, Minimum = 0,
-                Maximum = BossLoot.MaximumAmount, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Hidden };
+            var amount = new TextBox { Header = "분배할 총액 (메소)", Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture),
+                PlaceholderText = "예: 2000000000", MaxLength = 24 };
+            var amountHint = new TextBlock { FontSize = 14, Foreground = AppTheme.Brush("AccentBrush"), TextWrapping = TextWrapping.Wrap };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(amount, "메소 정수를 입력하면 아래에 억 단위로 즉시 표시합니다.");
             var ratio = new TextBox { Header = "분배 비율", Text = existing?.Ratios ?? "1:1", PlaceholderText = "예: 2:1:1", MaxLength = 120 };
             var member = new NumberBox { Header = "내 순번 (비율의 왼쪽부터)", Minimum = 1, Maximum = 6,
                 Value = existing?.OwnMember ?? 1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
@@ -54,7 +56,7 @@ public sealed partial class MainWindow
                     recordChoice.Items.Add(new ComboBoxItem { Content = $"{saved.ItemName} · {saved.Date:MM.dd} · {CurrentIncomeDisplay.Format(saved.Received)}", Tag = saved });
             recordChoice.SelectedItem = recordChoice.Items.Cast<ComboBoxItem>().FirstOrDefault(option => option.Tag is BossLootRecord saved && saved.Id == existing?.Id) ?? recordChoice.Items[0];
             var content = new StackPanel { Spacing = 12, MinWidth = 340 };
-            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, amount, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
+            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
             content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정의 주간 12개 제한과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 기록", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
@@ -87,7 +89,7 @@ public sealed partial class MainWindow
                 if (!receiptOnly && (chosen is null || !BossLootCatalog.ForBoss(name, selectedDifficulty).Any(reward => reward.Id == chosen.Id)))
                     throw new ArgumentException("선택한 난이도의 보상 아이템을 골라주세요. 목록이 없으면 수령액 직접 입력으로 기록할 수 있어요.");
                 var title = receiptOnly ? "물욕템 정산" : chosen!.Name;
-                if (!double.IsFinite(amount.Value) || amount.Value != Math.Truncate(amount.Value) || amount.Value < 0 || amount.Value > BossLoot.MaximumAmount)
+                if (!BossLoot.TryParseAmount(amount.Text, out var enteredAmount))
                     throw new ArgumentException("금액은 0~1000조 메소의 정수로 입력하세요.");
                 if (!double.IsFinite(party.Value) || party.Value != Math.Truncate(party.Value) || party.Value < 1 || party.Value > BossParty.Maximum(name))
                     throw new ArgumentException($"파티 인원은 1~{BossParty.Maximum(name)}인으로 입력하세요.");
@@ -97,7 +99,7 @@ public sealed partial class MainWindow
                 var day = DateOnly.FromDateTime(date.Date.Value.DateTime);
                 if (day > today) throw new ArgumentException("오늘 이후 날짜는 입력할 수 없어요.");
                 var record = new BossLootRecord(existing?.Id ?? Guid.NewGuid().ToString("N"), owner.Ocid, day, name,
-                    chosen?.Id ?? "", title, selectedMode, (long)amount.Value, (int)party.Value, ratio.Text.Trim(),
+                    chosen?.Id ?? "", title, selectedMode, enteredAmount, (int)party.Value, ratio.Text.Trim(),
                     selectedMode == "ratio" ? (int)member.Value : 1, selectedDifficulty,
                     source?.Boss.Id ?? (addDate is not null ? ManualWeeklyHistory.Id(ClearDraft()) : ""));
                 _ = record.Received;
@@ -105,6 +107,7 @@ public sealed partial class MainWindow
             }
             void UpdatePreview()
             {
+                amountHint.Text = BossLoot.TryParseAmount(amount.Text, out var enteredAmount) ? BossIncome.Money(enteredAmount) : "메소 금액을 정수로 입력하세요.";
                 try
                 {
                     var clear = addDate is not null ? ClearDraft() : null;
@@ -119,7 +122,7 @@ public sealed partial class MainWindow
             {
                 var proportional = mode.SelectedIndex == 1;
                 var enabled = lootEnabled.IsChecked == true;
-                mode.Visibility = amount.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+                mode.Visibility = amount.Visibility = amountHint.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
                 ratio.Visibility = member.Visibility = ratioHint.Visibility = enabled && proportional ? Visibility.Visible : Visibility.Collapsed;
                 item.Visibility = enabled && mode.SelectedIndex != 2 ? Visibility.Visible : Visibility.Collapsed;
                 amount.Header = mode.SelectedIndex == 2 ? "실제 받은 금액 (메소)" : "분배할 총액 (메소)";
@@ -172,7 +175,7 @@ public sealed partial class MainWindow
             item.SelectionChanged += (_, _) => UpdateMode();
             character.SelectionChanged += (_, _) => ReloadDifficulty(); date.DateChanged += (_, _) => UpdatePreview();
             ratio.TextChanged += (_, _) => UpdatePreview();
-            amount.ValueChanged += (_, _) => UpdatePreview(); party.ValueChanged += (_, _) => { if (double.IsFinite(party.Value)) member.Maximum = Math.Max(1, party.Value); UpdatePreview(); };
+            amount.TextChanged += (_, _) => UpdatePreview(); party.ValueChanged += (_, _) => { if (double.IsFinite(party.Value)) member.Maximum = Math.Max(1, party.Value); UpdatePreview(); };
             member.ValueChanged += (_, _) => UpdatePreview(); mode.SelectionChanged += (_, _) => UpdateMode();
             lootEnabled.Checked += (_, _) => UpdateMode(); lootEnabled.Unchecked += (_, _) => UpdateMode();
             recordChoice.SelectionChanged += (_, _) =>
@@ -181,7 +184,7 @@ public sealed partial class MainWindow
                 existing = (recordChoice.SelectedItem as ComboBoxItem)?.Tag as BossLootRecord;
                 date.Date = Offset(existing?.Date ?? source.Boss.Date);
                 party.Value = existing?.PartySize ?? source.Boss.PartySize;
-                amount.Value = existing?.Amount ?? 0; ratio.Text = existing?.Ratios ?? "1:1"; member.Value = existing?.OwnMember ?? 1;
+                amount.Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture); ratio.Text = existing?.Ratios ?? "1:1"; member.Value = existing?.OwnMember ?? 1;
                 mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, _ => 0 };
                 dialog.IsSecondaryButtonEnabled = existing is not null;
                 ReloadItems();

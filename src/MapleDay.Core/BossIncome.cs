@@ -68,7 +68,7 @@ public sealed record BossIncomeResult(IReadOnlyList<BossIncomeRecord> Records, D
 public static class BossIncome
 {
     public const int WeeklyCap = 12;
-    public static string Money(long meso) => meso.ToString("N0", CultureInfo.InvariantCulture) + " 메소";
+    public static string Money(long meso) => (meso / 100_000_000m).ToString("0.########", CultureInfo.InvariantCulture) + "억 메소";
 
     // Each call is one character. The cap is applied per Thursday period before
     // calendar-month filtering, including when a week crosses a month boundary.
