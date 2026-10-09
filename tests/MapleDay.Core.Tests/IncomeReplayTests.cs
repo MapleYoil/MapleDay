@@ -3,6 +3,25 @@ namespace MapleDay.Core.Tests;
 public sealed class IncomeReplayTests
 {
     [Fact]
+    public void Collected_loot_keeps_every_boss_and_combines_repeated_items_when_seeking()
+    {
+        var replay = new IncomeReplay(new ReplayClear[] {
+            new(new(2026, 10, 1), "림보", 1200, [new("반지", 1000, "ring")]),
+            new(new(2026, 10, 2), "카링", 2200, [new("상자", 1500, "box"), new("반지", 500, "ring")]) });
+        Assert.Empty(replay.At(0).CollectedLoot!);
+        var midway = Assert.Single(replay.At(.5).CollectedLoot!);
+        Assert.Equal("반지", midway.Name); Assert.Equal(1000, midway.Meso); Assert.Equal(1, midway.Count);
+        var partial = replay.At(.75).CollectedLoot!;
+        Assert.Equal(1250, partial.Single(item => item.Name == "반지").Meso);
+        Assert.Equal(750, partial.Single(item => item.Name == "상자").Meso);
+        var final = replay.At(1).CollectedLoot!;
+        Assert.Equal(2, final.Count);
+        Assert.Equal(1500, final.Single(item => item.Name == "반지").Meso);
+        Assert.Equal(2, final.Single(item => item.Name == "반지").Count);
+        Assert.Equal(3000, final.Sum(item => item.Meso));
+        Assert.Equal(midway, Assert.Single(replay.At(.5).CollectedLoot!));
+    }
+    [Fact]
     public void All_rewards_from_one_clear_appear_together_and_count_as_one_kill()
     {
         var date = new DateOnly(2026, 10, 8);

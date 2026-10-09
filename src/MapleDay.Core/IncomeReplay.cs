@@ -3,7 +3,9 @@ namespace MapleDay.Core;
 public sealed record ReplayLoot(string Name, long Meso, string Icon);
 public sealed record ReplayClear(DateOnly Date, string Boss, long Meso, IReadOnlyList<ReplayLoot>? Loot = null, int KillCount = 1);
 public sealed record ReplayBoss(string Name, int Count, long Meso);
-public sealed record ReplayFrame(DateOnly? Date, long Total, int Count, IReadOnlyList<ReplayBoss> Bosses, IReadOnlyList<ReplayLoot>? Loot = null, string? LootBoss = null);
+public sealed record ReplayLootTotal(string Name, long Meso, string Icon, int Count);
+public sealed record ReplayFrame(DateOnly? Date, long Total, int Count, IReadOnlyList<ReplayBoss> Bosses, IReadOnlyList<ReplayLoot>? Loot = null, string? LootBoss = null,
+    IReadOnlyList<ReplayLootTotal>? CollectedLoot = null);
 
 public sealed class IncomeReplay
 {
@@ -65,8 +67,21 @@ public sealed class IncomeReplay
             totals[clear.Boss] = (value.Count, value.Meso + partial); total += partial;
         }
         var active = Clears.Count == 0 ? null : Clears[Math.Min(completed, Clears.Count - 1)];
+        var collected = new Dictionary<(string Name, string Icon), (long Meso, int Count)>();
+        for (var i = 0; i < Clears.Count && i <= completed; i++)
+        {
+            var portion = i < completed ? 1 : position - completed;
+            if (portion <= 0) continue;
+            foreach (var item in Clears[i].Loot ?? [])
+            {
+                var key = (item.Name, item.Icon);
+                collected.TryGetValue(key, out var value);
+                collected[key] = (value.Meso + (long)(item.Meso * portion), value.Count + 1);
+            }
+        }
         return new(active?.Date, total, kills,
             Names.Select(name => new ReplayBoss(name, totals[name].Count, totals[name].Meso)).OrderByDescending(row => row.Meso)
-                .ThenByDescending(row => row.Count).ThenBy(row => Array.IndexOf(Names.ToArray(), row.Name)).ToArray(), active?.Loot, active?.Boss);
+                .ThenByDescending(row => row.Count).ThenBy(row => Array.IndexOf(Names.ToArray(), row.Name)).ToArray(), active?.Loot, active?.Boss,
+            collected.Select(item => new ReplayLootTotal(item.Key.Name, item.Value.Meso, item.Key.Icon, item.Value.Count)).ToArray());
     }
 }

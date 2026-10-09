@@ -78,7 +78,7 @@ public sealed class IncomeReplayRenderer : IDisposable
         using (var veil = new SolidBrush(Color.FromArgb(225, 14, 23, 38)))
         {
             g.FillRoundedRectangle(veil, new RectangleF(24, 18, 440, 126), 12);
-            g.FillRoundedRectangle(veil, new RectangleF(24, 218, 440, 354), 12);
+            g.FillRoundedRectangle(veil, new RectangleF(24, 218, 440, 470), 12);
         }
         Text(g, "MAPLEDAY", 36, 27, 18, Blue, FontStyle.Bold);
         Text(g, "보스 · 물욕템 수익", 36, 64, 32, White, FontStyle.Bold);
@@ -100,24 +100,26 @@ public sealed class IncomeReplayRenderer : IDisposable
         g.Restore(moneyState);
         if (_display.ValidMode == "both") Text(g, _display.CashText(frame.Total), 36, 398, 32, Blue, FontStyle.Bold);
         Text(g, $"주간 보스 {frame.Count:N0}마리", 36, 170, 22, White);
-        using (var track = new SolidBrush(Color.FromArgb(38, 51, 71))) g.FillRectangle(track, 36, 557, 408, 3);
-        using (var fill = new SolidBrush(Blue)) g.FillRectangle(fill, 36, 557, (float)(408 * progress), 3);
-        if (frame.Loot is { Count: > 0 } loot)
+        using (var track = new SolidBrush(Color.FromArgb(38, 51, 71))) g.FillRectangle(track, 36, 676, 408, 3);
+        using (var fill = new SolidBrush(Blue)) g.FillRectangle(fill, 36, 676, (float)(408 * progress), 3);
+        if (frame.CollectedLoot is { Count: > 0 } loot)
         {
-            Text(g, frame.LootBoss + " · 물욕템", 36, 438, 17, White, FontStyle.Bold);
-            // All rewards from the same clear appear together, including rings and soul ether.
-            var lootRows = (int)Math.Ceiling(loot.Count / 2d);
-            var rowHeight = Math.Min(32f, 87f / lootRows);
+            Text(g, $"누적 물욕템 · {loot.Count}종", 36, 438, 17, White, FontStyle.Bold);
+            var lootColumns = loot.Count <= 12 ? 2 : loot.Count <= 24 ? 3 : 4;
+            var lootRows = (int)Math.Ceiling(loot.Count / (double)lootColumns);
+            var rowHeight = Math.Min(34f, 204f / lootRows);
+            var cellWidth = 408f / lootColumns;
             for (var i = 0; i < loot.Count; i++)
             {
-                var item = loot[i]; var x = 36 + (i % 2) * 205; var y = 467 + (i / 2) * rowHeight;
+                var item = loot[i]; var x = 36 + (i % lootColumns) * cellWidth; var y = 467 + (i / lootColumns) * rowHeight;
+                var iconSize = Math.Min(28, rowHeight - 3);
                 if (_lootIcons.TryGetValue(item.Icon, out var image))
                 {
                     var iconState = g.Save(); g.InterpolationMode = InterpolationMode.NearestNeighbor;
-                    g.DrawImage(image, x, y, rowHeight - 4, rowHeight - 4); g.Restore(iconState);
+                    g.DrawImage(image, x, y + (rowHeight - iconSize) / 2, iconSize, iconSize); g.Restore(iconState);
                 }
-                CenterText(g, item.Name, new RectangleF(x + rowHeight, y, 199 - rowHeight, rowHeight * .53f), Math.Min(12, rowHeight * .42f), White, true);
-                CenterText(g, "+" + IncomeReplay.CompactMeso(item.Meso), new RectangleF(x + rowHeight, y + rowHeight * .5f, 199 - rowHeight, rowHeight * .5f), Math.Min(11, rowHeight * .4f), Blue, true);
+                CenterText(g, item.Name, new RectangleF(x + iconSize + 3, y, cellWidth - iconSize - 7, rowHeight * .53f), Math.Min(11, rowHeight * .42f), White, true);
+                CenterText(g, $"{item.Count}개 · +{IncomeReplay.CompactMeso(item.Meso)}", new RectangleF(x + iconSize + 3, y + rowHeight * .5f, cellWidth - iconSize - 7, rowHeight * .5f), Math.Min(10, rowHeight * .4f), Blue, true);
             }
         }
         else Text(g, "결정석 수익 집계", 36, 468, 18, Muted);
