@@ -10,6 +10,8 @@ namespace MapleDay.Services;
 public sealed class IncomeMesoRain : IDisposable
 {
     public const long GoldUnit = 1_000_000_000;
+    public const int FragmentUnit = 100;
+    private const string FragmentIcon = "Hunting/fragment.png";
     private readonly List<SKBitmap[]> _images = [];
     private readonly List<Drop> _drops = [];
     private readonly SKBitmap _pile = new(new SKImageInfo(1280, 160, SKColorType.Bgra8888, SKAlphaType.Premul));
@@ -39,10 +41,11 @@ public sealed class IncomeMesoRain : IDisposable
         }
         var random = new Random(731);
         const int columns = 42;
-        // Every 1 billion crystal mesos becomes a gold coin; every reward uses its own icon.
+        // Each fragment icon represents 100 fragments; other rewards keep one icon per item.
         long CrystalMeso(ReplayClear clear) => Math.Max(0, clear.Meso - (clear.Loot?.Sum(item => item.Meso) ?? 0));
         var units = replay.Clears.Sum(CrystalMeso) / GoldUnit;
-        var lootCount = replay.Clears.Sum(clear => clear.Loot?.Sum(item => Math.Max(0, item.Count)) ?? 0);
+        var lootCount = replay.Clears.SelectMany(clear => clear.Loot ?? []).GroupBy(item => item.Icon)
+            .Sum(group => group.Sum(item => (long)Math.Max(0, item.Count)) / (group.Key == FragmentIcon ? FragmentUnit : 1));
         var visibleLimit = units + lootCount;
         var layerStep = (float)Math.Min(17, 92d / Math.Max(1, Math.Ceiling(visibleLimit / (double)columns)));
         var landingSlots = new List<int>();
@@ -59,6 +62,7 @@ public sealed class IncomeMesoRain : IDisposable
                 random.Next(-22, 23), random.Next(-150, 151)));
         }
         long remainder = 0;
+        long fragmentRemainder = 0;
         for (var i = 0; i < replay.Clears.Count; i++)
         {
             var clear = replay.Clears[i];
@@ -76,9 +80,16 @@ public sealed class IncomeMesoRain : IDisposable
             if (clear.Loot is { Count: > 0 } loot)
                 for (var reward = 0; reward < loot.Count; reward++)
                     if (lootKinds.TryGetValue(loot[reward].Icon, out var kind))
-                        for (var copy = 0; copy < loot[reward].Count; copy++)
-                            AddDrop(kind, .5 + (IncomeReplayRenderer.Duration - 2.5) * (i + .1 + .8 * (reward + (copy + 1d) / Math.Max(1, loot[reward].Count)) / loot.Count) / replay.Clears.Count,
+                    {
+                        var item = loot[reward];
+                        var unit = item.Icon == FragmentIcon ? FragmentUnit : 1;
+                        var carried = item.Icon == FragmentIcon ? fragmentRemainder : 0;
+                        var copies = (Math.Max(0, item.Count) + carried) / unit;
+                        if (item.Icon == FragmentIcon) fragmentRemainder = (Math.Max(0, item.Count) + carried) % unit;
+                        for (long copy = 1; copy <= copies; copy++)
+                            AddDrop(kind, .5 + (IncomeReplayRenderer.Duration - 2.5) * (i + .1 + .8 * (reward + (copy * unit - carried) / (double)Math.Max(1, item.Count)) / loot.Count) / replay.Clears.Count,
                                 replay.Category == "hunting" ? 20f : 43f);
+                    }
         }
         _drops.Sort((a, b) => a.Birth.CompareTo(b.Birth));
     }

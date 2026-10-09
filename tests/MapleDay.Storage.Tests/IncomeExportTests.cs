@@ -59,19 +59,34 @@ public sealed class IncomeExportTests
             System.Text.Json.JsonSerializer.Serialize(measurements));
     }
     [Fact]
-    public void Hunting_replay_drops_each_fragment_and_only_earned_meso_coins()
+    public void Hunting_replay_carries_fragment_hundreds_between_records_without_changing_income()
     {
         var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
         var replay = HuntingIncome.Replay([
-            new("hunt-1", "owner", new(2026, 10, 8), 874_000_000, 15, 5_000_000),
-            new("hunt-2", "owner", new(2026, 10, 9), 874_000_000, 15, 5_000_000)
+            new("hunt-1", "owner", new(2026, 10, 8), 874_000_000, 75, 5_000_000),
+            new("hunt-2", "owner", new(2026, 10, 9), 874_000_000, 125, 5_000_000)
         ], _ => "사냥 캐릭터");
         using var rain = new IncomeMesoRain(replay, assets);
-        Assert.Equal(30, rain.LootDropCount);
+        Assert.Equal(2, rain.LootDropCount);
+        Assert.Equal(2_748_000_000, replay.At(1).Total);
+        Assert.Equal(200, replay.At(1).CollectedLoot!.Single().Count);
         Assert.Equal(1, rain.GoldDropCount);
         Assert.Equal(1_000_000_000, rain.RepresentedMeso);
         using var renderer = new IncomeReplayRenderer(replay, new("both"), "사냥 기록", assets);
         Assert.Equal(1280 * 720 * 4, renderer.RenderPixels(10, 1280, 720).Length);
+    }
+    [Theory]
+    [InlineData(99, 0)]
+    [InlineData(100, 1)]
+    [InlineData(199, 1)]
+    [InlineData(30000, 300)]
+    public void Hunting_fragment_icons_represent_complete_hundreds(int fragments, int icons)
+    {
+        var replay = HuntingIncome.Replay([new("hunt", "owner", new(2026, 10, 9), 0, fragments, 5_000_000)], _ => "사냥");
+        using var rain = new IncomeMesoRain(replay, Path.Combine(Root, "src", "MapleDay", "Assets"));
+        Assert.Equal(icons, rain.LootDropCount);
+        Assert.Equal(0, rain.GoldDropCount);
+        Assert.Equal(fragments * 5_000_000L, replay.At(1).Total);
     }
     [Fact]
     public void Loot_settlements_drop_all_actual_items_without_generating_meso_coins()
