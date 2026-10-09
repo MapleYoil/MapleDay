@@ -1,10 +1,21 @@
 {
   "guide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/459",
   "soulGuide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/416",
+  "ringGuide": "https://maplestory.nexon.com/Guide/OtherProbability/bossRingBox/ringBoxRedJade",
   "resources": [
+    {
+      "Id": "1113098",
+      "Name": "\uB9AC\uC2A4\uD2B8\uB808\uC778\uD2B8 \uB9C1 4\uB808\uBCA8",
+      "sourceName": "\uB9AC\uC2A4\uD2B8\uB808\uC778\uD2B8 \uB9C1",
+      "source": "Character/Ring/01113098.img/info/icon",
+      "width": 28,
+      "height": 28,
+      "sha256": "7224739c24152b71e63b386956104dca7931f14fb4f45bbbca2a531c777a7f5c"
+    },
     {
       "Id": "1113306",
       "Name": "\uAC70\uB300\uD55C \uACF5\uD3EC",
+      "sourceName": "\uAC70\uB300\uD55C \uACF5\uD3EC",
       "source": "Character/Ring/01113306.img/info/icon",
       "width": 36,
       "height": 36,
@@ -13,14 +24,25 @@
     {
       "Id": "1113313",
       "Name": "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uB9C1",
+      "sourceName": "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uB9C1",
       "source": "Character/Ring/01113313.img/info/icon",
       "width": 34,
       "height": 34,
       "sha256": "2a5c4a948d2dc491c88be235cad1d76650cb535a5d08201198849ca72d173cbb"
     },
     {
+      "Id": "1113329",
+      "Name": "\uCEE8\uD2F0\uB274\uC5B4\uC2A4 \uB9C1 4\uB808\uBCA8",
+      "sourceName": "\uCEE8\uD2F0\uB274\uC5B4\uC2A4 \uB9C1",
+      "source": "Character/Ring/01113329.img/info/icon",
+      "width": 31,
+      "height": 29,
+      "sha256": "a7cbecd5c8891d668115d1ec23584ff9462b3788de537a1c3ca54a31f6a4ec22"
+    },
+    {
       "Id": "1113341",
       "Name": "\uADFC\uC6D0\uC758 \uC18D\uC0AD\uC784",
+      "sourceName": "\uADFC\uC6D0\uC758 \uC18D\uC0AD\uC784",
       "source": "Character/Ring/01113341.img/info/icon",
       "width": 37,
       "height": 36,
@@ -29,6 +51,7 @@
     {
       "Id": "1113360",
       "Name": "\uD669\uD640\uD55C \uC545\uBABD",
+      "sourceName": "\uD669\uD640\uD55C \uC545\uBABD",
       "source": "Character/Ring/01113360.img/info/icon",
       "width": 38,
       "height": 38,
@@ -37,6 +60,7 @@
     {
       "Id": "1672095",
       "Name": "\uCEF4\uD50C\uB9AC\uD2B8 \uC5B8\uB354\uCEE8\uD2B8\uB864",
+      "sourceName": "\uCEF4\uD50C\uB9AC\uD2B8 \uC5B8\uB354\uCEE8\uD2B8\uB864",
       "source": "Character/Android/01672095.img/info/icon",
       "width": 35,
       "height": 33,
@@ -45,6 +69,7 @@
     {
       "Id": "1012632",
       "Name": "\uB8E8\uC988 \uCEE8\uD2B8\uB864 \uBA38\uC2E0 \uB9C8\uD06C",
+      "sourceName": "\uB8E8\uC988 \uCEE8\uD2B8\uB864 \uBA38\uC2E0 \uB9C8\uD06C",
       "source": "Character/Accessory/01012632.img/info/icon",
       "width": 30,
       "height": 30,
@@ -53,6 +78,7 @@
     {
       "Id": "1012757",
       "Name": "\uD2B8\uC640\uC77C\uB77C\uC774\uD2B8 \uB9C8\uD06C",
+      "sourceName": "\uD2B8\uC640\uC77C\uB77C\uC774\uD2B8 \uB9C8\uD06C",
       "source": "Character/Accessory/01012757.img/info/icon",
       "width": 30,
       "height": 31,
@@ -61,6 +87,7 @@
     {
       "Id": "1012911",
       "Name": "\uC624\uB9CC\uC758 \uC6D0\uC8C4",
+      "sourceName": "\uC624\uB9CC\uC758 \uC6D0\uC8C4",
       "source": "Character/Accessory/01012911.img/info/icon",
       "width": 34,
       "height": 31,
@@ -69,6 +96,7 @@
     {
       "Id": "1022277",
       "Name": "\uD30C\uD480\uB77C\uD22C\uC2A4 \uB9C8\uD06C",
+      "sourceName": "\uD30C\uD480\uB77C\uD22C\uC2A4 \uB9C8\uD06C",
       "source": "Character/Accessory/01022277.img/info/icon",
       "width": 30,
       "height": 30,
@@ -77,6 +105,7 @@
     {
       "Id": "1022278",
       "Name": "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC548\uB300",
+      "sourceName": "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC548\uB300",
       "source": "Character/Accessory/01022278.img/info/icon",
       "width": 31,
       "height": 23,
@@ -85,6 +114,7 @@
     {
       "Id": "1022397",
       "Name": "\uAD76\uC8FC\uB9AC\uB294 \uD54F\uBE5B \uC6D0\uD63C",
+      "sourceName": "\uAD76\uC8FC\uB9AC\uB294 \uD54F\uBE5B \uC6D0\uD63C",
       "source": "Character/Accessory/01022397.img/info/icon",
       "width": 30,
       "height": 30,
@@ -93,6 +123,7 @@
     {
       "Id": "1032316",
       "Name": "\uCEE4\uB9E8\uB354 \uD3EC\uC2A4 \uC774\uC5B4\uB9C1",
+      "sourceName": "\uCEE4\uB9E8\uB354 \uD3EC\uC2A4 \uC774\uC5B4\uB9C1",
       "source": "Character/Accessory/01032316.img/info/icon",
       "width": 35,
       "height": 34,
@@ -101,6 +132,7 @@
     {
       "Id": "1032330",
       "Name": "\uC5D0\uC2A4\uD154\uB77C \uC774\uC5B4\uB9C1",
+      "sourceName": "\uC5D0\uC2A4\uD154\uB77C \uC774\uC5B4\uB9C1",
       "source": "Character/Accessory/01032330.img/info/icon",
       "width": 32,
       "height": 31,
@@ -109,6 +141,7 @@
     {
       "Id": "1122150",
       "Name": "\uB3C4\uBBF8\uB124\uC774\uD130 \uD39C\uB358\uD2B8",
+      "sourceName": "\uB3C4\uBBF8\uB124\uC774\uD130 \uD39C\uB358\uD2B8",
       "source": "Character/Accessory/01122150.img/info/icon",
       "width": 32,
       "height": 30,
@@ -117,6 +150,7 @@
     {
       "Id": "1122430",
       "Name": "\uACE0\uD1B5\uC758 \uADFC\uC6D0",
+      "sourceName": "\uACE0\uD1B5\uC758 \uADFC\uC6D0",
       "source": "Character/Accessory/01122430.img/info/icon",
       "width": 36,
       "height": 36,
@@ -125,6 +159,7 @@
     {
       "Id": "1122443",
       "Name": "\uB370\uC774\uBE0C\uB808\uC774\uD06C \uD39C\uB358\uD2B8",
+      "sourceName": "\uB370\uC774\uBE0C\uB808\uC774\uD06C \uD39C\uB358\uD2B8",
       "source": "Character/Accessory/01122443.img/info/icon",
       "width": 34,
       "height": 33,
@@ -133,6 +168,7 @@
     {
       "Id": "1122447",
       "Name": "\uC8FD\uC74C\uC758 \uB9F9\uC138",
+      "sourceName": "\uC8FD\uC74C\uC758 \uB9F9\uC138",
       "source": "Character/Accessory/01122447.img/info/icon",
       "width": 35,
       "height": 39,
@@ -141,6 +177,7 @@
     {
       "Id": "1132308",
       "Name": "\uBABD\uD658\uC758 \uBCA8\uD2B8",
+      "sourceName": "\uBABD\uD658\uC758 \uBCA8\uD2B8",
       "source": "Character/Accessory/01132308.img/info/icon",
       "width": 36,
       "height": 35,
@@ -149,6 +186,7 @@
     {
       "Id": "1143471",
       "Name": "\uBD88\uBA78\uC758 \uC720\uC0B0",
+      "sourceName": "\uBD88\uBA78\uC758 \uC720\uC0B0",
       "source": "Character/Accessory/01143471.img/info/icon",
       "width": 37,
       "height": 38,
@@ -157,6 +195,7 @@
     {
       "Id": "1182285",
       "Name": "\uCC3D\uC138\uC758 \uBC43\uC9C0",
+      "sourceName": "\uCC3D\uC138\uC758 \uBC43\uC9C0",
       "source": "Character/Accessory/01182285.img/info/icon",
       "width": 35,
       "height": 30,
@@ -165,6 +204,7 @@
     {
       "Id": "2539020",
       "Name": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "sourceName": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
       "source": "Item/Consume/0253.img/02539020/info/icon",
       "width": 36,
       "height": 37,
@@ -173,6 +213,7 @@
     {
       "Id": "2539021",
       "Name": "2\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "sourceName": "2\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
       "source": "Item/Consume/0253.img/02539021/info/icon",
       "width": 36,
       "height": 37,
@@ -181,6 +222,7 @@
     {
       "Id": "2539022",
       "Name": "3\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "sourceName": "3\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
       "source": "Item/Consume/0253.img/02539022/info/icon",
       "width": 36,
       "height": 37,
@@ -189,6 +231,7 @@
     {
       "Id": "2539023",
       "Name": "4\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "sourceName": "4\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
       "source": "Item/Consume/0253.img/02539023/info/icon",
       "width": 36,
       "height": 37,
@@ -197,6 +240,7 @@
     {
       "Id": "2633926",
       "Name": "\uC800\uC8FC\uBC1B\uC740 \uB9C8\uB3C4\uC11C \uC120\uD0DD \uC0C1\uC790",
+      "sourceName": "\uC800\uC8FC\uBC1B\uC740 \uB9C8\uB3C4\uC11C \uC120\uD0DD \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02633926/info/icon",
       "width": 37,
       "height": 37,
@@ -205,6 +249,7 @@
     {
       "Id": "2633927",
       "Name": "\uBBF8\uD2B8\uB77C\uC758 \uBD84\uB178 \uC120\uD0DD \uC0C1\uC790",
+      "sourceName": "\uBBF8\uD2B8\uB77C\uC758 \uBD84\uB178 \uC120\uD0DD \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02633927/info/icon",
       "width": 38,
       "height": 36,
@@ -213,6 +258,7 @@
     {
       "Id": "2634472",
       "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0",
+      "sourceName": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0",
       "source": "Item/Consume/0263.img/02634472/info/icon",
       "width": 35,
       "height": 34,
@@ -221,6 +267,7 @@
     {
       "Id": "2635747",
       "Name": "\uB4A4\uC5C9\uD0A8 \uD749\uC218\uC758 \uACE0\uB9AC",
+      "sourceName": "\uB4A4\uC5C9\uD0A8 \uD749\uC218\uC758 \uACE0\uB9AC",
       "source": "Item/Consume/0263.img/02635747/info/icon",
       "width": 33,
       "height": 33,
@@ -229,6 +276,7 @@
     {
       "Id": "2636606",
       "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0 \uC870\uAC01",
+      "sourceName": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0 \uC870\uAC01",
       "source": "Item/Consume/0263.img/02636606/info/icon",
       "width": 30,
       "height": 28,
@@ -237,6 +285,7 @@
     {
       "Id": "2638063",
       "Name": "\uC65C\uACE1\uB41C \uC695\uB9DD\uC758 \uACB0\uC815",
+      "sourceName": "\uC65C\uACE1\uB41C \uC695\uB9DD\uC758 \uACB0\uC815",
       "source": "Item/Consume/0263.img/02638063/info/icon",
       "width": 34,
       "height": 37,
@@ -245,6 +294,7 @@
     {
       "Id": "2638064",
       "Name": "\uC758\uC9C0\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uC758\uC9C0\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02638064/info/icon",
       "width": 31,
       "height": 26,
@@ -253,6 +303,7 @@
     {
       "Id": "2638065",
       "Name": "\uD749\uC218\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uD749\uC218\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02638065/info/icon",
       "width": 31,
       "height": 26,
@@ -261,6 +312,7 @@
     {
       "Id": "2638066",
       "Name": "\uC695\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uC695\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02638066/info/icon",
       "width": 31,
       "height": 26,
@@ -269,6 +321,7 @@
     {
       "Id": "2639252",
       "Name": "\uC601\uC6D0\uD55C \uCDA9\uC131\uC758 \uD754\uC801",
+      "sourceName": "\uC601\uC6D0\uD55C \uCDA9\uC131\uC758 \uD754\uC801",
       "source": "Item/Consume/0263.img/02639252/info/icon",
       "width": 36,
       "height": 34,
@@ -277,6 +330,7 @@
     {
       "Id": "2639253",
       "Name": "\uB9F9\uC138\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uB9F9\uC138\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0263.img/02639253/info/icon",
       "width": 31,
       "height": 26,
@@ -285,6 +339,7 @@
     {
       "Id": "2644204",
       "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uBCA8\uD2B8)",
+      "sourceName": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uBCA8\uD2B8)",
       "source": "Item/Consume/0264.img/02644204/info/icon",
       "width": 37,
       "height": 31,
@@ -293,6 +348,7 @@
     {
       "Id": "2644205",
       "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uC5BC\uAD74\uC7A5\uC2DD)",
+      "sourceName": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uC5BC\uAD74\uC7A5\uC2DD)",
       "source": "Item/Consume/0264.img/02644205/info/icon",
       "width": 37,
       "height": 31,
@@ -301,6 +357,7 @@
     {
       "Id": "2644206",
       "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uB208\uC7A5\uC2DD)",
+      "sourceName": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uB208\uC7A5\uC2DD)",
       "source": "Item/Consume/0264.img/02644206/info/icon",
       "width": 37,
       "height": 31,
@@ -309,6 +366,7 @@
     {
       "Id": "2644207",
       "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uADC0\uACE0\uB9AC)",
+      "sourceName": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uADC0\uACE0\uB9AC)",
       "source": "Item/Consume/0264.img/02644207/info/icon",
       "width": 37,
       "height": 31,
@@ -317,6 +375,7 @@
     {
       "Id": "2644208",
       "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uD6C8\uC7A5)",
+      "sourceName": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uD6C8\uC7A5)",
       "source": "Item/Consume/0264.img/02644208/info/icon",
       "width": 37,
       "height": 31,
@@ -325,6 +384,7 @@
     {
       "Id": "2830304",
       "Name": "\uC774\uC5B4\uC9C4 \uACE0\uB300\uC758 \uACB0\uC758",
+      "sourceName": "\uC774\uC5B4\uC9C4 \uACE0\uB300\uC758 \uACB0\uC758",
       "source": "Item/Consume/0283.img/02830304/info/icon",
       "width": 36,
       "height": 37,
@@ -333,6 +393,7 @@
     {
       "Id": "2830306",
       "Name": "\uACE0\uB300\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uACE0\uB300\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0283.img/02830306/info/icon",
       "width": 31,
       "height": 26,
@@ -341,6 +402,7 @@
     {
       "Id": "2830338",
       "Name": "\uD63C\uB3C8\uC758 \uCE60\uD751 \uC7A5\uC2E0\uAD6C \uC0C1\uC790",
+      "sourceName": "\uD63C\uB3C8\uC758 \uCE60\uD751 \uC7A5\uC2E0\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0283.img/02830338/info/icon",
       "width": 37,
       "height": 37,
@@ -349,6 +411,7 @@
     {
       "Id": "2831103",
       "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8",
+      "sourceName": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8",
       "source": "Item/Consume/0283.img/02831103/info/icon",
       "width": 40,
       "height": 41,
@@ -357,6 +420,7 @@
     {
       "Id": "2831104",
       "Name": "\uB4A4\uD2C0\uB9B0 \uAC08\uB9DD\uC758 \uD3B8\uB9B0",
+      "sourceName": "\uB4A4\uD2C0\uB9B0 \uAC08\uB9DD\uC758 \uD3B8\uB9B0",
       "source": "Item/Consume/0283.img/02831104/info/icon",
       "width": 38,
       "height": 38,
@@ -365,6 +429,7 @@
     {
       "Id": "2831105",
       "Name": "\uD658\uC0C1\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uD658\uC0C1\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0283.img/02831105/info/icon",
       "width": 36,
       "height": 30,
@@ -373,6 +438,7 @@
     {
       "Id": "2831106",
       "Name": "\uAC08\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uAC08\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0283.img/02831106/info/icon",
       "width": 33,
       "height": 28,
@@ -381,6 +447,7 @@
     {
       "Id": "2831408",
       "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8 \uC870\uAC01",
+      "sourceName": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8 \uC870\uAC01",
       "source": "Item/Consume/0283.img/02831408/info/icon",
       "width": 32,
       "height": 34,
@@ -389,6 +456,7 @@
     {
       "Id": "2832967",
       "Name": "\uC800\uC8FC\uBC1B\uC740 \uC6D0\uD63C\uC758 \uC794\uC7AC",
+      "sourceName": "\uC800\uC8FC\uBC1B\uC740 \uC6D0\uD63C\uC758 \uC794\uC7AC",
       "source": "Item/Consume/0283.img/02832967/info/icon",
       "width": 37,
       "height": 36,
@@ -397,6 +465,7 @@
     {
       "Id": "2832969",
       "Name": "\uAD11\uAE30\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "sourceName": "\uAD11\uAE30\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
       "source": "Item/Consume/0283.img/02832969/info/icon",
       "width": 31,
       "height": 26,

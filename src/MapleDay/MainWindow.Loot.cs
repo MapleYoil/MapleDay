@@ -56,6 +56,7 @@ public sealed partial class MainWindow
             var content = new StackPanel { Spacing = 12, MinWidth = 340 };
             foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, amount, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
             content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정의 주간 12개 제한과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
+            content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 기록", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
                 PrimaryButtonText = "저장", CloseButtonText = "취소", DefaultButton = ContentDialogButton.Primary,
                 SecondaryButtonText = source is null ? "" : "기록 삭제", IsSecondaryButtonEnabled = existing is not null,

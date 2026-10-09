@@ -81,13 +81,13 @@ public class LootAndForecastTests
     public void DifficultySpecificDropsDoNotLeakFromHarderOrLowerModes()
     {
         Assert.Empty(BossLootCatalog.ForBoss("스우", "normal"));
-        Assert.Equal(new[] { "루즈 컨트롤 머신 마크" }, BossLootCatalog.ForBoss("스우", "하드").Select(item => item.Name));
-        Assert.Equal(2, BossLootCatalog.ForBoss("스우", "extreme").Count);
+        Assert.Equal(new[] { "루즈 컨트롤 머신 마크", "리스트레인트 링 4레벨", "컨티뉴어스 링 4레벨" }.Order(), BossLootCatalog.ForBoss("스우", "하드").Select(item => item.Name).Order());
+        Assert.Equal(4, BossLootCatalog.ForBoss("스우", "extreme").Count);
         Assert.Empty(BossLootCatalog.ForBoss("루시드", "easy"));
         Assert.DoesNotContain(BossLootCatalog.ForBoss("루시드", "normal"), item => item.Name == "몽환의 벨트");
         Assert.DoesNotContain(BossLootCatalog.ForBoss("찬란한 흉성", "hard"), item => item.Name == "황홀한 환상의 단편 조각");
-        Assert.Empty(BossLootCatalog.ForBoss("벨로나", "easy"));
-        var item = BossLootCatalog.ForBoss("스우", "hard").Single();
+        Assert.All(BossLootCatalog.ForBoss("벨로나", "easy"), item => Assert.EndsWith("링 4레벨", item.Name));
+        var item = BossLootCatalog.ForBoss("스우", "hard").Single(item => item.Name == "루즈 컨트롤 머신 마크");
         var record = new BossLootRecord("id", "c", Today, "스우", item.Id, item.Name, "equal", 100, 1, Difficulty: "normal");
         Assert.False(BossLoot.Valid(record)); Assert.True(BossLoot.Valid(record with { Difficulty = "hard" }));
     }
@@ -102,8 +102,8 @@ public class LootAndForecastTests
     [Fact]
     public void ExtractedCatalogHasUniqueSafeResourcesAndMatchesBossAliases()
     {
-        Assert.Equal(50, BossLootCatalog.Items.Count);
-        Assert.Equal(50, BossLootCatalog.Items.DistinctBy(item => item.Id).Count());
+        Assert.Equal(52, BossLootCatalog.Items.Count);
+        Assert.Equal(52, BossLootCatalog.Items.DistinctBy(item => item.Id).Count());
         Assert.All(BossLootCatalog.Items, item => { Assert.NotEmpty(item.Bosses); Assert.DoesNotContain("로이드", item.Name); Assert.DoesNotContain("앱솔랩스", item.Name); Assert.DoesNotContain("아케인셰이드", item.Name); Assert.DoesNotContain(item.Name.Replace(" ", ""), new[] { "태초의정수", "루인포스실드", "저주받은카이세리움" }); Assert.Matches(@"^BossLoot/\d+\.png$", item.Icon); });
         Assert.Equal(BossLootCatalog.ForBoss("검은 마법사"), BossLootCatalog.ForBoss("검은마법사"));
     }

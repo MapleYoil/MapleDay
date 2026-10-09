@@ -8,6 +8,7 @@ public static class BossLootCatalog
 {
     public const string Guide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/459";
     public const string SoulGuide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/416";
+    public const string RingGuide = "https://maplestory.nexon.com/Guide/OtherProbability/bossRingBox/ringBoxRedJade";
     public static IReadOnlyList<BossLootItem> Items { get; } = Load();
     private static IReadOnlyList<BossLootItem> Load()
     {

@@ -1,5 +1,30 @@
 [
   {
+    "Id": "1113098",
+    "Name": "\uB9AC\uC2A4\uD2B8\uB808\uC778\uD2B8 \uB9C1 4\uB808\uBCA8",
+    "Bosses": [
+      "\uC2A4\uC6B0",
+      "\uB370\uBBF8\uC548",
+      "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uC2AC\uB77C\uC784",
+      "\uB8E8\uC2DC\uB4DC",
+      "\uC70C",
+      "\uB354\uC2A4\uD06C",
+      "\uC9C4 \uD790\uB77C",
+      "\uB4C4\uCF08",
+      "\uAC80\uC740 \uB9C8\uBC95\uC0AC",
+      "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C",
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4",
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790",
+      "\uCE74\uB9C1",
+      "\uBCA8\uB85C\uB098",
+      "\uCC2C\uB780\uD55C \uD749\uC131",
+      "\uB9BC\uBCF4",
+      "\uBC1C\uB4DC\uB9AD\uC2A4",
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/1113098.png"
+  },
+  {
     "Id": "1113306",
     "Name": "\uAC70\uB300\uD55C \uACF5\uD3EC",
     "Bosses": [
@@ -14,6 +39,31 @@
       "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uC2AC\uB77C\uC784"
     ],
     "Icon": "BossLoot/1113313.png"
+  },
+  {
+    "Id": "1113329",
+    "Name": "\uCEE8\uD2F0\uB274\uC5B4\uC2A4 \uB9C1 4\uB808\uBCA8",
+    "Bosses": [
+      "\uC2A4\uC6B0",
+      "\uB370\uBBF8\uC548",
+      "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uC2AC\uB77C\uC784",
+      "\uB8E8\uC2DC\uB4DC",
+      "\uC70C",
+      "\uB354\uC2A4\uD06C",
+      "\uC9C4 \uD790\uB77C",
+      "\uB4C4\uCF08",
+      "\uAC80\uC740 \uB9C8\uBC95\uC0AC",
+      "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C",
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4",
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790",
+      "\uCE74\uB9C1",
+      "\uBCA8\uB85C\uB098",
+      "\uCC2C\uB780\uD55C \uD749\uC131",
+      "\uB9BC\uBCF4",
+      "\uBC1C\uB4DC\uB9AD\uC2A4",
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/1113329.png"
   },
   {
     "Id": "1113341",

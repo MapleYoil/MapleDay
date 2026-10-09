@@ -1169,6 +1169,11 @@
     "height": 31,
     "file": "BossLoot/1032330.bgra"
   },
+  "BossLoot/1113098.png": {
+    "width": 28,
+    "height": 28,
+    "file": "BossLoot/1113098.bgra"
+  },
   "BossLoot/1113306.png": {
     "width": 36,
     "height": 36,
@@ -1178,6 +1183,11 @@
     "width": 34,
     "height": 34,
     "file": "BossLoot/1113313.bgra"
+  },
+  "BossLoot/1113329.png": {
+    "width": 31,
+    "height": 29,
+    "file": "BossLoot/1113329.bgra"
   },
   "BossLoot/1113341.png": {
     "width": 37,

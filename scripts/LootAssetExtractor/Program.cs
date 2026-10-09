@@ -6,7 +6,8 @@ using WzComparerR2.WzLib;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var game = args.FirstOrDefault() ?? @"C:\Nexon\Maple\Data";
 var targets = JsonSerializer.Deserialize<Dictionary<string, string[]>>(File.ReadAllText("scripts/LootAssetExtractor/rewards.json"))!;
-string Normal(string text) => string.Concat(text.Where(character => !char.IsWhiteSpace(character)));
+string Normal(string text) => string.Concat(text.Replace(" 4레벨", "").Where(character => !char.IsWhiteSpace(character)));
+string DisplayName(string name) => name is "컨티뉴어스 링" or "리스트레인트 링" ? name + " 4레벨" : name;
 var names = targets.Values.SelectMany(names => names).Select(Normal).ToHashSet();
 var folders = new Dictionary<string, (Wz_Structure Structure, Wz_Node Root)>();
 Wz_Node Folder(string folder)
@@ -64,15 +65,15 @@ try
         var icon = "BossLoot/" + item.Id + ".png";
         var file = "src/MapleDay/Assets/" + icon;
         bitmap.Save(file, ImageFormat.Png);
-        items.Add(new { item.Id, item.Name, Bosses = targets.Where(pair => pair.Value.Any(name => Normal(name) == Normal(item.Name))).Select(pair => pair.Key).ToArray(), Icon = icon });
-        manifest.Add(new { item.Id, item.Name, source = item.Path, width = bitmap.Width, height = bitmap.Height,
+        items.Add(new { item.Id, Name = DisplayName(item.Name), Bosses = targets.Where(pair => pair.Value.Any(name => Normal(name) == Normal(item.Name))).Select(pair => pair.Key).ToArray(), Icon = icon });
+        manifest.Add(new { item.Id, Name = DisplayName(item.Name), sourceName = item.Name, source = item.Path, width = bitmap.Width, height = bitmap.Height,
             sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(file))).ToLowerInvariant() });
         Console.WriteLine(item.Name);
     }
     var missing = names.Except(found.Select(item => Normal(item.Name))).ToArray();
     if (missing.Length > 0) Console.WriteLine("MISSING: " + string.Join(" / ", missing));
     File.WriteAllText("src/MapleDay.Core/BossLootItems.json", JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
-    File.WriteAllText(destination + "/manifest.json", JsonSerializer.Serialize(new { guide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/459", soulGuide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/416", resources = manifest }, new JsonSerializerOptions { WriteIndented = true }));
+    File.WriteAllText(destination + "/manifest.json", JsonSerializer.Serialize(new { guide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/459", soulGuide = "https://maplestory.nexon.com/guide/n23gameinformation/articles/416", ringGuide = "https://maplestory.nexon.com/Guide/OtherProbability/bossRingBox/ringBoxRedJade", resources = manifest }, new JsonSerializerOptions { WriteIndented = true }));
     Console.WriteLine($"Extracted {items.Count} unique reward icons.");
 }
 finally { foreach (var folder in folders.Values) folder.Structure.Clear(); }
