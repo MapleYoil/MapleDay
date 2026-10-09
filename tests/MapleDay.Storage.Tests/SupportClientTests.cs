@@ -104,6 +104,7 @@ public sealed class SupportClientTests
             var draft = JsonSerializer.Deserialize<SupportDraft>(raw, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
             Ids.Add(draft.Id);
             Assert.Equal("선택한캐릭터", draft.Nickname);
+            Assert.Matches(@"^\d+\.\d+\.\d+\.\d+$", draft.Version!);
             Assert.DoesNotContain("live_", raw);
             if (FailNext)
             {
@@ -116,6 +117,14 @@ public sealed class SupportClientTests
             new(status) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
     }
 
+    [Fact]
+    public void Ticket_summary_shows_submission_version_when_available()
+    {
+        var ticket = JsonSerializer.Deserialize<SupportTicket>("""{"version":"1.1.10.0","created":1791500000}""", new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        Assert.Contains("v1.1.10.0", ticket.Summary);
+        ticket.Version = null;
+        Assert.DoesNotContain(" · v", ticket.Summary);
+    }
     [Fact]
     public void Own_followup_is_not_an_unread_admin_reply_or_notification()
     {

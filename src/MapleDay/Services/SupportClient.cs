@@ -28,8 +28,9 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public string Kind { get; set; } = "inquiry";
     public long? Completed { get; set; }
     public long Created { get; set; }
+    public string? Version { get; set; }
     public List<SupportReply> Replies { get; set; } = [];
-    public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm} · {(Kind == "suggestion" ? "건의사항" : "1:1 문의")}";
+    public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm} · {(Kind == "suggestion" ? "건의사항" : "1:1 문의")}" + (string.IsNullOrEmpty(Version) ? "" : $" · v{Version}");
     [JsonIgnore] public bool IsRead { get; private set; }
     public string StatusText => Kind == "suggestion" ? State switch
     {
@@ -55,7 +56,7 @@ public sealed class SupportTicket : INotifyPropertyChanged
 }
 public sealed record SupportInbox(List<SupportTicket> Tickets);
 public sealed record SupportReceipt(string Id, string State);
-public sealed record SupportDraft(string Id, string Kind, string Nickname, string Subject, string Body);
+public sealed record SupportDraft(string Id, string Kind, string Nickname, string Subject, string Body, string? Version = null);
 
 public sealed class SupportClient : IDisposable
 {
@@ -106,7 +107,7 @@ public sealed class SupportClient : IDisposable
         var previous = await _draft.LoadAsync();
         var draft = previous is null ? null : JsonSerializer.Deserialize<SupportDraft>(previous, JsonOptions);
         if (draft is null || draft.Kind != kind || draft.Nickname != nickname || draft.Subject != subject || draft.Body != body)
-            draft = new(Guid.NewGuid().ToString("N"), kind, nickname, subject, body);
+            draft = new(Guid.NewGuid().ToString("N"), kind, nickname, subject, body, typeof(SupportClient).Assembly.GetName().Version?.ToString(4) ?? "1.0.0.0");
         // Persist before sending so a lost response can be retried without duplicate mail.
         await _draft.SaveAsync(JsonSerializer.Serialize(draft, JsonOptions), token);
         using var request = Request(HttpMethod.Post, "support");

@@ -142,15 +142,15 @@ public sealed partial class HuntingIncomeView : UserControl
             var snapshot = await _market.GetAsync(refresh: refresh);
             if (generation != _marketGeneration) return;
             var region = owner.World.StartsWith("챌린저", StringComparison.Ordinal) ? "challengers" : "normal";
-            _price = snapshot.Fragments?.FirstOrDefault(row => row.Region == region && row.PriceMillion is > 0 and < 100);
-            MarketText.Text = _price is { } price ? $"참고 시세 {price.PriceMillion}백만 메소 · {price.Date:MM.dd}" : "참고 시세가 아직 없어요. 가격을 직접 입력할 수 있습니다.";
+            _price = snapshot.Fragments?.FirstOrDefault(row => row.Region == region && row.InputPriceMan is >= 1 and <= 9999);
+            MarketText.Text = _price is { } price ? $"참고 시세 {price.InputPriceMan}만 메소 · {price.Date:MM.dd}" : "참고 시세가 아직 없어요. 가격을 직접 입력할 수 있습니다.";
             MarketApply.IsEnabled = _price is not null;
         }
         catch { if (generation == _marketGeneration) MarketText.Text = "시세를 확인하지 못했어요. 가격을 직접 입력할 수 있습니다."; }
         finally { if (generation == _marketGeneration) MarketRefresh.IsEnabled = true; }
     }
     private async void MarketRefresh_Click(object sender, RoutedEventArgs args) => await LoadMarketAsync(true);
-    private void Market_Click(object sender, RoutedEventArgs args) { if (_price is { } price) FragmentPrice.Value = price.PriceMillion * 100; }
+    private void Market_Click(object sender, RoutedEventArgs args) { if (_price is { } price) FragmentPrice.Value = price.InputPriceMan; }
     private void Save_Click(object sender, RoutedEventArgs args)
     {
         if (_settings is null || _saving) return;

@@ -40,15 +40,21 @@ public sealed class LootMarketTests
         using var http = new HttpClient(new Handler(request => {
             if (request.Method == HttpMethod.Post) { sessions++; return Json($"{{\"token\":\"test\",\"expiresAt\":{DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds()}}}"); }
             reads++;
-            return Json(reads == 1 ? """{"prices":[],"fragments":[]}""" : """{"prices":[],"fragments":[{"region":"normal","date":"2026-10-09","priceMillion":5}]}""");
+            return Json(reads == 1 ? """{"prices":[],"fragments":[]}""" : """{"prices":[],"fragments":[{"region":"normal","date":"2026-10-09","priceMillion":5,"priceMan":599}]}""");
         })) { BaseAddress = new("https://server.morialuluka.com/api/mapleday/") };
         using var client = new LootMarketClient(http, _ => [1]);
         Assert.Empty((await client.GetAsync()).Fragments!);
         Assert.Empty((await client.GetAsync()).Fragments!);
-        Assert.Equal(5, Assert.Single((await client.GetAsync(refresh: true)).Fragments!).PriceMillion);
+        Assert.Equal(599, Assert.Single((await client.GetAsync(refresh: true)).Fragments!).InputPriceMan);
         Assert.Equal(2, reads); Assert.Equal(1, sessions);
-        Assert.Equal(5, Assert.Single((await client.GetAsync()).Fragments!).PriceMillion);
+        Assert.Equal(599, Assert.Single((await client.GetAsync()).Fragments!).InputPriceMan);
         Assert.Equal(2, reads);
+    }
+    [Fact]
+    public void Fragment_price_preserves_ten_thousand_units_and_supports_old_snapshots()
+    {
+        Assert.Equal(599, new FragmentMarketPrice("normal", 5, new(2026, 10, 9), 599).InputPriceMan);
+        Assert.Equal(500, new FragmentMarketPrice("normal", 5, new(2026, 10, 9)).InputPriceMan);
     }
     [Fact]
     public async Task Authentication_failure_never_reads_prices()

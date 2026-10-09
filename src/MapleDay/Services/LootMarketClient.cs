@@ -13,7 +13,10 @@ public sealed record LootMarketPrice(string ItemId, string Variant, string Regio
     [JsonIgnore] public long WholeEokPrice => checked(PriceEok * 100_000_000);
     [JsonIgnore] public string Label => $"{Variant} · {PriceEok}억 메소 · {Date:MM.dd}";
 }
-public sealed record FragmentMarketPrice(string Region, long PriceMillion, DateOnly Date);
+public sealed record FragmentMarketPrice(string Region, long PriceMillion, DateOnly Date, long? PriceMan = null)
+{
+    [JsonIgnore] public long InputPriceMan => PriceMan ?? checked(PriceMillion * 100);
+}
 public sealed record LootMarketSnapshot(DateTimeOffset? FetchedAt, LootMarketPrice[] Prices, FragmentMarketPrice[]? Fragments = null)
 {
     public IReadOnlyList<LootMarketPrice> ForItem(string itemId, string world) => Prices.Where(price => price.ItemId == itemId
