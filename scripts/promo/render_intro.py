@@ -13,6 +13,7 @@ DATA=json.loads((HERE/'data.json').read_text(encoding='utf-8'))
 CHARS=DATA['Characters']
 W,H,FPS,DURATION=1920,1080,60,12
 BLUE='#377DFF'; INK='#202426'; MUTED='#777C83'; CREAM='#F7F7F4'; LINE='#E5E6E4'
+MASKED_NICKNAME='••••••'
 RESAMPLE=Image.Resampling.LANCZOS
 
 @lru_cache(None)
@@ -97,7 +98,7 @@ def char_card(i,w=272,h=300):
     c=CHARS[i];im=Image.new('RGBA',(w,h));rr(im,(0,0,w-1,h-1),20,'white',LINE)
     rr(im,(w/2-54,15,w/2+54,135),13,'#F4F3EF');paste(im,avatar(i),w/2-54,15)
     world(im,c,w/2-31,144)
-    txt(im,(w/2,185),c['Name'],18,650,anchor='mm');txt(im,(w/2,210),c['Class'],13,400,MUTED,anchor='mm')
+    txt(im,(w/2,185),MASKED_NICKNAME,18,650,anchor='mm');txt(im,(w/2,210),c['Class'],13,400,MUTED,anchor='mm')
     txt(im,(w/2,238),f"Lv. {c['Level']} ({c['ExpRate']}%)",14,500,BLUE,anchor='mm')
     rr(im,(14,h-43,w-15,h-13),5,BLUE if i>=2 else '#CBCDCB')
     txt(im,(w/2,h-28),'스케줄러에 추가' if i>=2 else '스케줄러에 추가됨',12,500,'white',anchor='mm')
@@ -213,7 +214,7 @@ def income_page():
 def level_page():
     c=CHARS[0];im=app_shell('level');txt(im,(235,89),'레벨',29,650)
     rr(im,(235,149,1150,710),18,'white',LINE);paste(im,avatar(0,82),264,170)
-    txt(im,(380,186),c['Name'],24,650);txt(im,(380,222),f"Lv. {c['Level']} ({c['ExpRate']}%)",16,500,BLUE)
+    txt(im,(380,186),MASKED_NICKNAME,24,650);txt(im,(380,222),f"Lv. {c['Level']} ({c['ExpRate']}%)",16,500,BLUE)
     txt(im,(264,304),'최근 7일 일평균 획득 경험치',13,400,MUTED);txt(im,(264,336),c['Average'] or '기록 수집 중',29,650,BLUE)
     txt(im,(717,304),'예상 레벨업',13,400,MUTED);txt(im,(717,336),c['Eta'] or '계산 중',24,650)
     txt(im,(264,404),'최근 7일 보유 경험치',18,600)
@@ -230,7 +231,7 @@ def notice_card():
     im=Image.new('RGBA',(770,190));rr(im,(0,0,769,189),26,'#FFFFFF',LINE)
     paste(im,asset('Branding/logo.png'),30,24,.14);txt(im,(78,42),'메요일',17,600,anchor='lm');txt(im,(738,42),'지금',13,400,MUTED,anchor='rm')
     txt(im,(33,89),'일일 퀘스트 미완료 알림',24,650)
-    name=CHARS[0]['Name'];pending=sum(1 for e in CHARS[0]['Entries'] if e['Section']=='Daily' and e['Type']=='quest' and not e['Complete'])
+    name=MASKED_NICKNAME;pending=sum(1 for e in CHARS[0]['Entries'] if e['Section']=='Daily' and e['Type']=='quest' and not e['Complete'])
     txt(im,(33,134),f'{name} · 미완료 {pending}개 · 00:00 초기화',17,400,MUTED)
     return im
 
@@ -242,7 +243,7 @@ def notifications_page():
     for i,e in enumerate([e for e in CHARS[0]['Entries'] if e['Section']=='Daily' and e['Type']=='quest' and not e['Complete']][:3]):
         rr(im,(258,492+i*62,1127,546+i*62),10,'#F7F8F6',LINE)
         rr(im,(280,509+i*62,299,528+i*62),2,None,BLUE,2)
-        txt(im,(319,519+i*62),e['Name'],16,500,anchor='lm');txt(im,(1098,519+i*62),CHARS[0]['Name'],14,400,MUTED,anchor='rm')
+        txt(im,(319,519+i*62),e['Name'],16,500,anchor='lm');txt(im,(1098,519+i*62),MASKED_NICKNAME,14,400,MUTED,anchor='rm')
     return im
 
 @lru_cache(None)

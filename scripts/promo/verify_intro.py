@@ -6,6 +6,18 @@ assert film.DURATION == 12 and film.FPS == 60
 assert film.SCENES == [2, 3, 4, 5, 6]
 assert film.STARTS == [0, 3, 6, 8, 10]
 assert 'characters' not in film.SCREENS
+# No real nickname may affect any of the composed screens, including moving notices.
+original_names = [character['Name'] for character in film.CHARS]
+screens = [film.level_page, film.notice_card, film.notifications_page, film.characters_page]
+before = [screen() for screen in screens]
+try:
+    for index, character in enumerate(film.CHARS):
+        character['Name'] = f'PRIVATE_NICKNAME_{index}_MUST_NOT_RENDER'
+    for expected, screen in zip(before, screens):
+        assert ImageChops.difference(expected, screen()).getbbox(alpha_only=False) is None
+finally:
+    for character, name in zip(film.CHARS, original_names):
+        character['Name'] = name
 assert ImageChops.difference(film.header('CONTENTS').crop((5, 5, 140, 31)),
                             film.ui('main_entity_back_contents').crop((5, 5, 140, 31))).getbbox(alpha_only=False) is None
 assert ImageChops.difference(film.header('WEEKLY', weekly=True).crop((5, 5, 140, 31)),
@@ -31,4 +43,4 @@ except ValueError:
     pass
 else:
     raise AssertionError('An unknown difficulty must not silently become normal.')
-print('Verified: every weekly API badge, five bilingual difficulties, no opening/character scenes, 12 seconds at 60 fps.')
+print('Verified: masked nicknames on all screens, every weekly API badge, five bilingual difficulties, no opening/character scenes, 12 seconds at 60 fps.')
