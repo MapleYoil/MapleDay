@@ -25,17 +25,35 @@ public sealed class IncomeExportTests
         var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
         var output = Path.Combine(Root, "artifacts", "build", "replay-preview"); Directory.CreateDirectory(output);
         var destination = Path.Combine(output, webp ? "result.webp" : "result.png");
-        await IncomeReplayExport.ExportImageAsync(Replay, new("both"), "전체 캐릭터", assets, destination, webp);
+        await IncomeReplayExport.ExportImageAsync(Replay, new("both"), "전체 캐릭터", assets, destination, webp, mesoDropEok: 10);
         using var decoded = SkiaSharp.SKBitmap.Decode(destination);
         Assert.Equal(1920, decoded.Width); Assert.Equal(1080, decoded.Height);
         var bytes = new byte[1920 * 1080 * 4]; System.Runtime.InteropServices.Marshal.Copy(decoded.GetPixels(), bytes, 0, bytes.Length);
-        using var renderer = new IncomeReplayRenderer(Replay, new("both"), "전체 캐릭터", assets);
+        using var renderer = new IncomeReplayRenderer(Replay, new("both"), "전체 캐릭터", assets, 10);
         Assert.Equal(renderer.RenderPixels(10), bytes);
         var originalFile = await File.ReadAllBytesAsync(destination);
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => IncomeReplayExport.ExportImageAsync(Replay, new(), "", assets, destination, webp, cancellation.Token));
         Assert.Equal(originalFile, await File.ReadAllBytesAsync(destination));
         Assert.Empty(Directory.GetFiles(output, ".mapleday-export-*." + (webp ? "webp" : "png")));
+    }
+    [Fact]
+    public void Meso_unit_is_configurable_without_changing_income_or_item_count()
+    {
+        var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
+        var replay = new IncomeReplay([new ReplayClear(new(2026, 10, 1), "스우", 60_000_000_000,
+            [new ReplayLoot("반지", 10_000_000_000, "BossLoot/1113098.png")])]);
+        using var defaults = new IncomeMesoRain(replay, assets);
+        using var ten = new IncomeMesoRain(replay, assets, 10);
+        using var hundred = new IncomeMesoRain(replay, assets, 100);
+        Assert.Equal(10, defaults.GoldDropCount); Assert.Equal(50, ten.GoldDropCount); Assert.Equal(5, hundred.GoldDropCount);
+        Assert.Equal(1, defaults.LootDropCount); Assert.Equal(defaults.LootDropCount, ten.LootDropCount);
+        Assert.Equal(60_000_000_000, replay.At(1).Total);
+        Assert.Throws<ArgumentOutOfRangeException>(() => new IncomeMesoRain(replay, assets, 0));
+        Assert.Equal(50, new AppSettings().ValidIncomeMesoDropEok);
+        var settings = System.Text.Json.JsonSerializer.Deserialize<AppSettings>("""{"IncomeMesoDropEok":100}""")!;
+        Assert.Equal(100, settings.ValidIncomeMesoDropEok);
+        settings.IncomeMesoDropEok = -1; Assert.Equal(50, settings.ValidIncomeMesoDropEok);
     }
     [Fact]
     public void Dense_replay_records_render_timings_for_preview_and_export()
@@ -70,8 +88,8 @@ public sealed class IncomeExportTests
         Assert.Equal(2, rain.LootDropCount);
         Assert.Equal(2_748_000_000, replay.At(1).Total);
         Assert.Equal(200, replay.At(1).CollectedLoot!.Single().Count);
-        Assert.Equal(1, rain.GoldDropCount);
-        Assert.Equal(1_000_000_000, rain.RepresentedMeso);
+        Assert.Equal(0, rain.GoldDropCount);
+        Assert.Equal(0, rain.RepresentedMeso);
         using var renderer = new IncomeReplayRenderer(replay, new("both"), "사냥 기록", assets);
         Assert.Equal(1280 * 720 * 4, renderer.RenderPixels(10, 1280, 720).Length);
     }
@@ -98,9 +116,9 @@ public sealed class IncomeExportTests
         using var lootRain = new IncomeMesoRain(new IncomeReplay([clear]), assets);
         Assert.Equal(drops.Length, lootRain.LootDropCount);
         Assert.Equal(0, lootRain.GoldDropCount); Assert.Equal(0, lootRain.RepresentedMeso);
-        using var mixed = new IncomeMesoRain(new IncomeReplay([clear with { Meso = clear.Meso + 2_500_000_000 }]), assets);
+        using var mixed = new IncomeMesoRain(new IncomeReplay([clear with { Meso = clear.Meso + 10_000_000_000 }]), assets);
         Assert.Equal(drops.Length, mixed.LootDropCount);
-        Assert.Equal(2, mixed.GoldDropCount); Assert.Equal(2_000_000_000, mixed.RepresentedMeso);
+        Assert.Equal(2, mixed.GoldDropCount); Assert.Equal(10_000_000_000, mixed.RepresentedMeso);
         var output = Path.Combine(Root, "artifacts", "build", "replay-preview"); Directory.CreateDirectory(output);
         using var renderer = new IncomeReplayRenderer(new IncomeReplay([clear]), new("meso"), "물욕템 시연", assets);
         using var image = renderer.Render(10);
@@ -118,10 +136,10 @@ public sealed class IncomeExportTests
     {
         var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
         using var tiers = new IncomeMesoRain(new IncomeReplay([new ReplayClear(new(2026, 10, 1), "스우", 111_100_000_000)]), assets);
-        Assert.Equal(111, tiers.DropCount); Assert.Equal(111_000_000_000, tiers.RepresentedMeso);
+        Assert.Equal(22, tiers.DropCount); Assert.Equal(110_000_000_000, tiers.RepresentedMeso);
         using var carry = new IncomeMesoRain(new IncomeReplay([
-            new ReplayClear(new(2026, 10, 1), "스우", 600_000_000), new ReplayClear(new(2026, 10, 2), "스우", 600_000_000)]), assets);
-        Assert.Equal(1, carry.DropCount); Assert.Equal(1_000_000_000, carry.RepresentedMeso);
+            new ReplayClear(new(2026, 10, 1), "스우", 3_000_000_000), new ReplayClear(new(2026, 10, 2), "스우", 3_000_000_000)]), assets);
+        Assert.Equal(1, carry.DropCount); Assert.Equal(5_000_000_000, carry.RepresentedMeso);
     }
     [Fact]
     public void Trillion_meso_heap_grows_over_the_timeline_instead_of_filling_immediately()
@@ -131,8 +149,8 @@ public sealed class IncomeExportTests
             new ReplayClear(new(2026, 10, 1), "스우", 50_000_000_000)));
         using var rain = new IncomeMesoRain(replay, assets);
         Assert.Equal(5_000_000_000_000, rain.RepresentedMeso);
-        Assert.Equal(5000, rain.DropCount);
-        Assert.Equal(5000, rain.GoldDropCount);
+        Assert.Equal(1000, rain.DropCount);
+        Assert.Equal(1000, rain.GoldDropCount);
         using var early = new Bitmap(1280, 720); using var settled = new Bitmap(1280, 720);
         using (var graphics = Graphics.FromImage(early)) rain.Draw(graphics, 2);
         using (var graphics = Graphics.FromImage(settled)) rain.Draw(graphics, 10);

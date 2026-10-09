@@ -25,13 +25,13 @@ public sealed class IncomeReplayRenderer : IDisposable
     private readonly IncomeMesoRain _mesoRain;
     private double _lastTime = -1;
     private static readonly Color White = Color.FromArgb(241, 245, 252), Muted = Color.FromArgb(153, 168, 190), Blue = Color.FromArgb(110, 174, 255);
-    public IncomeReplayRenderer(IncomeReplay replay, IncomeDisplay display, string scope, string assets)
+    public IncomeReplayRenderer(IncomeReplay replay, IncomeDisplay display, string scope, string assets, int mesoDropEok = IncomeMesoRain.DefaultGoldEok)
     {
         _replay = replay; _display = display; _scope = scope;
         var font = Path.Combine(assets, "Fonts", "PretendardVariable.ttf");
         if (!File.Exists(font)) throw new FileNotFoundException("수익 집계에 필요한 Pretendard 글꼴 파일을 찾지 못했어요.", font);
         _typeface = SKTypeface.FromFile(font) ?? throw new InvalidDataException("Pretendard 글꼴을 읽지 못했어요.");
-        _mesoRain = new(replay, assets);
+        _mesoRain = new(replay, assets, mesoDropEok);
         foreach (var name in replay.Names)
         {
             if (SchedulerIconAssets.BossFile(name) is not { } file) continue;

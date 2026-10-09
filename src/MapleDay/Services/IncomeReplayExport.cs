@@ -17,13 +17,13 @@ public static class IncomeReplayExport
         return Math.Clamp(double.IsFinite(elapsed) ? elapsed : 0, 0, duration) / duration * IncomeReplayRenderer.Duration;
     }
     public static async Task ExportImageAsync(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
-        string destination, bool webp, CancellationToken cancellationToken = default)
+        string destination, bool webp, CancellationToken cancellationToken = default, int mesoDropEok = IncomeMesoRain.DefaultGoldEok)
     {
         var temporary = Path.Combine(Path.GetDirectoryName(destination)!, ".mapleday-export-" + Guid.NewGuid().ToString("N") + (webp ? ".webp" : ".png"));
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using var renderer = new IncomeReplayRenderer(replay, display, scope, assets);
+            using var renderer = new IncomeReplayRenderer(replay, display, scope, assets, mesoDropEok);
             var pixels = renderer.RenderPixels(IncomeReplayRenderer.Duration);
             using var image = new SkiaSharp.SKBitmap(new SkiaSharp.SKImageInfo(1920, 1080, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Opaque));
             Marshal.Copy(pixels, 0, image.GetPixels(), pixels.Length);
@@ -40,25 +40,25 @@ public static class IncomeReplayExport
     }
     public static async Task ExportAsync(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
         string encoderPath, string destination, bool gif, IProgress<double>? progress = null, CancellationToken cancellationToken = default,
-        double duration = IncomeReplayRenderer.Duration)
+        double duration = IncomeReplayRenderer.Duration, int mesoDropEok = IncomeMesoRain.DefaultGoldEok)
     {
         _ = ReplayTime(0, duration);
         // Finish beside the chosen destination, then replace it atomically; failures never leave a partial final video.
         var temporary = Path.Combine(Path.GetDirectoryName(destination)!, ".mapleday-export-" + Guid.NewGuid().ToString("N") + (gif ? ".gif" : ".mp4"));
         try
         {
-            if (gif) await GifAsync(replay, display, scope, assets, temporary, progress, cancellationToken, duration);
-            else await Mp4Async(replay, display, scope, assets, encoderPath, temporary, progress, cancellationToken, duration);
+            if (gif) await GifAsync(replay, display, scope, assets, temporary, progress, cancellationToken, duration, mesoDropEok);
+            else await Mp4Async(replay, display, scope, assets, encoderPath, temporary, progress, cancellationToken, duration, mesoDropEok);
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temporary, destination, true);
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
     private static async Task Mp4Async(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
-        string encoderPath, string path, IProgress<double>? progress, CancellationToken token, double duration)
+        string encoderPath, string path, IProgress<double>? progress, CancellationToken token, double duration, int mesoDropEok)
     {
         const int width = 1920, height = 1080, fps = 60;
-        using var renderer = new IncomeReplayRenderer(replay, display, scope, assets);
+        using var renderer = new IncomeReplayRenderer(replay, display, scope, assets, mesoDropEok);
         var start = new ProcessStartInfo(encoderPath) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardError = true };
         foreach (var arg in new[] { path, width.ToString(), height.ToString(), fps.ToString() }) start.ArgumentList.Add(arg);
         using var process = Process.Start(start) ?? throw new IOException("MP4 인코더를 시작하지 못했어요.");
@@ -109,10 +109,10 @@ public static class IncomeReplayExport
         finally { if (!process.HasExited) { process.Kill(); await process.WaitForExitAsync(CancellationToken.None); } }
     }
     private static async Task GifAsync(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
-        string path, IProgress<double>? progress, CancellationToken token, double duration)
+        string path, IProgress<double>? progress, CancellationToken token, double duration, int mesoDropEok)
     {
         const int width = 1280, height = 720, fps = 25;
-        using var renderer = new IncomeReplayRenderer(replay, display, scope, assets);
+        using var renderer = new IncomeReplayRenderer(replay, display, scope, assets, mesoDropEok);
         var folder = await StorageFolder.GetFolderFromPathAsync(Path.GetDirectoryName(path)!);
         var file = await folder.CreateFileAsync(Path.GetFileName(path), CreationCollisionOption.FailIfExists);
         using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))

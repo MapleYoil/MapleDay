@@ -14,6 +14,9 @@ public sealed partial class IncomeReplayView : UserControl
 {
     public nint OwnerWindow { get; set; }
     private IncomeReplay _replay = new(Array.Empty<ReplayClear>());
+    private AppSettings? _settings;
+    private bool _loadingOptions;
+    private int _mesoDropEok = IncomeMesoRain.DefaultGoldEok;
     private IncomeDisplay _display = new();
     private string _scope = "전체 캐릭터";
     private IncomeReplayRenderer? _renderer;
@@ -32,7 +35,7 @@ public sealed partial class IncomeReplayView : UserControl
     private void SetExportControls(bool enabled)
     {
         Mp4Button.IsEnabled = GifButton.IsEnabled = ImageButton.IsEnabled = ResultButton.IsEnabled = PlayButton.IsEnabled = PauseButton.IsEnabled = enabled;
-        DurationInput.IsEnabled = enabled;
+        DurationInput.IsEnabled = MesoUnitInput.IsEnabled = enabled;
     }
 
     public IncomeReplayView()
@@ -40,12 +43,14 @@ public sealed partial class IncomeReplayView : UserControl
         InitializeComponent();
         Unloaded += (_, _) => { Pause(); _generation++; _exportCancellation?.Cancel(); lock (_renderGate) { _renderer?.Dispose(); _renderer = null; } };
     }
-    public void SetRecords(IncomeReplay replay, IncomeDisplay display, string scope)
+    public void SetRecords(IncomeReplay replay, IncomeDisplay display, string scope, AppSettings? settings = null)
     {
         if (_exportTask is { IsCompleted: false }) { Status.Text = "현재 내보내기를 마친 뒤 새 집계를 재생하세요."; return; }
-        _replay = replay; _display = display; _scope = scope;
+        _replay = replay; _display = display; _scope = scope; _settings = settings;
+        _mesoDropEok = settings?.ValidIncomeMesoDropEok ?? IncomeMesoRain.DefaultGoldEok;
+        _loadingOptions = true; MesoUnitInput.Value = _mesoDropEok; _loadingOptions = false;
         _generation++;
-        lock (_renderGate) { _renderer?.Dispose(); _renderer = new(_replay, _display, _scope, Path.Combine(AppContext.BaseDirectory, "Assets")); }
+        lock (_renderGate) { _renderer?.Dispose(); _renderer = new(_replay, _display, _scope, Path.Combine(AppContext.BaseDirectory, "Assets"), _mesoDropEok); }
         _bitmap = null;
         SetExportControls(_replay.Clears.Count > 0);
         _showResult = false;
@@ -105,6 +110,25 @@ public sealed partial class IncomeReplayView : UserControl
         _generation++; _showResult = false; _clock.Restart(); StartPlayback(); PauseButton.Content = "일시 정지";
         Status.Text = $"{Duration:0.##}초 · MP4 1080p/60fps · GIF 720p/25fps · 결과 이미지 1080p";
     }
+    private void MesoUnit_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        if (_loadingOptions || _renderer is null) return;
+        if (!double.IsFinite(args.NewValue) || args.NewValue is < 1 or > 10000000 || args.NewValue != Math.Truncate(args.NewValue))
+        {
+            _loadingOptions = true; sender.Value = _mesoDropEok; _loadingOptions = false;
+            Status.Text = "메소 1개당 금액은 1~10,000,000억 사이의 정수로 입력해주세요."; return;
+        }
+        _mesoDropEok = (int)args.NewValue; _generation++;
+        lock (_renderGate) { _renderer.Dispose(); _renderer = new(_replay, _display, _scope, Path.Combine(AppContext.BaseDirectory, "Assets"), _mesoDropEok); }
+        Status.Text = $"메소 {_mesoDropEok:N0}억당 1개 · 미리보기와 내보내기에 적용합니다.";
+        if (_settings is not null)
+        {
+            _settings.IncomeMesoDropEok = _mesoDropEok;
+            try { _settings.Save(); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException) { Status.Text = "입자 설정을 저장하지 못했어요. 이번 실행에는 적용됩니다."; }
+        }
+        DrawFrame();
+    }
     private void Pause_Click(object sender, RoutedEventArgs args)
     { if (_playing) Pause(); else { if (_showResult || _clock.Elapsed.TotalSeconds >= Duration) { _showResult = false; _clock.Restart(); } else _clock.Start(); StartPlayback(); PauseButton.Content = "일시 정지"; } }
     private void Close_Click(object sender, RoutedEventArgs args) { Pause(); _generation++; _exportCancellation?.Cancel(); Visibility = Visibility.Collapsed; }
@@ -128,12 +152,12 @@ public sealed partial class IncomeReplayView : UserControl
             ExportProgress.Value = 0; ExportProgress.Visibility = CancelButton.Visibility = Visibility.Visible;
             Status.Text = "내보내는 중…";
             var progress = new Progress<double>(value => { ExportProgress.Value = value * 100; Status.Text = $"내보내는 중… {value:P0}"; });
-            var replay = _replay; var display = _display; var scope = _scope; var duration = Duration;
+            var replay = _replay; var display = _display; var scope = _scope; var duration = Duration; var mesoDropEok = _mesoDropEok;
             _exportTask = Task.Run(() => image
                 ? IncomeReplayExport.ExportImageAsync(replay, display, scope, Path.Combine(AppContext.BaseDirectory, "Assets"), file.Path,
-                    Path.GetExtension(file.Path).Equals(".webp", StringComparison.OrdinalIgnoreCase), token)
+                    Path.GetExtension(file.Path).Equals(".webp", StringComparison.OrdinalIgnoreCase), token, mesoDropEok)
                 : IncomeReplayExport.ExportAsync(replay, display, scope,
-                    Path.Combine(AppContext.BaseDirectory, "Assets"), Path.Combine(AppContext.BaseDirectory, "MapleDay.Media.exe"), file.Path, gif, progress, token, duration), token);
+                    Path.Combine(AppContext.BaseDirectory, "Assets"), Path.Combine(AppContext.BaseDirectory, "MapleDay.Media.exe"), file.Path, gif, progress, token, duration, mesoDropEok), token);
             await _exportTask;
             Status.Text = $"저장 완료 · {file.Path}";
         }

@@ -83,6 +83,7 @@ public sealed class IncomeReplay
         return new(active?.Date, total, kills,
             Names.Select(name => new ReplayBoss(name, totals[name].Count, totals[name].Meso)).OrderByDescending(row => row.Meso)
                 .ThenByDescending(row => row.Count).ThenBy(row => Array.IndexOf(Names.ToArray(), row.Name)).ToArray(), active?.Loot, active?.Boss,
-            collected.Select(item => new ReplayLootTotal(item.Key.Name, item.Value.Meso, item.Key.Icon, item.Value.Count)).ToArray());
+            collected.Select(item => new ReplayLootTotal(item.Key.Name, item.Value.Meso, item.Key.Icon, item.Value.Count)).OrderByDescending(item => item.Meso)
+                .ThenBy(item => item.Name, StringComparer.Ordinal).ThenBy(item => item.Icon, StringComparer.Ordinal).ToArray());
     }
 }

@@ -70,7 +70,7 @@ public sealed partial class MainWindow
         var records = (_settings.HuntingIncomeRecords ?? []).Where(row => owners.ContainsKey(row.Ocid));
         IncomeReplayPanel.Visibility = Visibility.Visible;
         IncomeReplayPanel.SetRecords(HuntingIncome.Replay(records, ocid => owners[ocid].Name), CurrentIncomeDisplay,
-            _incomeSelectedOcid is null ? "전체 캐릭터 사냥 기록" : owners.Values.FirstOrDefault()?.Name ?? "사냥 기록");
+            _incomeSelectedOcid is null ? "전체 캐릭터 사냥 기록" : owners.Values.FirstOrDefault()?.Name ?? "사냥 기록", _settings);
     }
     private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
@@ -78,7 +78,7 @@ public sealed partial class MainWindow
         var records = characters.SelectMany(character => (character.Income?.Records ?? []).Select(clear => (character.Ocid, Clear: clear))).ToArray();
         var ocids = characters.Select(character => character.Ocid).ToHashSet(StringComparer.Ordinal);
         IncomeReplayPanel.Visibility = Visibility.Visible;
-        IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid))), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터");
+        IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid))), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터", _settings);
     }
 
     public ObservableCollection<string> CrystalPriceRows { get; } = new(CrystalPrices.All

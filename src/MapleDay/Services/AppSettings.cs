@@ -13,6 +13,8 @@ public sealed class AppSettings
     public bool UpdateNotifications { get; set; } = true;
     public int WebPort { get; set; } = 17831;
     public string IncomeDisplayMode { get; set; } = "meso";
+    public int IncomeMesoDropEok { get; set; } = IncomeMesoRain.DefaultGoldEok;
+    public int ValidIncomeMesoDropEok => IncomeMesoDropEok is >= 1 and <= 10000000 ? IncomeMesoDropEok : IncomeMesoRain.DefaultGoldEok;
     public decimal MesoCashRate { get; set; } = 1500;
     public string WebPasswordSalt { get; set; } = "";
     public string WebPasswordHash { get; set; } = "";

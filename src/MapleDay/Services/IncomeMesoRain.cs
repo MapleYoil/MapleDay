@@ -9,7 +9,8 @@ namespace MapleDay.Services;
 // A fixed timeline keeps preview, arbitrary seeks, MP4 and GIF identical at the same time.
 public sealed class IncomeMesoRain : IDisposable
 {
-    public const long GoldUnit = 1_000_000_000;
+    public const int DefaultGoldEok = 50;
+    public const long GoldUnit = DefaultGoldEok * 100_000_000L;
     public const int FragmentUnit = 100;
     private const string FragmentIcon = "Hunting/fragment.png";
     private readonly List<SKBitmap[]> _images = [];
@@ -24,8 +25,10 @@ public sealed class IncomeMesoRain : IDisposable
     public int LootDropCount => _drops.Count(drop => drop.Kind != 0);
     public long RepresentedMeso { get; private set; }
 
-    public IncomeMesoRain(IncomeReplay replay, string assets)
+    public IncomeMesoRain(IncomeReplay replay, string assets, int mesoDropEok = DefaultGoldEok)
     {
+        if (mesoDropEok is < 1 or > 10000000) throw new ArgumentOutOfRangeException(nameof(mesoDropEok));
+        var goldUnit = mesoDropEok * 100_000_000L;
         _pile.Erase(SKColors.Transparent);
         _pileGraphics = new SKCanvas(_pile);
         _pileGraphics.Translate(0, -560);
@@ -43,7 +46,7 @@ public sealed class IncomeMesoRain : IDisposable
         const int columns = 42;
         // Each fragment icon represents 100 fragments; other rewards keep one icon per item.
         long CrystalMeso(ReplayClear clear) => Math.Max(0, clear.Meso - (clear.Loot?.Sum(item => item.Meso) ?? 0));
-        var units = replay.Clears.Sum(CrystalMeso) / GoldUnit;
+        var units = replay.Clears.Sum(CrystalMeso) / goldUnit;
         var lootCount = replay.Clears.SelectMany(clear => clear.Loot ?? []).GroupBy(item => item.Icon)
             .Sum(group => group.Sum(item => (long)Math.Max(0, item.Count)) / (group.Key == FragmentIcon ? FragmentUnit : 1));
         var visibleLimit = units + lootCount;
@@ -68,15 +71,15 @@ public sealed class IncomeMesoRain : IDisposable
             var clear = replay.Clears[i];
             var crystal = CrystalMeso(clear);
             var available = crystal + remainder;
-            var count = available / GoldUnit;
+            var count = available / goldUnit;
             for (long coin = 1; coin <= count; coin++)
             {
-                var fraction = Math.Clamp((coin * GoldUnit - remainder) / (double)crystal, 0, 1);
+                var fraction = Math.Clamp((coin * goldUnit - remainder) / (double)crystal, 0, 1);
                 var birth = .5 + (IncomeReplayRenderer.Duration - 2.5) * (i + fraction) / replay.Clears.Count;
                 AddDrop(0, birth, 37f);
             }
-            RepresentedMeso += count * GoldUnit;
-            remainder = available % GoldUnit;
+            RepresentedMeso += count * goldUnit;
+            remainder = available % goldUnit;
             if (clear.Loot is { Count: > 0 } loot)
                 for (var reward = 0; reward < loot.Count; reward++)
                     if (lootKinds.TryGetValue(loot[reward].Icon, out var kind))

@@ -22,6 +22,18 @@ public sealed class IncomeReplayTests
         Assert.Equal(midway, Assert.Single(replay.At(.5).CollectedLoot!));
     }
     [Fact]
+    public void Collected_loot_is_ranked_by_current_combined_income_and_reorders_as_income_accumulates()
+    {
+        var replay = new IncomeReplay(new ReplayClear[] {
+            new(new(2026, 10, 1), "림보", 300, [new("상자", 100, "box"), new("반지", 200, "ring")]),
+            new(new(2026, 10, 2), "카링", 900, [new("상자", 700, "box"), new("연마석", 200, "stone")]) });
+        Assert.Equal(new[] {"반지", "상자"}, replay.At(.5).CollectedLoot!.Select(item => item.Name));
+        var final = replay.At(1).CollectedLoot!;
+        Assert.Equal(800, final[0].Meso); Assert.Equal("상자", final[0].Name); Assert.Equal(2, final[0].Count);
+        Assert.Equal(1200, final.Sum(item => item.Meso));
+        Assert.Equal(new[] {"반지", "상자"}, replay.At(.5).CollectedLoot!.Select(item => item.Name));
+    }
+    [Fact]
     public void All_rewards_from_one_clear_appear_together_and_count_as_one_kill()
     {
         var date = new DateOnly(2026, 10, 8);
