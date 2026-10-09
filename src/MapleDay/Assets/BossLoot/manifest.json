@@ -1,0 +1,406 @@
+{
+  "guide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/459",
+  "soulGuide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/416",
+  "resources": [
+    {
+      "Id": "1113306",
+      "Name": "\uAC70\uB300\uD55C \uACF5\uD3EC",
+      "source": "Character/Ring/01113306.img/info/icon",
+      "width": 36,
+      "height": 36,
+      "sha256": "957efe2e000e6022f6f9f4a042a41514becd681ebe7a6da50da3541ffb41a7dc"
+    },
+    {
+      "Id": "1113313",
+      "Name": "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uB9C1",
+      "source": "Character/Ring/01113313.img/info/icon",
+      "width": 34,
+      "height": 34,
+      "sha256": "2a5c4a948d2dc491c88be235cad1d76650cb535a5d08201198849ca72d173cbb"
+    },
+    {
+      "Id": "1113341",
+      "Name": "\uADFC\uC6D0\uC758 \uC18D\uC0AD\uC784",
+      "source": "Character/Ring/01113341.img/info/icon",
+      "width": 37,
+      "height": 36,
+      "sha256": "42420ea31dff13b6d89bc4e95fd6a762688b82367f6fd4899367f8f97e5dff9c"
+    },
+    {
+      "Id": "1113360",
+      "Name": "\uD669\uD640\uD55C \uC545\uBABD",
+      "source": "Character/Ring/01113360.img/info/icon",
+      "width": 38,
+      "height": 38,
+      "sha256": "f6faf1e90e952f9eec2f19cae7093e451113376700b0e67bd44ca9bcd2604101"
+    },
+    {
+      "Id": "1672095",
+      "Name": "\uCEF4\uD50C\uB9AC\uD2B8 \uC5B8\uB354\uCEE8\uD2B8\uB864",
+      "source": "Character/Android/01672095.img/info/icon",
+      "width": 35,
+      "height": 33,
+      "sha256": "32bfcec2994e29cc5f84e730e5edaa66f6a9c1b32368c0179fbd32d92d280043"
+    },
+    {
+      "Id": "1012632",
+      "Name": "\uB8E8\uC988 \uCEE8\uD2B8\uB864 \uBA38\uC2E0 \uB9C8\uD06C",
+      "source": "Character/Accessory/01012632.img/info/icon",
+      "width": 30,
+      "height": 30,
+      "sha256": "717950ac6f23818fe5e71dec746c4edf1efff86f8b9b18cf35b1a8079c47f506"
+    },
+    {
+      "Id": "1012757",
+      "Name": "\uD2B8\uC640\uC77C\uB77C\uC774\uD2B8 \uB9C8\uD06C",
+      "source": "Character/Accessory/01012757.img/info/icon",
+      "width": 30,
+      "height": 31,
+      "sha256": "5eac65b4976ffc92972ec7ce7784509ed61bca71c7202d59a4160e9ad92dcaca"
+    },
+    {
+      "Id": "1012911",
+      "Name": "\uC624\uB9CC\uC758 \uC6D0\uC8C4",
+      "source": "Character/Accessory/01012911.img/info/icon",
+      "width": 34,
+      "height": 31,
+      "sha256": "c7c4754c86d7a0243cc98f44967eb017f0ba94eed16bd5327038bd28eee0576a"
+    },
+    {
+      "Id": "1022277",
+      "Name": "\uD30C\uD480\uB77C\uD22C\uC2A4 \uB9C8\uD06C",
+      "source": "Character/Accessory/01022277.img/info/icon",
+      "width": 30,
+      "height": 30,
+      "sha256": "68c4e28639fd43296b4893990981cf0bdd0f2b91368abd006a8f413e72036101"
+    },
+    {
+      "Id": "1022278",
+      "Name": "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC548\uB300",
+      "source": "Character/Accessory/01022278.img/info/icon",
+      "width": 31,
+      "height": 23,
+      "sha256": "001f804a72768e410bed32c5af7834ffe6b000919d92754cd3c9a6b4840b1f68"
+    },
+    {
+      "Id": "1022397",
+      "Name": "\uAD76\uC8FC\uB9AC\uB294 \uD54F\uBE5B \uC6D0\uD63C",
+      "source": "Character/Accessory/01022397.img/info/icon",
+      "width": 30,
+      "height": 30,
+      "sha256": "740b783b6d7fd4c2afdc826db86bc89e8c55015af9b2ae18ae0bfdbcef8d6dfb"
+    },
+    {
+      "Id": "1032316",
+      "Name": "\uCEE4\uB9E8\uB354 \uD3EC\uC2A4 \uC774\uC5B4\uB9C1",
+      "source": "Character/Accessory/01032316.img/info/icon",
+      "width": 35,
+      "height": 34,
+      "sha256": "518729f17daf481ac7f71bcd3ee97383d1709ab82fc8c719bea139c3a7d8b652"
+    },
+    {
+      "Id": "1032330",
+      "Name": "\uC5D0\uC2A4\uD154\uB77C \uC774\uC5B4\uB9C1",
+      "source": "Character/Accessory/01032330.img/info/icon",
+      "width": 32,
+      "height": 31,
+      "sha256": "b10e3160fae840c841a01f00cf2aa62a4d436b3b4836e93c59b4cb5cf2049b32"
+    },
+    {
+      "Id": "1122150",
+      "Name": "\uB3C4\uBBF8\uB124\uC774\uD130 \uD39C\uB358\uD2B8",
+      "source": "Character/Accessory/01122150.img/info/icon",
+      "width": 32,
+      "height": 30,
+      "sha256": "8717038683da44d583c5652ae3579f8f7fb627f858ad15841450177eee684ecb"
+    },
+    {
+      "Id": "1122430",
+      "Name": "\uACE0\uD1B5\uC758 \uADFC\uC6D0",
+      "source": "Character/Accessory/01122430.img/info/icon",
+      "width": 36,
+      "height": 36,
+      "sha256": "d6d36808381b689c7f7ed954d74543c3d3cc204bd318a28f20d2658ddb9cdcfa"
+    },
+    {
+      "Id": "1122443",
+      "Name": "\uB370\uC774\uBE0C\uB808\uC774\uD06C \uD39C\uB358\uD2B8",
+      "source": "Character/Accessory/01122443.img/info/icon",
+      "width": 34,
+      "height": 33,
+      "sha256": "2c73cb9a0be51f71717dc9ef138dce9a664bc101ef8739cc999dd550972f3696"
+    },
+    {
+      "Id": "1122447",
+      "Name": "\uC8FD\uC74C\uC758 \uB9F9\uC138",
+      "source": "Character/Accessory/01122447.img/info/icon",
+      "width": 35,
+      "height": 39,
+      "sha256": "3d9e9ca08dbc5051e471fd23be079927c1c9187168b83c79e6ab2c6e1a623e59"
+    },
+    {
+      "Id": "1132308",
+      "Name": "\uBABD\uD658\uC758 \uBCA8\uD2B8",
+      "source": "Character/Accessory/01132308.img/info/icon",
+      "width": 36,
+      "height": 35,
+      "sha256": "3c2e73eaad425714833ff0fab36b319d83830fd67fc030fb42f0f5f1fc4f7998"
+    },
+    {
+      "Id": "1143471",
+      "Name": "\uBD88\uBA78\uC758 \uC720\uC0B0",
+      "source": "Character/Accessory/01143471.img/info/icon",
+      "width": 37,
+      "height": 38,
+      "sha256": "13493f9a46107e2f9b831bdec9680453a6856a19db9853363b4942aea95094c6"
+    },
+    {
+      "Id": "1182285",
+      "Name": "\uCC3D\uC138\uC758 \uBC43\uC9C0",
+      "source": "Character/Accessory/01182285.img/info/icon",
+      "width": 35,
+      "height": 30,
+      "sha256": "c6f58a3a5efeb293c4885502ee8bce2c1169304437c7822c4b7d7dd3309281e6"
+    },
+    {
+      "Id": "2539020",
+      "Name": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "source": "Item/Consume/0253.img/02539020/info/icon",
+      "width": 36,
+      "height": 37,
+      "sha256": "c698661adfd9733581e5e417590177c3528abe3d63c259ce0dd0c70dafec4aa1"
+    },
+    {
+      "Id": "2539021",
+      "Name": "2\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "source": "Item/Consume/0253.img/02539021/info/icon",
+      "width": 36,
+      "height": 37,
+      "sha256": "9868b68dcf8f0591c59137dd45b0532f636cd9c4f63cc9571c2c09ffe84a7daa"
+    },
+    {
+      "Id": "2539022",
+      "Name": "3\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "source": "Item/Consume/0253.img/02539022/info/icon",
+      "width": 36,
+      "height": 37,
+      "sha256": "35ca6c409f6dac40e84d534d5c9d1ac55c0aaa971152991e2a100168ca8b4403"
+    },
+    {
+      "Id": "2539023",
+      "Name": "4\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+      "source": "Item/Consume/0253.img/02539023/info/icon",
+      "width": 36,
+      "height": 37,
+      "sha256": "d4f24ed32165bf4b20b034908e51ed98741d84e11c25262b43e9441233f2423d"
+    },
+    {
+      "Id": "2633926",
+      "Name": "\uC800\uC8FC\uBC1B\uC740 \uB9C8\uB3C4\uC11C \uC120\uD0DD \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02633926/info/icon",
+      "width": 37,
+      "height": 37,
+      "sha256": "921d4bcc3f0744292c3952831fd67d3c9e036fc86d049ebc52043a49adff704c"
+    },
+    {
+      "Id": "2633927",
+      "Name": "\uBBF8\uD2B8\uB77C\uC758 \uBD84\uB178 \uC120\uD0DD \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02633927/info/icon",
+      "width": 38,
+      "height": 36,
+      "sha256": "5bf0b2de9799f1df586bb3dab0480f29f6f6d5c70893a0815b72c1a18578bf2a"
+    },
+    {
+      "Id": "2634472",
+      "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0",
+      "source": "Item/Consume/0263.img/02634472/info/icon",
+      "width": 35,
+      "height": 34,
+      "sha256": "5c3faf29822e7861a1889a13617019108c6e9500505c58337c6af575639daef8"
+    },
+    {
+      "Id": "2635747",
+      "Name": "\uB4A4\uC5C9\uD0A8 \uD749\uC218\uC758 \uACE0\uB9AC",
+      "source": "Item/Consume/0263.img/02635747/info/icon",
+      "width": 33,
+      "height": 33,
+      "sha256": "0c2d8e3929632063160f4f6586bd5aea1cc047c9e4fba8f1eab670dd05298b17"
+    },
+    {
+      "Id": "2636606",
+      "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0 \uC870\uAC01",
+      "source": "Item/Consume/0263.img/02636606/info/icon",
+      "width": 30,
+      "height": 28,
+      "sha256": "9db5ac6fdea73157bc8a5db576bcd4016d35088b8a7fb32dd87d48995725aed4"
+    },
+    {
+      "Id": "2638063",
+      "Name": "\uC65C\uACE1\uB41C \uC695\uB9DD\uC758 \uACB0\uC815",
+      "source": "Item/Consume/0263.img/02638063/info/icon",
+      "width": 34,
+      "height": 37,
+      "sha256": "ef919727b38f702f61d179d274aa4b83bc09b5cbe56a5d485a7d412a9ef4b349"
+    },
+    {
+      "Id": "2638064",
+      "Name": "\uC758\uC9C0\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02638064/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "af0ec83af17ec1b1dff36a94b78066b2d05af0fce28ad8ab89f204f876f2bbde"
+    },
+    {
+      "Id": "2638065",
+      "Name": "\uD749\uC218\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02638065/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "158fe3a11a3dad2a9dde07194928f3cdd10c2ab56ae9e0fbad64622333d95438"
+    },
+    {
+      "Id": "2638066",
+      "Name": "\uC695\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02638066/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "4771784f3a84a4648a9553477daecdbad06fd827f7c6af00d8f56e78aaca7d92"
+    },
+    {
+      "Id": "2639252",
+      "Name": "\uC601\uC6D0\uD55C \uCDA9\uC131\uC758 \uD754\uC801",
+      "source": "Item/Consume/0263.img/02639252/info/icon",
+      "width": 36,
+      "height": 34,
+      "sha256": "c28ee4dd1f4416aa3f574cba6ef0e82ef4e14401c7ff2d6cbad7da4e1d8fc280"
+    },
+    {
+      "Id": "2639253",
+      "Name": "\uB9F9\uC138\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0263.img/02639253/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "36870bfdb43fc2081d9523d6f31506e85a4709962febd80373391f9b21f453d2"
+    },
+    {
+      "Id": "2644204",
+      "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uBCA8\uD2B8)",
+      "source": "Item/Consume/0264.img/02644204/info/icon",
+      "width": 37,
+      "height": 31,
+      "sha256": "4d3cbfa994ab04926d6b5f510ea741104de2f383dfcc4d73e0d2a8ed121fc093"
+    },
+    {
+      "Id": "2644205",
+      "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uC5BC\uAD74\uC7A5\uC2DD)",
+      "source": "Item/Consume/0264.img/02644205/info/icon",
+      "width": 37,
+      "height": 31,
+      "sha256": "d95e5cfba91a87916b23bc0c7445d17c4e6e9eb8c89a3eb615daf0bee7a2a298"
+    },
+    {
+      "Id": "2644206",
+      "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uB208\uC7A5\uC2DD)",
+      "source": "Item/Consume/0264.img/02644206/info/icon",
+      "width": 37,
+      "height": 31,
+      "sha256": "e6572ab04e31c8feb70bb0dd9fe7bcf1bff63cd53ccb907570a7b8cfc0f6beb7"
+    },
+    {
+      "Id": "2644207",
+      "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uADC0\uACE0\uB9AC)",
+      "source": "Item/Consume/0264.img/02644207/info/icon",
+      "width": 37,
+      "height": 31,
+      "sha256": "d451300b09591540b7dc280dd5e62c6efedea00d2e9e7f4974dd2cc883942e68"
+    },
+    {
+      "Id": "2644208",
+      "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uD6C8\uC7A5)",
+      "source": "Item/Consume/0264.img/02644208/info/icon",
+      "width": 37,
+      "height": 31,
+      "sha256": "57fc4a865837effeccb06efe7119d13c33b0ae3fbd5fcf1488e38dc7cd59f29d"
+    },
+    {
+      "Id": "2830304",
+      "Name": "\uC774\uC5B4\uC9C4 \uACE0\uB300\uC758 \uACB0\uC758",
+      "source": "Item/Consume/0283.img/02830304/info/icon",
+      "width": 36,
+      "height": 37,
+      "sha256": "234a9a7ab22007608046d09ef17d9e912ee7d12d89be62d8af088fbe75dfc5cf"
+    },
+    {
+      "Id": "2830306",
+      "Name": "\uACE0\uB300\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0283.img/02830306/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "8cb7c2254b9e9ebcfe40141e4b013da70ffd7a65fa42cdceea2840f22ccc4834"
+    },
+    {
+      "Id": "2830338",
+      "Name": "\uD63C\uB3C8\uC758 \uCE60\uD751 \uC7A5\uC2E0\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0283.img/02830338/info/icon",
+      "width": 37,
+      "height": 37,
+      "sha256": "14e7fc5c1b49ffb9c2c3638862e292f0c8396b7da48bac30be855ee282c17f91"
+    },
+    {
+      "Id": "2831103",
+      "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8",
+      "source": "Item/Consume/0283.img/02831103/info/icon",
+      "width": 40,
+      "height": 41,
+      "sha256": "9488162664d5f46d9757ba14bcd61ec201931cef6ec170e8397a778335c100af"
+    },
+    {
+      "Id": "2831104",
+      "Name": "\uB4A4\uD2C0\uB9B0 \uAC08\uB9DD\uC758 \uD3B8\uB9B0",
+      "source": "Item/Consume/0283.img/02831104/info/icon",
+      "width": 38,
+      "height": 38,
+      "sha256": "25624f5593df4c17455c3bded9395312b53277491793430deca2bee4893f5ccb"
+    },
+    {
+      "Id": "2831105",
+      "Name": "\uD658\uC0C1\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0283.img/02831105/info/icon",
+      "width": 36,
+      "height": 30,
+      "sha256": "29d85a7e1fdef6db31669272d6889d5dd488d4fa4d33fe8872bc85b2159c0f39"
+    },
+    {
+      "Id": "2831106",
+      "Name": "\uAC08\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0283.img/02831106/info/icon",
+      "width": 33,
+      "height": 28,
+      "sha256": "b5ae1eac1bd4f05bf15efc09c53387ef1160a55b3c317f1377af36f482d824d4"
+    },
+    {
+      "Id": "2831408",
+      "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8 \uC870\uAC01",
+      "source": "Item/Consume/0283.img/02831408/info/icon",
+      "width": 32,
+      "height": 34,
+      "sha256": "584930b68e9e12a5b76858e4d46064c02b76d8518cc888737cc000692dc5db5f"
+    },
+    {
+      "Id": "2832967",
+      "Name": "\uC800\uC8FC\uBC1B\uC740 \uC6D0\uD63C\uC758 \uC794\uC7AC",
+      "source": "Item/Consume/0283.img/02832967/info/icon",
+      "width": 37,
+      "height": 36,
+      "sha256": "eda7318d412d496f0c719a7a6ed8286d93babf330a88796dfbee2d3f40abd174"
+    },
+    {
+      "Id": "2832969",
+      "Name": "\uAD11\uAE30\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+      "source": "Item/Consume/0283.img/02832969/info/icon",
+      "width": 31,
+      "height": 26,
+      "sha256": "de13bb50ccf8ca633ef64f20ed651301cc35a42764c86d2e13bf6a9dfb046f1d"
+    }
+  ]
+}

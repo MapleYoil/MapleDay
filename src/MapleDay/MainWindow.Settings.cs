@@ -213,6 +213,8 @@ public sealed partial class MainWindow
         input.TextChanged += (_, _) => dialog.IsPrimaryButtonEnabled = AppDataStore.IsDeleteConfirmation(input.Text);
         if (await dialog.ShowAsync() != ContentDialogResult.Primary || !AppDataStore.IsDeleteConfirmation(input.Text)) return;
         _dataDeleting = true;
+        await StopWebHostAsync();
+        await IncomeReplayPanel.StopAsync();
         StopUpdates();
         StopTelemetry();
         AppDataSize.Text = "데이터 삭제 중…";

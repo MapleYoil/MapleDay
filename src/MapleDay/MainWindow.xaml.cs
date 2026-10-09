@@ -53,6 +53,8 @@ public sealed partial class MainWindow : Window
         InitializeWindowSizeSettings();
         InitializeUpdates();
         InitializeTelemetry();
+        InitializeWebHost();
+        InitializeIncomeDisplay();
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
         {
             presenter.PreferredMinimumWidth = 420;
@@ -141,6 +143,7 @@ public sealed partial class MainWindow : Window
         // Opening the notification menu always returns to its content list,
         // including clicking the same sidebar item or activating a toast.
         if (page == "notifications") ShowNotificationSettings(false);
+        if (page != "income") IncomeReplayPanel?.Pause();
         if (page == _currentPage) return;
         if (remember) _backStack.Push(_currentPage);
         _currentPage = page;

@@ -58,7 +58,7 @@ $previousLib = $env:LIB
 $previousPath = $env:PATH
 Push-Location $launcherSource
 try {
-    $env:INCLUDE = @((Join-Path $msvc.FullName 'include'),(Join-Path $sdkInclude 'ucrt'),(Join-Path $sdkInclude 'shared'),(Join-Path $sdkInclude 'um')) -join ';'
+    $env:INCLUDE = @((Join-Path $msvc.FullName 'include'),(Join-Path $sdkInclude 'ucrt'),(Join-Path $sdkInclude 'shared'),(Join-Path $sdkInclude 'um'),(Join-Path $sdkInclude 'winrt')) -join ';'
     $env:LIB = @((Join-Path $msvc.FullName 'lib\x64'),(Join-Path $sdkLib 'ucrt\x64'),(Join-Path $sdkLib 'um\x64')) -join ';'
     $env:PATH = "$compilerBin;$sdkBin;$previousPath"
     $resourceFile = Join-Path $launcherBuild 'MapleDay.res'
@@ -75,6 +75,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Native update tests compilation failed.' }
     & $updaterTest (Join-Path $launcherBuild 'update-fixture')
     if ($LASTEXITCODE -ne 0) { throw 'Native update replacement/rollback tests failed.' }
+    & (Join-Path $compilerBin 'cl.exe') /nologo /O2 /W4 /MT /EHsc /std:c++17 /utf-8 /DUNICODE /D_UNICODE `
+        "/Fo$(Join-Path $launcherBuild 'media.obj')" "/Fe$(Join-Path $appDirectory 'MapleDay.Media.exe')" `
+        (Join-Path $projectDirectory 'src\MapleDay.Media\main.cpp') `
+        /link /SUBSYSTEM:CONSOLE mfplat.lib mfreadwrite.lib mfuuid.lib ole32.lib
+    if ($LASTEXITCODE -ne 0) { throw 'Native MP4 encoder compilation failed.' }
 } finally {
     Pop-Location
     $env:INCLUDE = $previousInclude

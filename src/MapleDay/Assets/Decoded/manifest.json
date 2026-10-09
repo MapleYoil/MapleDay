@@ -1128,5 +1128,255 @@
     "width": 256,
     "height": 256,
     "file": "Branding/logo.bgra"
+  },
+  "BossLoot/1012632.png": {
+    "width": 30,
+    "height": 30,
+    "file": "BossLoot/1012632.bgra"
+  },
+  "BossLoot/1012757.png": {
+    "width": 30,
+    "height": 31,
+    "file": "BossLoot/1012757.bgra"
+  },
+  "BossLoot/1012911.png": {
+    "width": 34,
+    "height": 31,
+    "file": "BossLoot/1012911.bgra"
+  },
+  "BossLoot/1022277.png": {
+    "width": 30,
+    "height": 30,
+    "file": "BossLoot/1022277.bgra"
+  },
+  "BossLoot/1022278.png": {
+    "width": 31,
+    "height": 23,
+    "file": "BossLoot/1022278.bgra"
+  },
+  "BossLoot/1022397.png": {
+    "width": 30,
+    "height": 30,
+    "file": "BossLoot/1022397.bgra"
+  },
+  "BossLoot/1032316.png": {
+    "width": 35,
+    "height": 34,
+    "file": "BossLoot/1032316.bgra"
+  },
+  "BossLoot/1032330.png": {
+    "width": 32,
+    "height": 31,
+    "file": "BossLoot/1032330.bgra"
+  },
+  "BossLoot/1113306.png": {
+    "width": 36,
+    "height": 36,
+    "file": "BossLoot/1113306.bgra"
+  },
+  "BossLoot/1113313.png": {
+    "width": 34,
+    "height": 34,
+    "file": "BossLoot/1113313.bgra"
+  },
+  "BossLoot/1113341.png": {
+    "width": 37,
+    "height": 36,
+    "file": "BossLoot/1113341.bgra"
+  },
+  "BossLoot/1113360.png": {
+    "width": 38,
+    "height": 38,
+    "file": "BossLoot/1113360.bgra"
+  },
+  "BossLoot/1122150.png": {
+    "width": 32,
+    "height": 30,
+    "file": "BossLoot/1122150.bgra"
+  },
+  "BossLoot/1122430.png": {
+    "width": 36,
+    "height": 36,
+    "file": "BossLoot/1122430.bgra"
+  },
+  "BossLoot/1122443.png": {
+    "width": 34,
+    "height": 33,
+    "file": "BossLoot/1122443.bgra"
+  },
+  "BossLoot/1122447.png": {
+    "width": 35,
+    "height": 39,
+    "file": "BossLoot/1122447.bgra"
+  },
+  "BossLoot/1132308.png": {
+    "width": 36,
+    "height": 35,
+    "file": "BossLoot/1132308.bgra"
+  },
+  "BossLoot/1143471.png": {
+    "width": 37,
+    "height": 38,
+    "file": "BossLoot/1143471.bgra"
+  },
+  "BossLoot/1182285.png": {
+    "width": 35,
+    "height": 30,
+    "file": "BossLoot/1182285.bgra"
+  },
+  "BossLoot/1672095.png": {
+    "width": 35,
+    "height": 33,
+    "file": "BossLoot/1672095.bgra"
+  },
+  "BossLoot/2539020.png": {
+    "width": 36,
+    "height": 37,
+    "file": "BossLoot/2539020.bgra"
+  },
+  "BossLoot/2539021.png": {
+    "width": 36,
+    "height": 37,
+    "file": "BossLoot/2539021.bgra"
+  },
+  "BossLoot/2539022.png": {
+    "width": 36,
+    "height": 37,
+    "file": "BossLoot/2539022.bgra"
+  },
+  "BossLoot/2539023.png": {
+    "width": 36,
+    "height": 37,
+    "file": "BossLoot/2539023.bgra"
+  },
+  "BossLoot/2633926.png": {
+    "width": 37,
+    "height": 37,
+    "file": "BossLoot/2633926.bgra"
+  },
+  "BossLoot/2633927.png": {
+    "width": 38,
+    "height": 36,
+    "file": "BossLoot/2633927.bgra"
+  },
+  "BossLoot/2634472.png": {
+    "width": 35,
+    "height": 34,
+    "file": "BossLoot/2634472.bgra"
+  },
+  "BossLoot/2635747.png": {
+    "width": 33,
+    "height": 33,
+    "file": "BossLoot/2635747.bgra"
+  },
+  "BossLoot/2636606.png": {
+    "width": 30,
+    "height": 28,
+    "file": "BossLoot/2636606.bgra"
+  },
+  "BossLoot/2638063.png": {
+    "width": 34,
+    "height": 37,
+    "file": "BossLoot/2638063.bgra"
+  },
+  "BossLoot/2638064.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2638064.bgra"
+  },
+  "BossLoot/2638065.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2638065.bgra"
+  },
+  "BossLoot/2638066.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2638066.bgra"
+  },
+  "BossLoot/2639252.png": {
+    "width": 36,
+    "height": 34,
+    "file": "BossLoot/2639252.bgra"
+  },
+  "BossLoot/2639253.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2639253.bgra"
+  },
+  "BossLoot/2644204.png": {
+    "width": 37,
+    "height": 31,
+    "file": "BossLoot/2644204.bgra"
+  },
+  "BossLoot/2644205.png": {
+    "width": 37,
+    "height": 31,
+    "file": "BossLoot/2644205.bgra"
+  },
+  "BossLoot/2644206.png": {
+    "width": 37,
+    "height": 31,
+    "file": "BossLoot/2644206.bgra"
+  },
+  "BossLoot/2644207.png": {
+    "width": 37,
+    "height": 31,
+    "file": "BossLoot/2644207.bgra"
+  },
+  "BossLoot/2644208.png": {
+    "width": 37,
+    "height": 31,
+    "file": "BossLoot/2644208.bgra"
+  },
+  "BossLoot/2830304.png": {
+    "width": 36,
+    "height": 37,
+    "file": "BossLoot/2830304.bgra"
+  },
+  "BossLoot/2830306.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2830306.bgra"
+  },
+  "BossLoot/2830338.png": {
+    "width": 37,
+    "height": 37,
+    "file": "BossLoot/2830338.bgra"
+  },
+  "BossLoot/2831103.png": {
+    "width": 40,
+    "height": 41,
+    "file": "BossLoot/2831103.bgra"
+  },
+  "BossLoot/2831104.png": {
+    "width": 38,
+    "height": 38,
+    "file": "BossLoot/2831104.bgra"
+  },
+  "BossLoot/2831105.png": {
+    "width": 36,
+    "height": 30,
+    "file": "BossLoot/2831105.bgra"
+  },
+  "BossLoot/2831106.png": {
+    "width": 33,
+    "height": 28,
+    "file": "BossLoot/2831106.bgra"
+  },
+  "BossLoot/2831408.png": {
+    "width": 32,
+    "height": 34,
+    "file": "BossLoot/2831408.bgra"
+  },
+  "BossLoot/2832967.png": {
+    "width": 37,
+    "height": 36,
+    "file": "BossLoot/2832967.bgra"
+  },
+  "BossLoot/2832969.png": {
+    "width": 31,
+    "height": 26,
+    "file": "BossLoot/2832969.bgra"
   }
 }

@@ -1,11 +1,22 @@
 # 메요일 소개 영상
 
-- `mapleday-intro.mp4`: 26초, 1920×1080, 60fps, H.264 / AAC 스테레오, 피아노 BGM 최종본
+- `mapleday-intro.mp4`: 15초, 1920×1080, 60fps, H.264 / AAC 스테레오, 피아노 BGM
 - `mapleday-intro-preview.gif`: README에서 반복 재생하는 무음 미리보기
 - 제작 데이터 기준: 2026-10-07, 실제 NEXON Open API 응답과 PC에 저장한 기록
 
+15초 중 약 5초를 수익 집계에 배정했습니다. 1080p 전체 화면에서 억 단위로 시작해 1조를 넘으면 조 단위로 전환하고, 5.000조까지 올라갑니다. 메소가 순차적으로 낙하하고 더미가 자라며, 도달 후 숫자와 쌓인 메소를 유지한 뒤 다음 장면으로 넘어갑니다. 큰 수익에서도 시각적 입자 수와 더미 높이를 조정해 시작하자마자 바닥이 채워지지 않도록 했습니다.
+
 앱의 원본 에셋과 실제 데이터를 사용해 영상용으로 화면을 합성했습니다. 스케줄러는 주간 보스 목록과 API 난이도, 저장된 파티 인원을 표시합니다. 숫자·층·점·인 단위는 앱의 모리스9 픽셀 에셋을 사용하고 항목 이름은 앱의 렌더러로 생성했습니다. 알림 장면은 미완료 항목을 사용한 기능 예시입니다. API 키와 OCID는 영상에 포함하지 않았습니다.
+
+수익 장면은 앱의 집계 렌더러를 이용한 5조 메소 규모의 시연입니다. 2026.10.08 가격표에서 월간 보스를 제외하고 보스별 최고 난이도 중 결정 가격이 높은 주간 보스 12종을 선정했습니다. 1인 결정 가격을 그대로 적용해 정수 처치 수로 정확히 5조를 구성하며 화면에 ‘상위 12종 · 1인 기준 집계 시연’으로 표시합니다. 총 1,834마리이며 보스별 계산표는 `demo-5trillion-plan.json`입니다. 둥근 정사각형 보스 카드, 커지는 누적 금액과 떨어지는 메소를 포함합니다. 짧은 제목과 부드러운 이동·전환으로 캐릭터, 스케줄러, 수익, 경험치와 알림을 소개하며 피아노 연주도 15초에 맞춰 편곡했습니다. 로컬 재렌더링 스크립트는 `scripts/promo/render_intro.py`입니다.
 
 피아노 연주와 편곡은 이 영상을 위해 작성했습니다. 피아노 음색에는 S. Christian Collins의 [GeneralUser GS](https://github.com/mrbumpy409/GeneralUser-GS)를 사용했습니다. 음악 제작에 대한 이용 조건은 [제작자의 라이선스](https://github.com/mrbumpy409/GeneralUser-GS/blob/main/documentation/LICENSE.txt)를 확인할 수 있습니다. 게임 에셋·글꼴 고지는 프로젝트의 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)를 따릅니다.
 
 영상의 수정·배포와 상업적 이용 조건은 프로젝트의 [LICENSE](../../LICENSE)를 따릅니다.
+
+로컬에 준비한 캐릭터 데이터·이미지·원본 SoundFont를 재사용하는 재렌더링 명령은 아래와 같습니다.
+
+```powershell
+dotnet run --project scripts/promo/IncomePlates/IncomePlates.csproj -c Release -- --demo-total 5000000000000
+python scripts/promo/render_intro.py --render
+```

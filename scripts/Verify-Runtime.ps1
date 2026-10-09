@@ -7,6 +7,10 @@ $target = $deps.targets.PSObject.Properties[$deps.runtimeTarget.name].Value
 $runtimePack = @($target.PSObject.Properties | Where-Object Name -like 'runtimepack.Microsoft.NETCore.App.Runtime.win-x64/*')
 if ($runtimePack.Count -ne 1) { throw 'Self-contained .NET runtime is missing from MapleDay.deps.json.' }
 $assets = @($runtimePack[0].Value.runtime.PSObject.Properties.Name) + @($runtimePack[0].Value.native.PSObject.Properties.Name)
+$webRuntime = @($target.PSObject.Properties | Where-Object Name -like 'runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/*')
+if ($webRuntime.Count -ne 1) { throw 'Self-contained ASP.NET runtime is missing from MapleDay.deps.json.' }
+$assets += @($webRuntime[0].Value.runtime.PSObject.Properties.Name)
+if ($assets -notcontains 'Microsoft.AspNetCore.Server.Kestrel.Core.dll') { throw 'Kestrel runtime is missing.' }
 foreach ($required in @('coreclr.dll', 'System.Private.CoreLib.dll')) {
     if ($assets -notcontains $required) { throw "Runtime dependency manifest is missing: $required" }
 }

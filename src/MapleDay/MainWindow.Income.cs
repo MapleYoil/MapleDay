@@ -14,6 +14,51 @@ public sealed partial class MainWindow
     public ObservableCollection<IncomeCharacterChoice> IncomeCharacters { get; } = [];
     private string? _incomeSelectedOcid;
     private bool _rebuildingIncomeCharacters;
+    private bool _incomeDisplayReady;
+    private IEnumerable<BossLootRecord> StoredLoot => (_settings.BossLootRecords ?? []).Where(BossLoot.Valid);
+    private WeeklyIncomeForecast? ForecastFor(SchedulerCharacter character, DateOnly today)
+    {
+        if (character.History is not { } history) return null;
+        var state = history.Today == today ? history.Current : SchedulerLastState.Project(new(history.Today, history.Current, false, DateTimeOffset.UtcNow), today);
+        return WeeklyIncomeForecast.Calculate(state, history.Snapshots, character.Income?.Records ?? [], today,
+            id => PartySize(character.Ocid, id), character.Character.Level);
+    }
+    private IncomeDisplay CurrentIncomeDisplay => new(_settings.IncomeDisplayMode, _settings.MesoCashRate);
+    private void InitializeIncomeDisplay()
+    {
+        IncomeDisplaySelector.SelectedIndex = CurrentIncomeDisplay.ValidMode switch { "cash" => 1, "both" => 2, _ => 0 };
+        IncomeCashRateInput.Value = (double)CurrentIncomeDisplay.Rate;
+        IncomeReplayPanel.OwnerWindow = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        Closed += (_, _) => { IncomeReplayPanel.Pause(); _ = IncomeReplayPanel.StopAsync(); };
+        _incomeDisplayReady = true;
+    }
+    private void IncomeDisplaySelector_SelectionChanged(object sender, SelectionChangedEventArgs args)
+    {
+        if (!_incomeDisplayReady || _dataDeleting) return;
+        _settings.IncomeDisplayMode = (IncomeDisplaySelector.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "meso";
+        SaveIncomeDisplay();
+    }
+    private void IncomeCashRateInput_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        if (!_incomeDisplayReady || _dataDeleting || !double.IsFinite(sender.Value) || sender.Value is < 1 or > 1_000_000_000) return;
+        _settings.MesoCashRate = (decimal)sender.Value;
+        SaveIncomeDisplay();
+    }
+    private void SaveIncomeDisplay()
+    {
+        try { _settings.Save(); IncomeCurrencyStatus.Text = "현금 금액은 설정한 환산가로 계산한 값입니다."; }
+        catch (Exception error) when (IsStorageError(error)) { IncomeCurrencyStatus.Text = "환산 설정을 저장하지 못했어요. 이번 실행에서만 적용합니다."; }
+        RefreshIncomeOverview();
+        IncomeReplayPanel.SetDisplay(CurrentIncomeDisplay);
+        PublishWebSnapshot();
+    }
+    private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
+    {
+        var characters = SchedulerAvatars.Where(character => _incomeSelectedOcid is null || character.Ocid == _incomeSelectedOcid).ToArray();
+        var records = characters.SelectMany(character => character.Income?.Records ?? []).ToArray();
+        IncomeReplayPanel.Visibility = Visibility.Visible;
+        IncomeReplayPanel.SetRecords(records, CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터");
+    }
 
     public ObservableCollection<string> CrystalPriceRows { get; } = new(CrystalPrices.All
         .OrderByDescending(price => price.EffectiveFrom).ThenBy(price => price.Name).ThenBy(price => price.Difficulty)
@@ -39,6 +84,7 @@ public sealed partial class MainWindow
     {
         if (_rebuildingIncomeCharacters || IncomeCharacterSelector.SelectedItem is not IncomeCharacterChoice choice) return;
         _incomeSelectedOcid = choice.Ocid;
+        IncomeReplayPanel.Pause(); IncomeReplayPanel.Visibility = Visibility.Collapsed;
         RefreshIncomeOverview();
     }
 
@@ -47,15 +93,16 @@ public sealed partial class MainWindow
     private void IncomeCalendar_PartySizeRequested(object? sender, IncomePartySizeRequest request)
     {
         var record = request.Record;
-        if (_dataDeleting || !_schedulerCharacters.TryGetValue(record.Ocid, out var owner) || owner.History is not { } history) return;
+        if (_dataDeleting || !_schedulerCharacters.TryGetValue(record.Ocid, out var owner)) return;
+        var history = owner.History;
+        var today = history?.Today ?? SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         _partyFlyout?.Hide();
         var maximum = BossParty.Maximum(record.Boss.Name);
         var number = new NumberBox { Header = $"파티 인원 (1~{maximum}인)", Minimum = 1, Maximum = maximum,
             Value = record.Boss.PartySize, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
         var all = new CheckBox { Content = new TextBlock { Text = "첫 기록부터 같은 보스의 전체 기록에 적용", TextWrapping = TextWrapping.Wrap, MaxWidth = 300 } };
-        var first = history.Snapshots.Where(day => day.Date >= SchedulerBossHistory.FirstDate && day.Date <= history.Today)
-            .Select(day => day.Date).DefaultIfEmpty(record.Boss.Date).Min();
-        var range = new TextBlock { Text = $"{owner.Name} · {first:yyyy.MM.dd} ~ {history.Today:yyyy.MM.dd}\n체크하지 않으면 {record.Boss.Date:yyyy.MM.dd} 기록만 변경합니다.",
+        var first = owner.Income?.FirstDate ?? record.Boss.Date;
+        var range = new TextBlock { Text = $"{owner.Name} · {first:yyyy.MM.dd} ~ {today:yyyy.MM.dd}\n체크하지 않으면 {record.Boss.Date:yyyy.MM.dd} 기록만 변경합니다.",
             TextWrapping = TextWrapping.Wrap, FontSize = 12 };
         var errorText = new TextBlock { TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed,
             Foreground = AppTheme.Brush("DangerTextBrush") };
@@ -80,8 +127,11 @@ public sealed partial class MainWindow
         {
             if (_closed || _dataDeleting || !apply.IsEnabled || !_schedulerCharacters.TryGetValue(record.Ocid, out var active)
                 || !ReferenceEquals(active, owner)) { flyout.Hide(); return; }
-            var ids = all.IsChecked == true && owner.History is { } latest
-                ? BossParty.SavedRecordIds(latest.Snapshots, record.Boss.Name, record.Boss.Cycle, latest.Today).Append(record.Boss.Id).Distinct().ToArray()
+            var ids = all.IsChecked == true
+                ? BossParty.SavedRecordIds(owner.History?.Snapshots ?? [], record.Boss.Name, record.Boss.Cycle, today)
+                    .Concat((owner.Income?.Records ?? []).Where(item => item.Cycle == record.Boss.Cycle
+                        && SchedulerBossHistory.BossKey(item.Name) == SchedulerBossHistory.BossKey(record.Boss.Name)).Select(item => item.Id))
+                    .Append(record.Boss.Id).Distinct().ToArray()
                 : [record.Boss.Id];
             var previous = _settings.BossPartySizes;
             var updated = new Dictionary<string, int>(previous);
@@ -115,17 +165,25 @@ public sealed partial class MainWindow
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         var weekStart = SchedulerBossHistory.Start(BossCycle.Weekly, today);
         var monthStart = SchedulerBossHistory.Start(BossCycle.Monthly, today);
-        WeeklyIncomeAmount.Text = BossIncome.Money(loaded.Sum(character => character.Income!.Sum(weekStart, today)));
-        MonthlyIncomeAmount.Text = BossIncome.Money(loaded.Sum(character => character.Income!.Sum(monthStart, today)));
-        TotalIncomeAmount.Text = BossIncome.Money(loaded.Sum(character => character.Income!.Total));
-        IncomeScope.Text = $"{(_incomeSelectedOcid is not null ? selected.FirstOrDefault()?.Name : "추가한 캐릭터 합산")} · {loaded.Length} / {selected.Length}캐릭터 조회 · 예상 결정 수익";
+        var loot = StoredLoot.Where(record => selected.Any(character => character.Ocid == record.Ocid)).ToArray();
+        WeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Sum(weekStart, today)) + BossLoot.Sum(loot, weekStart, today));
+        MonthlyIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Sum(monthStart, today)) + BossLoot.Sum(loot, monthStart, today));
+        TotalIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Total) + BossLoot.Sum(loot, DateOnly.MinValue, today));
+        var forecasts = selected.Select(character => (Character: character, Forecast: ForecastFor(character, today))).ToArray();
+        RemainingWeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(forecasts.Sum(item => item.Forecast?.Meso ?? 0));
+        RemainingWeeklyIncomeStatus.Text = "등록된 미완료 주간 보스 · 설정한 파티 인원 · 캐릭터당 주간 12마리 제한 기준\n"
+            + string.Join(" · ", forecasts.Select(item => item.Forecast is { } value
+                ? $"{item.Character.Name}: {CurrentIncomeDisplay.Format(value.Meso)}{(value.Unpriced > 0 ? $" (가격 미확인 {value.Unpriced}종)" : "")}" : item.Character.Name + ": 스케줄러 조회 필요"));
+        ToolTipService.SetToolTip(RemainingWeeklyIncomeAmount, string.Join("\n", forecasts.SelectMany(item => item.Forecast?.Bosses.Select(boss =>
+            $"{item.Character.Name} · {boss.Name} · {boss.PartySize}인 · {(boss.Included ? boss.Meso is { } amount ? CurrentIncomeDisplay.Format(amount) : "가격 확인 필요" : "주간 제한에서 제외")}") ?? [])));
+        IncomeScope.Text = $"{(_incomeSelectedOcid is not null ? selected.FirstOrDefault()?.Name : "추가한 캐릭터 합산")} · {loaded.Length} / {selected.Length}캐릭터 조회 · 결정 + 물욕템 수령액";
         IncomeOverviewStatus.Text = loaded.Length < selected.Length
             ? "보스 기록을 아직 불러오지 못한 캐릭터가 있어요. 새로고침으로 다시 조회할 수 있습니다."
             : loaded.Any(character => character.Income!.Unpriced > 0
                 || !character.Income.CompleteRange(BossCycle.Monthly) || character.Income.Today != today)
                 ? "일부 날짜의 기록이나 결정 가격을 확인하지 못했어요. 캘린더의 날짜를 눌러 상세 내역을 확인할 수 있습니다." : "";
         WeeklyCrystalCount.Text = $"이번 주 주간 보스 {loaded.Sum(character => character.Income!.Records.Count(record => record.Included && record.Cycle == BossCycle.Weekly && record.PeriodStart == weekStart))} / {selected.Length * BossIncome.WeeklyCap} · 캐릭터당 최대 12마리 기준";
-        IncomeCalendarPanel.SetCharacters(selected);
+        IncomeCalendarPanel.SetCharacters(selected, CurrentIncomeDisplay, loot);
         IncomeOverview.Visibility = selected.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         IncomeEmpty.Visibility = _hasLoadedCharacters && SchedulerAvatars.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }

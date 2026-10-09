@@ -213,6 +213,8 @@ public sealed partial class MainWindow
             Root.IsHitTestVisible = false;
             StopUpdates();
             StopTelemetry();
+            await StopWebHostAsync();
+            await IncomeReplayPanel.StopAsync();
             _replyTimer.Stop(); _reminderTimer.Stop();
             _reminderLifetime.Cancel(); _loadCts?.Cancel();
             CancelScheduler(); CancelLevels(); _supportLifetime.Cancel();

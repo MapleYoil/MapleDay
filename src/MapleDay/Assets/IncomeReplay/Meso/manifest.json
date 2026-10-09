@@ -1,0 +1,130 @@
+[
+  {
+    "file": "bronze-0.png",
+    "source": "Item/Special/_Canvas/0900.img/09000000/iconRaw/0",
+    "width": 23,
+    "height": 24,
+    "mesoUnit": 100000000,
+    "sha256": "5eef4341d5f595e8c17902d8c8bbb3fb0fb8d62b9f8cadae072b6f2b721ce0c3"
+  },
+  {
+    "file": "bronze-1.png",
+    "source": "Item/Special/_Canvas/0900.img/09000000/iconRaw/1",
+    "width": 25,
+    "height": 24,
+    "mesoUnit": 100000000,
+    "sha256": "210f83fa254822a999fd330c5a14bdfbf0f9a36aace8b2ff26ce89af4fd22adf"
+  },
+  {
+    "file": "bronze-2.png",
+    "source": "Item/Special/_Canvas/0900.img/09000000/iconRaw/2",
+    "width": 23,
+    "height": 24,
+    "mesoUnit": 100000000,
+    "sha256": "eeff7fb6c4509118a2577f8f83d83269c83b9a659002a9a64bacb55f95a5b43e"
+  },
+  {
+    "file": "bronze-3.png",
+    "source": "Item/Special/_Canvas/0900.img/09000000/iconRaw/3",
+    "width": 5,
+    "height": 24,
+    "mesoUnit": 100000000,
+    "sha256": "0c922f7b019ba0b9a65baca7182135bcd011291d5953aadf36f0c2e1dfc611f6"
+  },
+  {
+    "file": "gold-0.png",
+    "source": "Item/Special/_Canvas/0900.img/09000001/iconRaw/0",
+    "width": 23,
+    "height": 24,
+    "mesoUnit": 1000000000,
+    "sha256": "8dbdea4bc2f38124844ad17f2e175b08bd32903014f4614845495f165430f074"
+  },
+  {
+    "file": "gold-1.png",
+    "source": "Item/Special/_Canvas/0900.img/09000001/iconRaw/1",
+    "width": 25,
+    "height": 24,
+    "mesoUnit": 1000000000,
+    "sha256": "6ec86138d2b9e51b8473ecc31d10ebe668feaf1b585a4f8399967a07c519b68d"
+  },
+  {
+    "file": "gold-2.png",
+    "source": "Item/Special/_Canvas/0900.img/09000001/iconRaw/2",
+    "width": 23,
+    "height": 24,
+    "mesoUnit": 1000000000,
+    "sha256": "493115479ae7fc421904d9fce76e46e0c8d884b41965762e33503527d927803b"
+  },
+  {
+    "file": "gold-3.png",
+    "source": "Item/Special/_Canvas/0900.img/09000001/iconRaw/3",
+    "width": 5,
+    "height": 24,
+    "mesoUnit": 1000000000,
+    "sha256": "b7becfe7ae7ea9cd45461aedcd7347f3fab6e652398262d6a737f09a28df2b66"
+  },
+  {
+    "file": "notes-0.png",
+    "source": "Item/Special/_Canvas/0900.img/09000002/iconRaw/0",
+    "width": 31,
+    "height": 30,
+    "mesoUnit": 10000000000,
+    "sha256": "43876b695d2db88f930aa564159a70278995468650adf4eb82bef1c104953342"
+  },
+  {
+    "file": "notes-1.png",
+    "source": "Item/Special/_Canvas/0900.img/09000002/iconRaw/1",
+    "width": 32,
+    "height": 30,
+    "mesoUnit": 10000000000,
+    "sha256": "96e517087a19d0d33209be23338f7da0b119b5ba6dff6a4ea17ab4dbdda51a50"
+  },
+  {
+    "file": "notes-2.png",
+    "source": "Item/Special/_Canvas/0900.img/09000002/iconRaw/2",
+    "width": 33,
+    "height": 30,
+    "mesoUnit": 10000000000,
+    "sha256": "fdaccb5148807c55b2d39ccc7d6b318c2b001772655c716e5d4cbbae55af83cc"
+  },
+  {
+    "file": "notes-3.png",
+    "source": "Item/Special/_Canvas/0900.img/09000002/iconRaw/1",
+    "width": 32,
+    "height": 30,
+    "mesoUnit": 10000000000,
+    "sha256": "96e517087a19d0d33209be23338f7da0b119b5ba6dff6a4ea17ab4dbdda51a50"
+  },
+  {
+    "file": "bag-0.png",
+    "source": "Item/Special/_Canvas/0900.img/09000003/iconRaw/0",
+    "width": 32,
+    "height": 31,
+    "mesoUnit": 100000000000,
+    "sha256": "64d4c584109363f611dfec109475568b154e0bb478f4cedb1ba1c568d9568b5a"
+  },
+  {
+    "file": "bag-1.png",
+    "source": "Item/Special/_Canvas/0900.img/09000003/iconRaw/1",
+    "width": 32,
+    "height": 31,
+    "mesoUnit": 100000000000,
+    "sha256": "6ecbe25d7e71ca060fb514b34e7340acebc004821e722c99385af22978553abc"
+  },
+  {
+    "file": "bag-2.png",
+    "source": "Item/Special/_Canvas/0900.img/09000003/iconRaw/2",
+    "width": 32,
+    "height": 31,
+    "mesoUnit": 100000000000,
+    "sha256": "022fd4026be91e0c0032e09771040d52138eb7a1a7fd8a6144e4dd70e039f2a5"
+  },
+  {
+    "file": "bag-3.png",
+    "source": "Item/Special/_Canvas/0900.img/09000003/iconRaw/3",
+    "width": 32,
+    "height": 31,
+    "mesoUnit": 100000000000,
+    "sha256": "77b2f5b5ad16649d422aeef93d8971a15b9652075235aa6c579fc448bd28009b"
+  }
+]

@@ -483,7 +483,10 @@
                         <Button x:Name="IncomeRefreshButton" Content="새로고침" Click="SchedulerRefreshButton_Click" IsEnabled="False" />
                         <Button x:Name="IncomeCancelButton" Content="중단" Click="SchedulerCancelButton_Click" Visibility="Collapsed" />
                         <Button Content="스케줄러로 이동" Click="IncomeOpenScheduler_Click" />
+                        <Button Content="주간 기록 일괄 추가" Click="IncomeBulkAdd_Click" />
                     </StackPanel>
+                    <TextBlock x:Name="IncomeBulkStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                    <Button x:Name="IncomeBulkUndoButton" Content="방금 추가 취소" Click="IncomeBulkUndo_Click" Visibility="Collapsed" HorizontalAlignment="Left" />
                 </StackPanel>
                 <StackPanel x:Name="IncomeEmpty" Visibility="Collapsed" Spacing="10">
                     <TextBlock Text="스케줄러에 캐릭터를 추가하면 수익을 볼 수 있어요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
@@ -492,6 +495,15 @@
                     <Border x:Name="IncomeOverview" Width="786" HorizontalAlignment="Left" Visibility="Collapsed" Padding="20" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                         <StackPanel Spacing="14">
                             <TextBlock Text="보스 수익" FontSize="20" FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <ComboBox x:Name="IncomeDisplaySelector" Header="표시 금액" SelectionChanged="IncomeDisplaySelector_SelectionChanged">
+                                    <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" />
+                                </ComboBox>
+                                <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" Width="230" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
+                            </StackPanel>
+                            <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                            <Button Content="결정 수익 집계 재생 · MP4 / GIF 내보내기" Click="IncomeReplayOpen_Click" HorizontalAlignment="Left" />
+                            <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
                             <TextBlock x:Name="IncomeScope" Style="{StaticResource SecondaryText}" FontSize="12" />
                             <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <Grid ColumnSpacing="18">
@@ -501,9 +513,15 @@
                                 <StackPanel Grid.Column="2" Spacing="6"><TextBlock Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                             </Grid>
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
-                            <TextBlock Text="주간은 목요일 00시, 월간은 매월 1일 00시 (한국 시간) 기준입니다. 각 기간에 확인한 주간·월간 결정 수익을 함께 합산합니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
-                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" />
-                            
+                            <Border Padding="14" CornerRadius="10" Background="{StaticResource AccentSoftBrush}">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="이번 주 남은 예상 결정 수익" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="RemainingWeeklyIncomeAmount" FontSize="23" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                    <TextBlock x:Name="RemainingWeeklyIncomeStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="주간은 목요일 00시, 월간은 매월 1일 00시 (한국 시간) 기준입니다. 주간·월간 결정 수익과 기록한 물욕템 수령액을 함께 합산합니다. 남은 예상 수익은 합계에 넣지 않습니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" />
                             <Expander Header="수익 계산 기준 · 결정 가격표" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="클리어 기록으로 계산한 예상 수익입니다. 실제 결정 판매 여부는 API에 없으며, 파티 인원은 기본 1인입니다. 보스 오른쪽 버튼에서 개별 설정할 수 있습니다." TextWrapping="Wrap" FontSize="12" />
@@ -841,6 +859,34 @@
                             <Button Content="초기화" Click="ResetWindowSizeButton_Click" />
                         </StackPanel>
                         <TextBlock x:Name="WindowSizeStatus" Text="다음 실행부터 적용됩니다. 초기화하면 1200 × 800px로 돌아갑니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="웹에서 보기" FontSize="18" FontWeight="SemiBold" />
+                        <TextBlock Text="이 PC의 스케줄러·수익·레벨을 휴대폰과 다른 PC에서 조회합니다. 앱이 트레이에 있어도 연결되며, 앱을 종료하면 웹 호스트도 종료됩니다. 앱 실행 때는 자동으로 켜지지 않습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <StackPanel x:Name="WebHostInputs" Spacing="12">
+                            <NumberBox x:Name="WebPortInput" Header="접속 포트" Minimum="1024" Maximum="65535" SpinButtonPlacementMode="Compact" Width="200" HorizontalAlignment="Left" />
+                            <PasswordBox x:Name="WebPasswordInput" Header="접속 비밀번호 (8자 이상)" PlaceholderText="비밀번호 설정" MaxLength="256" />
+                            <TextBlock x:Name="WebPasswordHint" Text="접속하려면 비밀번호가 필요합니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <TextBox x:Name="WebPublicHostInput" Header="외부 IP 또는 DDNS 주소 (선택)" PlaceholderText="example.ddns.net 또는 공인 IP" />
+                            <ToggleSwitch x:Name="WebHttpsToggle" Header="HTTPS 사용" OnContent="인증서 사용" OffContent="HTTP 사용" Toggled="WebHttpsToggle_Toggled" />
+                            <StackPanel x:Name="WebCertificateInputs" Visibility="Collapsed" Spacing="12">
+                                <TextBox x:Name="WebCertificatePathInput" Header="외부 주소용 인증서 파일 (.pfx / .p12)" PlaceholderText="인증서 파일의 전체 경로" />
+                                <PasswordBox x:Name="WebCertificatePasswordInput" Header="인증서 비밀번호 (저장하지 않음)" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="외부 접속: 공유기에서 위 TCP 포트를 이 PC의 내부 IP로 포트포워딩하고 Windows 방화벽에서 메요일의 해당 포트를 허용하세요. 외부 IP 또는 DDNS 주소로 접속합니다. 외부에서는 해당 주소용 인증서를 설정해 HTTPS를 사용하세요. HTTP는 비밀번호와 조회 정보를 암호화하지 않습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Button x:Name="WebStartButton" Content="웹 호스트 시작" Click="WebStartButton_Click" Style="{StaticResource AccentButtonStyle}" />
+                            <Button x:Name="WebStopButton" Content="종료" Click="WebStopButton_Click" IsEnabled="False" />
+                        </StackPanel>
+                        <TextBlock x:Name="WebHostStatus" Text="웹 호스트 꺼짐" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <TextBox x:Name="WebHostAddresses" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Visibility="Collapsed" AutomationProperties.Name="웹 접속 주소" />
+                        <StackPanel x:Name="WebHostLinks" Visibility="Collapsed" Orientation="Horizontal" Spacing="12">
+                            <Button Content="이 PC에서 열기" Click="WebOpenButton_Click" />
+                            <Button Content="접속 주소 복사" Click="WebCopyButton_Click" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">

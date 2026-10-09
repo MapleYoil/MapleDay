@@ -26,6 +26,7 @@ public sealed partial class MainWindow
             new Microsoft.UI.Xaml.Input.PointerEventHandler(SchedulerAvatarScroller_PointerWheelChanged), true);
         _settings.SchedulerOcids ??= [];
         _settings.BossPartySizes ??= [];
+        _settings.ManualWeeklyClears ??= [];
         UpdateSchedulerCharacters();
         _schedulerDayTimer.Tick += async (_, _) =>
         {
@@ -42,7 +43,7 @@ public sealed partial class MainWindow
         CancelScheduler();
         _schedulerCharacters.Clear();
         foreach (var character in Characters.Where(character => _settings.SchedulerOcids.Contains(character.Ocid)))
-            _schedulerCharacters[character.Ocid] = new(character);
+            _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid));
         foreach (var character in Characters) character.SetSchedulerAdded(_schedulerCharacters.ContainsKey(character.Ocid));
         RebuildSchedulerViews();
         UpdateSchedulerLogin();
@@ -106,7 +107,7 @@ public sealed partial class MainWindow
         if (!_hasLoadedCharacters || !Characters.Contains(character) || _schedulerCharacters.ContainsKey(character.Ocid)) return false;
         CancelScheduler();
         if (!_settings.SchedulerOcids.Contains(character.Ocid)) _settings.SchedulerOcids.Add(character.Ocid);
-        _schedulerCharacters[character.Ocid] = new(character);
+        _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid));
         character.SetSchedulerAdded(true);
         SaveSchedulerSelection();
         RebuildSchedulerViews();

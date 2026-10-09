@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "src/MapleDay/Assets"
 OUTPUT = ASSETS / "Decoded"
 manifest = {}
-for folder in ["Scheduler", "Worlds", "Branding"]:
+for folder in ["Scheduler", "Worlds", "Branding", "BossLoot"]:
     for path in sorted((ASSETS / folder).rglob("*.png")):
         relative = path.relative_to(ASSETS)
         with Image.open(path) as source:

@@ -97,6 +97,9 @@ try {
     $runtimePack = @($runtimeTarget.PSObject.Properties | Where-Object Name -like 'runtimepack.Microsoft.NETCore.App.Runtime.win-x64/*')
     if ($runtimePack.Count -ne 1) { throw 'MSIX dependency manifest is missing the self-contained .NET runtime.' }
     $runtimeAssets = @($runtimePack[0].Value.runtime.PSObject.Properties.Name) + @($runtimePack[0].Value.native.PSObject.Properties.Name)
+    $webRuntime = @($runtimeTarget.PSObject.Properties | Where-Object Name -like 'runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/*')
+    if ($webRuntime.Count -ne 1) { throw 'MSIX dependency manifest is missing the ASP.NET runtime.' }
+    $runtimeAssets += @($webRuntime[0].Value.runtime.PSObject.Properties.Name)
     foreach ($required in @('coreclr.dll', 'System.Private.CoreLib.dll')) {
         if ($runtimeAssets -notcontains $required) { throw "MSIX runtime dependency manifest is missing: $required" }
     }

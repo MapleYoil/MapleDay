@@ -1,0 +1,19 @@
+<UserControl x:Class="MapleDay.Views.IncomeReplayView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Spacing="10">
+        <Border CornerRadius="12" Background="#0A0F19" HorizontalAlignment="Stretch">
+            <Image x:Name="Preview" Stretch="Uniform" AutomationProperties.Name="왼쪽 누적 금액, 오른쪽 보스별 처치 수와 수익 순위" />
+        </Border>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button x:Name="PlayButton" Content="다시 재생" Click="Play_Click" />
+            <Button x:Name="PauseButton" Content="일시 정지" Click="Pause_Click" />
+            <Button x:Name="Mp4Button" Content="MP4 저장" Click="Mp4_Click" />
+            <Button x:Name="GifButton" Content="GIF 저장" Click="Gif_Click" />
+            <Button x:Name="CancelButton" Content="내보내기 취소" Click="Cancel_Click" Visibility="Collapsed" />
+            <Button Content="닫기" Click="Close_Click" />
+        </StackPanel>
+        <ProgressBar x:Name="ExportProgress" Visibility="Collapsed" Minimum="0" Maximum="100" />
+        <TextBlock x:Name="Status" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>

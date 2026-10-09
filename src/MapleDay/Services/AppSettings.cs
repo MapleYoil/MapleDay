@@ -11,6 +11,14 @@ public sealed class AppSettings
     public bool WindowsStartupToTray { get; set; } = true;
     public bool AutomaticUpdates { get; set; } = true;
     public bool UpdateNotifications { get; set; } = true;
+    public int WebPort { get; set; } = 17831;
+    public string IncomeDisplayMode { get; set; } = "meso";
+    public decimal MesoCashRate { get; set; } = 1500;
+    public string WebPasswordSalt { get; set; } = "";
+    public string WebPasswordHash { get; set; } = "";
+    public bool WebHttps { get; set; }
+    public string WebCertificatePath { get; set; } = "";
+    public string WebPublicHost { get; set; } = "";
     public bool UsageAnalyticsEnabled { get; set; } = true;
     public bool AnonymousUsageAnalytics { get; set; }
     public bool AutomaticErrorReports { get; set; } = true;
@@ -23,6 +31,8 @@ public sealed class AppSettings
     public HashSet<string> ReadTickets { get; set; } = [];
     public List<string> SchedulerOcids { get; set; } = [];
     public Dictionary<string, int> BossPartySizes { get; set; } = [];
+    public List<ManualWeeklyClear> ManualWeeklyClears { get; set; } = [];
+    public List<BossLootRecord> BossLootRecords { get; set; } = [];
     public bool RemindersEnabled { get; set; } = true;
     public bool RemindOnStartup { get; set; }
     public bool UnionQuestReminderEnabled { get; set; }

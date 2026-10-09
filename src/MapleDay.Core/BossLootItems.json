@@ -1,0 +1,413 @@
+[
+  {
+    "Id": "1113306",
+    "Name": "\uAC70\uB300\uD55C \uACF5\uD3EC",
+    "Bosses": [
+      "\uB354\uC2A4\uD06C"
+    ],
+    "Icon": "BossLoot/1113306.png"
+  },
+  {
+    "Id": "1113313",
+    "Name": "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uB9C1",
+    "Bosses": [
+      "\uAC00\uB514\uC5B8 \uC5D4\uC824 \uC2AC\uB77C\uC784"
+    ],
+    "Icon": "BossLoot/1113313.png"
+  },
+  {
+    "Id": "1113341",
+    "Name": "\uADFC\uC6D0\uC758 \uC18D\uC0AD\uC784",
+    "Bosses": [
+      "\uB9BC\uBCF4"
+    ],
+    "Icon": "BossLoot/1113341.png"
+  },
+  {
+    "Id": "1113360",
+    "Name": "\uD669\uD640\uD55C \uC545\uBABD",
+    "Bosses": [
+      "\uCC2C\uB780\uD55C \uD749\uC131"
+    ],
+    "Icon": "BossLoot/1113360.png"
+  },
+  {
+    "Id": "1672095",
+    "Name": "\uCEF4\uD50C\uB9AC\uD2B8 \uC5B8\uB354\uCEE8\uD2B8\uB864",
+    "Bosses": [
+      "\uC2A4\uC6B0"
+    ],
+    "Icon": "BossLoot/1672095.png"
+  },
+  {
+    "Id": "1012632",
+    "Name": "\uB8E8\uC988 \uCEE8\uD2B8\uB864 \uBA38\uC2E0 \uB9C8\uD06C",
+    "Bosses": [
+      "\uC2A4\uC6B0"
+    ],
+    "Icon": "BossLoot/1012632.png"
+  },
+  {
+    "Id": "1012757",
+    "Name": "\uD2B8\uC640\uC77C\uB77C\uC774\uD2B8 \uB9C8\uD06C",
+    "Bosses": [
+      "\uB8E8\uC2DC\uB4DC",
+      "\uC70C"
+    ],
+    "Icon": "BossLoot/1012757.png"
+  },
+  {
+    "Id": "1012911",
+    "Name": "\uC624\uB9CC\uC758 \uC6D0\uC8C4",
+    "Bosses": [
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/1012911.png"
+  },
+  {
+    "Id": "1022277",
+    "Name": "\uD30C\uD480\uB77C\uD22C\uC2A4 \uB9C8\uD06C",
+    "Bosses": [
+      "\uD30C\uD480\uB77C\uD22C\uC2A4"
+    ],
+    "Icon": "BossLoot/1022277.png"
+  },
+  {
+    "Id": "1022278",
+    "Name": "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC548\uB300",
+    "Bosses": [
+      "\uB370\uBBF8\uC548"
+    ],
+    "Icon": "BossLoot/1022278.png"
+  },
+  {
+    "Id": "1022397",
+    "Name": "\uAD76\uC8FC\uB9AC\uB294 \uD54F\uBE5B \uC6D0\uD63C",
+    "Bosses": [
+      "\uBCA8\uB85C\uB098"
+    ],
+    "Icon": "BossLoot/1022397.png"
+  },
+  {
+    "Id": "1032316",
+    "Name": "\uCEE4\uB9E8\uB354 \uD3EC\uC2A4 \uC774\uC5B4\uB9C1",
+    "Bosses": [
+      "\uB4C4\uCF08"
+    ],
+    "Icon": "BossLoot/1032316.png"
+  },
+  {
+    "Id": "1032330",
+    "Name": "\uC5D0\uC2A4\uD154\uB77C \uC774\uC5B4\uB9C1",
+    "Bosses": [
+      "\uB354\uC2A4\uD06C",
+      "\uB4C4\uCF08"
+    ],
+    "Icon": "BossLoot/1032330.png"
+  },
+  {
+    "Id": "1122150",
+    "Name": "\uB3C4\uBBF8\uB124\uC774\uD130 \uD39C\uB358\uD2B8",
+    "Bosses": [
+      "\uC544\uCE74\uC774\uB7FC"
+    ],
+    "Icon": "BossLoot/1122150.png"
+  },
+  {
+    "Id": "1122430",
+    "Name": "\uACE0\uD1B5\uC758 \uADFC\uC6D0",
+    "Bosses": [
+      "\uC9C4 \uD790\uB77C"
+    ],
+    "Icon": "BossLoot/1122430.png"
+  },
+  {
+    "Id": "1122443",
+    "Name": "\uB370\uC774\uBE0C\uB808\uC774\uD06C \uD39C\uB358\uD2B8",
+    "Bosses": [
+      "\uC9C4 \uD790\uB77C",
+      "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C"
+    ],
+    "Icon": "BossLoot/1122443.png"
+  },
+  {
+    "Id": "1122447",
+    "Name": "\uC8FD\uC74C\uC758 \uB9F9\uC138",
+    "Bosses": [
+      "\uBC1C\uB4DC\uB9AD\uC2A4"
+    ],
+    "Icon": "BossLoot/1122447.png"
+  },
+  {
+    "Id": "1132308",
+    "Name": "\uBABD\uD658\uC758 \uBCA8\uD2B8",
+    "Bosses": [
+      "\uB8E8\uC2DC\uB4DC"
+    ],
+    "Icon": "BossLoot/1132308.png"
+  },
+  {
+    "Id": "1143471",
+    "Name": "\uBD88\uBA78\uC758 \uC720\uC0B0",
+    "Bosses": [
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790"
+    ],
+    "Icon": "BossLoot/1143471.png"
+  },
+  {
+    "Id": "1182285",
+    "Name": "\uCC3D\uC138\uC758 \uBC43\uC9C0",
+    "Bosses": [
+      "\uAC80\uC740 \uB9C8\uBC95\uC0AC"
+    ],
+    "Icon": "BossLoot/1182285.png"
+  },
+  {
+    "Id": "2539020",
+    "Name": "1\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+    "Bosses": [
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790",
+      "\uCE74\uB9C1"
+    ],
+    "Icon": "BossLoot/2539020.png"
+  },
+  {
+    "Id": "2539021",
+    "Name": "2\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+    "Bosses": [
+      "\uBCA8\uB85C\uB098",
+      "\uCC2C\uB780\uD55C \uD749\uC131"
+    ],
+    "Icon": "BossLoot/2539021.png"
+  },
+  {
+    "Id": "2539022",
+    "Name": "3\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+    "Bosses": [
+      "\uB9BC\uBCF4",
+      "\uBC1C\uB4DC\uB9AD\uC2A4"
+    ],
+    "Icon": "BossLoot/2539022.png"
+  },
+  {
+    "Id": "2539023",
+    "Name": "4\uB2E8\uACC4 \uC18C\uC6B8 \uC5D0\uD14C\uB974",
+    "Bosses": [
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/2539023.png"
+  },
+  {
+    "Id": "2633926",
+    "Name": "\uC800\uC8FC\uBC1B\uC740 \uB9C8\uB3C4\uC11C \uC120\uD0DD \uC0C1\uC790",
+    "Bosses": [
+      "\uC70C"
+    ],
+    "Icon": "BossLoot/2633926.png"
+  },
+  {
+    "Id": "2633927",
+    "Name": "\uBBF8\uD2B8\uB77C\uC758 \uBD84\uB178 \uC120\uD0DD \uC0C1\uC790",
+    "Bosses": [
+      "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C"
+    ],
+    "Icon": "BossLoot/2633927.png"
+  },
+  {
+    "Id": "2634472",
+    "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0",
+    "Bosses": [
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4"
+    ],
+    "Icon": "BossLoot/2634472.png"
+  },
+  {
+    "Id": "2635747",
+    "Name": "\uB4A4\uC5C9\uD0A8 \uD749\uC218\uC758 \uACE0\uB9AC",
+    "Bosses": [
+      "\uCE74\uB9C1"
+    ],
+    "Icon": "BossLoot/2635747.png"
+  },
+  {
+    "Id": "2636606",
+    "Name": "\uB0A8\uACA8\uC9C4 \uCE7C\uB85C\uC2A4\uC758 \uC758\uC9C0 \uC870\uAC01",
+    "Bosses": [
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4"
+    ],
+    "Icon": "BossLoot/2636606.png"
+  },
+  {
+    "Id": "2638063",
+    "Name": "\uC65C\uACE1\uB41C \uC695\uB9DD\uC758 \uACB0\uC815",
+    "Bosses": [
+      "\uB9BC\uBCF4"
+    ],
+    "Icon": "BossLoot/2638063.png"
+  },
+  {
+    "Id": "2638064",
+    "Name": "\uC758\uC9C0\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4"
+    ],
+    "Icon": "BossLoot/2638064.png"
+  },
+  {
+    "Id": "2638065",
+    "Name": "\uD749\uC218\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uCE74\uB9C1"
+    ],
+    "Icon": "BossLoot/2638065.png"
+  },
+  {
+    "Id": "2638066",
+    "Name": "\uC695\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uB9BC\uBCF4"
+    ],
+    "Icon": "BossLoot/2638066.png"
+  },
+  {
+    "Id": "2639252",
+    "Name": "\uC601\uC6D0\uD55C \uCDA9\uC131\uC758 \uD754\uC801",
+    "Bosses": [
+      "\uBC1C\uB4DC\uB9AD\uC2A4"
+    ],
+    "Icon": "BossLoot/2639252.png"
+  },
+  {
+    "Id": "2639253",
+    "Name": "\uB9F9\uC138\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uBC1C\uB4DC\uB9AD\uC2A4"
+    ],
+    "Icon": "BossLoot/2639253.png"
+  },
+  {
+    "Id": "2644204",
+    "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uBCA8\uD2B8)",
+    "Bosses": [
+      "\uAC80\uC740 \uB9C8\uBC95\uC0AC"
+    ],
+    "Icon": "BossLoot/2644204.png"
+  },
+  {
+    "Id": "2644205",
+    "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uC5BC\uAD74\uC7A5\uC2DD)",
+    "Bosses": [
+      "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C"
+    ],
+    "Icon": "BossLoot/2644205.png"
+  },
+  {
+    "Id": "2644206",
+    "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uB208\uC7A5\uC2DD)",
+    "Bosses": [
+      "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4"
+    ],
+    "Icon": "BossLoot/2644206.png"
+  },
+  {
+    "Id": "2644207",
+    "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uADC0\uACE0\uB9AC)",
+    "Bosses": [
+      "\uCE74\uB9C1"
+    ],
+    "Icon": "BossLoot/2644207.png"
+  },
+  {
+    "Id": "2644208",
+    "Name": "\uC775\uC149\uC154\uB110 \uD574\uBA38 (\uD6C8\uC7A5)",
+    "Bosses": [
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790"
+    ],
+    "Icon": "BossLoot/2644208.png"
+  },
+  {
+    "Id": "2830304",
+    "Name": "\uC774\uC5B4\uC9C4 \uACE0\uB300\uC758 \uACB0\uC758",
+    "Bosses": [
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790"
+    ],
+    "Icon": "BossLoot/2830304.png"
+  },
+  {
+    "Id": "2830306",
+    "Name": "\uACE0\uB300\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uCD5C\uCD08\uC758 \uB300\uC801\uC790"
+    ],
+    "Icon": "BossLoot/2830306.png"
+  },
+  {
+    "Id": "2830338",
+    "Name": "\uD63C\uB3C8\uC758 \uCE60\uD751 \uC7A5\uC2E0\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uCE74\uB9C1",
+      "\uBCA8\uB85C\uB098",
+      "\uCC2C\uB780\uD55C \uD749\uC131",
+      "\uB9BC\uBCF4",
+      "\uBC1C\uB4DC\uB9AD\uC2A4",
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/2830338.png"
+  },
+  {
+    "Id": "2831103",
+    "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8",
+    "Bosses": [
+      "\uCC2C\uB780\uD55C \uD749\uC131"
+    ],
+    "Icon": "BossLoot/2831103.png"
+  },
+  {
+    "Id": "2831104",
+    "Name": "\uB4A4\uD2C0\uB9B0 \uAC08\uB9DD\uC758 \uD3B8\uB9B0",
+    "Bosses": [
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/2831104.png"
+  },
+  {
+    "Id": "2831105",
+    "Name": "\uD658\uC0C1\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uCC2C\uB780\uD55C \uD749\uC131"
+    ],
+    "Icon": "BossLoot/2831105.png"
+  },
+  {
+    "Id": "2831106",
+    "Name": "\uAC08\uB9DD\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uC720\uD53C\uD14C\uB974"
+    ],
+    "Icon": "BossLoot/2831106.png"
+  },
+  {
+    "Id": "2831408",
+    "Name": "\uD669\uD640\uD55C \uD658\uC0C1\uC758 \uB2E8\uD3B8 \uC870\uAC01",
+    "Bosses": [
+      "\uCC2C\uB780\uD55C \uD749\uC131"
+    ],
+    "Icon": "BossLoot/2831408.png"
+  },
+  {
+    "Id": "2832967",
+    "Name": "\uC800\uC8FC\uBC1B\uC740 \uC6D0\uD63C\uC758 \uC794\uC7AC",
+    "Bosses": [
+      "\uBCA8\uB85C\uB098"
+    ],
+    "Icon": "BossLoot/2832967.png"
+  },
+  {
+    "Id": "2832969",
+    "Name": "\uAD11\uAE30\uC758 \uC5D0\uD14C\uB974\uB12C \uBC29\uC5B4\uAD6C \uC0C1\uC790",
+    "Bosses": [
+      "\uBCA8\uB85C\uB098"
+    ],
+    "Icon": "BossLoot/2832969.png"
+  }
+]

@@ -1,0 +1,104 @@
+{
+  "targetMeso": 5000000000000,
+  "totalKills": 1834,
+  "partySize": 1,
+  "priceDate": "2026-10-08",
+  "bosses": [
+    {
+      "Name": "\uCE74\uB9C1",
+      "Difficulty": "extreme",
+      "crystalMeso": 5387000000,
+      "kills": 153,
+      "totalMeso": 824211000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uC720\uD53C\uD14C\uB974",
+      "Difficulty": "hard",
+      "crystalMeso": 4845000000,
+      "kills": 152,
+      "totalMeso": 736440000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uCD5C\uCD08\uC758 \uB300\uC801\uC790",
+      "Difficulty": "extreme",
+      "crystalMeso": 4712000000,
+      "kills": 155,
+      "totalMeso": 730360000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uAC10\uC2DC\uC790 \uCE7C\uB85C\uC2A4",
+      "Difficulty": "extreme",
+      "crystalMeso": 4104000000,
+      "kills": 152,
+      "totalMeso": 623808000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uBC1C\uB4DC\uB9AD\uC2A4",
+      "Difficulty": "hard",
+      "crystalMeso": 3078000000,
+      "kills": 152,
+      "totalMeso": 467856000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uBCA8\uB85C\uB098",
+      "Difficulty": "hard",
+      "crystalMeso": 2950000000,
+      "kills": 152,
+      "totalMeso": 448400000000,
+      "Source": "https://namu.moe/w/%EA%B0%95%EB%A0%AC%ED%95%9C%20%ED%9E%98%EC%9D%98%20%EA%B2%B0%EC%A0%95"
+    },
+    {
+      "Name": "\uCC2C\uB780\uD55C \uD749\uC131",
+      "Difficulty": "hard",
+      "crystalMeso": 2678000000,
+      "kills": 154,
+      "totalMeso": 412412000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uB9BC\uBCF4",
+      "Difficulty": "hard",
+      "crystalMeso": 2385000000,
+      "kills": 153,
+      "totalMeso": 364905000000,
+      "Source": "https://maplestory.nexon.com/News/Update/806"
+    },
+    {
+      "Name": "\uC120\uD0DD\uBC1B\uC740 \uC138\uB80C",
+      "Difficulty": "extreme",
+      "crystalMeso": 1840000000,
+      "kills": 152,
+      "totalMeso": 279680000000,
+      "Source": "https://maplestory.nexon.com/news/update/813"
+    },
+    {
+      "Name": "\uC2A4\uC6B0",
+      "Difficulty": "extreme",
+      "crystalMeso": 545000000,
+      "kills": 152,
+      "totalMeso": 82840000000,
+      "Source": "https://maplestory.nexon.com/news/update/813"
+    },
+    {
+      "Name": "\uC9C4 \uD790\uB77C",
+      "Difficulty": "hard",
+      "crystalMeso": 100000000,
+      "kills": 152,
+      "totalMeso": 15200000000,
+      "Source": "https://maplestory.nexon.com/news/update/813"
+    },
+    {
+      "Name": "\uB4C4\uCF08",
+      "Difficulty": "hard",
+      "crystalMeso": 89600000,
+      "kills": 155,
+      "totalMeso": 13888000000,
+      "Source": "https://maplestory.nexon.com/news/update/813"
+    }
+  ]
+}

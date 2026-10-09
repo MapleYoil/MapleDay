@@ -32,6 +32,7 @@ public static class CrystalPrices
 public sealed record BossIncomeRecord(string Id, string Name, string Difficulty, BossCycle Cycle, DateOnly PeriodStart,
     DateOnly Date, DateOnly EarliestDate, bool DateEstimated, CrystalPrice? Price, int PartySize, long? Meso, bool Included)
 {
+    public bool Manual { get; init; }
     public string DifficultyLabel => Difficulty switch { "easy" => "이지", "normal" => "노멀", "hard" => "하드", "chaos" => "카오스", "extreme" => "익스트림", _ => Difficulty };
 }
 
@@ -72,7 +73,7 @@ public static class BossIncome
     // Each call is one character. The cap is applied per Thursday period before
     // calendar-month filtering, including when a week crosses a month boundary.
     public static BossIncomeResult Calculate(IEnumerable<SchedulerSnapshot> snapshots, DateOnly today,
-        Func<string, int>? partySize = null)
+        Func<string, int>? partySize = null, IEnumerable<ManualWeeklyClear>? manual = null)
     {
         var days = snapshots.Where(snapshot => snapshot.Date >= SchedulerBossHistory.FirstDate && snapshot.Date <= today)
             .GroupBy(snapshot => snapshot.Date).Select(group => group.MaxBy(snapshot => snapshot.FetchedAt)!)
@@ -105,6 +106,19 @@ public static class BossIncome
             records.Add(new(id, name, difficulty, group.Key.Cycle, group.Key.Start, date, earliest,
                 false, price, party, price?.Meso / party, true));
         }
+        var existing = records.Select(record => record.Id).ToHashSet(StringComparer.Ordinal);
+        foreach (var clear in (manual ?? []).Where(clear => clear.Date >= SchedulerBossHistory.FirstDate && clear.Date <= today)
+            .OrderBy(clear => clear.Date))
+        {
+            if (!ManualWeeklyHistory.Valid(clear)) continue;
+            var id = ManualWeeklyHistory.Id(clear);
+            if (!existing.Add(id)) continue;
+            var difficulty = CrystalPrices.DifficultyKey(clear.Difficulty);
+            var price = CrystalPrices.Find(clear.Name, difficulty, clear.Date);
+            var party = BossParty.Clamp(clear.Name, partySize?.Invoke(id) ?? 1);
+            records.Add(new(id, clear.Name, difficulty, clear.Cycle, SchedulerBossHistory.Start(clear.Cycle, clear.Date),
+                clear.Date, clear.Date, false, price, party, price?.Meso / party, true) { Manual = true });
+        }
         foreach (var week in records.Where(record => record.Cycle == BossCycle.Weekly).GroupBy(record => record.PeriodStart))
         {
             var excluded = week.OrderByDescending(record => record.Meso ?? -1).ThenBy(record => record.Id, StringComparer.Ordinal)
@@ -113,7 +127,8 @@ public static class BossIncome
                 if (excluded.Contains(records[index].Id)) records[index] = records[index] with { Included = false };
         }
         return new(records.OrderByDescending(record => record.Date).ThenByDescending(record => record.Meso).ToArray(), today,
-            days.FirstOrDefault()?.Date, days.Where(day => day.Final || day.Date == today).Select(day => day.Date).ToHashSet());
+            days.Select(day => day.Date).Concat(records.Select(record => record.Date)).Select(date => (DateOnly?)date).Min(),
+            days.Where(day => day.Final || day.Date == today).Select(day => day.Date).ToHashSet());
     }
     private static int Rank(string difficulty) => difficulty switch { "extreme" => 5, "chaos" => 4, "hard" => 3, "normal" => 2, "easy" => 1, _ => 0 };
 }
