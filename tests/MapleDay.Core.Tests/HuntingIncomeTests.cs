@@ -2,6 +2,38 @@ namespace MapleDay.Core.Tests;
 
 public class HuntingIncomeTests
 {
+    [Fact]
+    public void Bulk_adds_daily_meso_and_fragments_inclusive_and_preserves_existing_by_default()
+    {
+        var daily = new HuntingIncomeRecord("draft", "owner", new(2026, 10, 9), 874000000, 150, 5000000, 280, 100, 300);
+        var old = daily with { Id = "old", Date = new(2026, 10, 8), Meso = 100, FragmentUnitPrice = 10000 };
+        var other = old with { Id = "other", Ocid = "other" };
+        var result = HuntingIncome.Bulk([old, other], daily, new(2026, 10, 7), new(2026, 10, 9), new(2026, 10, 9));
+        Assert.Equal((2, 0, 1), (result.Added, result.Updated, result.Skipped));
+        Assert.Contains(old, result.Records); Assert.Contains(other, result.Records);
+        Assert.Equal(4, result.Records.Select(row => row.Id).Distinct().Count());
+        Assert.Equal(3, result.Records.Count(row => row.Ocid == "owner"));
+        Assert.All(result.Records.Where(row => row.Id is not "old" and not "other"), row => {
+            Assert.Equal(874000000, row.Meso); Assert.Equal(150, row.Fragments);
+            Assert.Equal(5000000, row.FragmentUnitPrice); Assert.Equal(280, row.MesoBonus); Assert.Equal(300, row.Level);
+        });
+        var repeat = HuntingIncome.Bulk(result.Records, daily, new(2026, 10, 7), new(2026, 10, 9), new(2026, 10, 9));
+        Assert.Equal((0, 0, 3), (repeat.Added, repeat.Updated, repeat.Skipped));
+        Assert.Equal(result.Records, repeat.Records);
+    }
+    [Fact]
+    public void Bulk_overwrite_preserves_record_ids_and_cleans_same_day_duplicates()
+    {
+        var daily = new HuntingIncomeRecord("draft", "owner", new(2026, 10, 9), 10, 20, 5000000);
+        var old = daily with { Id = "old", Meso = 200 };
+        var result = HuntingIncome.Bulk([old, old with { Id = "duplicate" }], daily, old.Date, old.Date, old.Date, true);
+        Assert.Equal((0, 1, 0), (result.Added, result.Updated, result.Skipped));
+        Assert.Equal(daily with { Id = "old" }, Assert.Single(result.Records));
+        Assert.Equal(200, old.Meso);
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Bulk([], daily, old.Date.AddDays(1), old.Date, old.Date));
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Bulk([], daily, old.Date, old.Date.AddDays(1), old.Date));
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Bulk([], daily with { Meso = -1 }, old.Date, old.Date, old.Date));
+    }
     [Theory]
     [InlineData(99, 20000000)] [InlineData(100, 40000000)]
     [InlineData(200, 80000000)] [InlineData(204, 80000000)] [InlineData(205, 85000000)]

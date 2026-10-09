@@ -21,6 +21,8 @@ public sealed partial class HuntingIncomeView : UserControl
     private bool _loading;
     private bool _saving;
     private int _marketGeneration;
+    private List<HuntingIncomeRecord>? _bulkUndo;
+    private List<HuntingIncomeRecord>? _bulkApplied;
     private HuntCharacter? Character => CharacterInput.SelectedItem as HuntCharacter;
     private DateOnly Date => DateOnly.FromDateTime((DateInput.Date ?? DateTimeOffset.Now).DateTime);
     private HuntingIncomeRecord? Existing => (_settings?.HuntingIncomeRecords ?? []).FirstOrDefault(row => row.Ocid == Character?.Ocid && row.Date == Date);
@@ -36,6 +38,9 @@ public sealed partial class HuntingIncomeView : UserControl
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         DateInput.MaxDate = new DateTimeOffset(today.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(9));
         DateInput.Date ??= DateInput.MaxDate;
+        BulkStart.MaxDate = BulkEnd.MaxDate = DateInput.MaxDate;
+        BulkStart.Date ??= DateInput.MaxDate.AddDays(-6);
+        BulkEnd.Date ??= DateInput.MaxDate;
         _ready = true; LoadDay(); RefreshRecords(); _ = LoadMarketAsync();
     }
     private void Character_Changed(object sender, SelectionChangedEventArgs args)
@@ -83,16 +88,58 @@ public sealed partial class HuntingIncomeView : UserControl
         }
         catch (Exception error) when (error is ArgumentException or OverflowException)
         { SaveButton.IsEnabled = false; Calculation.Text = "캐릭터와 유효한 금액·수량을 입력해주세요."; }
+        UpdateBulkPreview();
     }
-    private async Task LoadMarketAsync()
+    private HuntingIncome.BulkResult BulkPlan()
+    {
+        if (_settings is null || BulkStart.Date is null || BulkEnd.Date is null) throw new ArgumentException("시작일과 종료일을 선택해주세요.");
+        return HuntingIncome.Bulk(_settings.HuntingIncomeRecords ?? [], Draft(),
+            DateOnly.FromDateTime(BulkStart.Date.Value.DateTime), DateOnly.FromDateTime(BulkEnd.Date.Value.DateTime),
+            SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow), BulkOverwrite.IsChecked == true);
+    }
+    private void BulkDate_Changed(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args) { if (_ready) UpdateBulkPreview(); }
+    private void BulkOverwrite_Changed(object sender, RoutedEventArgs args) { if (_ready) UpdateBulkPreview(); }
+    private void UpdateBulkPreview()
+    {
+        if (!_ready || BulkPreview is null) return;
+        try
+        {
+            var plan = BulkPlan(); var days = plan.Added + plan.Updated;
+            BulkPreview.Text = $"추가 {plan.Added}일 · 수정 {plan.Updated}일 · 기존 기록 유지 {plan.Skipped}일\n입력할 수익 {_display.Format(checked(Draft().Total * days))}";
+            BulkSaveButton.IsEnabled = days > 0 && !_saving;
+        }
+        catch (Exception error) when (error is ArgumentException or OverflowException)
+        { BulkPreview.Text = error is ArgumentException ? "캐릭터·기간과 하루당 메소·조각을 확인해주세요. 기간은 최대 10년입니다." : "금액이나 기간을 줄여주세요."; BulkSaveButton.IsEnabled = false; }
+        if (_bulkApplied is not null && !ReferenceEquals(_settings?.HuntingIncomeRecords, _bulkApplied))
+        { _bulkUndo = _bulkApplied = null; BulkUndoButton.Visibility = Visibility.Collapsed; }
+    }
+    private void BulkSave_Click(object sender, RoutedEventArgs args)
+    {
+        if (_settings is null || _saving) return;
+        try
+        {
+            var plan = BulkPlan(); if (plan.Added + plan.Updated == 0) return;
+            var previous = _settings.HuntingIncomeRecords ?? [];
+            if (Persist(plan.Records.ToList(), Draft(), $"사냥 기록 {plan.Added}일 추가 · {plan.Updated}일 수정 · {plan.Skipped}일 유지했어요."))
+            { _bulkUndo = previous; _bulkApplied = _settings.HuntingIncomeRecords; BulkUndoButton.Visibility = Visibility.Visible; }
+        }
+        catch (Exception error) when (error is ArgumentException or OverflowException) { Status.Text = "기간과 하루당 입력값을 확인해주세요."; }
+    }
+    private void BulkUndo_Click(object sender, RoutedEventArgs args)
+    {
+        if (_settings is not null && !_saving && _bulkUndo is not null && ReferenceEquals(_settings.HuntingIncomeRecords, _bulkApplied))
+            Persist(_bulkUndo, null, "방금 일괄 입력한 기록을 되돌렸어요.");
+    }
+    private async Task LoadMarketAsync(bool refresh = false)
     {
         var generation = ++_marketGeneration; var owner = Character;
         _price = null; MarketApply.IsEnabled = false;
         if (owner is null) return;
         MarketText.Text = "참고 시세 확인 중…";
+        MarketRefresh.IsEnabled = false;
         try
         {
-            var snapshot = await _market.GetAsync();
+            var snapshot = await _market.GetAsync(refresh: refresh);
             if (generation != _marketGeneration) return;
             var region = owner.World.StartsWith("챌린저", StringComparison.Ordinal) ? "challengers" : "normal";
             _price = snapshot.Fragments?.FirstOrDefault(row => row.Region == region && row.PriceMillion is > 0 and < 100);
@@ -100,7 +147,9 @@ public sealed partial class HuntingIncomeView : UserControl
             MarketApply.IsEnabled = _price is not null;
         }
         catch { if (generation == _marketGeneration) MarketText.Text = "시세를 확인하지 못했어요. 가격을 직접 입력할 수 있습니다."; }
+        finally { if (generation == _marketGeneration) MarketRefresh.IsEnabled = true; }
     }
+    private async void MarketRefresh_Click(object sender, RoutedEventArgs args) => await LoadMarketAsync(true);
     private void Market_Click(object sender, RoutedEventArgs args) { if (_price is { } price) FragmentPrice.Value = price.PriceMillion * 100; }
     private void Save_Click(object sender, RoutedEventArgs args)
     {
@@ -114,15 +163,15 @@ public sealed partial class HuntingIncomeView : UserControl
     }
     private void Delete_Click(object sender, RoutedEventArgs args)
     { if (_settings is not null && Existing is { } row) Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Id != row.Id).ToList(), null); }
-    private void Persist(List<HuntingIncomeRecord> records, HuntingIncomeRecord? saved)
+    private bool Persist(List<HuntingIncomeRecord> records, HuntingIncomeRecord? saved, string? successMessage = null)
     {
-        if (_settings is null) return;
+        if (_settings is null) return false;
         var previous = _settings.HuntingIncomeRecords; var bonus = _settings.HuntingMesoBonus; var price = _settings.HuntingFragmentPriceMan;
         _settings.HuntingIncomeRecords = records;
         if (saved is not null) { _settings.HuntingMesoBonus = saved.MesoBonus; _settings.HuntingFragmentPriceMan = (int)(saved.FragmentUnitPrice / 10000); }
-        try { _saving = true; _settings.Save(); RecordsChanged?.Invoke(this, EventArgs.Empty); LoadDay(); RefreshRecords(); Status.Text = saved is null ? "기록을 삭제했어요." : "사냥 기록을 저장했어요."; }
+        try { _saving = true; _settings.Save(); RecordsChanged?.Invoke(this, EventArgs.Empty); LoadDay(); RefreshRecords(); Status.Text = successMessage ?? (saved is null ? "기록을 삭제했어요." : "사냥 기록을 저장했어요."); return true; }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
-        { _settings.HuntingIncomeRecords = previous; _settings.HuntingMesoBonus = bonus; _settings.HuntingFragmentPriceMan = price; Status.Text = "저장하지 못했어요. 저장 공간과 접근 권한을 확인해주세요."; }
+        { _settings.HuntingIncomeRecords = previous; _settings.HuntingMesoBonus = bonus; _settings.HuntingFragmentPriceMan = price; Status.Text = "저장하지 못했어요. 저장 공간과 접근 권한을 확인해주세요."; return false; }
         finally { _saving = false; Calculate(); }
     }
     private void RefreshRecords()

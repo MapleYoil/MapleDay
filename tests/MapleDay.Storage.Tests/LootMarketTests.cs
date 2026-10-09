@@ -34,6 +34,23 @@ public sealed class LootMarketTests
         Assert.Empty(snapshot.ForItem("1113329","챌린저스"));
     }
     [Fact]
+    public async Task Explicit_refresh_reads_repaired_server_cache_without_new_session_or_upstream_request()
+    {
+        var reads = 0; var sessions = 0;
+        using var http = new HttpClient(new Handler(request => {
+            if (request.Method == HttpMethod.Post) { sessions++; return Json($"{{\"token\":\"test\",\"expiresAt\":{DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds()}}}"); }
+            reads++;
+            return Json(reads == 1 ? """{"prices":[],"fragments":[]}""" : """{"prices":[],"fragments":[{"region":"normal","date":"2026-10-09","priceMillion":5}]}""");
+        })) { BaseAddress = new("https://server.morialuluka.com/api/mapleday/") };
+        using var client = new LootMarketClient(http, _ => [1]);
+        Assert.Empty((await client.GetAsync()).Fragments!);
+        Assert.Empty((await client.GetAsync()).Fragments!);
+        Assert.Equal(5, Assert.Single((await client.GetAsync(refresh: true)).Fragments!).PriceMillion);
+        Assert.Equal(2, reads); Assert.Equal(1, sessions);
+        Assert.Equal(5, Assert.Single((await client.GetAsync()).Fragments!).PriceMillion);
+        Assert.Equal(2, reads);
+    }
+    [Fact]
     public async Task Authentication_failure_never_reads_prices()
     {
         var requests=0;

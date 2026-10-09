@@ -33,6 +33,7 @@
             <StackPanel Orientation="Horizontal" Spacing="12">
                 <TextBlock x:Name="MarketText" Text="참고 시세 확인 전" VerticalAlignment="Center" TextWrapping="Wrap" />
                 <Button x:Name="MarketApply" Content="시세 적용" Click="Market_Click" IsEnabled="False" />
+                <Button x:Name="MarketRefresh" Content="시세 새로고침" Click="MarketRefresh_Click" />
             </StackPanel>
         </StackPanel>
         <TextBlock x:Name="Calculation" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" />
@@ -41,6 +42,21 @@
             <Button x:Name="DeleteButton" Content="이 날짜 기록 삭제" Click="Delete_Click" IsEnabled="False" />
         </StackPanel>
         <TextBlock x:Name="Status" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+        <Expander Header="메소 / 조각 기간 일괄 입력" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+            <StackPanel Spacing="12">
+                <TextBlock Text="위에서 선택한 캐릭터의 메소와 조각을 하루당 획득량으로 사용합니다. 시작일과 종료일을 포함한 모든 날짜에 같은 값이 저장됩니다." TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <CalendarDatePicker x:Name="BulkStart" Header="시작일" DateChanged="BulkDate_Changed" />
+                    <CalendarDatePicker x:Name="BulkEnd" Header="종료일" DateChanged="BulkDate_Changed" />
+                </StackPanel>
+                <CheckBox x:Name="BulkOverwrite" Content="기존 날짜의 기록도 입력한 값으로 덮어쓰기" Checked="BulkOverwrite_Changed" Unchecked="BulkOverwrite_Changed" />
+                <TextBlock x:Name="BulkPreview" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="BulkSaveButton" Content="기간 일괄 저장" Style="{StaticResource AccentButtonStyle}" Click="BulkSave_Click" IsEnabled="False" />
+                    <Button x:Name="BulkUndoButton" Content="방금 일괄 입력 취소" Click="BulkUndo_Click" Visibility="Collapsed" />
+                </StackPanel>
+            </StackPanel>
+        </Expander>
         <TextBlock Text="저장된 사냥 기록 · 선택하면 수정" FontWeight="SemiBold" />
         <ListView x:Name="Records" MaxHeight="360" SelectionChanged="Record_Selected" />
     </StackPanel>

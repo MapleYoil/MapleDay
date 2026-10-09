@@ -52,12 +52,12 @@ public sealed class LootMarketClient(HttpClient? http = null, Func<byte[], byte[
             throw new InvalidDataException("시세 인증 응답이 올바르지 않습니다.");
         _session = session.Token; _sessionExpiry = session.ExpiresAt;
     }
-    public async Task<LootMarketSnapshot> GetAsync(CancellationToken token = default)
+    public async Task<LootMarketSnapshot> GetAsync(CancellationToken token = default, bool refresh = false)
     {
         await _gate.WaitAsync(token);
         try
         {
-            if (_cached is not null && DateTimeOffset.UtcNow < _nextCheck) return _cached;
+            if (!refresh && _cached is not null && DateTimeOffset.UtcNow < _nextCheck) return _cached;
             await AuthenticateAsync(token);
             using var request = new HttpRequestMessage(HttpMethod.Get, "market/prices");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _session);
