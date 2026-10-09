@@ -11,7 +11,7 @@ OUT=HERE.parent
 ASSET=ROOT/'src/MapleDay/Assets'
 DATA=json.loads((HERE/'data.json').read_text(encoding='utf-8'))
 CHARS=DATA['Characters']
-W,H,FPS,DURATION=1920,1080,60,15
+W,H,FPS,DURATION=1920,1080,60,12
 BLUE='#377DFF'; INK='#202426'; MUTED='#777C83'; CREAM='#F7F7F4'; LINE='#E5E6E4'
 RESAMPLE=Image.Resampling.LANCZOS
 
@@ -139,7 +139,10 @@ def scheduler_row(entry,boss=False):
     color='#2C4C69'
     if boss:
         if entry['Icon']:paste(im,asset('Scheduler/'+entry['Icon']),17,5)
-        diff={'이지':'easy','노멀':'normal','하드':'hard','카오스':'chaos','익스트림':'extreme'}.get(entry['Difficulty'],'normal')
+        raw=entry['Difficulty'].strip().lower()
+        diff={'이지':'easy','노멀':'normal','하드':'hard','카오스':'chaos','익스트림':'extreme'}.get(raw,raw)
+        if diff not in ('easy','normal','hard','chaos','extreme'):
+            raise ValueError(f"Unknown boss difficulty: {entry['Difficulty']}")
         paste(im,asset('Scheduler/Difficulty/'+diff+'.png'),53,9)
         native_label(im,entry,126,18,True)
         game_text(im,f"{entry.get('PartySize',1)}인",248,18)
@@ -160,8 +163,7 @@ def scheduler_row(entry,boss=False):
     return im
 
 def header(label,quest=False,weekly=False):
-    im=Image.new('RGBA',(352,38));paste(im,ui('main_entity_back_quest' if quest else 'main_entity_back_contents'),0,0)
-    txt(im,(12,18),label,12,600,'white',anchor='lm')
+    im=Image.new('RGBA',(352,38));paste(im,ui('main_entity_back_weekly' if weekly else 'main_entity_back_quest' if quest else 'main_entity_back_contents'),0,0)
     if quest:
         paste(im,ui('main_entity_btStartAll_disabled_0'),207,7);paste(im,ui('main_entity_btCompleteAll_disabled_0'),279,7)
     if weekly:
@@ -252,7 +254,7 @@ def shadowed(name):
         source=source.copy();source.putalpha(ImageChops.multiply(source.getchannel('A'),mask))
     paste(im,source,pad,pad);return im
 
-SCREENS={'characters':characters_page(),'board':scheduler_board(),'income':income_page(),'level':level_page(),'notifications':notifications_page(),'notice':notice_card()}
+SCREENS={'board':scheduler_board(),'income':income_page(),'level':level_page(),'notifications':notifications_page(),'notice':notice_card()}
 
 def ease(t):t=max(0,min(1,t));return t*t*t*(t*(6*t-15)+10)
 def lerp(a,b,t):return a+(b-a)*t
@@ -371,15 +373,15 @@ def scene(index,t):
         txt(im,(960,1007),'MapleYoil  ·  Data based on NEXON Open API',14,400,'#999FA5',anchor='mm')
     return im
 
-# Give the character list and scheduler 2.5 seconds each, with a settled reading beat.
-# Income stays at three seconds; the whole film stays at fifteen seconds.
-STARTS=[0,1,3.5,6,9,11,13.3]
-SPEEDS=[1.85,1.25,1.3,1,1.4,1.4,1.6]
+# Start directly with the scheduler. Both scheduler and income get three seconds.
+SCENES=[2,3,4,5,6]
+STARTS=[0,3,6,8,10]
+SPEEDS=[1.15,1,1.4,1.4,1.6]
 def frame(t):
     i=max(index for index,start in enumerate(STARTS) if t>=start)
-    local=t-STARTS[i];im=scene(i,local*SPEEDS[i])
+    local=t-STARTS[i];im=scene(SCENES[i],local*SPEEDS[i])
     if i>0 and local<.38:
-        previous=scene(i-1,(t-STARTS[i-1])*SPEEDS[i-1]);p=ease(local/.38)
+        previous=scene(SCENES[i-1],(t-STARTS[i-1])*SPEEDS[i-1]);p=ease(local/.38)
         # Spatial continuity plus subtle optical defocus during transitions.
         if .08<p<.92:
             previous=previous.filter(ImageFilter.GaussianBlur(math.sin(p*math.pi)*1.8))
@@ -388,10 +390,11 @@ def frame(t):
 
 def audio():
     from piano import render_score
-    return render_score(DURATION)
+    arrival=3+.15+2.15*.8**(1/1.35)
+    return render_score(DURATION,arrival=arrival)
 
 def storyboard():
-    times=[.85,3.1,5.6,6.65,8.7,10.6,12.9,14.7]
+    times=[1.5,2.7,3.65,5.7,7.5,9.5,10.8,11.7]
     sheet=Image.new('RGB',(1440,4*450),'#ECEDE9')
     for idx,t in enumerate(times):
         shot=frame(t).resize((720,405),RESAMPLE);sheet.paste(shot,((idx%2)*720,(idx//2)*450))
@@ -402,7 +405,7 @@ def storyboard():
     print('Storyboard ready.',flush=True)
 
 def render():
-    music=audio();dest=OUT/'MapleDay-Intro-15s-Piano-1080p60.mp4'
+    music=audio();dest=OUT/f'MapleDay-Intro-{DURATION}s-Piano-1080p60.mp4'
     cmd=['ffmpeg','-hide_banner','-loglevel','warning','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-i',str(music),'-c:v','libx264','-preset','medium','-crf','16','-pix_fmt','yuv420p','-profile:v','high','-level:v','4.2','-c:a','aac','-b:a','256k','-af','highpass=f=40,lowpass=f=3300,equalizer=f=2400:width_type=o:width=1:g=-2,loudnorm=I=-23:TP=-4:LRA=7','-ar','48000','-movflags','+faststart','-t',str(DURATION),str(dest)]
     p=subprocess.Popen(cmd,stdin=subprocess.PIPE)
     try:

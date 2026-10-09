@@ -6,7 +6,7 @@ import tinysoundfont
 
 HERE=Path(__file__).resolve().parents[2]/'artifacts/Promo/source'
 
-def render_score(duration=15):
+def render_score(duration=12,arrival=5.03):
     sr=48000
     synth=tinysoundfont.Synth(samplerate=sr,gain=-8)
     bank=synth.sfload(str(HERE/'GeneralUser-GS.sf2'))
@@ -26,9 +26,9 @@ def render_score(duration=15):
             note(at+2.55,chord[3],1.2,39,0)
     melody=[(.85,66),(1.8,64),(3,61),(4.8,62),(5.9,61),(7,59),(8.8,59),(10,62),(11.1,64),(12.8,61),(14,64),(15.1,62),(16.8,66),(18,64),(19.1,61),(20.8,62),(22,59),(23.6,62)]
     for j,(at,pitch) in enumerate(melody):note(at,pitch,1.6,49+(j%3)*2,1)
-    # Warm resolution at the 1T arrival (about 8.03s in the 15s film).
+    # Resolve as the income counter reaches one trillion.
     for j,pitch in enumerate((38,50,57,62)):
-        note(13.92+j*.045,pitch,2.3,48-j*2,2)
+        note(arrival*26/duration+j*.045,pitch,2.3,48-j*2,2)
     events.sort(key=lambda e:(e[0],e[1]))
     length=int(duration*sr);mix=np.zeros((length,2),np.float32);cursor=0
     for offset,on,channel,pitch,velocity in events:
