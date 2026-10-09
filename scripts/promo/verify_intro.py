@@ -2,9 +2,9 @@
 from PIL import ImageChops
 import render_intro as film
 
-assert film.DURATION == 12 and film.FPS == 60
+assert film.DURATION == 10.5 and film.FPS == 60
 assert film.SCENES == [2, 3, 4, 5, 6]
-assert film.STARTS == [0, 3, 6, 8, 10]
+assert film.STARTS == [0, 1.5, 4.5, 6.5, 8.5]
 assert 'characters' not in film.SCREENS
 # No real nickname may affect any of the composed screens, including moving notices.
 original_names = [character['Name'] for character in film.CHARS]
@@ -43,4 +43,4 @@ except ValueError:
     pass
 else:
     raise AssertionError('An unknown difficulty must not silently become normal.')
-print('Verified: masked nicknames on all screens, every weekly API badge, five bilingual difficulties, no opening/character scenes, 12 seconds at 60 fps.')
+print('Verified: masked nicknames on all screens, every weekly API badge, five bilingual difficulties, 1.5-second scheduler, 3-second income, 10.5 seconds at 60 fps.')

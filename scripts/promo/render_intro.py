@@ -11,7 +11,7 @@ OUT=HERE.parent
 ASSET=ROOT/'src/MapleDay/Assets'
 DATA=json.loads((HERE/'data.json').read_text(encoding='utf-8'))
 CHARS=DATA['Characters']
-W,H,FPS,DURATION=1920,1080,60,12
+W,H,FPS,DURATION=1920,1080,60,10.5
 BLUE='#377DFF'; INK='#202426'; MUTED='#777C83'; CREAM='#F7F7F4'; LINE='#E5E6E4'
 MASKED_NICKNAME='••••••'
 RESAMPLE=Image.Resampling.LANCZOS
@@ -374,10 +374,10 @@ def scene(index,t):
         txt(im,(960,1007),'MapleYoil  ·  Data based on NEXON Open API',14,400,'#999FA5',anchor='mm')
     return im
 
-# Start directly with the scheduler. Both scheduler and income get three seconds.
+# A brief scheduler opening; keep the income count-up at three seconds.
 SCENES=[2,3,4,5,6]
-STARTS=[0,3,6,8,10]
-SPEEDS=[1.15,1,1.4,1.4,1.6]
+STARTS=[0,1.5,4.5,6.5,8.5]
+SPEEDS=[2.3,1,1.4,1.4,1.6]
 def frame(t):
     i=max(index for index,start in enumerate(STARTS) if t>=start)
     local=t-STARTS[i];im=scene(SCENES[i],local*SPEEDS[i])
@@ -390,7 +390,7 @@ def frame(t):
     return im.convert('RGB')
 
 def storyboard():
-    times=[1.5,2.7,3.65,5.7,7.5,9.5,10.8,11.7]
+    times=[.85,1.35,2.15,4.2,6,8,9.3,10.2]
     sheet=Image.new('RGB',(1440,4*450),'#ECEDE9')
     for idx,t in enumerate(times):
         shot=frame(t).resize((720,405),RESAMPLE);sheet.paste(shot,((idx%2)*720,(idx//2)*450))
@@ -405,7 +405,7 @@ def render():
     cmd=['ffmpeg','-hide_banner','-loglevel','warning','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-an','-c:v','libx264','-preset','medium','-crf','16','-pix_fmt','yuv420p','-profile:v','high','-level:v','4.2','-movflags','+faststart','-t',str(DURATION),str(dest)]
     p=subprocess.Popen(cmd,stdin=subprocess.PIPE)
     try:
-        for number in range(FPS*DURATION):
+        for number in range(round(FPS*DURATION)):
             p.stdin.write(frame(number/FPS).tobytes())
             if number%120==0:print(f'Render: {number/FPS:.0f}/{DURATION}s',flush=True)
         p.stdin.close();code=p.wait()
