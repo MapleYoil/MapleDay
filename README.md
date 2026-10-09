@@ -8,7 +8,7 @@ GitHub: [MapleYoil/MapleDay](https://github.com/MapleYoil/MapleDay) · 앱의 �
 
 [![메요일 소개 영상: 주간 보스 스케줄러, 결정·물욕템 1조 수익 집계, 경험치 그래프, 알림](docs/media/mapleday-intro-preview.gif)](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4)
 
-[12초 피아노 영상 보기](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4) · [1080p / 60fps 원본 다운로드](docs/media/mapleday-intro.mp4) · [설치 프로그램 받기](https://github.com/MapleYoil/MapleDay/releases/latest)
+[12초 무음 영상 보기](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4) · [1080p / 60fps MP4 다운로드](docs/media/mapleday-intro.mp4) · [GIF 다운로드](docs/media/mapleday-intro.gif) · [설치 프로그램 받기](https://github.com/MapleYoil/MapleDay/releases/latest)
 
 미리보기는 소리 없이 반복 재생됩니다. 영상은 테스트 API의 캐릭터·스케줄러·경험치 데이터와 앱 에셋으로 구성했으며, 수익 장면은 결정 가격 상위 주간 보스 12종의 결정 수익과 참고 시세가 확인된 물욕템의 예시 수령액으로 정확히 1조를 구성한 3초 시연입니다. 스케줄러에는 API 난이도와 파티 인원을 표시합니다.
 

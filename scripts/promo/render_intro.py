@@ -388,11 +388,6 @@ def frame(t):
         im=Image.blend(previous,im,p)
     return im.convert('RGB')
 
-def audio():
-    from piano import render_score
-    arrival=3+.15+2.15*.8**(1/1.35)
-    return render_score(DURATION,arrival=arrival)
-
 def storyboard():
     times=[1.5,2.7,3.65,5.7,7.5,9.5,10.8,11.7]
     sheet=Image.new('RGB',(1440,4*450),'#ECEDE9')
@@ -405,8 +400,8 @@ def storyboard():
     print('Storyboard ready.',flush=True)
 
 def render():
-    music=audio();dest=OUT/f'MapleDay-Intro-{DURATION}s-Piano-1080p60.mp4'
-    cmd=['ffmpeg','-hide_banner','-loglevel','warning','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-i',str(music),'-c:v','libx264','-preset','medium','-crf','16','-pix_fmt','yuv420p','-profile:v','high','-level:v','4.2','-c:a','aac','-b:a','256k','-af','highpass=f=40,lowpass=f=3300,equalizer=f=2400:width_type=o:width=1:g=-2,loudnorm=I=-23:TP=-4:LRA=7','-ar','48000','-movflags','+faststart','-t',str(DURATION),str(dest)]
+    dest=OUT/f'MapleDay-Intro-{DURATION}s-1080p60.mp4'
+    cmd=['ffmpeg','-hide_banner','-loglevel','warning','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-an','-c:v','libx264','-preset','medium','-crf','16','-pix_fmt','yuv420p','-profile:v','high','-level:v','4.2','-movflags','+faststart','-t',str(DURATION),str(dest)]
     p=subprocess.Popen(cmd,stdin=subprocess.PIPE)
     try:
         for number in range(FPS*DURATION):
