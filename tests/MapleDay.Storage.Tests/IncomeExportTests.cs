@@ -10,6 +10,69 @@ namespace MapleDay.Storage.Tests;
 
 public sealed class IncomeExportTests
 {
+    [Theory]
+    [InlineData(2, 1, 5)]
+    [InlineData(20, 5, 2.5)]
+    [InlineData(600, 600, 10)]
+    [InlineData(3, 9, 10)]
+    public void Selected_duration_maps_to_the_complete_replay(double duration, double elapsed, double expected)
+        => Assert.Equal(expected, IncomeReplayExport.ReplayTime(elapsed, duration));
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Result_images_are_lossless_final_frames(bool webp)
+    {
+        var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
+        var output = Path.Combine(Root, "artifacts", "build", "replay-preview"); Directory.CreateDirectory(output);
+        var destination = Path.Combine(output, webp ? "result.webp" : "result.png");
+        await IncomeReplayExport.ExportImageAsync(Replay, new("both"), "전체 캐릭터", assets, destination, webp);
+        using var decoded = SkiaSharp.SKBitmap.Decode(destination);
+        Assert.Equal(1920, decoded.Width); Assert.Equal(1080, decoded.Height);
+        var bytes = new byte[1920 * 1080 * 4]; System.Runtime.InteropServices.Marshal.Copy(decoded.GetPixels(), bytes, 0, bytes.Length);
+        using var renderer = new IncomeReplayRenderer(Replay, new("both"), "전체 캐릭터", assets);
+        Assert.Equal(renderer.RenderPixels(10), bytes);
+        var originalFile = await File.ReadAllBytesAsync(destination);
+        using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => IncomeReplayExport.ExportImageAsync(Replay, new(), "", assets, destination, webp, cancellation.Token));
+        Assert.Equal(originalFile, await File.ReadAllBytesAsync(destination));
+        Assert.Empty(Directory.GetFiles(output, ".mapleday-export-*." + (webp ? "webp" : "png")));
+    }
+    [Fact]
+    public void Dense_replay_records_render_timings_for_preview_and_export()
+    {
+        if (Environment.GetEnvironmentVariable("MAPLEDAY_REPLAY_BENCHMARK") != "1") return;
+        var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
+        var replay = new IncomeReplay(Enumerable.Range(0, 100).Select(i =>
+            new ReplayClear(new(2026, 10, 1), new[] { "스우", "루시드", "진 힐라", "발드릭스" }[i % 4], 50_000_000_000)));
+        var measurements = new List<object>();
+        foreach (var width in new[] { 1280, 1920 })
+        {
+            using var renderer = new IncomeReplayRenderer(replay, new("both"), "전체 캐릭터", assets);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var buffer = new byte[width * width * 9 / 16 * 4];
+            for (var frame = 0; frame < 120; frame++)
+                renderer.RenderPixels(frame / 119d * 10, width, width * 9 / 16, buffer: buffer);
+            measurements.Add(new { width, elapsedMs = watch.Elapsed.TotalMilliseconds, frameMs = watch.Elapsed.TotalMilliseconds / 120 });
+        }
+        var output = Path.Combine(Root, "artifacts", "build", "replay-preview"); Directory.CreateDirectory(output);
+        File.WriteAllText(Path.Combine(output, "benchmark-" + (Environment.GetEnvironmentVariable("MAPLEDAY_BENCHMARK_LABEL") ?? "latest") + ".json"),
+            System.Text.Json.JsonSerializer.Serialize(measurements));
+    }
+    [Fact]
+    public void Hunting_replay_drops_each_fragment_and_only_earned_meso_coins()
+    {
+        var assets = Path.Combine(Root, "src", "MapleDay", "Assets");
+        var replay = HuntingIncome.Replay([
+            new("hunt-1", "owner", new(2026, 10, 8), 874_000_000, 15, 5_000_000),
+            new("hunt-2", "owner", new(2026, 10, 9), 874_000_000, 15, 5_000_000)
+        ], _ => "사냥 캐릭터");
+        using var rain = new IncomeMesoRain(replay, assets);
+        Assert.Equal(30, rain.LootDropCount);
+        Assert.Equal(1, rain.GoldDropCount);
+        Assert.Equal(1_000_000_000, rain.RepresentedMeso);
+        using var renderer = new IncomeReplayRenderer(replay, new("both"), "사냥 기록", assets);
+        Assert.Equal(1280 * 720 * 4, renderer.RenderPixels(10, 1280, 720).Length);
+    }
     [Fact]
     public void Loot_settlements_drop_all_actual_items_without_generating_meso_coins()
     {

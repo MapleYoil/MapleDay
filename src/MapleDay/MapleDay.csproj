@@ -4,7 +4,7 @@
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>MapleDay</RootNamespace>
-    <Version>1.1.6.0</Version>
+    <Version>1.1.7.0</Version>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\Branding\mapleday.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
@@ -38,6 +38,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.9169" />
     <ProjectReference Include="..\MapleDay.Core\MapleDay.Core.csproj" />
     <ProjectReference Include="..\MapleDay.Web\MapleDay.Web.csproj" />
@@ -58,11 +59,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Assets\BossLoot\*.png;Assets\BossLoot\manifest.json">
+    <Content Include="Assets\BossLoot\*.png;Assets\BossLoot\manifest.json;Assets\Hunting\*.png;Assets\Hunting\manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Assets\Fonts\*.ttf;Assets\Fonts\LICENSE.txt">
+    <Content Include="Assets\Fonts\*.ttf;Assets\Fonts\LICENSE.txt;Assets\Licenses\*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

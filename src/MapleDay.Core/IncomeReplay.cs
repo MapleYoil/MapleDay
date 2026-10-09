@@ -1,6 +1,6 @@
 namespace MapleDay.Core;
 
-public sealed record ReplayLoot(string Name, long Meso, string Icon);
+public sealed record ReplayLoot(string Name, long Meso, string Icon, int Count = 1);
 public sealed record ReplayClear(DateOnly Date, string Boss, long Meso, IReadOnlyList<ReplayLoot>? Loot = null, int KillCount = 1);
 public sealed record ReplayBoss(string Name, int Count, long Meso);
 public sealed record ReplayLootTotal(string Name, long Meso, string Icon, int Count);
@@ -9,6 +9,7 @@ public sealed record ReplayFrame(DateOnly? Date, long Total, int Count, IReadOnl
 
 public sealed class IncomeReplay
 {
+    public string Category { get; init; } = "boss";
     public static string CompactMeso(long meso)
     {
         var (divisor, unit, format) = meso >= 1_000_000_000_000 ? (1_000_000_000_000m, "조", "0.##")
@@ -76,7 +77,7 @@ public sealed class IncomeReplay
             {
                 var key = (item.Name, item.Icon);
                 collected.TryGetValue(key, out var value);
-                collected[key] = (value.Meso + (long)(item.Meso * portion), value.Count + 1);
+                collected[key] = (value.Meso + (long)(item.Meso * portion), value.Count + item.Count);
             }
         }
         return new(active?.Date, total, kills,

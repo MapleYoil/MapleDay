@@ -4,11 +4,11 @@ WinUI 3 기반 메이플스토리 유틸리티입니다.
 
 GitHub: [MapleYoil/MapleDay](https://github.com/MapleYoil/MapleDay) · 앱의 설정에서도 저장소 주소를 열 수 있습니다.
 
-## 10.5초로 보는 메요일
+## 13.5초로 보는 메요일
 
-[![메요일 소개 영상: 주간 보스 스케줄러, 결정·물욕템 1조 수익 집계, 경험치 그래프, 알림](docs/media/mapleday-intro-preview.gif)](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4)
+[![메요일 소개 영상: 결정·물욕템 1.28조와 1,000시간 사냥 집계, 주간 보스 스케줄러, 경험치 그래프, 알림](docs/media/mapleday-intro-preview.gif)](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4)
 
-[10.5초 무음 영상 보기](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4) · [1080p / 60fps MP4 다운로드](docs/media/mapleday-intro.mp4) · [GIF 다운로드](docs/media/mapleday-intro.gif) · [설치 프로그램 받기](https://github.com/MapleYoil/MapleDay/releases/latest)
+[13.5초 무음 영상 보기](https://raw.githubusercontent.com/MapleYoil/MapleDay/main/docs/media/mapleday-intro.mp4) · [1080p / 60fps MP4 다운로드](docs/media/mapleday-intro.mp4) · [GIF 다운로드](docs/media/mapleday-intro.gif) · [설치 프로그램 받기](https://github.com/MapleYoil/MapleDay/releases/latest)
 
 미리보기는 소리 없이 반복 재생됩니다. 영상은 테스트 API의 캐릭터·스케줄러·경험치 데이터와 앱 에셋으로 구성했으며, 수익 장면은 결정 가격 상위 주간 보스 12종의 결정 수익과 참고 시세가 확인된 물욕템의 예시 수령액으로 정확히 1조를 구성한 3초 시연입니다. 스케줄러에는 API 난이도와 파티 인원을 표시합니다.
 
@@ -35,7 +35,11 @@ GitHub: [MapleYoil/MapleDay](https://github.com/MapleYoil/MapleDay) · 앱의 �
 
 **물욕템 획득 기록**은 날짜 아래 잡은 보스의 **물욕템 기록 / 물욕템 수정**에서 추가·수정·삭제합니다. 해당 처치 기록의 보스와 난이도로 고정하고 그 난이도의 보상만 표시합니다. 같은 보스에 여러 아이템을 남길 수 있으며 정산 날짜가 나중이어도 처치 기록과 연결을 유지합니다. 아이템을 선택해 균등 분배 또는 비율 분배(예: 2:1:1과 내 순번)로 기록하거나, 실제 수령액만 바로 입력합니다. 기록을 수정·삭제할 수 있으며 내 수령액을 주간·월간·누적 수익과 캘린더에 합산합니다. 정산 전에는 0으로 남기고 나중에 수정할 수 있습니다. [공식 보스 보상 가이드](https://maplestory.nexon.com/guide/n23gameinformation/articles/459)에 나온 선택한 아이템 54종의 이름·아이콘을 로컬 게임의 String/Character/Item 리소스에서 추출했습니다. 출처 경로·크기·SHA-256은 `src/MapleDay/Assets/BossLoot/manifest.json`에 보관하고, 보스별 목록은 `src/MapleDay.Core/BossLootItems.json`에 있습니다. 선택한 난이도의 공식 보상만 아이템 목록에 표시하며 로이드·태초의 정수·루인 포스실드·저주받은 카이세리움·앱솔랩스·아케인셰이드는 제외합니다. 난이도별 표는 `src/MapleDay.Core/BossLootDifficulty.json`에 보관합니다. 소울 에테르 1~4단계도 [공식 소울웨폰 가이드](https://maplestory.nexon.com/guide/n23gameinformation/articles/416)에 따라 보스·난이도별로 표시합니다. 반지 상자에서 얻은 컨티뉴어스 링·리스트레인트 링 **4레벨**도 기록합니다. 1~3레벨만 나오는 녹옥 상자의 보스·난이도는 제외하고, 홍옥·흑옥·백옥·생명 상자를 주는 보스·난이도에서만 선택할 수 있습니다. [공식 상자 확률](https://maplestory.nexon.com/Guide/OtherProbability/bossRingBox/ringBoxRedJade)을 기준으로 구분합니다. 웹 조회에도 예상 수익·물욕템·분배 내역을 표시합니다. 집계 영상은 확정된 주간 결정 수익과 물욕템 수령액을 함께 재생합니다.
 
-**수익 집계 재생**은 저장된 확정 주간 보스 수익을 날짜 순으로 10초 동안 재생합니다. 왼쪽 누적 금액과 오른쪽 보스별 처치 수가 증가하고 보스 목록은 당시의 누적 수익 순으로 부드럽게 이동합니다. 장면 전환은 없습니다. MP4는 1920×1080/60fps, GIF는 1280×720/25fps로 저장할 수 있습니다. Windows 기본 영상 인코더를 사용하며 별도 인코더 설치가 필요하지 않습니다. 월간·일일 결정, 가격 미확인·추정 기록과 주간 상한에서 제외된 기록은 이 주간 집계 재생에 포함하지 않습니다.
+수익 메뉴는 **전체·보스·사냥** 탭으로 구성됩니다. 전체 탭에서는 보스와 사냥의 이번 주·이번 달·누적 수익을 합산하고 각 항목의 금액도 표시합니다. 사냥은 날짜별 메소와 솔 에르다 조각을 기록하며 같은 캐릭터·날짜를 다시 저장하면 수정합니다. 메소 제한 사용량(%)과 추가 메소 획득량(기본 0%)으로 자동 계산할 수 있습니다. 추가 획득량 100%는 기본 메소의 2배입니다. 기본 제한은 [공식 안내](https://maplestory.nexon.com/news/update/737?page=6)의 레벨별 기준을 사용합니다.
+
+조각 참고 시세는 서버의 하루 한 번 갱신에 포함되고, 서버 응답은 100만 메소 단위로 내립니다. 직접 입력은 1만~9999만 메소, 1만 단위입니다. 사냥 기록도 집계 재생과 MP4·GIF·PNG·WEBP 내보내기를 지원합니다. 사냥 기록에는 당시 가격·획득률·레벨을 저장해 이후 시세나 설정 변경으로 과거 수익이 바뀌지 않습니다.
+
+**수익 집계 재생**은 저장된 확정 주간 보스 수익을 날짜 순으로 재생합니다. 기본 10초이며 1~600초로 설정할 수 있습니다. 왼쪽 누적 금액과 오른쪽 보스별 처치 수가 증가하고 보스 목록은 당시의 누적 수익 순으로 부드럽게 이동합니다. 장면 전환은 없습니다. MP4는 1920×1080/60fps, GIF는 1280×720/25fps로 저장할 수 있습니다. 최종 결과만 보거나 PNG·WEBP(1920×1080)로 저장할 수도 있습니다. Windows 기본 영상 인코더를 사용하며 별도 인코더 설치가 필요하지 않습니다. 월간·일일 결정, 가격 미확인·추정 기록과 주간 상한에서 제외된 기록은 이 주간 집계 재생에 포함하지 않습니다.
 
 집계 금액에 따라 메이플 원본 메소 이미지가 회전하며 떨어지고 바닥에 쌓입니다. 누적 금액이 1억 증가할 때마다 동색 메소를 떨어뜨리며, 10억 경계에서는 금색 메소, 100억 경계에서는 지폐다발, 1000억 경계에서는 주머니를 사용합니다. 종류별 금액 안내는 재생 화면에 표시하지 않습니다. 1억 미만 잔액은 다음 기록으로 넘기고 미리보기와 MP4·GIF에 같은 효과가 적용되며 현금 표시에서도 원래 메소 금액을 기준으로 쌓입니다. 원본 이미지와 회전 프레임은 `Item/Special/0900.img`에서 추출했으며 경로·크기·해시는 `Assets/IncomeReplay/Meso/manifest.json`에 기록합니다.
 

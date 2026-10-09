@@ -11,7 +11,7 @@ OUT=HERE.parent
 ASSET=ROOT/'src/MapleDay/Assets'
 DATA=json.loads((HERE/'data.json').read_text(encoding='utf-8'))
 CHARS=DATA['Characters']
-W,H,FPS,DURATION=1920,1080,60,10.5
+W,H,FPS,DURATION=1920,1080,60,13.5
 BLUE='#377DFF'; INK='#202426'; MUTED='#777C83'; CREAM='#F7F7F4'; LINE='#E5E6E4'
 MASKED_NICKNAME='••••••'
 RESAMPLE=Image.Resampling.LANCZOS
@@ -274,18 +274,18 @@ def floating(im,name,x,y,scale=1,alpha=1):
     paste(im,src,x-78*scale,y-78*scale)
 
 @lru_cache(maxsize=8)
-def income_plate(index):return Image.open(HERE/'income-replay-frames'/f'{index:03d}.png').convert('RGBA')
+def income_plate(index,hunting=False):return Image.open(HERE/('hunting-replay-frames' if hunting else 'income-replay-frames')/f'{index:03d}.png').convert('RGBA')
 
 @lru_cache(None)
-def income_timeline():return json.loads((HERE/'income-replay-timeline.json').read_text(encoding='utf-8'))
+def income_timeline(hunting=False):return json.loads((HERE/('hunting-replay-timeline.json' if hunting else 'income-replay-timeline.json')).read_text(encoding='utf-8'))
 
-def income_hero(t):
+def income_hero(t,hunting=False):
     # Give the count-up, falling sprites, and the final settled heap distinct readable beats.
     phase=max(0,min(1,(t-.15)/2.15))
     clock=10*phase**1.35
     index=round(clock/10*420)
-    im=income_plate(index).copy()
-    total=income_timeline()[index]['Total']
+    im=income_plate(index,hunting).copy()
+    total=income_timeline(hunting)[index]['Total']
     arrival=.15+2.15*.8**(1/1.35)
     q=max(0,t-arrival)
     pulse=math.sin(min(1,q/.65)*math.pi)*math.exp(-q*.7) if q>0 else 0
@@ -365,6 +365,8 @@ def scene(index,t):
         type_block(im,140,374,['잊기 전에,','알려줘요.'],t,size=74)
         q=ease(t/.9);floating(im,'notifications',lerp(850,785,q),lerp(198,168,q),.85,q)
         p=ease((t-.55)/.8);floating(im,'notice',lerp(968,863,p),lerp(804,758,p),1.04,p)
+    elif index==7:
+        return income_hero(t,True)
     else:
         q=ease(t/1.0);logo=asset('Branding/logo.png').resize((220,220),RESAMPLE);paste(im,logo,850,181+(1-q)*28)
         txt(im,(960,487),'메요일',116,760,anchor='mm')
@@ -374,10 +376,10 @@ def scene(index,t):
         txt(im,(960,1007),'MapleYoil  ·  Data based on NEXON Open API',14,400,'#999FA5',anchor='mm')
     return im
 
-# A brief scheduler opening; keep the income count-up at three seconds.
-SCENES=[2,3,4,5,6]
-STARTS=[0,1.5,4.5,6.5,8.5]
-SPEEDS=[2.3,1,1.4,1.4,1.6]
+# Open with the falling loot and income count-up, followed by a brief scheduler.
+SCENES=[3,7,2,4,5,6]
+STARTS=[0,3,6,7.5,9.5,11.5]
+SPEEDS=[1,1,2.3,1.4,1.4,1.6]
 def frame(t):
     i=max(index for index,start in enumerate(STARTS) if t>=start)
     local=t-STARTS[i];im=scene(SCENES[i],local*SPEEDS[i])
@@ -390,7 +392,7 @@ def frame(t):
     return im.convert('RGB')
 
 def storyboard():
-    times=[.85,1.35,2.15,4.2,6,8,9.3,10.2]
+    times=[.85,2.7,3.85,5.7,6.9,9,11,13.2]
     sheet=Image.new('RGB',(1440,4*450),'#ECEDE9')
     for idx,t in enumerate(times):
         shot=frame(t).resize((720,405),RESAMPLE);sheet.paste(shot,((idx%2)*720,(idx//2)*450))

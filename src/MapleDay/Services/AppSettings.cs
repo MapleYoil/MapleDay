@@ -34,6 +34,9 @@ public sealed class AppSettings
     public List<ManualWeeklyClear> ManualWeeklyClears { get; set; } = [];
     public List<BossClearChange> BossClearChanges { get; set; } = [];
     public List<BossLootRecord> BossLootRecords { get; set; } = [];
+    public List<HuntingIncomeRecord> HuntingIncomeRecords { get; set; } = [];
+    public decimal HuntingMesoBonus { get; set; }
+    public int HuntingFragmentPriceMan { get; set; } = 1;
     public bool RemindersEnabled { get; set; } = true;
     public bool RemindOnStartup { get; set; }
     public bool UnionQuestReminderEnabled { get; set; }

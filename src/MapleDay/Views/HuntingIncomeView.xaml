@@ -1,0 +1,47 @@
+<UserControl x:Class="MapleDay.Views.HuntingIncomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Spacing="12">
+        <TextBlock Text="사냥 수익 기록" FontSize="20" FontWeight="SemiBold" />
+        <Button Content="사냥 집계 재생 · 영상 / 이미지 내보내기" Click="Replay_Click" HorizontalAlignment="Left" />
+        <StackPanel Orientation="Horizontal" Spacing="12">
+            <ComboBox x:Name="CharacterInput" Header="캐릭터" DisplayMemberPath="Label" MinWidth="210" SelectionChanged="Character_Changed" />
+            <CalendarDatePicker x:Name="DateInput" Header="기록 날짜" DateChanged="Date_Changed" />
+        </StackPanel>
+        <TextBlock Text="날짜별 총 획득량을 입력하세요. 같은 캐릭터·날짜를 저장하면 기존 기록을 수정합니다." TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+        <Pivot x:Name="InputTabs" SelectionChanged="InputTab_Changed">
+            <PivotItem Header="메소 입력" />
+            <PivotItem Header="솔 에르다 조각 입력" />
+        </Pivot>
+        <StackPanel x:Name="MesoInputs" Spacing="10">
+            <NumberBox x:Name="MesoInput" Header="실제 획득 메소" Value="0" Minimum="0" Maximum="1000000000000000" ValueChanged="Input_Changed" />
+            <CheckBox x:Name="UseLimit" Content="메소 제한 사용량으로 자동 계산" Checked="Limit_Changed" Unchecked="Limit_Changed" />
+            <StackPanel x:Name="LimitInputs" Spacing="10" Visibility="Collapsed">
+                <TextBlock x:Name="LimitText" Style="{StaticResource SecondaryText}" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <NumberBox x:Name="LimitPercent" Header="메소 제한 사용량 (%)" Value="0" Minimum="0" Maximum="100" Width="210" ValueChanged="Input_Changed" />
+                    <NumberBox x:Name="BonusInput" Header="추가 메소 획득량 (%)" Value="0" Minimum="0" Maximum="10000" Width="210" ValueChanged="Input_Changed" />
+                </StackPanel>
+                <TextBlock Text="0%는 기본 메소, 100%는 기본 메소의 2배입니다. 레벨에 따른 기본 제한으로 계산합니다." TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel x:Name="FragmentInputs" Spacing="10" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <NumberBox x:Name="FragmentCount" Header="획득 조각 (개)" Value="0" Minimum="0" Maximum="1000000" Width="210" ValueChanged="Input_Changed" />
+                <NumberBox x:Name="FragmentPrice" Header="조각 1개 가격 (만 메소)" Value="1" Minimum="1" Maximum="9999" SmallChange="1" SpinButtonPlacementMode="Compact" Width="230" ValueChanged="Input_Changed" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock x:Name="MarketText" Text="참고 시세 확인 전" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <Button x:Name="MarketApply" Content="시세 적용" Click="Market_Click" IsEnabled="False" />
+            </StackPanel>
+        </StackPanel>
+        <TextBlock x:Name="Calculation" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button x:Name="SaveButton" Content="기록 저장" Click="Save_Click" Style="{StaticResource AccentButtonStyle}" />
+            <Button x:Name="DeleteButton" Content="이 날짜 기록 삭제" Click="Delete_Click" IsEnabled="False" />
+        </StackPanel>
+        <TextBlock x:Name="Status" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+        <TextBlock Text="저장된 사냥 기록 · 선택하면 수정" FontWeight="SemiBold" />
+        <ListView x:Name="Records" MaxHeight="360" SelectionChanged="Record_Selected" />
+    </StackPanel>
+</UserControl>

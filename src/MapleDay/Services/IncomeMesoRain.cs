@@ -1,6 +1,8 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using MapleDay.Core;
+using SkiaSharp;
+using System.Runtime.InteropServices;
 
 namespace MapleDay.Services;
 
@@ -8,10 +10,10 @@ namespace MapleDay.Services;
 public sealed class IncomeMesoRain : IDisposable
 {
     public const long GoldUnit = 1_000_000_000;
-    private readonly List<Image[]> _images = [];
+    private readonly List<SKBitmap[]> _images = [];
     private readonly List<Drop> _drops = [];
-    private readonly Bitmap _pile = new(1280, 160);
-    private readonly Graphics _pileGraphics;
+    private readonly SKBitmap _pile = new(new SKImageInfo(1280, 160, SKColorType.Bgra8888, SKAlphaType.Premul));
+    private readonly SKCanvas _pileGraphics;
     private int _bakedThrough;
     private double _lastDraw = -1;
     private sealed record Drop(int Kind, double Birth, float X, float Y, float Size, float StartX, float Rotation, float Spin);
@@ -22,25 +24,25 @@ public sealed class IncomeMesoRain : IDisposable
 
     public IncomeMesoRain(IncomeReplay replay, string assets)
     {
-        _pileGraphics = Graphics.FromImage(_pile);
-        _pileGraphics.CompositingQuality = CompositingQuality.HighSpeed;
-        _pileGraphics.TranslateTransform(0, -560);
+        _pile.Erase(SKColors.Transparent);
+        _pileGraphics = new SKCanvas(_pile);
+        _pileGraphics.Translate(0, -560);
         _images.Add(Enumerable.Range(0, 4)
-            .Select(frame => Image.FromFile(Path.Combine(assets, "IncomeReplay", "Meso", $"gold-{frame}.png"))).ToArray());
+            .Select(frame => SKBitmap.Decode(Path.Combine(assets, "IncomeReplay", "Meso", $"gold-{frame}.png"))).ToArray());
         var lootKinds = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var item in replay.Clears.SelectMany(clear => clear.Loot ?? []).DistinctBy(item => item.Icon))
         {
             if (string.IsNullOrEmpty(item.Icon)) continue;
             var path = Path.Combine(assets, item.Icon.Replace('/', Path.DirectorySeparatorChar));
             if (!File.Exists(path)) continue;
-            lootKinds[item.Icon] = _images.Count; _images.Add([Image.FromFile(path)]);
+            lootKinds[item.Icon] = _images.Count; _images.Add([SKBitmap.Decode(path)]);
         }
         var random = new Random(731);
         const int columns = 42;
         // Every 1 billion crystal mesos becomes a gold coin; every reward uses its own icon.
         long CrystalMeso(ReplayClear clear) => Math.Max(0, clear.Meso - (clear.Loot?.Sum(item => item.Meso) ?? 0));
         var units = replay.Clears.Sum(CrystalMeso) / GoldUnit;
-        var lootCount = replay.Clears.Sum(clear => clear.Loot?.Count ?? 0);
+        var lootCount = replay.Clears.Sum(clear => clear.Loot?.Sum(item => Math.Max(0, item.Count)) ?? 0);
         var visibleLimit = units + lootCount;
         var layerStep = (float)Math.Min(17, 92d / Math.Max(1, Math.Ceiling(visibleLimit / (double)columns)));
         var landingSlots = new List<int>();
@@ -74,28 +76,38 @@ public sealed class IncomeMesoRain : IDisposable
             if (clear.Loot is { Count: > 0 } loot)
                 for (var reward = 0; reward < loot.Count; reward++)
                     if (lootKinds.TryGetValue(loot[reward].Icon, out var kind))
-                        AddDrop(kind, .5 + (IncomeReplayRenderer.Duration - 2.5) * (i + .15 + .7 * reward / loot.Count) / replay.Clears.Count, 43f);
+                        for (var copy = 0; copy < loot[reward].Count; copy++)
+                            AddDrop(kind, .5 + (IncomeReplayRenderer.Duration - 2.5) * (i + .1 + .8 * (reward + (copy + 1d) / Math.Max(1, loot[reward].Count)) / loot.Count) / replay.Clears.Count,
+                                replay.Category == "hunting" ? 20f : 43f);
         }
         _drops.Sort((a, b) => a.Birth.CompareTo(b.Birth));
     }
 
     public void Draw(Graphics graphics, double seconds)
     {
-        if (seconds < _lastDraw) { _pileGraphics.Clear(Color.Transparent); _bakedThrough = 0; }
+        using var surface = new SKBitmap(new SKImageInfo(1280, 720, SKColorType.Bgra8888, SKAlphaType.Unpremul));
+        surface.Erase(SKColors.Transparent);
+        using (var canvas = new SKCanvas(surface)) Draw(canvas, seconds);
+        using var bitmap = new Bitmap(1280, 720, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var data = bitmap.LockBits(new(0, 0, 1280, 720), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        try { var bytes = new byte[1280 * 720 * 4]; Marshal.Copy(surface.GetPixels(), bytes, 0, bytes.Length); Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); }
+        finally { bitmap.UnlockBits(data); }
+        graphics.DrawImageUnscaled(bitmap, 0, 0);
+    }
+    internal void Draw(ReplayGraphics graphics, double seconds) => Draw(graphics.Canvas, seconds);
+    private void Draw(SKCanvas graphics, double seconds)
+    {
+        if (seconds < _lastDraw) { _pileGraphics.Clear(SKColors.Transparent); _bakedThrough = 0; }
         _lastDraw = seconds;
         var end = UpperBound(seconds);
         // The settled heap is painted once. It no longer needs hundreds of transforms every frame.
         while (_bakedThrough < end && seconds - _drops[_bakedThrough].Birth >= 1.5)
             DrawDrop(_pileGraphics, _drops[_bakedThrough++], 1.5, true);
-        var pileState = graphics.Save();
-        graphics.CompositingQuality = CompositingQuality.HighSpeed;
-        graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-        graphics.DrawImage(_pile, new Rectangle(0, 560, 1280, 160));
-        graphics.Restore(pileState);
+        graphics.DrawBitmap(_pile, new SKRect(0, 560, 1280, 720));
         for (var i = _bakedThrough; i < end; i++)
             DrawDrop(graphics, _drops[i], seconds - _drops[i].Birth);
     }
-    private void DrawDrop(Graphics graphics, Drop drop, double age, bool settled = false)
+    private void DrawDrop(SKCanvas graphics, Drop drop, double age, bool settled = false)
     {
         const double startY = -60, velocity = 130, gravity = 1900;
         var landing = (-velocity + Math.Sqrt(velocity * velocity + 2 * gravity * (drop.Y - startY))) / gravity;
@@ -108,13 +120,10 @@ public sealed class IncomeMesoRain : IDisposable
         var frame = flying ? (int)(age * 9) % _images[drop.Kind].Length : 0;
         var image = _images[drop.Kind][frame];
         var state = graphics.Save();
-        graphics.TranslateTransform((float)x, (float)y); graphics.RotateTransform((float)angle);
-        graphics.CompositingQuality = CompositingQuality.HighSpeed;
-        graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-        graphics.PixelOffsetMode = PixelOffsetMode.Half;
+        graphics.Translate((float)x, (float)y); graphics.RotateDegrees((float)angle);
         var scale = drop.Size / Math.Max(_images[drop.Kind][0].Width, _images[drop.Kind][0].Height);
-        graphics.DrawImage(image, -image.Width * scale / 2, -image.Height * scale / 2, image.Width * scale, image.Height * scale);
-        graphics.Restore(state);
+        graphics.DrawBitmap(image, new SKRect(-image.Width * scale / 2, -image.Height * scale / 2, image.Width * scale / 2, image.Height * scale / 2));
+        graphics.RestoreToCount(state);
     }
     private int UpperBound(double seconds)
     {

@@ -475,8 +475,9 @@
             <StackPanel Padding="24,24,24,20" Spacing="16">
                 <StackPanel Spacing="6">
                     <TextBlock Text="수익" FontSize="28" FontWeight="SemiBold" />
-                    <TextBlock Text="스케줄러에 등록한 캐릭터의 예상 결정 수익과 날짜별 보스 기록을 확인하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                    <TextBlock Text="보스와 사냥 수익을 따로 보거나 전체 수익으로 합산하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                 </StackPanel>
+                <Pivot x:Name="IncomeTabs" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /></Pivot>
                 <StackPanel x:Name="IncomeLogin" Spacing="8">
                     <TextBlock Text="API 키를 연결하면 저장된 보스 기록과 수익을 볼 수 있어요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     <Button Content="API 키 연결하기" Click="OpenKeyPageButton_Click" />
@@ -488,7 +489,7 @@
                         <Button x:Name="IncomeRefreshButton" Content="새로고침" Click="SchedulerRefreshButton_Click" IsEnabled="False" />
                         <Button x:Name="IncomeCancelButton" Content="중단" Click="SchedulerCancelButton_Click" Visibility="Collapsed" />
                         <Button Content="스케줄러로 이동" Click="IncomeOpenScheduler_Click" />
-                        <Button Content="주간 기록 일괄 추가" Click="IncomeBulkAdd_Click" />
+                        <Button x:Name="IncomeBulkAddButton" Content="주간 기록 일괄 추가" Click="IncomeBulkAdd_Click" />
                     </StackPanel>
                     <TextBlock x:Name="IncomeBulkStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     <Button x:Name="IncomeBulkUndoButton" Content="방금 추가 취소" Click="IncomeBulkUndo_Click" Visibility="Collapsed" HorizontalAlignment="Left" />
@@ -499,7 +500,7 @@
                 </StackPanel>
                     <Border x:Name="IncomeOverview" Width="786" HorizontalAlignment="Left" Visibility="Collapsed" Padding="20" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                         <StackPanel Spacing="14">
-                            <TextBlock Text="보스 수익" FontSize="20" FontWeight="SemiBold" />
+                            <TextBlock x:Name="IncomeHeading" Text="전체 수익" FontSize="20" FontWeight="SemiBold" />
                             <StackPanel Orientation="Horizontal" Spacing="12">
                                 <ComboBox x:Name="IncomeDisplaySelector" Header="표시 금액" SelectionChanged="IncomeDisplaySelector_SelectionChanged">
                                     <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" />
@@ -507,16 +508,17 @@
                                 <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" Width="230" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
                             </StackPanel>
                             <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
-                            <Button Content="결정 수익 집계 재생 · MP4 / GIF 내보내기" Click="IncomeReplayOpen_Click" HorizontalAlignment="Left" />
-                            <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
-                            <TextBlock x:Name="IncomeScope" Style="{StaticResource SecondaryText}" FontSize="12" />
-                            <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
                                 <StackPanel Spacing="6"><TextBlock Text="이번 주" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="1" Spacing="6"><TextBlock Text="이번 달" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="MonthlyIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="2" Spacing="6"><TextBlock Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                             </Grid>
+                            <TextBlock x:Name="IncomeBreakdown" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                            <StackPanel x:Name="BossIncomeDetails" Spacing="14">
+                            <Button Content="결정 수익 집계 재생 · MP4 / GIF 내보내기" Click="IncomeReplayOpen_Click" HorizontalAlignment="Left" />
+                            <TextBlock x:Name="IncomeScope" Style="{StaticResource SecondaryText}" FontSize="12" />
+                            <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
                             <Border Padding="14" CornerRadius="10" Background="{StaticResource AccentSoftBrush}">
                                 <StackPanel Spacing="6">
@@ -545,6 +547,9 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </Expander>
+                            </StackPanel>
+                            <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
+                            <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" ReplayRequested="HuntingIncome_ReplayRequested" />
                         </StackPanel>
                     </Border>
             </StackPanel>

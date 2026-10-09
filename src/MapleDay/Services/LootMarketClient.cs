@@ -13,7 +13,8 @@ public sealed record LootMarketPrice(string ItemId, string Variant, string Regio
     [JsonIgnore] public long WholeEokPrice => checked(PriceEok * 100_000_000);
     [JsonIgnore] public string Label => $"{Variant} · {PriceEok}억 메소 · {Date:MM.dd}";
 }
-public sealed record LootMarketSnapshot(DateTimeOffset? FetchedAt, LootMarketPrice[] Prices)
+public sealed record FragmentMarketPrice(string Region, long PriceMillion, DateOnly Date);
+public sealed record LootMarketSnapshot(DateTimeOffset? FetchedAt, LootMarketPrice[] Prices, FragmentMarketPrice[]? Fragments = null)
 {
     public IReadOnlyList<LootMarketPrice> ForItem(string itemId, string world) => Prices.Where(price => price.ItemId == itemId
         && price.Region == (world.StartsWith("챌린저", StringComparison.Ordinal) ? "challengers" : "normal")

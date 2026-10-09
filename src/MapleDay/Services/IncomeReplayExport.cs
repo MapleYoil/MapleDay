@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Threading.Channels;
 using System.Runtime.InteropServices;
 using MapleDay.Core;
 using Windows.Foundation;
@@ -10,10 +11,38 @@ namespace MapleDay.Services;
 
 public static class IncomeReplayExport
 {
+    public static double ReplayTime(double elapsed, double duration)
+    {
+        if (!double.IsFinite(duration) || duration <= 0 || duration > 600) throw new ArgumentOutOfRangeException(nameof(duration));
+        return Math.Clamp(double.IsFinite(elapsed) ? elapsed : 0, 0, duration) / duration * IncomeReplayRenderer.Duration;
+    }
+    public static async Task ExportImageAsync(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
+        string destination, bool webp, CancellationToken cancellationToken = default)
+    {
+        var temporary = Path.Combine(Path.GetDirectoryName(destination)!, ".mapleday-export-" + Guid.NewGuid().ToString("N") + (webp ? ".webp" : ".png"));
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var renderer = new IncomeReplayRenderer(replay, display, scope, assets);
+            var pixels = renderer.RenderPixels(IncomeReplayRenderer.Duration);
+            using var image = new SkiaSharp.SKBitmap(new SkiaSharp.SKImageInfo(1920, 1080, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Opaque));
+            Marshal.Copy(pixels, 0, image.GetPixels(), pixels.Length);
+            using var pixmap = image.PeekPixels();
+            using var encoded = webp
+                ? pixmap.Encode(new SkiaSharp.SKWebpEncoderOptions(SkiaSharp.SKWebpEncoderCompression.Lossless, 100))
+                : image.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+            if (encoded is null) throw new IOException("결과 이미지를 만들지 못했어요.");
+            await File.WriteAllBytesAsync(temporary, encoded.ToArray(), cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            File.Move(temporary, destination, true);
+        }
+        finally { if (File.Exists(temporary)) File.Delete(temporary); }
+    }
     public static async Task ExportAsync(IncomeReplay replay, IncomeDisplay display, string scope, string assets,
         string encoderPath, string destination, bool gif, IProgress<double>? progress = null, CancellationToken cancellationToken = default,
         double duration = IncomeReplayRenderer.Duration)
     {
+        _ = ReplayTime(0, duration);
         // Finish beside the chosen destination, then replace it atomically; failures never leave a partial final video.
         var temporary = Path.Combine(Path.GetDirectoryName(destination)!, ".mapleday-export-" + Guid.NewGuid().ToString("N") + (gif ? ".gif" : ".mp4"));
         try
@@ -38,12 +67,40 @@ public static class IncomeReplayExport
         try
         {
             var frames = (int)Math.Ceiling(duration * fps);
-            for (var frame = 0; frame < frames; frame++)
+            using var pipelineCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var pipelineToken = pipelineCancellation.Token;
+            var ready = Channel.CreateBounded<byte[]>(2);
+            var free = Channel.CreateBounded<byte[]>(3);
+            for (var i = 0; i < 3; i++) free.Writer.TryWrite(new byte[width * height * 4]);
+            var render = Task.Run(async () =>
             {
-                token.ThrowIfCancellationRequested();
-                using var bitmap = renderer.Render(frame / (double)fps, width, height);
-                await process.StandardInput.BaseStream.WriteAsync(IncomeReplayRenderer.Pixels(bitmap), token);
-                if (frame % 6 == 0) progress?.Report((frame + 1d) / frames);
+                try
+                {
+                    for (var frame = 0; frame < frames; frame++)
+                    {
+                        var buffer = await free.Reader.ReadAsync(pipelineToken);
+                        renderer.RenderPixels(frame / (double)Math.Max(1, frames - 1) * IncomeReplayRenderer.Duration, width, height, buffer: buffer);
+                        await ready.Writer.WriteAsync(buffer, pipelineToken);
+                    }
+                    ready.Writer.TryComplete();
+                }
+                catch (Exception error) { ready.Writer.TryComplete(error); throw; }
+            }, CancellationToken.None);
+            try
+            {
+                var written = 0;
+                await foreach (var buffer in ready.Reader.ReadAllAsync(pipelineToken))
+                {
+                    await process.StandardInput.BaseStream.WriteAsync(buffer, pipelineToken);
+                    free.Writer.TryWrite(buffer);
+                    if (++written % 6 == 0 || written == frames) progress?.Report(written / (double)frames);
+                }
+                await render;
+            }
+            finally
+            {
+                pipelineCancellation.Cancel();
+                try { await render; } catch (OperationCanceledException) when (pipelineToken.IsCancellationRequested) { }
             }
             process.StandardInput.Close(); await process.WaitForExitAsync(token);
             if (process.ExitCode != 0) throw new IOException("Windows 영상 인코더에서 MP4를 만들지 못했어요. " + await errors);
@@ -66,8 +123,7 @@ public static class IncomeReplayExport
             for (var frame = 0; frame < frames; frame++)
             {
                 token.ThrowIfCancellationRequested();
-                using var bitmap = renderer.Render(frame / (double)fps, width, height);
-                var pixels = IncomeReplayRenderer.Pixels(bitmap);
+                var pixels = renderer.RenderPixels(frame / (double)Math.Max(1, frames - 1) * IncomeReplayRenderer.Duration, width, height);
                 var region = ChangedPixels(pixels, previous, width, height);
                 previous = pixels;
                 encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore, region.Width, region.Height, 96, 96, region.Pixels);

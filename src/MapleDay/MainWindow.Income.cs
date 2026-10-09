@@ -15,6 +15,18 @@ public sealed partial class MainWindow
     private string? _incomeSelectedOcid;
     private bool _rebuildingIncomeCharacters;
     private bool _incomeDisplayReady;
+    private int _incomeMode;
+    private void IncomeTabs_SelectionChanged(object sender, SelectionChangedEventArgs args)
+    {
+        if (IncomeTabs is null || IncomeHeading is null) return;
+        IncomeReplayPanel.Pause();
+        IncomeReplayPanel.Visibility = Visibility.Collapsed;
+        _incomeMode = Math.Max(0, IncomeTabs.SelectedIndex);
+        IncomeBulkAddButton.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
+        RefreshIncomeOverview();
+    }
+    private void HuntingIncome_RecordsChanged(object? sender, EventArgs args)
+    { RefreshIncomeOverview(); PublishWebSnapshot(); }
     private IEnumerable<BossLootRecord> StoredLoot => (_settings.BossLootRecords ?? []).Where(BossLoot.Valid);
     private WeeklyIncomeForecast? ForecastFor(SchedulerCharacter character, DateOnly today)
     {
@@ -51,6 +63,14 @@ public sealed partial class MainWindow
         RefreshIncomeOverview();
         IncomeReplayPanel.SetDisplay(CurrentIncomeDisplay);
         PublishWebSnapshot();
+    }
+    private void HuntingIncome_ReplayRequested(object? sender, EventArgs args)
+    {
+        var owners = SchedulerAvatars.Where(owner => _incomeSelectedOcid is null || owner.Ocid == _incomeSelectedOcid).ToDictionary(owner => owner.Ocid);
+        var records = (_settings.HuntingIncomeRecords ?? []).Where(row => owners.ContainsKey(row.Ocid));
+        IncomeReplayPanel.Visibility = Visibility.Visible;
+        IncomeReplayPanel.SetRecords(HuntingIncome.Replay(records, ocid => owners[ocid].Name), CurrentIncomeDisplay,
+            _incomeSelectedOcid is null ? "전체 캐릭터 사냥 기록" : owners.Values.FirstOrDefault()?.Name ?? "사냥 기록");
     }
     private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
@@ -167,9 +187,22 @@ public sealed partial class MainWindow
         var weekStart = SchedulerBossHistory.Start(BossCycle.Weekly, today);
         var monthStart = SchedulerBossHistory.Start(BossCycle.Monthly, today);
         var loot = StoredLoot.Where(record => selected.Any(character => character.Ocid == record.Ocid)).ToArray();
-        WeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Sum(weekStart, today)) + BossLoot.Sum(loot, weekStart, today));
-        MonthlyIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Sum(monthStart, today)) + BossLoot.Sum(loot, monthStart, today));
-        TotalIncomeAmount.Text = CurrentIncomeDisplay.Format(loaded.Sum(character => character.Income!.Total) + BossLoot.Sum(loot, DateOnly.MinValue, today));
+        var hunting = (_settings.HuntingIncomeRecords ?? []).Where(row => selected.Any(owner => owner.Ocid == row.Ocid)).ToArray();
+        var bossWeekly = loaded.Sum(character => character.Income!.Sum(weekStart, today)) + BossLoot.Sum(loot, weekStart, today);
+        var bossMonthly = loaded.Sum(character => character.Income!.Sum(monthStart, today)) + BossLoot.Sum(loot, monthStart, today);
+        var bossTotal = loaded.Sum(character => character.Income!.Total) + BossLoot.Sum(loot, DateOnly.MinValue, today);
+        var huntWeekly = HuntingIncome.Sum(hunting, weekStart, today);
+        var huntMonthly = HuntingIncome.Sum(hunting, monthStart, today);
+        var huntTotal = HuntingIncome.Sum(hunting, DateOnly.MinValue, today);
+        long Amount(long boss, long hunt) => _incomeMode == 1 ? boss : _incomeMode == 2 ? hunt : boss + hunt;
+        WeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossWeekly, huntWeekly));
+        MonthlyIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossMonthly, huntMonthly));
+        TotalIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossTotal, huntTotal));
+        IncomeHeading.Text = _incomeMode == 1 ? "보스 수익" : _incomeMode == 2 ? "사냥 수익" : "전체 수익";
+        IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {CurrentIncomeDisplay.Format(huntWeekly)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {CurrentIncomeDisplay.Format(huntMonthly)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {CurrentIncomeDisplay.Format(huntTotal)}" : "";
+        BossIncomeDetails.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
+        HuntingIncomePanel.Visibility = _incomeMode == 1 ? Visibility.Collapsed : Visibility.Visible;
+        HuntingIncomePanel.SetContext(_settings, selected, _incomeSelectedOcid, CurrentIncomeDisplay);
         var forecasts = selected.Select(character => (Character: character, Forecast: ForecastFor(character, today))).ToArray();
         RemainingWeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(forecasts.Sum(item => item.Forecast?.Meso ?? 0));
         RemainingWeeklyIncomeStatus.Text = "등록된 미완료 주간 보스 · 설정한 파티 인원 · 캐릭터당 주간 12마리 제한 기준\n"

@@ -8,3 +8,5 @@
 - **라이브러리·런타임·설치 도구**: .NET, Windows App SDK, WinUI, Microsoft Toolkit, 프로젝트가 참조하는 패키지 및 Inno Setup 등은 해당 프로젝트·배포물의 자체 라이선스에 따릅니다. 메요일 라이선스는 이 구성 요소의 기존 권리를 변경하지 않습니다.
 
 메요일은 NEXON의 공식 프로그램이 아니며 이 고지는 제3자 권리자의 승인·보증을 의미하지 않습니다.
+
+- **SkiaSharp / Skia**: 수익 집계 렌더링과 이미지 저장에 사용합니다. 구성 요소의 라이선스와 저작권 고지는 [SkiaSharp-LICENSE.txt](src/MapleDay/Assets/Licenses/SkiaSharp-LICENSE.txt)에 포함되어 있습니다.

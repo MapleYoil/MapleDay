@@ -1,0 +1,16 @@
+{
+  "guide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/459",
+  "soulGuide": "https://maplestory.nexon.com/guide/n23gameinformation/articles/416",
+  "ringGuide": "https://maplestory.nexon.com/Guide/OtherProbability/bossRingBox/ringBoxRedJade",
+  "resources": [
+    {
+      "Id": "4009547",
+      "Name": "\uC194 \uC5D0\uB974\uB2E4 \uC870\uAC01",
+      "sourceName": "\uC194 \uC5D0\uB974\uB2E4 \uC870\uAC01",
+      "source": "Item/Etc/0400.img/04009547/info/icon",
+      "width": 30,
+      "height": 33,
+      "sha256": "3cf3de105d2819933105d090c6c203e82198293bee40e0c01bd5bb17d57d96c1"
+    }
+  ]
+}

@@ -6,6 +6,11 @@
             <Image x:Name="Preview" Stretch="Uniform" AutomationProperties.Name="왼쪽 누적 금액, 오른쪽 보스별 처치 수와 수익 순위" />
         </Border>
         <StackPanel Orientation="Horizontal" Spacing="8">
+            <NumberBox x:Name="DurationInput" Header="재생 시간 (초)" Value="10" Minimum="1" Maximum="600" Width="160" SpinButtonPlacementMode="Compact" ValueChanged="Duration_Changed" />
+            <Button x:Name="ResultButton" Content="결과만 보기" Click="Result_Click" VerticalAlignment="Bottom" />
+            <Button x:Name="ImageButton" Content="결과 PNG / WEBP 저장" Click="Image_Click" VerticalAlignment="Bottom" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
             <Button x:Name="PlayButton" Content="다시 재생" Click="Play_Click" />
             <Button x:Name="PauseButton" Content="일시 정지" Click="Pause_Click" />
             <Button x:Name="Mp4Button" Content="MP4 저장" Click="Mp4_Click" />
