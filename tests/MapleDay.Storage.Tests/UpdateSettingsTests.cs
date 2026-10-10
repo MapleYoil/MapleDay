@@ -10,7 +10,7 @@ public sealed class UpdateSettingsTests
     {
         var settings = JsonSerializer.Deserialize<AppSettings>("""{"SchedulerOcids":["saved"],"StartPage":"level"}""")!;
         Assert.True(settings.AutomaticUpdates);
-        Assert.True(settings.UpdateNotifications);
+        Assert.False(settings.UpdateNotifications);
         Assert.Equal(["saved"], settings.SchedulerOcids);
         Assert.Equal("level", settings.StartPage);
     }

@@ -10,7 +10,11 @@ public sealed class AppSettings
     public bool AutoStartWindows { get; set; } = true;
     public bool WindowsStartupToTray { get; set; } = true;
     public bool AutomaticUpdates { get; set; } = true;
-    public bool UpdateNotifications { get; set; } = true;
+    public bool UpdateNotifications { get; set; }
+    public bool SundayNotifications { get; set; }
+    public string NotifiedUpdateVersion { get; set; } = "";
+    public Dictionary<int, List<DateOnly>> PublicHolidayDates { get; set; } = [];
+    public DateTimeOffset? PublicHolidaysCheckedAt { get; set; }
     public int WebPort { get; set; } = 17831;
     public string IncomeDisplayMode { get; set; } = "meso";
     public int IncomeMesoDropEok { get; set; } = IncomeMesoRain.DefaultGoldEok;
@@ -37,6 +41,10 @@ public sealed class AppSettings
     public List<BossClearChange> BossClearChanges { get; set; } = [];
     public List<BossLootRecord> BossLootRecords { get; set; } = [];
     public List<HuntingIncomeRecord> HuntingIncomeRecords { get; set; } = [];
+    public List<CalendarSchedule> CalendarSchedules { get; set; } = [];
+    public bool CalendarHideSunday { get; set; }
+    public List<SundayNotice> SundayNotices { get; set; } = [];
+    public DateTimeOffset? EventNoticesCheckedAt { get; set; }
     public decimal HuntingMesoBonus { get; set; }
     public int HuntingFragmentPriceMan { get; set; } = 1;
     public bool RemindersEnabled { get; set; } = true;
@@ -48,7 +56,7 @@ public sealed class AppSettings
     public Dictionary<string, DateTimeOffset> CheckedReminders { get; set; } = [];
     public List<ReminderNotice> ReminderNotices { get; set; } = [];
     public string StartPage { get; set; } = "characters";
-    public string ValidStartPage => StartPage is "characters" or "scheduler" or "income" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
+    public string ValidStartPage => StartPage is "characters" or "scheduler" or "income" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
     public bool MarkRemindersRead()
     {
         var changed = false;

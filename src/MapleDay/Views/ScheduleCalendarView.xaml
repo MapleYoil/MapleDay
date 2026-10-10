@@ -1,0 +1,94 @@
+<UserControl x:Class="MapleDay.Views.ScheduleCalendarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:MapleDay.Models" xmlns:services="using:MapleDay.Services">
+    <StackPanel Spacing="16">
+        <Grid ColumnSpacing="12">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel Spacing="6">
+                <TextBlock Text="캘린더" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="보스 약속과 개인 일정을 한눈에 확인하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Top">
+                <CheckBox x:Name="HideSundayCheckBox" Content="썬데이 숨기기" Checked="HideSunday_Changed" Unchecked="HideSunday_Changed" VerticalAlignment="Center"/>
+                <Button x:Name="NoticeRefreshButton" Content="공지 새로고침" Click="RefreshNotices_Click" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        <Pivot x:Name="FilterTabs" SelectionChanged="Filter_Changed"><PivotItem Header="전체"/><PivotItem Header="보스 일정"/><PivotItem Header="일반 일정"/></Pivot>
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="MonthTitle" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button x:Name="PreviousButton" Grid.Column="1" Click="Previous_Click" AutomationProperties.Name="이전 달"><FontIcon Glyph="&#xE76B;" FontSize="12"/></Button>
+            <Button Grid.Column="2" Content="오늘" Click="Today_Click"/>
+            <Button x:Name="NextButton" Grid.Column="3" Click="Next_Click" AutomationProperties.Name="다음 달"><FontIcon Glyph="&#xE76C;" FontSize="12"/></Button>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <TextBlock Text="일" HorizontalAlignment="Center" Foreground="{StaticResource DangerTextBrush}"/>
+            <TextBlock Grid.Column="1" Text="월" HorizontalAlignment="Center"/><TextBlock Grid.Column="2" Text="화" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="3" Text="수" HorizontalAlignment="Center"/><TextBlock Grid.Column="4" Text="목" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="5" Text="금" HorizontalAlignment="Center"/><TextBlock Grid.Column="6" Text="토" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+        </Grid>
+        <ItemsRepeater x:Name="DayGrid" ItemsSource="{x:Bind Days}" SizeChanged="DayGrid_SizeChanged">
+            <ItemsRepeater.Layout><UniformGridLayout x:Name="DayLayout" Orientation="Horizontal" MaximumRowsOrColumns="7" MinItemWidth="44" MinItemHeight="145" ItemsStretch="Fill"/></ItemsRepeater.Layout>
+            <ItemsRepeater.ItemTemplate><DataTemplate x:DataType="models:ScheduleDay">
+                <Button Tag="{x:Bind Date}" Click="Day_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch" Padding="8" Margin="2" CornerRadius="8" Background="{x:Bind Background}" BorderBrush="{x:Bind BorderBrush}"
+                        BorderThickness="{x:Bind BorderThickness}" Opacity="{x:Bind Opacity}" AutomationProperties.Name="{x:Bind AccessibleName}" ToolTipService.ToolTip="{x:Bind AccessibleName}">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="{x:Bind Number}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Bind Today}" Foreground="{StaticResource AccentBrush}" FontSize="11"/>
+                        <ItemsControl ItemsSource="{x:Bind Preview}">
+                            <ItemsControl.ItemTemplate><DataTemplate x:DataType="models:ScheduleLabel">
+                                <Grid ColumnSpacing="3" Margin="0,2" AutomationProperties.Name="{x:Bind AccessibleName}">
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Name}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <Image Grid.Column="1" services:CachedImage.File="{x:Bind IconFile}" Visibility="{x:Bind IconVisibility}" Width="16" Height="16" Stretch="Uniform" AutomationProperties.Name="{x:Bind AccessibleName}"/>
+                                    <TextBlock Grid.Column="2" Text="{x:Bind Party}" FontSize="12" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="{x:Bind More}" Visibility="{x:Bind MoreVisibility}" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+            </DataTemplate></ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+        <TextBlock x:Name="NoticeStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap"/>
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="SelectedTitle" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Content="일정 추가" Style="{StaticResource AccentButtonStyle}" Click="Add_Click"/>
+        </Grid>
+        <TextBlock x:Name="ActionStatus" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap"/>
+        <TextBlock x:Name="EmptyStatus" Text="이 날짜에 등록된 일정이 없어요." Style="{StaticResource SecondaryText}"/>
+        <ItemsControl ItemsSource="{x:Bind Rows}">
+            <ItemsControl.ItemTemplate><DataTemplate x:DataType="models:ScheduleRow">
+                <Border Margin="0,0,0,12" Padding="16" CornerRadius="12" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnSpacing="8" HorizontalAlignment="Left" AutomationProperties.Name="{x:Bind Label.AccessibleName}">
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Bind Label.Name}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            <Image Grid.Column="1" services:CachedImage.File="{x:Bind Label.IconFile}" Visibility="{x:Bind Label.IconVisibility}" Width="25" Height="25" Stretch="Uniform" AutomationProperties.Name="{x:Bind Label.AccessibleName}"/>
+                            <TextBlock Grid.Column="2" Text="{x:Bind Label.Party}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Text="{x:Bind Details}" Style="{StaticResource SecondaryText}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{x:Bind Note}" TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{x:Bind EditVisibility}">
+                            <Button Content="{x:Bind CompleteLabel}" Tag="{x:Bind}" Click="Complete_Click"/>
+                            <Button Content="수정" Tag="{x:Bind}" Click="Edit_Click"/>
+                            <Button Content="삭제" Tag="{x:Bind}" Click="Delete_Click"/>
+                        </StackPanel>
+                        <HyperlinkButton Content="공식 공지 열기" NavigateUri="{x:Bind Link}" Visibility="{x:Bind LinkVisibility}" HorizontalAlignment="Left"/>
+                        <ItemsControl ItemsSource="{x:Bind Images}" HorizontalAlignment="Left" MaxWidth="420">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Button Padding="0" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Click="SundayImage_Click" AutomationProperties.Name="썬데이 혜택 이미지 확대" ToolTipService.ToolTip="클릭해서 크게 보기">
+                                    <Image Source="{Binding}" Stretch="Uniform" MaxWidth="420" MaxHeight="320" HorizontalAlignment="Left" AutomationProperties.Name="썬데이 메이플 혜택 이미지" ImageFailed="NoticeImage_Failed"/>
+                                </Button>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </DataTemplate></ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

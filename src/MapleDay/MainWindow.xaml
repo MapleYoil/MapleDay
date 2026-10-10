@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="MapleDay.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -88,6 +88,9 @@
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="IncomeNavigationItem" Content="수익" Tag="income" AutomationProperties.AutomationId="IncomeNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D2;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="CalendarNavigationItem" Content="캘린더" Tag="calendar" AutomationProperties.AutomationId="CalendarNavigationItem">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8BF;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem x:Name="LevelNavigationItem" Content="레벨" Tag="level" AutomationProperties.AutomationId="LevelNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE74A;" /></NavigationViewItem.Icon>
@@ -471,13 +474,33 @@
                 </Grid>
             </Grid>
         </Grid>
-        <ScrollViewer x:Name="IncomePage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
-            <StackPanel Padding="24,24,24,20" Spacing="16">
-                <StackPanel Spacing="6">
-                    <TextBlock Text="수익" FontSize="28" FontWeight="SemiBold" />
-                    <TextBlock Text="보스와 사냥 수익을 따로 보거나 전체 수익으로 합산하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                </StackPanel>
-                <Pivot x:Name="IncomeTabs" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /></Pivot>
+        <Grid x:Name="IncomePage" Visibility="Collapsed" Padding="24,24,24,0" RowSpacing="16">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="수익" FontSize="28" FontWeight="SemiBold" />
+                        <TextBlock Text="보스와 사냥 수익을 따로 보거나 전체 수익으로 합산하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button x:Name="IncomeSettingsButton" Grid.Column="1" VerticalAlignment="Top" AutomationProperties.Name="수익 설정 열기" AutomationProperties.AutomationId="IncomeSettingsButton">
+                        <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="14" /><TextBlock Text="수익 설정" /></StackPanel>
+                        <Button.Flyout>
+                            <Flyout Placement="BottomEdgeAlignedRight">
+                                <StackPanel Width="320" Spacing="16">
+                                    <TextBlock Text="수익 설정" FontSize="20" FontWeight="SemiBold" />
+                                    <ComboBox x:Name="IncomeDisplaySelector" Header="표시 금액" HorizontalAlignment="Stretch" SelectionChanged="IncomeDisplaySelector_SelectionChanged">
+                                        <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" />
+                                    </ComboBox>
+                                    <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
+                                    <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </Grid>
+                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /></Pivot>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
+            <StackPanel Padding="0,0,0,20" Spacing="16">
                 <StackPanel x:Name="IncomeLogin" Spacing="8">
                     <TextBlock Text="API 키를 연결하면 저장된 보스 기록과 수익을 볼 수 있어요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     <Button Content="API 키 연결하기" Click="OpenKeyPageButton_Click" />
@@ -501,13 +524,6 @@
                     <Border x:Name="IncomeOverview" Width="786" HorizontalAlignment="Left" Visibility="Collapsed" Padding="20" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                         <StackPanel Spacing="14">
                             <TextBlock x:Name="IncomeHeading" Text="전체 수익" FontSize="20" FontWeight="SemiBold" />
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <ComboBox x:Name="IncomeDisplaySelector" Header="표시 금액" SelectionChanged="IncomeDisplaySelector_SelectionChanged">
-                                    <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" />
-                                </ComboBox>
-                                <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" Width="230" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
-                            </StackPanel>
-                            <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
                                 <StackPanel Spacing="6"><TextBlock Text="이번 주" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
@@ -553,6 +569,10 @@
                         </StackPanel>
                     </Border>
             </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <ScrollViewer x:Name="CalendarPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <views:ScheduleCalendarView x:Name="CalendarPanel" Margin="24,24,24,20" MaxWidth="1000" HorizontalAlignment="Stretch"/>
         </ScrollViewer>
         <ScrollViewer x:Name="LevelPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="24,28" Spacing="20" MaxWidth="1000" HorizontalAlignment="Stretch">
@@ -749,7 +769,19 @@
                             <TextBlock x:Name="WeeklyBossReminderNext" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>
-                    
+                    <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <StackPanel Spacing="12">
+                            <ToggleSwitch x:Name="UpdateNotificationsToggle" Header="앱 업데이트" OnContent="켜짐" OffContent="꺼짐" Toggled="UpdateNotificationsToggle_Toggled" />
+                            <TextBlock x:Name="UpdateNotificationsHint" Text="새 버전이 준비되면 Windows 알림과 앱 알림을 보내고 작업 표시줄·트레이·설정에 ①을 표시합니다. 기본은 꺼짐이며, 꺼도 자동 확인·다운로드는 계속됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                    <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <StackPanel Spacing="12">
+                            <ToggleSwitch x:Name="SundayNotificationsToggle" Header="썬데이 메이플" OnContent="켜짐" OffContent="꺼짐" Toggled="SundayNotificationsToggle_Toggled" />
+                            <TextBlock Text="한국 시간 금요일 오전 10시에 공개된 혜택을 확인해 알립니다. 금요일이 공휴일이면 연속된 공휴일·주말을 건너뛴 직전 평일에 확인하고 금요일에는 확인하지 않습니다. 확인 실패 시 5초 뒤 다시 시도합니다. 기본은 꺼짐입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                            <TextBlock x:Name="SundayReminderNext" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
                 <StackPanel x:Name="NotificationListPanel" Spacing="20">
                     <TextBlock x:Name="ReminderEmpty" Text="아직 받은 알림이 없어요." Style="{StaticResource SecondaryText}" />
@@ -765,6 +797,7 @@
                                         </Grid>
                                         <TextBlock Text="{x:Bind CreatedText}" Style="{StaticResource SecondaryText}" FontSize="12" />
                                         <TextBlock Text="{x:Bind Summary}" TextWrapping="Wrap" />
+                                        <Button Content="{x:Bind OpenLabel}" Tag="{x:Bind Url}" Visibility="{x:Bind LinkVisibility}" Click="AnnouncementLink_Click" HorizontalAlignment="Left" />
                                         <ItemsControl ItemsSource="{x:Bind Contents}" AutomationProperties.Name="콘텐츠별 미완료 목록">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="models:ReminderContentCard">
@@ -812,8 +845,6 @@
                         <TextBlock Text="앱 업데이트" FontSize="18" FontWeight="SemiBold" />
                         <TextBlock x:Name="AppVersionText" Style="{StaticResource SecondaryText}" />
                         <ToggleSwitch x:Name="AutomaticUpdatesToggle" Header="새 버전 자동 확인 및 다운로드" Toggled="AutomaticUpdatesToggle_Toggled" />
-                        <ToggleSwitch x:Name="UpdateNotificationsToggle" Header="새 버전 ① 표시" OnContent="켜짐" OffContent="꺼짐" Toggled="UpdateNotificationsToggle_Toggled" />
-                        <TextBlock x:Name="UpdateNotificationsHint" Text="새 버전이 준비되면 작업 표시줄·트레이 아이콘과 설정 메뉴에 ①을 표시합니다. Windows 알림은 보내지 않습니다. 표시를 꺼도 자동 확인·다운로드는 계속됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         <TextBlock x:Name="UpdateStatusText" Text="업데이트를 확인할 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                         <ProgressBar x:Name="UpdateDownloadProgress" Visibility="Collapsed" Minimum="0" Maximum="100" AutomationProperties.Name="업데이트 다운로드 진행도" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -835,7 +866,7 @@
                         <TextBlock Text="시작 페이지" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="StartPageSelector" SelectionChanged="StartPageSelector_SelectionChanged" MinWidth="220" AutomationProperties.Name="시작 페이지">
                             <ComboBoxItem Content="내 캐릭터" Tag="characters" /><ComboBoxItem Content="스케줄러" Tag="scheduler" /><ComboBoxItem Content="수익" Tag="income" />
-                            <ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
+                            <ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
                         </ComboBox>
                     </StackPanel>
                 </Border>

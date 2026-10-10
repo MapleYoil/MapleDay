@@ -28,6 +28,15 @@ public sealed class NexonApiClient : IDisposable
     public Task<CharacterListResponse> GetCharactersAsync(string apiKey, CancellationToken token = default)
         => GetAsync<CharacterListResponse>("maplestory/v1/character/list", apiKey, token);
 
+    public Task<EventNoticeResponse> GetEventNoticesAsync(string apiKey, CancellationToken token = default)
+        => GetAsync<EventNoticeResponse>("maplestory/v1/notice-event", apiKey, token);
+
+    public Task<EventNotice> GetEventNoticeAsync(int noticeId, string apiKey, CancellationToken token = default)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(noticeId);
+        return GetAsync<EventNotice>($"maplestory/v1/notice-event/detail?notice_id={noticeId}", apiKey, token);
+    }
+
     public Task<CharacterBasic> GetBasicAsync(string ocid, string apiKey, CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ocid);

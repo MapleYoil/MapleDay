@@ -51,13 +51,11 @@ public sealed partial class HuntingIncomeView : UserControl
     private void Character_Changed(object sender, SelectionChangedEventArgs args)
     { if (_ready) { LoadDay(); _ = LoadMarketAsync(); } }
     private void Date_Changed(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args) { if (_ready) LoadDay(); }
-    private void InputTab_Changed(object sender, SelectionChangedEventArgs args)
-    { if (MesoInputs is null || FragmentInputs is null) return; MesoInputs.Visibility = InputTabs.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed; FragmentInputs.Visibility = InputTabs.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed; }
     private void LoadDay()
     {
         _loading = true; _liveNumbers.Clear();
         var row = Existing;
-        MesoInput.Value = row?.Meso ?? 0; FragmentCount.Value = row?.Fragments ?? 0;
+        MesoInput.Text = (row?.Meso ?? 0).ToString(CultureInfo.CurrentCulture); FragmentCount.Text = (row?.Fragments ?? 0).ToString(CultureInfo.CurrentCulture);
         FragmentPrice.Value = row is null ? Math.Clamp(_settings?.HuntingFragmentPriceMan ?? 1, 1, 9999) : row.FragmentUnitPrice / 10000d;
         BonusInput.Value = (double)(row?.MesoBonus ?? Math.Clamp(_settings?.HuntingMesoBonus ?? 0, 0, 10000));
         var limit = HuntingIncome.DailyLimit(RecordLevel);
@@ -95,24 +93,14 @@ public sealed partial class HuntingIncomeView : UserControl
         : double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out var value) ? value : double.NaN;
     private void Input_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args)
     { _liveNumbers.Remove(sender); if (_ready && !_loading) Calculate(); }
+    private void AmountText_Changed(object sender, TextChangedEventArgs args) { if (_ready && !_loading) Calculate(); }
     private void Limit_Changed(object sender, RoutedEventArgs args) { if (_ready && !_loading) Calculate(); }
     private HuntingIncomeRecord Draft()
     {
-        if (Character is not { } owner || !double.IsFinite(NumberValue(MesoInput)) || !double.IsFinite(NumberValue(FragmentCount))
-            || !double.IsFinite(NumberValue(FragmentPrice)) || !double.IsFinite(NumberValue(BonusInput)) || !double.IsFinite(NumberValue(LimitAmount)))
-            throw new ArgumentException();
-        if (NumberValue(FragmentPrice) != Math.Truncate(NumberValue(FragmentPrice)) || NumberValue(FragmentCount) != Math.Truncate(NumberValue(FragmentCount)) || NumberValue(MesoInput) != Math.Truncate(NumberValue(MesoInput))) throw new ArgumentException();
-        var bonus = (decimal)NumberValue(BonusInput);
-        var level = RecordLevel;
-        long? usage = null;
-        if (UseLimit.IsChecked == true)
-        {
-            if (NumberValue(LimitAmount) != Math.Truncate(NumberValue(LimitAmount))) throw new ArgumentException();
-            usage = MaximumLimit.IsChecked == true ? HuntingIncome.DailyLimit(level) : checked((long)NumberValue(LimitAmount));
-        }
-        var meso = usage is { } amount ? HuntingIncome.FromLimitAmount(level, amount, bonus) : checked((long)NumberValue(MesoInput));
-        return new(Existing?.Id ?? Guid.NewGuid().ToString("N"), owner.Ocid, Date, meso,
-            checked((int)NumberValue(FragmentCount)), HuntingIncome.FragmentPrice(checked((int)NumberValue(FragmentPrice))), bonus, null, level, usage);
+        if (Character is not { } owner) throw new ArgumentException();
+        return HuntingIncome.Draft(Existing?.Id ?? Guid.NewGuid().ToString("N"), owner.Ocid, Date, RecordLevel,
+            new(MesoInput.Text, FragmentCount.Text, NumberValue(FragmentPrice), UseLimit.IsChecked == true,
+                MaximumLimit.IsChecked == true, NumberValue(LimitAmount), NumberValue(BonusInput)), CultureInfo.CurrentCulture);
     }
     private void Calculate()
     {
@@ -125,7 +113,7 @@ public sealed partial class HuntingIncomeView : UserControl
         try
         {
             var row = Draft();
-            if (UseLimit.IsChecked == true) { _loading = true; MesoInput.Value = row.Meso; _loading = false; }
+            if (UseLimit.IsChecked == true) { _loading = true; MesoInput.Text = row.Meso.ToString(CultureInfo.CurrentCulture); _loading = false; }
             LimitText.Text = $"Lv. {row.Level} · 기본 메소 제한 {IncomeReplay.CompactMeso(HuntingIncome.DailyLimit(row.Level))} 메소";
             Calculation.Text = $"메소 {_display.Format(row.Meso)} + 조각 {row.Fragments:N0}개 × {IncomeReplay.CompactMeso(row.FragmentUnitPrice)} = {_display.Format(row.Total)}";
             SaveButton.IsEnabled = HuntingIncome.Valid(row) && !_saving;

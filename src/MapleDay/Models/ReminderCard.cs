@@ -9,6 +9,9 @@ public sealed class ReminderCard(ReminderNotice notice)
     public string Title => notice.Title;
     public string CreatedText => notice.CreatedText;
     public string Summary => notice.Summary;
+    public string? Url => notice.AnnouncementUrl;
+    public string OpenLabel => notice.AnnouncementTitle == "앱 업데이트" ? "업데이트 열기" : "썬데이 공지 열기";
+    public Visibility LinkVisibility => Url is null ? Visibility.Collapsed : Visibility.Visible;
     public string DeleteAccessibleName => $"{Title}, {CreatedText} 알림 삭제";
     public bool Read => notice.Read;
     public double Opacity => Read ? 0.7 : 1;

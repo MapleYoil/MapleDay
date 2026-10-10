@@ -3,6 +3,29 @@ namespace MapleDay.Core.Tests;
 public class HuntingIncomeTests
 {
     [Fact]
+    public void FragmentOnlyInputCalculatesWhileTypingWithEmptyMesoAndUnusedLimit()
+    {
+        var inputs = new HuntingInputValues("", "1", 599, LimitAmount: double.NaN, Bonus: double.NaN);
+        var first = HuntingIncome.Draft("id", "owner", new(2026, 10, 10), 300, inputs);
+        Assert.True(HuntingIncome.Valid(first)); Assert.Equal(5_990_000, first.Total); Assert.Equal(0, first.Meso); Assert.Null(first.LimitMeso);
+        var next = HuntingIncome.Draft("id", "owner", first.Date, 300, inputs with { Fragments = "15" });
+        Assert.Equal(89_850_000, next.Total);
+        Assert.Equal(89_850_000, Assert.Single(HuntingIncome.Bulk([], next, next.Date, next.Date, next.Date).Records).Total);
+    }
+
+    [Fact]
+    public void SimultaneousMesoAndFragmentInputsUseCurrentTextAndValidateOnlyActiveLimitFields()
+    {
+        var inputs = new HuntingInputValues("200,000,000", "15", 599, LimitAmount: double.NaN);
+        var row = HuntingIncome.Draft("id", "owner", new(2026, 10, 10), 300, inputs, System.Globalization.CultureInfo.InvariantCulture);
+        Assert.Equal(289_850_000, row.Total);
+        var maximum = HuntingIncome.Draft("id", "owner", row.Date, 300,
+            inputs with { Meso = "invalid", UseLimit = true, MaximumLimit = true, Bonus = 280 });
+        Assert.Equal(874_000_000, maximum.Meso);
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Draft("id", "owner", row.Date, 300, inputs with { UseLimit = true }));
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Draft("id", "owner", row.Date, 300, inputs with { Fragments = "1.5" }));
+    }
+    [Fact]
     public void Bulk_adds_daily_meso_and_fragments_inclusive_and_preserves_existing_by_default()
     {
         var daily = new HuntingIncomeRecord("draft", "owner", new(2026, 10, 9), 874000000, 150, 5000000, 280, 100, 300);

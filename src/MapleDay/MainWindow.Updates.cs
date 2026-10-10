@@ -40,7 +40,7 @@ public sealed partial class MainWindow
         if (WindowsStartup.IsPackaged)
         {
             AutomaticUpdatesToggle.Visibility = Visibility.Collapsed;
-            UpdateNotificationsToggle.Visibility = UpdateNotificationsHint.Visibility = Visibility.Collapsed;
+            UpdateNotificationsHint.Text = "새 버전이 있으면 Windows·앱 알림과 ①을 표시합니다. MSIX 업데이트는 스토어 또는 새 MSIX 다운로드 페이지에서 진행합니다. 기본은 꺼짐입니다.";
             CheckUpdateButton.Content = IsStoreInstall ? "Microsoft Store에서 업데이트 확인" : "새 MSIX 다운로드 페이지";
             UpdateStatusText.Text = IsStoreInstall ? "Microsoft Store에서 자동 업데이트를 관리합니다."
                 : "직접 설치한 MSIX는 릴리즈에서 새 MSIX를 받아 설치해주세요. 저장된 데이터는 유지됩니다.";
@@ -53,7 +53,8 @@ public sealed partial class MainWindow
 
     private void StartAutomaticUpdates()
     {
-        if (!_settings.AutomaticUpdates || WindowsStartup.IsPackaged || _closed || _dataDeleting || _updateInstalling) return;
+        if ((WindowsStartup.IsPackaged ? !_settings.UpdateNotifications : !_settings.AutomaticUpdates)
+            || _closed || _dataDeleting || _updateInstalling) return;
         _updateTimer.Start();
         _ = CheckForUpdatesAsync();
     }
@@ -106,19 +107,26 @@ public sealed partial class MainWindow
             _updatesInitialized = false;
             UpdateNotificationsToggle.IsOn = previous;
             _updatesInitialized = true;
-            UpdateStatusText.Text = "새 버전 표시 설정을 저장하지 못했어요.";
+            ShowReminderMessage("앱 업데이트 알림 설정을 저장하지 못했어요.", InfoBarSeverity.Warning);
             return;
         }
         RefreshUpdateBadge();
+        NotifyPreparedUpdate();
+        if (WindowsStartup.IsPackaged)
+        {
+            if (_settings.UpdateNotifications) StartAutomaticUpdates();
+            else StopUpdates();
+        }
     }
 
     private void RefreshUpdateBadge()
     {
-        var visible = _readyUpdate is not null && _preparedUpdate is not null && _settings.UpdateNotifications
+        var visible = _readyUpdate is not null && (_preparedUpdate is not null || WindowsStartup.IsPackaged) && _settings.UpdateNotifications
+            && _settings.RemindersEnabled
             && !_closed && !_dataDeleting && !_updateInstalling;
         SettingsUpdateBadge.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        AutomationProperties.SetName(SettingsNavigationItem, visible ? "설정, 새 버전 준비됨. 업데이트할 수 있습니다." : "설정");
-        ToolTipService.SetToolTip(SettingsNavigationItem, visible ? "① 새 버전 준비됨 · 설정에서 업데이트" : "설정");
+        AutomationProperties.SetName(SettingsNavigationItem, visible ? "설정, 새 버전이 있습니다. 업데이트를 확인할 수 있습니다." : "설정");
+        ToolTipService.SetToolTip(SettingsNavigationItem, visible ? "① 새 버전 있음 · 설정에서 업데이트" : "설정");
         _tray?.SetUpdateAvailable(visible);
         _taskbarUpdateBadge?.SetVisible(visible);
     }
@@ -140,6 +148,13 @@ public sealed partial class MainWindow
             InstallUpdateButton.Visibility = Visibility.Collapsed;
             RefreshUpdateBadge();
             if (update is null) { UpdateStatusText.Text = "최신 버전을 사용 중입니다."; return; }
+            if (WindowsStartup.IsPackaged)
+            {
+                _readyUpdate = update;
+                UpdateStatusText.Text = $"{update.Version} 새 버전이 있어요. 스토어 또는 다운로드 페이지에서 업데이트해주세요.";
+                RefreshUpdateBadge(); NotifyPreparedUpdate();
+                return;
+            }
             UpdateDownloadProgress.Value = 0;
             UpdateDownloadProgress.Visibility = Visibility.Visible;
             UpdateStatusText.Text = $"{update.Version} 다운로드 중…";
@@ -160,6 +175,7 @@ public sealed partial class MainWindow
             InstallUpdateButton.Visibility = Visibility.Visible;
             UpdateStatusText.Text = $"{update.Version} 준비 완료 · 변경 {prepared.ChangedFiles}개 · 다운로드 {prepared.DownloadSize / 1024.0 / 1024.0:0.0}MB. 설치기 없이 적용하고 다시 시작합니다.";
             RefreshUpdateBadge();
+            NotifyPreparedUpdate();
         }
         catch (OperationCanceledException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = request.IsCancellationRequested ? "업데이트 다운로드를 중단했습니다." : "연결 시간이 초과됐어요. 업데이트 확인을 다시 눌러주세요."; }
@@ -177,6 +193,20 @@ public sealed partial class MainWindow
                 RefreshUpdateBadge();
             }
         }
+    }
+
+    private void NotifyPreparedUpdate()
+    {
+        if (_readyUpdate is null || _preparedUpdate is null && !WindowsStartup.IsPackaged || !_settings.UpdateNotifications || !_settings.RemindersEnabled
+            || _closed || _dataDeleting || _updateInstalling) return;
+        var version = _readyUpdate.Version.ToString();
+        if (_settings.NotifiedUpdateVersion == version) return;
+        var previous = _settings.NotifiedUpdateVersion;
+        _settings.NotifiedUpdateVersion = version;
+        var message = WindowsStartup.IsPackaged ? $"{version} 새 버전이 있어요. 설정에서 스토어 또는 새 MSIX 다운로드 페이지를 열어주세요."
+            : $"{version} 버전이 준비됐어요. 설정에서 업데이트하고 다시 시작할 수 있습니다.";
+        if (!AddAnnouncementNotice("앱 업데이트", message, "mapleday:update"))
+            _settings.NotifiedUpdateVersion = previous;
     }
 
     private async void InstallUpdateButton_Click(object sender, RoutedEventArgs args)

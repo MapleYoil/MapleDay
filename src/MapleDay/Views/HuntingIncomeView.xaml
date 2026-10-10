@@ -9,12 +9,8 @@
             <CalendarDatePicker x:Name="DateInput" Header="기록 날짜" DateChanged="Date_Changed" />
         </StackPanel>
         <TextBlock Text="날짜별 총 획득량을 입력하세요. 같은 캐릭터·날짜를 저장하면 기존 기록을 수정합니다." TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
-        <Pivot x:Name="InputTabs" SelectionChanged="InputTab_Changed">
-            <PivotItem Header="메소 입력" />
-            <PivotItem Header="솔 에르다 조각 입력" />
-        </Pivot>
         <StackPanel x:Name="MesoInputs" Spacing="10">
-            <NumberBox x:Name="MesoInput" Header="실제 획득 메소" Value="0" Minimum="0" Maximum="1000000000000000" ValueChanged="Input_Changed" Loaded="Number_Loaded" />
+            <TextBox x:Name="MesoInput" Header="실제 획득 메소" Text="0" InputScope="Number" TextChanged="AmountText_Changed" />
             <CheckBox x:Name="UseLimit" Content="메소 제한 사용량으로 자동 계산" Checked="Limit_Changed" Unchecked="Limit_Changed" />
             <StackPanel x:Name="LimitInputs" Spacing="10" Visibility="Collapsed">
                 <TextBlock x:Name="LimitText" Style="{StaticResource SecondaryText}" />
@@ -28,9 +24,9 @@
                 <TextBlock Text="추가 획득률 적용 전의 메소 제한 사용량을 입력하거나 최대치를 선택하세요. 추가 획득량 100%면 입력한 사용량의 2배입니다." TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
             </StackPanel>
         </StackPanel>
-        <StackPanel x:Name="FragmentInputs" Spacing="10" Visibility="Collapsed">
+        <StackPanel x:Name="FragmentInputs" Spacing="10">
             <StackPanel Orientation="Horizontal" Spacing="12">
-                <NumberBox x:Name="FragmentCount" Header="획득 조각 (개)" Value="0" Minimum="0" Maximum="1000000" Width="210" ValueChanged="Input_Changed" Loaded="Number_Loaded" />
+                <TextBox x:Name="FragmentCount" Header="획득 조각 (개)" Text="0" InputScope="Number" Width="210" TextChanged="AmountText_Changed" />
                 <NumberBox x:Name="FragmentPrice" Header="조각 1개 가격 (만 메소)" Value="1" Minimum="1" Maximum="9999" SmallChange="1" SpinButtonPlacementMode="Compact" Width="230" ValueChanged="Input_Changed" Loaded="Number_Loaded" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Spacing="12">

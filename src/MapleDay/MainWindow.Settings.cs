@@ -195,7 +195,7 @@ public sealed partial class MainWindow
         var contents = new StackPanel { Spacing = 12 };
         contents.Children.Add(new TextBlock
         {
-            Text = "저장된 API 키, 캐릭터 목록, 스케줄러·경험치 기록, 설정, 문의 연결 정보와 작성 중인 내용을 삭제합니다. 문의 연결 정보를 삭제하면 기존 문의 답장을 이 앱에서 확인할 수 없어요.\n\n삭제 후 앱이 종료됩니다. 계속하려면 아래에 ‘삭제’를 정확히 입력해주세요.",
+            Text = "저장된 API 키, 캐릭터 목록, 스케줄러·경험치 기록, 캘린더 일정·공지, 설정, 문의 연결 정보와 작성 중인 내용을 삭제합니다. 문의 연결 정보를 삭제하면 기존 문의 답장을 이 앱에서 확인할 수 없어요.\n\n삭제 후 앱이 종료됩니다. 계속하려면 아래에 ‘삭제’를 정확히 입력해주세요.",
             TextWrapping = TextWrapping.Wrap
         });
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(input, "삭제 확인 문구");
@@ -222,13 +222,14 @@ public sealed partial class MainWindow
         Root.IsHitTestVisible = false;
         _replyTimer.Stop();
         _reminderTimer.Stop();
+        StopCalendar();
         _reminderLifetime.Cancel();
         _loadCts?.Cancel();
         CancelScheduler();
         CancelLevels();
         _supportLifetime.Cancel();
         // Wait for cancelled writers before removing files so no task recreates them.
-        while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportSubmitting || _supportRefreshing || _reminderChecking || _windowsStartupApplying || _updateChecking || _telemetryBusy)
+        while (_characterActiveLoads > 0 || _schedulerActiveLoads > 0 || _levelActiveLoads > 0 || _profileWrites > 0 || _supportSubmitting || _supportRefreshing || _reminderChecking || _windowsStartupApplying || _updateChecking || _telemetryBusy || _calendarBusy || _calendarSelections > 0 || _holidaysChecking || _sundayChecking)
             await Task.Delay(50);
         try
         {

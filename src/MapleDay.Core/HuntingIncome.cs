@@ -1,4 +1,9 @@
+using System.Globalization;
+
 namespace MapleDay.Core;
+
+public sealed record HuntingInputValues(string Meso, string Fragments, double FragmentPriceMan,
+    bool UseLimit = false, bool MaximumLimit = false, double LimitAmount = 0, double Bonus = 0);
 
 public sealed record HuntingIncomeRecord(string Id, string Ocid, DateOnly Date, long Meso,
     int Fragments, long FragmentUnitPrice, decimal MesoBonus = 0, decimal? LimitPercent = null, int Level = 0, long? LimitMeso = null)
@@ -10,6 +15,37 @@ public static class HuntingIncome
 {
     public sealed record BulkResult(IReadOnlyList<HuntingIncomeRecord> Records, int Added, int Updated, int Skipped);
     public const long MaximumMeso = 1_000_000_000_000_000;
+    public static HuntingIncomeRecord Draft(string id, string ocid, DateOnly date, int level, HuntingInputValues inputs, IFormatProvider? culture = null)
+    {
+        static long Integer(string text, long maximum, IFormatProvider? provider)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return 0;
+            if (!decimal.TryParse(text, NumberStyles.Number, provider ?? CultureInfo.CurrentCulture, out var number)
+                || number < 0 || number > maximum || number != decimal.Truncate(number)) throw new ArgumentException();
+            return (long)number;
+        }
+        var count = (int)Integer(inputs.Fragments, 1_000_000, culture);
+        if (!double.IsFinite(inputs.FragmentPriceMan) || inputs.FragmentPriceMan is < 1 or > 9999
+            || inputs.FragmentPriceMan != Math.Truncate(inputs.FragmentPriceMan)) throw new ArgumentException();
+        var price = FragmentPrice((int)inputs.FragmentPriceMan);
+        long? usage = null;
+        decimal bonus = double.IsFinite(inputs.Bonus) && inputs.Bonus is >= 0 and <= 10000 ? (decimal)inputs.Bonus : 0;
+        long meso;
+        if (inputs.UseLimit)
+        {
+            if (!double.IsFinite(inputs.Bonus) || inputs.Bonus is < 0 or > 10000) throw new ArgumentException();
+            if (inputs.MaximumLimit) usage = DailyLimit(level);
+            else
+            {
+                if (!double.IsFinite(inputs.LimitAmount) || inputs.LimitAmount < 0 || inputs.LimitAmount > DailyLimit(level)
+                    || inputs.LimitAmount != Math.Truncate(inputs.LimitAmount)) throw new ArgumentException();
+                usage = (long)inputs.LimitAmount;
+            }
+            meso = FromLimitAmount(level, usage.Value, bonus);
+        }
+        else meso = Integer(inputs.Meso, MaximumMeso, culture);
+        return new(id, ocid, date, meso, count, price, bonus, null, level, usage);
+    }
     public static long DailyLimit(int level) => level switch
     {
         < 1 or > 300 => throw new ArgumentOutOfRangeException(nameof(level)),

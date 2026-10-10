@@ -33,10 +33,13 @@ public sealed class ReminderNotice
     public List<ReminderCharacter> Characters { get; set; } = [];
     public bool Read { get; set; }
     public bool IsStartup { get; set; }
+    public string? AnnouncementTitle { get; set; }
+    public string? AnnouncementText { get; set; }
+    public string? AnnouncementUrl { get; set; }
     public string CreatedText => CreatedAt.ToOffset(SchedulerReminders.Korea).ToString("yyyy-MM-dd HH:mm");
     public string ReadLabel => Read ? "읽음" : "읽음으로 표시";
-    public string Title => IsStartup ? $"앱 시작 · {SchedulerReminders.Label(Kind)} 미완료 알림" : $"{SchedulerReminders.Label(Kind)} 초기화 알림";
-    public string Summary => $"{Characters.Count}명 · 미완료 {Characters.Sum(character => character.Pending.Count)}개 · {Reset.ToOffset(SchedulerReminders.Korea):MM-dd HH:mm} 초기화";
+    public string Title => AnnouncementTitle ?? (IsStartup ? $"앱 시작 · {SchedulerReminders.Label(Kind)} 미완료 알림" : $"{SchedulerReminders.Label(Kind)} 초기화 알림");
+    public string Summary => AnnouncementText ?? $"{Characters.Count}명 · 미완료 {Characters.Sum(character => character.Pending.Count)}개 · {Reset.ToOffset(SchedulerReminders.Korea):MM-dd HH:mm} 초기화";
     public string Details => string.Join("\n", Characters.Select(character => $"{character.Name} ({character.World}) · {string.Join(", ", character.Pending)}"));
 }
 

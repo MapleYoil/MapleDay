@@ -55,6 +55,7 @@ public sealed partial class MainWindow : Window
         InitializeTelemetry();
         InitializeWebHost();
         InitializeIncomeDisplay();
+        InitializeCalendar();
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
         {
             presenter.PreferredMinimumWidth = 420;
@@ -86,9 +87,11 @@ public sealed partial class MainWindow : Window
         _startupInitialized = true;
         _replyTimer.Start();
         _reminderTimer.Start();
+        _calendarTimer.Start();
         StartAutomaticUpdates();
         StartTelemetry();
         await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
+        _ = RefreshCalendarAsync();
         _ = SendTelemetryAsync();
     }
 
@@ -154,10 +157,11 @@ public sealed partial class MainWindow : Window
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         SchedulerPage.Visibility = page == "scheduler" ? Visibility.Visible : Visibility.Collapsed;
         IncomePage.Visibility = page == "income" ? Visibility.Visible : Visibility.Collapsed;
+        CalendarPage.Visibility = page == "calendar" ? Visibility.Visible : Visibility.Collapsed;
         LevelPage.Visibility = page == "level" ? Visibility.Visible : Visibility.Collapsed;
         NotificationsPage.Visibility = page == "notifications" ? Visibility.Visible : Visibility.Collapsed;
         ConnectState.Visibility = !_hasLoadedCharacters && string.IsNullOrEmpty(_apiKey) ? Visibility.Visible : Visibility.Collapsed;
-        ShellNavigation.SelectedItem = page switch { "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
+        ShellNavigation.SelectedItem = page switch { "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
         BackButton.IsEnabled = _backStack.Count > 0;
         if (isKeyPage)
         {
@@ -188,6 +192,7 @@ public sealed partial class MainWindow : Window
         }
         else if (page == "settings") _ = RefreshAppDataSizeAsync();
         else if (page == "level") { UpdateLevelPage(); _ = LoadLevelsAsync(); }
+        else if (page == "calendar") _ = RefreshCalendarAsync();
         else if (page == "notifications") { RefreshReminderList(); UpdateReminderSchedule(); _ = CheckRemindersAsync(); }
     }
 

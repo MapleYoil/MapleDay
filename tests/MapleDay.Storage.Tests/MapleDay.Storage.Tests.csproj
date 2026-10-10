@@ -22,6 +22,7 @@
     <Compile Include="../../src/MapleDay/Services/CharacterCacheStore.cs" Link="CharacterCacheStore.cs" />
     <Compile Include="../../src/MapleDay/Services/CharacterDetailsLoader.cs" Link="CharacterDetailsLoader.cs" />
     <Compile Include="../../src/MapleDay/Services/AppSettings.cs" Link="AppSettings.cs" />
+    <Compile Include="../../src/MapleDay/Services/SundayImageCache.cs" Link="SundayImageCache.cs" />
     <Compile Include="../../src/MapleDay/Services/IncomeReplayRenderer.cs" Link="IncomeReplayRenderer.cs" />
     <Compile Include="../../src/MapleDay/Services/IncomeMesoRain.cs" Link="IncomeMesoRain.cs" />
     <Compile Include="../../src/MapleDay/Services/IncomeReplayExport.cs" Link="IncomeReplayExport.cs" />

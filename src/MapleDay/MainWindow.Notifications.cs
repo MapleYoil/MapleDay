@@ -58,6 +58,7 @@ public sealed partial class MainWindow
         _startupRemindersEnabledForLaunch = _settings.RemindOnStartup;
         DailyReminderToggle.IsOn = _settings.DailyQuestReminder.Enabled; DailyReminderHours.Value = _settings.DailyQuestReminder.HoursBefore;
         UnionQuestReminderToggle.IsOn = _settings.UnionQuestReminderEnabled;
+        SundayNotificationsToggle.IsOn = _settings.SundayNotifications;
         WeeklyQuestReminderToggle.IsOn = _settings.WeeklyQuestReminder.Enabled;
         WeeklyQuestReminderDayMode.SelectedIndex = _settings.WeeklyQuestReminder.RestrictToDay ? 1 : 0;
         WeeklyQuestReminderDay.SelectedIndex = (int)_settings.WeeklyQuestReminder.Day;
@@ -116,6 +117,9 @@ public sealed partial class MainWindow
         try { _settings.Save(); ReminderMessage.IsOpen = false; }
         catch (Exception error) when (IsStorageError(error)) { ShowReminderMessage("알림 설정을 저장하지 못했어요. 이번 실행에만 적용됩니다.", InfoBarSeverity.Warning); }
         UpdateReminderSchedule();
+        RefreshUpdateBadge();
+        if (_updatesInitialized) NotifyPreparedUpdate();
+        UpdateSundayReminderSchedule();
     }
 
     private void UpdateReminderSchedule()
@@ -141,9 +145,11 @@ public sealed partial class MainWindow
             hours.Header = ReminderOption(kind).RestrictToDay ? "다음 자정 몇 시간 전에 알릴까요?" : "초기화 몇 시간 전에 알릴까요?";
         }
         StartupRemindersToggle.IsEnabled = _settings.RemindersEnabled;
+        SundayNotificationsToggle.IsEnabled = _settings.RemindersEnabled;
+        UpdateNotificationsToggle.IsEnabled = _settings.RemindersEnabled && !_updateInstalling;
+        UpdateSundayReminderSchedule();
         var reminderStatus = !_settings.RemindersEnabled ? "전체 알림이 꺼져 있어요."
-            : _schedulerCharacters.Count == 0 ? "스케줄러에 캐릭터를 추가하면 미완료 항목 알림을 받을 수 있어요."
-            : "스케줄러에 추가한 캐릭터의 미완료 퀘스트와 보스만 알립니다. 앱 실행 중 또는 트레이에 있을 때 동작합니다.";
+            : "앱 실행 중 또는 트레이에 있을 때 동작합니다. 퀘스트·보스는 등록한 캐릭터의 미완료 항목만 알리고, 업데이트·썬데이는 아래 설정을 따릅니다.";
         ReminderRuntimeStatus.Text = _windowsNotifications.Status + "\n" + reminderStatus;
     }
 
@@ -325,4 +331,37 @@ public sealed partial class MainWindow
     }
     private void ShowReminderMessage(string message, InfoBarSeverity severity)
     { ReminderMessage.Title = message; ReminderMessage.Severity = severity; ReminderMessage.IsOpen = true; }
+
+    private bool AddAnnouncementNotice(string title, string text, string url, string? sundayKey = null)
+    {
+        var notice = new ReminderNotice { AnnouncementTitle = title, AnnouncementText = text, AnnouncementUrl = url,
+            CreatedAt = DateTimeOffset.UtcNow, Read = AppWindow.IsVisible && _currentPage == "notifications" && !_notificationSettingsOpen };
+        var previous = _settings.ReminderNotices;
+        _settings.ReminderNotices = new[] { notice }.Concat(previous).Take(100).ToList();
+        var hadCheckpoint = sundayKey is not null && _settings.CheckedReminders.TryGetValue(sundayKey, out _);
+        if (sundayKey is not null) _settings.CheckedReminders[sundayKey] = notice.CreatedAt;
+        try { _settings.Save(); }
+        catch (Exception error) when (IsStorageError(error))
+        {
+            _settings.ReminderNotices = previous;
+            if (sundayKey is not null && !hadCheckpoint) _settings.CheckedReminders.Remove(sundayKey);
+            ShowReminderMessage("알림 기록을 저장하지 못했어요. 잠시 후 다시 확인합니다.", InfoBarSeverity.Warning);
+            return false;
+        }
+        RefreshReminderList();
+        if (_notificationReady) _windowsNotifications.Show(title, [text], new Dictionary<string, string> { ["reminder"] = notice.Id });
+        return true;
+    }
+
+    private async void AnnouncementLink_Click(object sender, RoutedEventArgs args)
+    {
+        if (sender is not Button { Tag: string url }) return;
+        if (url == "mapleday:update") { NavigateTo("settings"); return; }
+        if (ScheduleCalendar.OfficialUri(url))
+        {
+            try { await Windows.System.Launcher.LaunchUriAsync(new Uri(url)); }
+            catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
+            { ShowReminderMessage("공지를 열지 못했어요. 캘린더에서 다시 확인해주세요.", InfoBarSeverity.Warning); }
+        }
+    }
 }
