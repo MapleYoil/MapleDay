@@ -159,7 +159,7 @@ def main():
     bundle = QA / 'MapleDay-main-listing.zip'
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, *_ in items: archive.write(OUT / name, name)
-        for name in ('registration.txt', 'README.md'):
+        for name in ('description-500.txt', 'registration.txt', 'README.md'):
             if (OUT / name).is_file(): archive.write(OUT / name, name)
     print(json.dumps(metadata, ensure_ascii=False, indent=2))
     print('Bundle:', bundle)
