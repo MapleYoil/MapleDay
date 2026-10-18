@@ -8,7 +8,7 @@ using MapleDay.Core;
 namespace MapleDay.Services;
 
 public sealed record SyncCredentials(string Vault, string Device, string Token, string Key, string Recovery = "");
-public sealed record SyncCheckpoint(SyncCredentials Credentials, SyncDocument Baseline, bool Confirmed = false);
+public sealed record SyncCheckpoint(SyncCredentials Credentials, SyncDocument Baseline, bool Confirmed = false, long Revision = -1);
 public sealed record SyncState(long revision, string data);
 public sealed record SyncDevice(string id, string name, long created, long seen);
 public sealed record SyncBackup(string Path, string Label);
@@ -40,12 +40,14 @@ public sealed class RecordSyncClient : IDisposable
         SyncRecords.Apply(new AppSettings(), value.Baseline); Checkpoint = value;
     }
     private async Task SaveAsync(SyncCheckpoint checkpoint, CancellationToken ct) { await _store.SaveAsync(JsonSerializer.Serialize(checkpoint), ct); Checkpoint = checkpoint; }
-    private async Task<(JsonElement Data, HttpStatusCode Status)> RequestAsync(string path, object? body = null, bool anonymous = false, CancellationToken ct = default)
+    private async Task<(JsonElement Data, HttpStatusCode Status)> RequestAsync(string path, object? body = null, bool anonymous = false, CancellationToken ct = default, long revision = -1)
     {
         using var request = new HttpRequestMessage(body is null ? HttpMethod.Get : HttpMethod.Post, Endpoint + path);
         if (!anonymous) request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Checkpoint?.Credentials.Token ?? "");
+        if (body is null && revision >= 0) request.Headers.TryAddWithoutValidation("If-None-Match", $"\"sync-{revision}\"");
         if (body is not null) request.Content = JsonContent.Create(body);
         using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+        if (response.StatusCode == HttpStatusCode.NotModified) return (default, response.StatusCode);
         if (response.Content.Headers.ContentLength > 5_700_000) throw new ArgumentException("서버 응답이 너무 큽니다.");
         await using var stream = await response.Content.ReadAsStreamAsync(ct);
         using var buffer = new MemoryStream(); var bytes = new byte[8192];
@@ -121,8 +123,10 @@ public sealed class RecordSyncClient : IDisposable
         try
         {
             var checkpoint = Checkpoint; var local = SyncRecords.Capture(settings);
-            var (raw, _) = await RequestAsync("state", ct: ct); var state = raw.Deserialize<SyncState>()!;
-            var remote = state.data.Length == 0 ? SyncDocument.Empty : RecordSync.Decrypt(Convert.FromBase64String(state.data), checkpoint.Credentials.Key, checkpoint.Credentials.Vault);
+            var (raw, status) = await RequestAsync("state", ct: ct, revision: checkpoint.Confirmed ? checkpoint.Revision : -1);
+            var state = status == HttpStatusCode.NotModified ? new SyncState(checkpoint.Revision, "") : raw.Deserialize<SyncState>()!;
+            var remote = status == HttpStatusCode.NotModified ? checkpoint.Baseline : state.data.Length == 0 ? SyncDocument.Empty
+                : RecordSync.Decrypt(Convert.FromBase64String(state.data), checkpoint.Credentials.Key, checkpoint.Credentials.Vault);
             if (!checkpoint.Confirmed && !await confirm(local.Records.Count, remote.Records.Count)) return "초기 병합을 취소했습니다. 기록을 전송하지 않았습니다.";
             var merge = RecordSync.Merge(checkpoint.Baseline, local, remote);
             if (merge.Conflicts.Count > 0)
@@ -138,11 +142,13 @@ public sealed class RecordSyncClient : IDisposable
             {
                 await BackupAsync(local, ct);
             }
+            var revision = state.revision;
             if (!SyncRecords.Same(remote, merge.Document))
             {
                 var encrypted = Convert.ToBase64String(RecordSync.Encrypt(merge.Document, checkpoint.Credentials.Key, checkpoint.Credentials.Vault));
                 var response = await RequestAsync("state", new { revision = state.revision, data = encrypted }, ct: ct);
                 if (response.Status == HttpStatusCode.Conflict) return "다른 기기가 먼저 저장했습니다. 다음 동기화에서 다시 비교합니다.";
+                revision = response.Data.GetProperty("revision").GetInt64();
             }
             ct.ThrowIfCancellationRequested();
             if (Checkpoint != checkpoint || !SyncRecords.Same(local, SyncRecords.Capture(settings)))
@@ -155,7 +161,8 @@ public sealed class RecordSyncClient : IDisposable
                     SyncRecords.Apply(settings, merge.Document);
                     try { _save(settings); } catch { SyncRecords.Apply(settings, local); throw; }
                 }
-                await SaveAsync(checkpoint with { Baseline = merge.Document, Confirmed = true }, ct);
+                if (!checkpoint.Confirmed || checkpoint.Revision != revision || !SyncRecords.Same(checkpoint.Baseline, merge.Document))
+                    await SaveAsync(checkpoint with { Baseline = merge.Document, Confirmed = true, Revision = revision }, ct);
             }
             finally { Applying = false; }
             return $"동기화 완료 · {DateTimeOffset.Now:MM.dd HH:mm:ss} · {merge.Document.Records.Count:N0}개 기록";

@@ -76,16 +76,32 @@ public class RecordSyncClientTests : IDisposable
         Assert.Throws<ArgumentException>(() => SyncRecords.Apply(_settings, broken));
         Assert.True(SyncRecords.Same(original, SyncRecords.Capture(_settings)));
     }
+    [Fact] public async Task UnchangedRevisionDoesNotDownloadOrRewriteSnapshotAndLocalEditsStillUpload()
+    {
+        using var client = Client(); await client.ConnectAsync("", "시험 PC", default); await client.SynchronizeAsync(_settings, Confirm, Resolve, default);
+        var timestamp = File.GetLastWriteTimeUtc(Path.Combine(_root, "sync.dat"));
+        await client.SynchronizeAsync(_settings, Confirm, Resolve, default);
+        Assert.Equal(1, _server.NotModified); Assert.Equal(1, _server.Writes);
+        Assert.Equal(timestamp, File.GetLastWriteTimeUtc(Path.Combine(_root, "sync.dat")));
+        _settings.HuntingIncomeRecords[0] = _settings.HuntingIncomeRecords[0] with { Meso = 888 };
+        await client.SynchronizeAsync(_settings, Confirm, Resolve, default);
+        Assert.Equal(2, _server.NotModified); Assert.Equal(2, _server.Writes); Assert.Equal(2, client.Checkpoint!.Revision);
+    }
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, true); }
     private sealed class FakeServer : HttpMessageHandler
     {
-        public string Data = "", LastRequest = ""; public long Revision; public int Writes; public bool Conflict; public Action? BeforeWrite;
+        public string Data = "", LastRequest = ""; public long Revision; public int Writes, NotModified; public bool Conflict; public Action? BeforeWrite;
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var route = request.RequestUri!.Segments.Last();
             if (route == "create") return Response(new { vault = new string('a', 32), device = new string('b', 32), token = new string('c', 64), recovery = new string('d', 64) });
             Assert.Equal(new string('c', 64), request.Headers.Authorization!.Parameter);
-            if (request.Method == HttpMethod.Get) return Response(new { revision = Revision, data = Data });
+            if (request.Method == HttpMethod.Get)
+            {
+                if (request.Headers.TryGetValues("If-None-Match", out var values) && values.Single() == $"\"sync-{Revision}\"")
+                { NotModified++; return new(HttpStatusCode.NotModified); }
+                return Response(new { revision = Revision, data = Data });
+            }
             LastRequest = await request.Content!.ReadAsStringAsync(cancellationToken); var body = JsonSerializer.Deserialize<JsonElement>(LastRequest);
             BeforeWrite?.Invoke(); BeforeWrite = null;
             if (Conflict || body.GetProperty("revision").GetInt64() != Revision) return Response(new { revision = Revision, data = Data }, HttpStatusCode.Conflict);
