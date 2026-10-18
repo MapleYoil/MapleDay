@@ -36,7 +36,9 @@ public static class BossLootCatalog
 public sealed record BossLootRecord(string Id, string Ocid, DateOnly Date, string Boss, string ItemId, string ItemName,
     string Mode, long Amount, int PartySize, string Ratios = "", int OwnMember = 1, string Difficulty = "", string ClearId = "")
 {
-    public long Received => BossLoot.Calculate(Mode, Amount, PartySize, Ratios, OwnMember);
+    public LootSettlement? Settlement { get; init; }
+    public long Received => Mode == "settlement" && Settlement is { } value ? value.Received(Amount)
+        : BossLoot.Calculate(Mode, Amount, PartySize, Ratios, OwnMember);
 }
 public static class BossLoot
 {
@@ -69,16 +71,21 @@ public static class BossLoot
         if (weights.Sum() <= 0) throw new ArgumentException("비율 합계는 0보다 커야 합니다.");
         return decimal.ToInt64(decimal.Floor(amount * weights[ownMember - 1] / weights.Sum()));
     }
-    public static bool Valid(BossLootRecord? record) { if (record is null) return false; try { _ = record.Received; return !string.IsNullOrWhiteSpace(record.Ocid)
+    public static bool Valid(BossLootRecord? record) { if (record is null) return false; try { return !string.IsNullOrWhiteSpace(record.Ocid)
         && !string.IsNullOrWhiteSpace(record.Id) && !string.IsNullOrWhiteSpace(record.Boss) && !string.IsNullOrWhiteSpace(record.ItemName)
-        && record.Date >= new DateOnly(2003, 4, 29) && record.PartySize <= BossParty.Maximum(record.Boss)
+        && record.Date >= new DateOnly(2003, 4, 29) && record.PartySize is >= 1 and <= 6 && record.PartySize <= BossParty.Maximum(record.Boss)
+        && (record.Mode != "settlement" || record.Settlement is { } s && PartySettlement.ValidMembers(s.Members, s.LeaderId)
+            && s.Members.Length == record.PartySize && s.Members.Any(member => member.Id == s.OwnId)
+            && s.State is "pending" or "partial" or "complete" && s.ActualReceived is >= 0 and <= MaximumAmount
+            && s.Calculate(record.Amount).Sale == record.Amount)
         && (string.IsNullOrEmpty(record.Difficulty) || string.IsNullOrEmpty(record.ItemId)
-            || ForRecordedDifficulty(record)); } catch (ArgumentException) { return false; } }
+            || ForRecordedDifficulty(record)) && record.Received is >= 0 and <= MaximumAmount; } catch (Exception error) when (error is ArgumentException or InvalidOperationException or OverflowException) { return false; } }
     private static bool ForRecordedDifficulty(BossLootRecord record) => BossLootCatalog.ForBoss(record.Boss, record.Difficulty)
         .Any(item => item.Id == record.ItemId);
     public static long Sum(IEnumerable<BossLootRecord> records, DateOnly start, DateOnly end) => records
         .Where(record => record.Date >= start && record.Date <= end && Valid(record)).Sum(record => record.Received);
-    public static string Distribution(BossLootRecord record) => record.Mode == "received" ? "수령액 직접 입력"
+    public static string Distribution(BossLootRecord record) => record.Mode == "settlement" && record.Settlement is { } s
+        ? $"{record.PartySize}인 · 판매 수수료 {s.AuctionFee}% · {(s.Transfer == "auction" ? "경매장 전달" : s.Transfer == "trade" ? "직접 교환 5%" : "전달 수수료 없음")} · {(s.State == "complete" ? "정산 완료" : s.State == "partial" ? "부분 수령" : "미정산")}" : record.Mode == "received" ? "수령액 직접 입력"
         : record.Mode == "equal" ? $"{record.PartySize}인 균등 분배 · 총액 {BossIncome.Money(record.Amount)}"
         : $"{record.PartySize}인 · {record.Ratios} · 내 순번 {record.OwnMember} · 총액 {BossIncome.Money(record.Amount)}";
 }

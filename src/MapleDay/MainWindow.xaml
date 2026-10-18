@@ -89,6 +89,7 @@
                 <NavigationViewItem x:Name="IncomeNavigationItem" Content="수익" Tag="income" AutomationProperties.AutomationId="IncomeNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D2;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem x:Name="PartyNavigationItem" Content="파티" Tag="party"><NavigationViewItem.Icon><FontIcon Glyph="&#xE716;" /></NavigationViewItem.Icon></NavigationViewItem>
                 <NavigationViewItem x:Name="CalendarNavigationItem" Content="캘린더" Tag="calendar" AutomationProperties.AutomationId="CalendarNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE8BF;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
@@ -489,7 +490,7 @@
                                 <StackPanel Width="320" Spacing="16">
                                     <TextBlock Text="수익 설정" FontSize="20" FontWeight="SemiBold" />
                                     <ComboBox x:Name="IncomeDisplaySelector" Header="표시 금액" HorizontalAlignment="Stretch" SelectionChanged="IncomeDisplaySelector_SelectionChanged">
-                                        <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" />
+                                        <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" /><ComboBoxItem Content="메소 + 조각" Tag="fragments" />
                                     </ComboBox>
                                     <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
                                     <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
@@ -574,6 +575,7 @@
         <ScrollViewer x:Name="CalendarPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <views:ScheduleCalendarView x:Name="CalendarPanel" Margin="24,24,24,20" MaxWidth="1000" HorizontalAlignment="Stretch"/>
         </ScrollViewer>
+        <views:PartyManagerView x:Name="PartyPage" Visibility="Collapsed" />
         <ScrollViewer x:Name="LevelPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="24,28" Spacing="20" MaxWidth="1000" HorizontalAlignment="Stretch">
                 <Grid ColumnSpacing="12">
@@ -841,6 +843,9 @@
             <StackPanel Padding="24" Spacing="20">
                 <TextBlock Text="설정" FontSize="28" FontWeight="SemiBold" />
                 <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <views:RecordSyncView x:Name="RecordSyncPanel" />
+                </Border>
+                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="앱 업데이트" FontSize="18" FontWeight="SemiBold" />
                         <TextBlock x:Name="AppVersionText" Style="{StaticResource SecondaryText}" />
@@ -866,7 +871,7 @@
                         <TextBlock Text="시작 페이지" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="StartPageSelector" SelectionChanged="StartPageSelector_SelectionChanged" MinWidth="220" AutomationProperties.Name="시작 페이지">
                             <ComboBoxItem Content="내 캐릭터" Tag="characters" /><ComboBoxItem Content="스케줄러" Tag="scheduler" /><ComboBoxItem Content="수익" Tag="income" />
-                            <ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
+                            <ComboBoxItem Content="파티" Tag="party" /><ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
                         </ComboBox>
                     </StackPanel>
                 </Border>

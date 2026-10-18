@@ -92,6 +92,8 @@ public sealed class IncomeExportTests
         Assert.Equal(0, rain.RepresentedMeso);
         using var renderer = new IncomeReplayRenderer(replay, new("both"), "사냥 기록", assets);
         Assert.Equal(1280 * 720 * 4, renderer.RenderPixels(10, 1280, 720).Length);
+        using var fragments = new IncomeReplayRenderer(replay, new("fragments"), "사냥 기록", assets);
+        Assert.NotEqual(renderer.RenderPixels(10, 1280, 720), fragments.RenderPixels(10, 1280, 720));
     }
     [Theory]
     [InlineData(99, 0)]

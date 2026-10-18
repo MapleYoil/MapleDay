@@ -37,7 +37,8 @@ public sealed class ScheduleRow(ScheduleOccurrence occurrence, DateOnly today, I
     public ScheduleLabel Label { get; } = new(occurrence);
     public string Details => Occurrence.Schedule is { } item
         ? (item.Kind == ScheduleKind.Boss ? $"{BossLootCatalog.DifficultyLabel(item.Difficulty)} {item.Boss}" : "일반 일정")
-            + $" · {(item.Time is { } time ? time.ToString("HH:mm") : "하루 종일")}{(item.Weekly ? " · 매주 반복" : "")}{(Occurrence.Completed ? " · 완료" : "")}" : "일요일 · 썬데이 메이플";
+            + $" · {(item.Time is { } time ? time.ToString("HH:mm") : "하루 종일")}{(item.Weekly ? " · 매주 반복" : "")}{(Occurrence.Completed ? " · 완료" : "")}"
+            + (item.Party is { } party ? "\n" + party.Name + " · " + string.Join(" · ", party.Members.Select(member => member.Name)) : "") : "일요일 · 썬데이 메이플";
     public string Note => Occurrence.Schedule?.Note ?? (Occurrence.Date < today.AddMonths(-6)
         ? "종료된 썬데이는 최근 6개월까지만 조회할 수 있어요." : Occurrence.Sunday is null
         ? Occurrence.Date <= today ? "선택한 날짜의 종료된 썬데이 공지를 확인합니다." : "아직 공지가 공개되지 않았어요. 공개되면 혜택 이미지를 표시합니다."

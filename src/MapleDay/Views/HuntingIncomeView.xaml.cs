@@ -115,7 +115,8 @@ public sealed partial class HuntingIncomeView : UserControl
             var row = Draft();
             if (UseLimit.IsChecked == true) { _loading = true; MesoInput.Text = row.Meso.ToString(CultureInfo.CurrentCulture); _loading = false; }
             LimitText.Text = $"Lv. {row.Level} · 기본 메소 제한 {IncomeReplay.CompactMeso(HuntingIncome.DailyLimit(row.Level))} 메소";
-            Calculation.Text = $"메소 {_display.Format(row.Meso)} + 조각 {row.Fragments:N0}개 × {IncomeReplay.CompactMeso(row.FragmentUnitPrice)} = {_display.Format(row.Total)}";
+            Calculation.Text = _display.ValidMode == "fragments" ? _display.Hunting(row.Meso, row.Fragments, row.Total)
+                : $"메소 {_display.Format(row.Meso)} + 조각 {row.Fragments:N0}개 × {IncomeReplay.CompactMeso(row.FragmentUnitPrice)} = {_display.Format(row.Total)}";
             SaveButton.IsEnabled = HuntingIncome.Valid(row) && !_saving;
         }
         catch (Exception error) when (error is ArgumentException or OverflowException)
@@ -137,7 +138,7 @@ public sealed partial class HuntingIncomeView : UserControl
         try
         {
             var plan = BulkPlan(); var days = plan.Added + plan.Updated;
-            BulkPreview.Text = $"추가 {plan.Added}일 · 수정 {plan.Updated}일 · 기존 기록 유지 {plan.Skipped}일\n입력할 수익 {_display.Format(checked(Draft().Total * days))}";
+            BulkPreview.Text = $"추가 {plan.Added}일 · 수정 {plan.Updated}일 · 기존 기록 유지 {plan.Skipped}일\n입력할 수익 {_display.Hunting(checked(Draft().Meso * days), (long)Draft().Fragments * days, checked(Draft().Total * days))}";
             BulkSaveButton.IsEnabled = days > 0 && !_saving;
         }
         catch (Exception error) when (error is ArgumentException or OverflowException)
@@ -210,7 +211,7 @@ public sealed partial class HuntingIncomeView : UserControl
     {
         var characters = (CharacterInput.ItemsSource as HuntCharacter[] ?? []).ToDictionary(owner => owner.Ocid);
         Records.ItemsSource = (_settings?.HuntingIncomeRecords ?? []).Where(HuntingIncome.Valid).Where(row => characters.ContainsKey(row.Ocid))
-            .OrderByDescending(row => row.Date).Select(row => new HuntRow(row, $"{row.Date:yyyy.MM.dd} · {characters[row.Ocid].Label} · {_display.Format(row.Total)} · 조각 {row.Fragments}개")).ToArray();
+            .OrderByDescending(row => row.Date).Select(row => new HuntRow(row, $"{row.Date:yyyy.MM.dd} · {characters[row.Ocid].Label} · {_display.Hunting(row.Meso, row.Fragments, row.Total)}" + (_display.ValidMode == "fragments" ? "" : $" · 조각 {row.Fragments:N0}개"))).ToArray();
     }
     private void Record_Selected(object sender, SelectionChangedEventArgs args)
     {

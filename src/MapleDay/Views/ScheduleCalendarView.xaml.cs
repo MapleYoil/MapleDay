@@ -118,6 +118,40 @@ public sealed partial class ScheduleCalendarView : UserControl
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
         { _settings.CalendarSchedules = previous; ActionStatus.Text = "일정을 저장하지 못했어요. 데이터 폴더 권한을 확인해주세요."; return false; }
     }
+    private async void LoadParty_Click(object sender, RoutedEventArgs args)
+    {
+        if (_dialogOpen || _settings is null) return;
+        var parties = _settings.Parties.Where(PartySettlement.Valid).Where(party => party.Bosses.Length > 0).ToArray();
+        if (parties.Length == 0) { ActionStatus.Text = "파티 메뉴에서 구성원과 보스를 먼저 등록해주세요."; return; }
+        _dialogOpen = true;
+        try
+        {
+            var choice = new ComboBox { Header = "저장한 파티", ItemsSource = parties, DisplayMemberPath = "Name", SelectedIndex = 0, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var time = new TimePicker { Header = "시간", ClockIdentifier = "24HourClock", Time = new TimeSpan(20, 0, 0) };
+            var weekly = new CheckBox { Content = "매주 반복" };
+            var until = new CalendarDatePicker { Header = "반복 종료일 (선택)" };
+            var error = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            var form = new StackPanel { Spacing = 12 }; foreach (var field in new FrameworkElement[] { choice, time, weekly, until, error }) form.Children.Add(field);
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = $"{_selected:M월 d일} 파티 일정", PrimaryButtonText = "일정 저장", CloseButtonText = "취소", Content = form };
+            dialog.PrimaryButtonClick += (_, args) =>
+            {
+                try
+                {
+                    var party = (PartyPreset)choice.SelectedItem;
+                    var schedules = PartySettlement.Schedule(party, _selected, TimeOnly.FromTimeSpan(time.Time), weekly.IsChecked == true,
+                        until.Date is { } end ? DateOnly.FromDateTime(end.DateTime) : null);
+                    if (schedules.Any(item => !ScheduleCalendar.Valid(item))) throw new ArgumentException("참여자와 종료일을 확인해주세요.");
+                    var existing = _settings.CalendarSchedules;
+                    var additions = schedules.Where(item => !existing.Any(old => old.Date == item.Date && old.Time == item.Time && old.Party?.Id == party.Id && old.Boss == item.Boss && old.Difficulty == item.Difficulty)).ToArray();
+                    if (additions.Length == 0) throw new ArgumentException("같은 날짜·시간에 이미 등록한 파티 일정입니다.");
+                    if (!Save(existing.Concat(additions).ToList())) { args.Cancel = true; error.Text = ActionStatus.Text; }
+                }
+                catch (ArgumentException exception) { args.Cancel = true; error.Text = exception.Message; }
+            };
+            await dialog.ShowAsync();
+        }
+        finally { _dialogOpen = false; }
+    }
     private async void Add_Click(object sender, RoutedEventArgs args) => await EditAsync(null);
     private async void Edit_Click(object sender, RoutedEventArgs args)
     { if (sender is Button { Tag: ScheduleRow row } && row.Occurrence.Schedule is { } item) await EditAsync(item); }
@@ -232,7 +266,7 @@ public sealed partial class ScheduleCalendarView : UserControl
                     owner?.Ocid ?? "", owner?.Name ?? "", bossName, mode, weekly.IsChecked == true,
                     weekly.IsChecked == true && until.Date is { } end ? DateOnly.FromDateTime(end.DateTime) : null,
                     kind.SelectedIndex == 1 ? (int)party.Value : 1)
-                    { CompletedDates = existing?.CompletedDates ?? [] };
+                    { CompletedDates = existing?.CompletedDates ?? [], Party = existing?.Boss == bossName && existing.Difficulty == mode && existing.PartySize == (int)party.Value ? existing.Party : null };
                 if (!ScheduleCalendar.Valid(item)) { validation.Text = "제목·날짜·보스 정보를 확인해주세요. 반복 종료일은 시작일 이후여야 합니다."; args.Cancel = true; return; }
                 if (!Save(_settings.CalendarSchedules.Where(value => value.Id != item.Id).Append(item).ToList()))
                 { validation.Text = ActionStatus.Text; args.Cancel = true; }

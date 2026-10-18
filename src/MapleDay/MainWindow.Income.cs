@@ -38,7 +38,7 @@ public sealed partial class MainWindow
     private IncomeDisplay CurrentIncomeDisplay => new(_settings.IncomeDisplayMode, _settings.MesoCashRate);
     private void InitializeIncomeDisplay()
     {
-        IncomeDisplaySelector.SelectedIndex = CurrentIncomeDisplay.ValidMode switch { "cash" => 1, "both" => 2, _ => 0 };
+        IncomeDisplaySelector.SelectedIndex = CurrentIncomeDisplay.ValidMode switch { "cash" => 1, "both" => 2, "fragments" => 3, _ => 0 };
         IncomeCashRateInput.Value = (double)CurrentIncomeDisplay.Rate;
         IncomeReplayPanel.OwnerWindow = WinRT.Interop.WindowNative.GetWindowHandle(this);
         Closed += (_, _) => { IncomeReplayPanel.Pause(); _ = IncomeReplayPanel.StopAsync(); };
@@ -195,11 +195,14 @@ public sealed partial class MainWindow
         var huntMonthly = HuntingIncome.Sum(hunting, monthStart, today);
         var huntTotal = HuntingIncome.Sum(hunting, DateOnly.MinValue, today);
         long Amount(long boss, long hunt) => _incomeMode == 1 ? boss : _incomeMode == 2 ? hunt : boss + hunt;
-        WeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossWeekly, huntWeekly));
-        MonthlyIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossMonthly, huntMonthly));
-        TotalIncomeAmount.Text = CurrentIncomeDisplay.Format(Amount(bossTotal, huntTotal));
+        string Display(long boss, long hunt, DateOnly start) => _incomeMode == 1 ? CurrentIncomeDisplay.Format(boss)
+            : CurrentIncomeDisplay.Hunting((_incomeMode == 0 ? boss : 0) + hunting.Where(row => HuntingIncome.Valid(row) && row.Date >= start && row.Date <= today).DistinctBy(row => row.Id).Sum(row => row.Meso),
+                hunting.Where(row => HuntingIncome.Valid(row) && row.Date >= start && row.Date <= today).DistinctBy(row => row.Id).Sum(row => (long)row.Fragments), Amount(boss, hunt));
+        WeeklyIncomeAmount.Text = Display(bossWeekly, huntWeekly, weekStart);
+        MonthlyIncomeAmount.Text = Display(bossMonthly, huntMonthly, monthStart);
+        TotalIncomeAmount.Text = Display(bossTotal, huntTotal, DateOnly.MinValue);
         IncomeHeading.Text = _incomeMode == 1 ? "보스 수익" : _incomeMode == 2 ? "사냥 수익" : "전체 수익";
-        IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {CurrentIncomeDisplay.Format(huntWeekly)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {CurrentIncomeDisplay.Format(huntMonthly)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {CurrentIncomeDisplay.Format(huntTotal)}" : "";
+        IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {Display(0, huntWeekly, weekStart)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {Display(0, huntMonthly, monthStart)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {Display(0, huntTotal, DateOnly.MinValue)}" : "";
         BossIncomeDetails.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
         HuntingIncomePanel.Visibility = _incomeMode == 1 ? Visibility.Collapsed : Visibility.Visible;
         HuntingIncomePanel.SetContext(_settings, selected, _incomeSelectedOcid, CurrentIncomeDisplay);

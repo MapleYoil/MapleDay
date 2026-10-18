@@ -82,10 +82,16 @@ public sealed partial class IncomeCalendarView : UserControl
         NextButton.IsEnabled = _month < FirstOfMonth(_today);
         Days.Clear();
         foreach (var day in _days) Days.Add(new(day, _selectedDate, _today, _expectedCharacters, _display));
-        MonthAmount.Text = $"이 달의 {label} 수익 {_display.Format(_days.Where(day => day.InMonth).Sum(day => day.Meso))}";
+        string Amount(IEnumerable<CalendarIncomeDay> days)
+        {
+            var rows = days.ToArray(); var hunts = rows.SelectMany(day => day.Hunting ?? []).Select(row => row.Hunting).ToArray();
+            var total = rows.Sum(row => row.Meso);
+            return _category != IncomeCalendarCategory.Boss ? _display.Hunting(total - hunts.Sum(row => row.Total - row.Meso), hunts.Sum(row => (long)row.Fragments), total) : _display.Format(total);
+        }
+        MonthAmount.Text = $"이 달의 {label} 수익 {Amount(_days.Where(day => day.InMonth))}";
         var chosen = _days.FirstOrDefault(day => day.Date == _selectedDate);
         SelectedTitle.Text = $"{_selectedDate:M월 d일} · {label} 기록";
-        SelectedAmount.Text = chosen is { } selectedDay && (selectedDay.Bosses.Count > 0 || selectedDay.KnownCharacters > 0 || selectedDay.Loot?.Count > 0 || selectedDay.Hunting?.Count > 0) ? _display.Format(selectedDay.Meso) : "—";
+        SelectedAmount.Text = chosen is { } selectedDay && (selectedDay.Bosses.Count > 0 || selectedDay.KnownCharacters > 0 || selectedDay.Loot?.Count > 0 || selectedDay.Hunting?.Count > 0) ? Amount([selectedDay]) : "—";
         Bosses.Clear();
         foreach (var record in chosen?.Bosses ?? []) Bosses.Add(new(record, _display, _loot.Select(item => item.Loot)));
         Loot.Clear();

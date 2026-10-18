@@ -96,7 +96,9 @@ public sealed class IncomeReplayRenderer : IDisposable
         Text(g, _replay.Category == "hunting" ? "메소 · 조각 사냥 수익" : "보스 · 물욕템 수익", 36, 64, 32, White, FontStyle.Bold);
         Text(g, _scope, 36, 110, 18, Muted);
         Text(g, frame.Date?.ToString("yyyy.MM.dd") ?? "저장된 기록 없음", 36, 230, 20, Muted);
-        var main = _display.ValidMode == "cash" ? _display.CashText(frame.Total) : IncomeReplay.CompactMeso(frame.Total);
+        var fragmentsMode = _display.ValidMode == "fragments" && _replay.Category == "hunting";
+        var fragmentValue = fragmentsMode ? (frame.CollectedLoot ?? []).Sum(row => row.Meso) : 0;
+        var main = _display.ValidMode == "cash" ? _display.CashText(frame.Total) : IncomeReplay.CompactMeso(frame.Total - fragmentValue);
         Text(g, "누적 " + (_display.ValidMode == "cash" ? "환산 금액" : "메소"), 36, 267, 20, Muted);
         var pulse = (float)Math.Exp(-(progress * _replay.Clears.Count % 1) * 9);
         using (var glowShape = new GraphicsPath())
@@ -111,6 +113,7 @@ public sealed class IncomeReplayRenderer : IDisposable
         Text(g, main, 32, 301, mainSize, frame.Total >= 1_000_000_000_000 ? Blue : White, FontStyle.Bold);
         g.Restore(moneyState);
         if (_display.ValidMode == "both") Text(g, _display.CashText(frame.Total), 36, 398, 32, Blue, FontStyle.Bold);
+        if (fragmentsMode) Text(g, $"+ 조각 {(frame.CollectedLoot ?? []).Sum(row => (long)row.Count):N0}개", 36, 398, 30, Blue, FontStyle.Bold);
         Text(g, _replay.Category == "hunting" ? $"사냥 기록 {frame.Count:N0}건" : $"주간 보스 {frame.Count:N0}마리", 36, 170, 22, White);
         using (var track = new SolidBrush(Color.FromArgb(38, 51, 71))) g.FillRectangle(track, 36, 676, 408, 3);
         using (var fill = new SolidBrush(Blue)) g.FillRectangle(fill, 36, 676, (float)(408 * progress), 3);
@@ -146,7 +149,7 @@ public sealed class IncomeReplayRenderer : IDisposable
             var y = 86 + cell.Y * (side + gap);
             using var background = new SolidBrush(Color.FromArgb(33, 45, 64));
             g.FillRoundedRectangle(background, new RectangleF(x, y, side, side), Math.Min(24, side * .13f));
-            var both = _display.ValidMode == "both";
+            var both = _display.ValidMode == "both" || fragmentsMode;
             var compact = side < 130;
             var headingSize = compact ? 13 : Math.Clamp(side * .112f, 13, 23);
             var amountSize = compact ? 14 : Math.Clamp(side * .115f, 13, 25);
@@ -162,9 +165,10 @@ public sealed class IncomeReplayRenderer : IDisposable
                 g.DrawImage(icon, x + (side - size) / 2, y + iconTop, size, size); g.Restore(state);
             }
             CenterText(g, row.Name, new RectangleF(x + 6, y + (compact ? 43 : side * .46f), side - 12, compact ? 31 : side * .25f), headingSize, White);
-            var value = _display.ValidMode == "cash" ? _display.CashText(row.Meso) : (row.Meso / 100_000_000m).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "억";
+            var value = _display.ValidMode == "cash" ? _display.CashText(row.Meso) : fragmentsMode
+                ? IncomeReplay.CompactMeso(row.Meso - row.FragmentMeso) : (row.Meso / 100_000_000m).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "억";
             CenterText(g, value, new RectangleF(x + 6, y + (compact ? 74 : side * (both ? .72f : .77f)), side - 12, compact ? 19 : side * .16f), amountSize, Blue, true);
-            if (both) CenterText(g, _display.CashText(row.Meso), new RectangleF(x + 6, y + (compact ? 94 : side * .87f), side - 12, compact ? 14 : side * .12f), smallSize, Muted, true);
+            if (both) CenterText(g, fragmentsMode ? $"조각 {row.Fragments:N0}개" : _display.CashText(row.Meso), new RectangleF(x + 6, y + (compact ? 94 : side * .87f), side - 12, compact ? 14 : side * .12f), smallSize, Muted, true);
         }
         if (frame.Bosses.Count == 0) Text(g, "집계할 주간 보스 기록이 없습니다.", 570, 335, 22, Muted);
         Text(g, _replay.Category == "hunting" ? "캐릭터별 사냥 수익 순" : "보스별 누적 수익 순", 494, 44, 19, Muted);

@@ -120,5 +120,11 @@ public class HuntingIncomeTests
         Assert.Equal(200, final.Count);
         Assert.Equal(30000, Assert.Single(final.CollectedLoot!).Count);
         Assert.Equal(150000000000, final.CollectedLoot![0].Meso);
+        var character = Assert.Single(final.Bosses);
+        Assert.Equal(30000, character.Fragments); Assert.Equal(150000000000, character.FragmentMeso);
+        Assert.Equal(174800000000, character.Meso - character.FragmentMeso);
+        var partial = replay.At(.001);
+        Assert.Equal(30, Assert.Single(partial.Bosses).Fragments);
+        Assert.Equal(30, Assert.Single(partial.CollectedLoot!).Count);
     }
 }

@@ -17,8 +17,9 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
     public string Day => day.Date.Day.ToString();
     public bool Enabled => (day.Date >= SchedulerBossHistory.FirstDate || day.Loot?.Count > 0 || day.Hunting?.Count > 0) && day.Date <= today;
     public double Opacity => day.InMonth ? 1 : 0.4;
-    public string Amount => day.Bosses.Count > 0 || day.KnownCharacters > 0 || day.Loot?.Count > 0 || day.Hunting?.Count > 0 ? (display ?? new()).Format(day.Meso, true) : "";
-    public double AmountFontSize => display?.ValidMode == "both" ? 11 : 15;
+    public string Amount => day.Bosses.Count > 0 || day.KnownCharacters > 0 || day.Loot?.Count > 0 || day.Hunting?.Count > 0 ? day.Hunting?.Count > 0 ? (display ?? new()).Hunting(
+        day.Meso - day.Hunting.Sum(row => row.Hunting.Total - row.Hunting.Meso), day.Hunting.Sum(row => (long)row.Hunting.Fragments), day.Meso, true) : (display ?? new()).Format(day.Meso, true) : "";
+    public double AmountFontSize => display?.ValidMode is "both" or "fragments" ? 11 : 15;
     public string Note => string.Join(" · ", new[]
     {
         day.Bosses.Count > 0 ? $"보스 {day.Bosses.Count}" : null,
@@ -28,14 +29,14 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
     public Brush Background { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentSoftBrush" : "CardBrush");
     public Brush BorderBrush { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentBrush" : "LineBrush");
     public Thickness BorderThickness => new(day.Date == selectedDate ? 2 : 1);
-    public string AccessibleName => $"{day.Date:yyyy년 M월 d일}, {(display ?? new()).Format(day.Meso)}, 보스 {day.Bosses.Count}마리, 물욕템 {day.Loot?.Count ?? 0}건, 사냥 {day.Hunting?.Count ?? 0}건";
+    public string AccessibleName => $"{day.Date:yyyy년 M월 d일}, {Amount}, 보스 {day.Bosses.Count}마리, 물욕템 {day.Loot?.Count ?? 0}건, 사냥 {day.Hunting?.Count ?? 0}건";
     public string Tooltip => AccessibleName + $"\n조회 기록 {day.KnownCharacters}/{expectedCharacters}캐릭터";
 }
 
 public sealed class IncomeCalendarHunting(CalendarHuntingRecord record, IncomeDisplay display)
 {
     public string CharacterName => record.CharacterName;
-    public string Amount => display.Format(record.Hunting.Total);
+    public string Amount => display.Hunting(record.Hunting.Meso, record.Hunting.Fragments, record.Hunting.Total);
     public string Meso => "획득 메소 · " + display.Format(record.Hunting.Meso);
     public string Fragments => $"솔 에르다 조각 {record.Hunting.Fragments:N0}개 · "
         + display.Format(record.Hunting.Fragments * record.Hunting.FragmentUnitPrice);

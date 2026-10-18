@@ -40,7 +40,11 @@ public sealed partial class MainWindow
                 DisplayMemberPath = "Label", HorizontalAlignment = HorizontalAlignment.Stretch };
             var item = new ComboBox { Header = "획득 아이템", HorizontalAlignment = HorizontalAlignment.Stretch };
             var mode = new ComboBox { Header = "수익 입력 방식", HorizontalAlignment = HorizontalAlignment.Stretch };
-            mode.Items.Add("균등 분배"); mode.Items.Add("비율 분배"); mode.Items.Add("수령액 직접 입력");
+            mode.Items.Add("균등 분배"); mode.Items.Add("비율 분배"); mode.Items.Add("수령액 직접 입력"); mode.Items.Add("수수료 반영 정산");
+            var settlement = new PartySettlementView();
+            var preset = new ComboBox { Header = "저장한 파티 불러오기", DisplayMemberPath = "Name", ItemsSource = _settings.Parties.Where(PartySettlement.Valid).ToArray(), HorizontalAlignment = HorizontalAlignment.Stretch };
+            preset.SelectionChanged += (_, _) => { if (preset.SelectedItem is PartyPreset selected) settlement.Apply(PartySettlement.ForBoss(selected, boss.SelectedItem as string ?? "", (difficulty.SelectedItem as ComboBoxItem)?.Tag as string ?? ""), (character.SelectedItem as SchedulerCharacter)?.Ocid); };
+            var settlementPanel = new StackPanel { Spacing = 12 }; settlementPanel.Children.Add(preset); settlementPanel.Children.Add(settlement);
             var party = new NumberBox { Header = "파티 인원 (인)", Value = existing?.PartySize ?? source?.Boss.PartySize ?? 1, Minimum = 1,
                 Maximum = 6, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
             var amount = new TextBox { Header = "분배할 총액 (메소)", Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -97,6 +101,9 @@ public sealed partial class MainWindow
                     throw new ArgumentException("같은 초기화 기간에 이미 잡은 보스입니다. 기존 처치 기록에서 물욕템을 수정해주세요.");
                 return clear;
             }
+            var previewUpdating = false;
+            settlement.Changed += (_, _) => { if (mode.SelectedIndex == 3) { try { amount.Text = settlement.Sale.ToString(); party.Value = settlement.Snapshot().Members.Length; } catch (ArgumentException) { } UpdatePreview(); } };
+            content.Children.Insert(content.Children.IndexOf(mode) + 1, settlementPanel);
             BossLootRecord Draft()
             {
                 if (character.SelectedItem is not SchedulerCharacter owner || boss.SelectedItem is not string name || date.Date is null)
@@ -112,7 +119,9 @@ public sealed partial class MainWindow
                     throw new ArgumentException("금액은 0~1000조 메소의 정수로 입력하세요.");
                 if (!double.IsFinite(party.Value) || party.Value != Math.Truncate(party.Value) || party.Value < 1 || party.Value > BossParty.Maximum(name))
                     throw new ArgumentException($"파티 인원은 1~{BossParty.Maximum(name)}인으로 입력하세요.");
-                var selectedMode = mode.SelectedIndex switch { 0 => "equal", 1 => "ratio", 2 => "received", _ => "" };
+                var selectedMode = mode.SelectedIndex switch { 0 => "equal", 1 => "ratio", 2 => "received", 3 => "settlement", _ => "" };
+                var snapshot = selectedMode == "settlement" ? settlement.Snapshot() : null;
+                if (snapshot is not null) { enteredAmount = settlement.Sale; party.Value = snapshot.Members.Length; }
                 if (selectedMode == "ratio" && (!double.IsFinite(member.Value) || member.Value != Math.Truncate(member.Value) || member.Value < 1 || member.Value > party.Value))
                     throw new ArgumentException("내 순번은 파티 인원 범위의 정수로 입력하세요.");
                 var day = DateOnly.FromDateTime(date.Date.Value.DateTime);
@@ -121,11 +130,16 @@ public sealed partial class MainWindow
                     chosen?.Id ?? "", title, selectedMode, enteredAmount, (int)party.Value, ratio.Text.Trim(),
                     selectedMode == "ratio" ? (int)member.Value : 1, selectedDifficulty,
                     source?.Boss.Id ?? (addDate is not null ? ManualWeeklyHistory.Id(ClearDraft()) : ""));
-                _ = record.Received;
+                record = record with { Settlement = snapshot };
+                if (!BossLoot.Valid(record)) throw new ArgumentException("보상·파티 인원·정산 정보를 확인해주세요.");
                 return record;
             }
             void UpdatePreview()
             {
+                if (previewUpdating) return;
+                previewUpdating = true;
+                try
+                {
                 amountHint.Text = BossLoot.TryParseAmount(amount.Text, out var enteredAmount) ? BossIncome.Money(enteredAmount) : "메소 금액을 정수로 입력하세요.";
                 try
                 {
@@ -136,6 +150,8 @@ public sealed partial class MainWindow
                     errorText.Text = ""; dialog.IsPrimaryButtonEnabled = true;
                 }
                 catch (ArgumentException error) { preview.Text = ""; errorText.Text = error.Message; dialog.IsPrimaryButtonEnabled = false; }
+                }
+                finally { previewUpdating = false; }
             }
             void UpdateMarket()
             {
@@ -158,7 +174,10 @@ public sealed partial class MainWindow
             {
                 var proportional = mode.SelectedIndex == 1;
                 var enabled = lootEnabled.IsChecked == true;
-                mode.Visibility = amount.Visibility = amountHint.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+                settlementPanel.Visibility = enabled && mode.SelectedIndex == 3 ? Visibility.Visible : Visibility.Collapsed;
+                mode.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+                amount.Visibility = amountHint.Visibility = enabled && mode.SelectedIndex != 3 ? Visibility.Visible : Visibility.Collapsed;
+                party.Visibility = enabled && mode.SelectedIndex == 3 ? Visibility.Collapsed : Visibility.Visible;
                 ratio.Visibility = member.Visibility = ratioHint.Visibility = enabled && proportional ? Visibility.Visible : Visibility.Collapsed;
                 item.Visibility = enabled && mode.SelectedIndex != 2 ? Visibility.Visible : Visibility.Collapsed;
                 amount.Header = mode.SelectedIndex == 2 ? "실제 받은 금액 (메소)" : "분배할 총액 (메소)";
@@ -223,7 +242,7 @@ public sealed partial class MainWindow
             member.ValueChanged += (_, _) => UpdatePreview(); mode.SelectionChanged += (_, _) => UpdateMode();
             lootEnabled.Checked += (_, _) => UpdateMode(); lootEnabled.Unchecked += (_, _) => UpdateMode();
             marketChoice.SelectionChanged += (_, _) => marketApply.IsEnabled = marketChoice.SelectedItem is LootMarketPrice;
-            marketApply.Click += (_, _) => { if (marketChoice.SelectedItem is LootMarketPrice price) amount.Text = price.WholeEokPrice.ToString(System.Globalization.CultureInfo.InvariantCulture); };
+            marketApply.Click += (_, _) => { if (marketChoice.SelectedItem is LootMarketPrice price) { amount.Text = price.WholeEokPrice.ToString(System.Globalization.CultureInfo.InvariantCulture); settlement.SetSale(price.WholeEokPrice); } };
             recordChoice.SelectionChanged += (_, _) =>
             {
                 if (source is null) return;
@@ -231,13 +250,24 @@ public sealed partial class MainWindow
                 date.Date = Offset(existing?.Date ?? source.Boss.Date);
                 party.Value = existing?.PartySize ?? source.Boss.PartySize;
                 amount.Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture); ratio.Text = existing?.Ratios ?? "1:1"; member.Value = existing?.OwnMember ?? 1;
-                mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, _ => 0 };
+                if (existing?.Settlement is { } savedSettlement) { settlement.Load(savedSettlement); settlement.SetSale(existing.Amount); }
+                else { settlement.SetPartySize((int)party.Value); settlement.SetSale(existing?.Amount ?? 0); }
+                mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, "settlement" => 3, null => 3, _ => 0 };
                 dialog.IsSecondaryButtonEnabled = existing is not null;
                 ReloadItems();
             };
-            mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, _ => 0 };
+            if (existing?.Settlement is { } savedSettlement) { settlement.Load(savedSettlement); settlement.SetSale(existing.Amount); }
+            else { settlement.SetPartySize((int)party.Value); settlement.SetSale(existing?.Amount ?? 0); }
+            mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, "settlement" => 3, null => 3, _ => 0 };
             if (addDate is not null) clearChoice.SelectedIndex = 0;
             else boss.SelectedItem = bossNames.FirstOrDefault(name => SchedulerBossHistory.BossKey(name) == SchedulerBossHistory.BossKey(existing?.Boss ?? "")) ?? bossNames.First();
+            if (existing is null && source is not null)
+            {
+                var day = source.Boss.Date;
+                var scheduledParty = _settings.CalendarSchedules.FirstOrDefault(schedule => schedule.Party is not null && schedule.Ocid == source.Ocid && schedule.Boss == source.Boss.Name && schedule.Difficulty == source.Boss.Difficulty
+                    && (schedule.Date == day || schedule.Weekly && day >= schedule.Date && (schedule.RepeatUntil is null || day <= schedule.RepeatUntil) && (day.DayNumber - schedule.Date.DayNumber) % 7 == 0))?.Party;
+                if (scheduledParty is not null && PartySettlement.Valid(scheduledParty)) settlement.Apply(scheduledParty, source.Ocid);
+            }
             UpdateMode();
             async Task LoadMarket()
             {

@@ -10,6 +10,7 @@ public sealed record CalendarSchedule(string Id, ScheduleKind Kind, string Title
     string Note = "", string Ocid = "", string CharacterName = "", string Boss = "", string Difficulty = "", bool Weekly = false,
     DateOnly? RepeatUntil = null, int PartySize = 1)
 {
+    public PartyPreset? Party { get; init; }
     public HashSet<DateOnly> CompletedDates { get; init; } = [];
 }
 public sealed record EventNotice
@@ -40,10 +41,12 @@ public sealed record ScheduleCalendarDay(DateOnly Date, bool InMonth, IReadOnlyL
 public static class ScheduleCalendar
 {
     public static bool Valid(CalendarSchedule item) => !string.IsNullOrWhiteSpace(item.Id)
-        && !string.IsNullOrWhiteSpace(item.Title) && item.Title.Length <= 100 && item.Note.Length <= 2000
+        && !string.IsNullOrWhiteSpace(item.Title) && item.Title.Length <= 100 && item.Note is { Length: <= 2000 } && item.CompletedDates is not null
         && Enum.IsDefined(item.Kind) && item.Date.Year >= 2003 && (item.RepeatUntil is null || item.RepeatUntil >= item.Date)
         && (item.Kind != ScheduleKind.Boss || !string.IsNullOrWhiteSpace(item.Boss) && !string.IsNullOrWhiteSpace(item.Difficulty)
-            && item.PartySize >= 1 && item.PartySize <= BossParty.Maximum(item.Boss));
+            && item.PartySize >= 1 && item.PartySize <= BossParty.Maximum(item.Boss))
+        && (item.Party is null || PartySettlement.Valid(item.Party) && item.Party.Members.Length == item.PartySize
+            && item.Party.Bosses.Any(boss => boss.Name == item.Boss && boss.Difficulty == item.Difficulty));
 
     public static IReadOnlyList<ScheduleCalendarDay> Month(DateOnly month, IEnumerable<CalendarSchedule> schedules,
         IEnumerable<SundayNotice> notices, ScheduleFilter filter = ScheduleFilter.All, bool includeSunday = true)

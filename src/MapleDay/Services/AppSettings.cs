@@ -5,6 +5,7 @@ namespace MapleDay.Services;
 
 public sealed class AppSettings
 {
+    public static event Action<AppSettings>? Saved;
     public bool CloseToTray { get; set; } = true;
     public bool DarkMode { get; set; }
     public bool AutoStartWindows { get; set; } = true;
@@ -42,6 +43,7 @@ public sealed class AppSettings
     public List<BossLootRecord> BossLootRecords { get; set; } = [];
     public List<HuntingIncomeRecord> HuntingIncomeRecords { get; set; } = [];
     public List<CalendarSchedule> CalendarSchedules { get; set; } = [];
+    public List<PartyPreset> Parties { get; set; } = [];
     public bool CalendarHideSunday { get; set; }
     public List<SundayNotice> SundayNotices { get; set; } = [];
     public DateTimeOffset? EventNoticesCheckedAt { get; set; }
@@ -56,7 +58,7 @@ public sealed class AppSettings
     public Dictionary<string, DateTimeOffset> CheckedReminders { get; set; } = [];
     public List<ReminderNotice> ReminderNotices { get; set; } = [];
     public string StartPage { get; set; } = "characters";
-    public string ValidStartPage => StartPage is "characters" or "scheduler" or "income" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
+    public string ValidStartPage => StartPage is "characters" or "scheduler" or "income" or "party" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
     public bool MarkRemindersRead()
     {
         var changed = false;
@@ -81,5 +83,6 @@ public sealed class AppSettings
             File.Move(temporary, FilePath, true);
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
+        Saved?.Invoke(this);
     }
 }

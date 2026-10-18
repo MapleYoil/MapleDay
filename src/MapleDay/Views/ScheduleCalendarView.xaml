@@ -11,6 +11,7 @@
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Top">
                 <CheckBox x:Name="HideSundayCheckBox" Content="썬데이 숨기기" Checked="HideSunday_Changed" Unchecked="HideSunday_Changed" VerticalAlignment="Center"/>
+                <Button Content="파티 불러오기" Click="LoadParty_Click" VerticalAlignment="Center"/>
                 <Button x:Name="NoticeRefreshButton" Content="공지 새로고침" Click="RefreshNotices_Click" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>

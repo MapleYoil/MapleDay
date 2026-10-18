@@ -195,7 +195,7 @@ public sealed partial class MainWindow
         var contents = new StackPanel { Spacing = 12 };
         contents.Children.Add(new TextBlock
         {
-            Text = "저장된 API 키, 캐릭터 목록, 스케줄러·경험치 기록, 캘린더 일정·공지, 설정, 문의 연결 정보와 작성 중인 내용을 삭제합니다. 문의 연결 정보를 삭제하면 기존 문의 답장을 이 앱에서 확인할 수 없어요.\n\n삭제 후 앱이 종료됩니다. 계속하려면 아래에 ‘삭제’를 정확히 입력해주세요.",
+            Text = "저장된 API 키, 캐릭터 목록, 스케줄러·경험치 기록, 캘린더 일정·공지, 설정, 문의 연결 정보와 작성 중인 내용을 삭제합니다. 문의 연결 정보를 삭제하면 기존 문의 답장을 이 앱에서 확인할 수 없어요.\n\n동기화 연결 정보와 이 PC의 백업도 삭제합니다. 서버 동기화 기록은 유지되므로 서버 기록도 지우려면 먼저 동기화 설정에서 삭제해주세요.\n\n삭제 후 앱이 종료됩니다. 계속하려면 아래에 ‘삭제’를 정확히 입력해주세요.",
             TextWrapping = TextWrapping.Wrap
         });
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(input, "삭제 확인 문구");
@@ -213,6 +213,7 @@ public sealed partial class MainWindow
         input.TextChanged += (_, _) => dialog.IsPrimaryButtonEnabled = AppDataStore.IsDeleteConfirmation(input.Text);
         if (await dialog.ShowAsync() != ContentDialogResult.Primary || !AppDataStore.IsDeleteConfirmation(input.Text)) return;
         _dataDeleting = true;
+        await RecordSyncPanel.StopAsync();
         await StopWebHostAsync();
         await IncomeReplayPanel.StopAsync();
         StopUpdates();

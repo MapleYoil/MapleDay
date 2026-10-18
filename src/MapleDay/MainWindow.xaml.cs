@@ -56,18 +56,28 @@ public sealed partial class MainWindow : Window
         InitializeWebHost();
         InitializeIncomeDisplay();
         InitializeCalendar();
+        PartyPage.Changed += (_, _) => CalendarPanel.SetContext(_settings, SchedulerAvatars);
+        RecordSyncPanel.Changed += async (_, _) =>
+        {
+            if (_closed || _dataDeleting) return;
+            if (!_settings.SchedulerOcids.ToHashSet(StringComparer.Ordinal).SetEquals(_schedulerCharacters.Keys))
+            { UpdateSchedulerCharacters(); await LoadSchedulerAsync(); }
+            else { RebuildSchedulerViews(); RefreshManualIncome(); }
+            CalendarPanel.SetContext(_settings, SchedulerAvatars); PartyPage.SetContext(_settings, SchedulerAvatars);
+        };
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
         {
             presenter.PreferredMinimumWidth = 420;
             presenter.PreferredMinimumHeight = 520;
         }
         Root.Loaded += async (_, _) => await InitializeForLaunchAsync();
-        Closed += (_, _) =>
+        Closed += async (_, _) =>
         {
             _closed = true;
             _loadCts?.Cancel();
             _apiKey = "";
             ApiKeyInput.Password = "";
+            await RecordSyncPanel.StopAsync();
         };
     }
 
@@ -90,6 +100,7 @@ public sealed partial class MainWindow : Window
         _calendarTimer.Start();
         StartAutomaticUpdates();
         StartTelemetry();
+        await RecordSyncPanel.InitializeAsync(_settings);
         await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
         _ = RefreshCalendarAsync();
         _ = SendTelemetryAsync();
@@ -157,11 +168,12 @@ public sealed partial class MainWindow : Window
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         SchedulerPage.Visibility = page == "scheduler" ? Visibility.Visible : Visibility.Collapsed;
         IncomePage.Visibility = page == "income" ? Visibility.Visible : Visibility.Collapsed;
+        PartyPage.Visibility = page == "party" ? Visibility.Visible : Visibility.Collapsed;
         CalendarPage.Visibility = page == "calendar" ? Visibility.Visible : Visibility.Collapsed;
         LevelPage.Visibility = page == "level" ? Visibility.Visible : Visibility.Collapsed;
         NotificationsPage.Visibility = page == "notifications" ? Visibility.Visible : Visibility.Collapsed;
         ConnectState.Visibility = !_hasLoadedCharacters && string.IsNullOrEmpty(_apiKey) ? Visibility.Visible : Visibility.Collapsed;
-        ShellNavigation.SelectedItem = page switch { "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
+        ShellNavigation.SelectedItem = page switch { "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
         BackButton.IsEnabled = _backStack.Count > 0;
         if (isKeyPage)
         {
@@ -192,6 +204,7 @@ public sealed partial class MainWindow : Window
         }
         else if (page == "settings") _ = RefreshAppDataSizeAsync();
         else if (page == "level") { UpdateLevelPage(); _ = LoadLevelsAsync(); }
+        else if (page == "party") PartyPage.SetContext(_settings, SchedulerAvatars);
         else if (page == "calendar") _ = RefreshCalendarAsync();
         else if (page == "notifications") { RefreshReminderList(); UpdateReminderSchedule(); _ = CheckRemindersAsync(); }
     }
