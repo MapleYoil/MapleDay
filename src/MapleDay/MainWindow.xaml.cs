@@ -56,6 +56,10 @@ public sealed partial class MainWindow : Window
         InitializeWebHost();
         InitializeIncomeDisplay();
         InitializeCalendar();
+        CharacterInfoPage.SelectionChanged += (_, _) =>
+        {
+            if (_currentPage == "character-info") BackButton.IsEnabled = _backStack.Count > 0 || CharacterInfoPage.HasSelection;
+        };
         PartyPage.Changed += (_, _) => CalendarPanel.SetContext(_settings, SchedulerAvatars);
         RecordSyncPanel.Changed += async (_, _) =>
         {
@@ -74,6 +78,7 @@ public sealed partial class MainWindow : Window
         Closed += async (_, _) =>
         {
             _closed = true;
+            CharacterInfoPage.Stop();
             _loadCts?.Cancel();
             _apiKey = "";
             ApiKeyInput.Password = "";
@@ -164,6 +169,7 @@ public sealed partial class MainWindow : Window
         var isKeyPage = page == "key";
         KeyPage.Visibility = isKeyPage ? Visibility.Visible : Visibility.Collapsed;
         CharacterPage.Visibility = page == "characters" ? Visibility.Visible : Visibility.Collapsed;
+        CharacterInfoPage.Visibility = page == "character-info" ? Visibility.Visible : Visibility.Collapsed;
         SupportPage.Visibility = page == "support" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         SchedulerPage.Visibility = page == "scheduler" ? Visibility.Visible : Visibility.Collapsed;
@@ -173,7 +179,7 @@ public sealed partial class MainWindow : Window
         LevelPage.Visibility = page == "level" ? Visibility.Visible : Visibility.Collapsed;
         NotificationsPage.Visibility = page == "notifications" ? Visibility.Visible : Visibility.Collapsed;
         ConnectState.Visibility = !_hasLoadedCharacters && string.IsNullOrEmpty(_apiKey) ? Visibility.Visible : Visibility.Collapsed;
-        ShellNavigation.SelectedItem = page switch { "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
+        ShellNavigation.SelectedItem = page switch { "character-info" => CharacterInfoNavigationItem, "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
         BackButton.IsEnabled = _backStack.Count > 0;
         if (isKeyPage)
         {
@@ -204,6 +210,12 @@ public sealed partial class MainWindow : Window
         }
         else if (page == "settings") _ = RefreshAppDataSizeAsync();
         else if (page == "level") { UpdateLevelPage(); _ = LoadLevelsAsync(); }
+        else if (page == "character-info")
+        {
+            CharacterInfoPage.SetContext(_api, _apiKey, SchedulerAvatars);
+            ShellNavigation.SelectedItem = CharacterInfoNavigationItem;
+            BackButton.IsEnabled = _backStack.Count > 0 || CharacterInfoPage.HasSelection;
+        }
         else if (page == "party") PartyPage.SetContext(_settings, SchedulerAvatars);
         else if (page == "calendar") _ = RefreshCalendarAsync();
         else if (page == "notifications") { RefreshReminderList(); UpdateReminderSchedule(); _ = CheckRemindersAsync(); }
@@ -230,6 +242,11 @@ public sealed partial class MainWindow : Window
 
     private void GoBack()
     {
+        if (_currentPage == "character-info" && CharacterInfoPage.HasSelection)
+        {
+            CharacterInfoPage.ShowList();
+            return;
+        }
         if (_currentPage == "notifications" && _notificationSettingsOpen)
         {
             ShowNotificationSettings(false);

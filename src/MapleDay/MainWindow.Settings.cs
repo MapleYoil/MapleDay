@@ -213,6 +213,7 @@ public sealed partial class MainWindow
         input.TextChanged += (_, _) => dialog.IsPrimaryButtonEnabled = AppDataStore.IsDeleteConfirmation(input.Text);
         if (await dialog.ShowAsync() != ContentDialogResult.Primary || !AppDataStore.IsDeleteConfirmation(input.Text)) return;
         _dataDeleting = true;
+        CharacterInfoPage.Stop();
         await RecordSyncPanel.StopAsync();
         await StopWebHostAsync();
         await IncomeReplayPanel.StopAsync();

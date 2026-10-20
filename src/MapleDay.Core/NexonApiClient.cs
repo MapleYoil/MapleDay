@@ -43,6 +43,21 @@ public sealed class NexonApiClient : IDisposable
         return GetAsync<CharacterBasic>($"maplestory/v1/character/basic?ocid={Uri.EscapeDataString(ocid)}", apiKey, token);
     }
 
+    public Task<CharacterItemEquipment> GetItemEquipmentAsync(string ocid, string apiKey, CancellationToken token = default)
+        => GetEquipmentAsync<CharacterItemEquipment>("item-equipment", ocid, apiKey, token);
+
+    public Task<CharacterCashEquipment> GetCashEquipmentAsync(string ocid, string apiKey, CancellationToken token = default)
+        => GetEquipmentAsync<CharacterCashEquipment>("cashitem-equipment", ocid, apiKey, token);
+
+    public Task<CharacterSymbolEquipment> GetSymbolEquipmentAsync(string ocid, string apiKey, CancellationToken token = default)
+        => GetEquipmentAsync<CharacterSymbolEquipment>("symbol-equipment", ocid, apiKey, token);
+
+    private Task<T> GetEquipmentAsync<T>(string endpoint, string ocid, string apiKey, CancellationToken token)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ocid);
+        return GetAsync<T>($"maplestory/v1/character/{endpoint}?ocid={Uri.EscapeDataString(ocid)}", apiKey, token);
+    }
+
     public async Task<CharacterBasic?> GetBasicAtAsync(string ocid, string apiKey, DateOnly date, CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ocid);

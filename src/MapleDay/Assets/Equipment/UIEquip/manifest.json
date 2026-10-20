@@ -1,0 +1,3458 @@
+[
+  {
+    "file": "Equip_main_backgrnd.png",
+    "source": "UI/UIEquip.img/./Equip/main/backgrnd",
+    "width": 366,
+    "height": 444,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e58a4f0cc1b8f89585527d4db79311b5b0f9b5ff421bc1dd5c8eb37c9ee496cd"
+  },
+  {
+    "file": "Equip_main_tab_detailTab_selected_0.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab/selected/0",
+    "width": 171,
+    "height": 22,
+    "originX": -11,
+    "originY": -31,
+    "sha256": "ee1aa4271f89f8811e424e59f3e0a4afae93903ee8e1abea699db2d648a25dbf"
+  },
+  {
+    "file": "Equip_main_tab_detailTab_selected_1.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab/selected/1",
+    "width": 171,
+    "height": 22,
+    "originX": -184,
+    "originY": -31,
+    "sha256": "6ca69528e79ae1c48a72dae9d1a7c9c83cbe3a6a00b6c2aec48031d67547cedb"
+  },
+  {
+    "file": "Equip_main_tab_detailTab_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab/normal/0",
+    "width": 171,
+    "height": 22,
+    "originX": -11,
+    "originY": -31,
+    "sha256": "739d5d6282fc6292358f224eae6d6ac2448f1ba0960b9fdccdcda1a206051e65"
+  },
+  {
+    "file": "Equip_main_tab_detailTab_normal_1.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab/normal/1",
+    "width": 171,
+    "height": 22,
+    "originX": -184,
+    "originY": -31,
+    "sha256": "8ce64350ded93d824b7e1f53819ffd68683ac36acb1a550bc1e1e75fe55b34b0"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_selected_0.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/selected/0",
+    "width": 113,
+    "height": 22,
+    "originX": -11,
+    "originY": -31,
+    "sha256": "3c635e5c89dd85f2d997638776d7ef629fa812d57119f60a8f470407e9638d3d"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_selected_1.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/selected/1",
+    "width": 114,
+    "height": 22,
+    "originX": -127,
+    "originY": -31,
+    "sha256": "c1b9f5fde50fa76c891414016a357686df001dbcae5c2d63fadd5c66836e1fe6"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_selected_2.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/selected/2",
+    "width": 113,
+    "height": 22,
+    "originX": -244,
+    "originY": -31,
+    "sha256": "6426fb462507905510f382debbb4d158f71a412c0f7750de70f8dfdd1747bc71"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/normal/0",
+    "width": 113,
+    "height": 22,
+    "originX": -11,
+    "originY": -31,
+    "sha256": "e926f441768cea6ac329c35a643daccb9b66fe26012576fc2fc0074a1f4deff3"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_normal_1.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/normal/1",
+    "width": 114,
+    "height": 22,
+    "originX": -127,
+    "originY": -31,
+    "sha256": "8c70287c4de6fdadb3a421e05ab31e2fab997c0907a27948d66fed21f87325c3"
+  },
+  {
+    "file": "Equip_main_tab_detailTab2_normal_2.png",
+    "source": "UI/UIEquip.img/./Equip/main/tab:detailTab2/normal/2",
+    "width": 113,
+    "height": 22,
+    "originX": -244,
+    "originY": -31,
+    "sha256": "f8c3cd8f117b42427d4322eff3e58fc5b140f25d42f1cd844b200183449716ab"
+  },
+  {
+    "file": "Equip_EquipTab_canvas_equip.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/canvas:equip",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "2b02a3048b39041fd59416a2a6b50f60e22fd7b5ffb56f48d2f089624321f386"
+  },
+  {
+    "file": "Equip_EquipTab_canvas_equip2.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/canvas:equip2",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "2adcde2312a44a5635149e31f391dedc9bb3993d82d5c229f6b9cfa33b9af5cf"
+  },
+  {
+    "file": "Equip_EquipTab_canvas_equip3.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/canvas:equip3",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "679846f6cf86cec3d4ee33ee27a7940775b03692c6a4eddd369b015b82c306db"
+  },
+  {
+    "file": "Equip_EquipTab_button_dragonEquipOpen_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:dragonEquipOpen/normal/0",
+    "width": 92,
+    "height": 25,
+    "originX": -26,
+    "originY": -376,
+    "sha256": "877e46f477b8921f935978802a2c5f8e652e4b2d03286b523cbcb950d41654d3"
+  },
+  {
+    "file": "Equip_EquipTab_button_dragonEquipClose_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:dragonEquipClose/normal/0",
+    "width": 92,
+    "height": 25,
+    "originX": -26,
+    "originY": -376,
+    "sha256": "7759477ac69e327fbe83e5b5e2513b97a5ce3d83b3c297bdc7d2e486aa4e04dc"
+  },
+  {
+    "file": "Equip_EquipTab_button_mechanicEquipOpen_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:mechanicEquipOpen/normal/0",
+    "width": 92,
+    "height": 25,
+    "originX": -26,
+    "originY": -376,
+    "sha256": "5909acb4afd996a1d8a760207350797fa4e1a3bfa7dd27abc8ac6224058057c0"
+  },
+  {
+    "file": "Equip_EquipTab_button_mechanicEquipClose_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:mechanicEquipClose/normal/0",
+    "width": 92,
+    "height": 25,
+    "originX": -26,
+    "originY": -376,
+    "sha256": "7f7a798f73c617e19035e625a489a893907296d60c28320ae6dcc8c743ba2569"
+  },
+  {
+    "file": "Equip_EquipTab_button_symbol_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:symbol/normal/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "545d40d9e3794e82b40ec5fc4f1e09c590ccea184b3272e85161686173c1fa16"
+  },
+  {
+    "file": "Equip_EquipTab_button_symbol_pressed_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:symbol/pressed/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "4fc761a5952d8ed1b8892490d2d406a8d6543bc7f2d691ae2c3f6d82a5569929"
+  },
+  {
+    "file": "Equip_EquipTab_button_symbol_disabled_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:symbol/disabled/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "ef4e847160b4ffc1e1682cd83d9b2c2247373db16b9ead41d22a55e9e0379dcf"
+  },
+  {
+    "file": "Equip_EquipTab_button_symbol_mouseOver_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:symbol/mouseOver/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "9e062c30907df32a3947d125c7668d952998f4858d8e6159e9dacec3ae1d34d8"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_1.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/1",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_2.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/2",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_3.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/3",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_4.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/4",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_5.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/5",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_6.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/6",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_7.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/7",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_8.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/8",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_9.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/9",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_10.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/10",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -280,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_11.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/11",
+    "width": 42,
+    "height": 42,
+    "originX": -117,
+    "originY": -280,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_12.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/12",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -235,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_13.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/13",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -190,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_15.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/15",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -145,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_16.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/16",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -100,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_17.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/17",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_21.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/21",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -235,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_22.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/22",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -280,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_23.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/23",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -235,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_26.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/26",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -325,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_27.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/27",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -280,
+    "sha256": "d1ea39def10bbf4d935a94d9a1b69bbdcf48b18ad7d7c8260cd2fc98b8def215"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_28.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/28",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -280,
+    "sha256": "d1ea39def10bbf4d935a94d9a1b69bbdcf48b18ad7d7c8260cd2fc98b8def215"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_29.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/29",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -325,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_30.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/30",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_30_2.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/30_2",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_31.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/31",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -235,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_32.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/32",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -325,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Equip_EquipTab_Slots_title.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/Slots/title",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -325,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_1.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/1",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_2.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/2",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_3.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/3",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_4.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/4",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_5.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/5",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_6.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/6",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_7.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/7",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_8.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/8",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_9.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/9",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_10.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/10",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -280,
+    "sha256": "77354a96d69f96df35beaca2a84545d50dd317de62ba5c11ef306950d4b049b5"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_11.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/11",
+    "width": 42,
+    "height": 42,
+    "originX": -117,
+    "originY": -280,
+    "sha256": "60c86d7e56aa48ac9d6877a154b97f721a9236de1864ccac63407fb399562dfb"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_12.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/12",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -235,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_13.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/13",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -190,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_15.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/15",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -145,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_16.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/16",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -100,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_17.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/17",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -280,
+    "sha256": "d5683ced8d9e7e1060dd07dce78764193dbcc51e243a1bacef0e952484735448"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_21.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/21",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -235,
+    "sha256": "17964c46eafecd4ae1baa2c8080a26bd18923a68d83f60b88a9ab820224b54c8"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_22.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/22",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -280,
+    "sha256": "a809fd00fb559d229a17e3fb732c2d9e708416657b1f7a2614091edb5667e66d"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_23.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/23",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -235,
+    "sha256": "e7b016db81dcc2044d058d2f0592d20c26fc7bc1390d1dc628d7c261ce851364"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_26.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/26",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -325,
+    "sha256": "8e315b98ee6f9eb8712cea59b4048d8f1d1eab3f119b3273d914e7db999fabae"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_27.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/27",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -280,
+    "sha256": "f76f305383f6ea54253af683aa9e2ca0d177db094227970bbbca5a9d2fabf539"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_28.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/28",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -280,
+    "sha256": "d089b79d5b57ddeba44128e1cc8b29217a3f7d404662b765dcd6a7267bbae5f9"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_29.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/29",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -325,
+    "sha256": "15b2f4c088f44b7f147a3666f6dcc93e08f36ce93ba12183e2e13e01e0da9812"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_30.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/30",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "2b319bc31b772dd780693700c2435a0d392d4edd9e09f03e7f99ed46157945f5"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_30_2.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/30_2",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "544a80906ec2f70862b88a8d82e197a187532a327e68b40019d35f0d2e1b1141"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_31.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/31",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -235,
+    "sha256": "d5683ced8d9e7e1060dd07dce78764193dbcc51e243a1bacef0e952484735448"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_32.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/32",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -325,
+    "sha256": "77354a96d69f96df35beaca2a84545d50dd317de62ba5c11ef306950d4b049b5"
+  },
+  {
+    "file": "Equip_EquipTab_SlotName_title.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/SlotName/title",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -325,
+    "sha256": "9b26322079a8c78ec9436da149d28d69e1ec5b2310e7276e1f21112b915195d6"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_canvas_dragon.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/canvas:dragon",
+    "width": 108,
+    "height": 257,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4c3ac72ffa2178dc5551df430863671d2d8eda8308af7061e5b8666d06ceeef3"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_Slots_1000.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/Slots/1000",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -47,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_Slots_1001.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/Slots/1001",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -92,
+    "sha256": "98a03190d56c002be9f318eb4159503aa11b98d01501c00f75126f4092ab0bc6"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_Slots_1002.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/Slots/1002",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -137,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_Slots_1003.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/Slots/1003",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -182,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_SlotName_1000.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/SlotName/1000",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -47,
+    "sha256": "8d944e296d86365f60c7e82f8d4187dc331c32b3e92878601784f4334593a85f"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_SlotName_1001.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/SlotName/1001",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -92,
+    "sha256": "4d2baf1672941d409243367a34691da051a72d83547b9506f81ac151c2fce970"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_SlotName_1002.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/SlotName/1002",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -137,
+    "sha256": "2c39439c756b0ba937338186da708c5887c5f878fa19ded75c23ad0800f48f9a"
+  },
+  {
+    "file": "Equip_EquipTab_dragonEquip_SlotName_1003.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/dragonEquip/SlotName/1003",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -182,
+    "sha256": "d8b2e42c2a71d5d3f6d03e61bbafc1cdc2f8a7ac587d4f1f17aae9a71016adb3"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_canvas_mechanic.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/canvas:mechanic",
+    "width": 108,
+    "height": 302,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "d0de61250b23292ac07cdda7cf4fb9f0f7f973b7457126fd9c8cf14066a24514"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_Slots_1100.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/Slots/1100",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -137,
+    "sha256": "98a03190d56c002be9f318eb4159503aa11b98d01501c00f75126f4092ab0bc6"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_Slots_1101.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/Slots/1101",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -182,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_Slots_1102.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/Slots/1102",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -227,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_Slots_1103.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/Slots/1103",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -92,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_Slots_1104.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/Slots/1104",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -47,
+    "sha256": "cd1f4a19381aafc94c26e55e583c7fd9bd2765d554e86e47f13d16aafbbb3c04"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_SlotName_1100.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/SlotName/1100",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -137,
+    "sha256": "a7dbbfa698b932991992873bb581e70621282eb8a1e43bb756ea47755ec91ff9"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_SlotName_1101.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/SlotName/1101",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -182,
+    "sha256": "8f33c120e452a7a0593b607d8a44982b47aba33a51aab2e096308b789aa4df61"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_SlotName_1102.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/SlotName/1102",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -227,
+    "sha256": "41ddac2ab7426eec5e0107c4cee69d48749d54f0a5a02c5d683f6007c196c2cc"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_SlotName_1103.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/SlotName/1103",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -92,
+    "sha256": "96ae9e8d97be49ac165bc05e3328715694c3ee9596e85245356bebbb5702489d"
+  },
+  {
+    "file": "Equip_EquipTab_mechanicEquip_SlotName_1104.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/mechanicEquip/SlotName/1104",
+    "width": 42,
+    "height": 42,
+    "originX": -33,
+    "originY": -47,
+    "sha256": "2c529c1ba6564d4439e82f84751a0a63f0311d72946b1735bbfcd72d4c7766cf"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset1_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset1/normal/0",
+    "width": 18,
+    "height": 18,
+    "originX": -184,
+    "originY": -379,
+    "sha256": "a511e47c1d295c6e0a59092624b361779322b999251172ac841f5bbf7847a125"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset1_checked_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset1/checked/0",
+    "width": 18,
+    "height": 18,
+    "originX": -184,
+    "originY": -379,
+    "sha256": "9cf54b03d18ab6f9002e8cbaa114d52f9d4240c60a74e2cd8d4cf8c61b76c50b"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset2_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset2/normal/0",
+    "width": 18,
+    "height": 18,
+    "originX": -214,
+    "originY": -379,
+    "sha256": "ff6f35e4ad974945f20f9aa71f975bef9c98ac05d8173fc85fa8f9f67379eddc"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset2_checked_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset2/checked/0",
+    "width": 18,
+    "height": 18,
+    "originX": -214,
+    "originY": -379,
+    "sha256": "af09414135cefbbb953decfbdfaccf1b7885b8707966735feee62deeb5810eb2"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset3_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset3/normal/0",
+    "width": 18,
+    "height": 18,
+    "originX": -244,
+    "originY": -379,
+    "sha256": "bd3232375e5d3c6baf0f16f1dac5750e77e491bd8adbe1e20132913032e98ae3"
+  },
+  {
+    "file": "Equip_EquipTab_button_preset3_checked_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:preset3/checked/0",
+    "width": 18,
+    "height": 18,
+    "originX": -244,
+    "originY": -379,
+    "sha256": "4ee241cd61a5b7d625ae00e1d8c3fe2ad2d21eaf7c72c4a7667ce5f7b393fa5d"
+  },
+  {
+    "file": "Equip_EquipTab_button_DecoUI_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:DecoUI/normal/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -72,
+    "sha256": "934be070091a95857541a5f234d866c184f8eb482471e68a442bf95fd316d367"
+  },
+  {
+    "file": "Equip_EquipTab_button_DecoUI_mouseOver_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:DecoUI/mouseOver/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -72,
+    "sha256": "94f02f6e516db0b30d303a990f7cd1f38db84da44bd769a0b27445561d1dd245"
+  },
+  {
+    "file": "Equip_EquipTab_button_DecoUI_disabled_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:DecoUI/disabled/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -72,
+    "sha256": "dab3165279fce2fc19215da8cadda377fc061d331e9a6eaf9d60eacc334c67bb"
+  },
+  {
+    "file": "Equip_EquipTab_button_DecoUI_pressed_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/button:DecoUI/pressed/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -72,
+    "sha256": "a560ab76d3ea6b6b2bfa10404293a6b5fc6c571a24b94e24dcfa52841c18f9ca"
+  },
+  {
+    "file": "Equip_EquipTab_btSkillRingOpen_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/btSkillRingOpen/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "91005b2ff0dfdfde39b41356420d3299d474114d74da347c740f18befdc6f4bd"
+  },
+  {
+    "file": "Equip_EquipTab_btSkillRingClose_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/btSkillRingClose/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "3b0431e7787da5355871c4eadc9069b616e81762c33f184d88f010be1b23a804"
+  },
+  {
+    "file": "Equip_EquipTab_btUnionRoidUI_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/EquipTab/btUnionRoidUI/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "91005b2ff0dfdfde39b41356420d3299d474114d74da347c740f18befdc6f4bd"
+  },
+  {
+    "file": "Equip_Symbol_backgrnd.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/backgrnd",
+    "width": 228,
+    "height": 339,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "a14f1e49e6377cf8bd1f86e1e11dee2a6ec907d78afdf58a49c0efde579293b4"
+  },
+  {
+    "file": "Equip_Symbol_tab_categoryTab_selected_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/tab:categoryTab/selected/0",
+    "width": 92,
+    "height": 20,
+    "originX": -7,
+    "originY": -30,
+    "sha256": "49e1b4a7885d4e6c077abc1b08f2fd7ef04a12e96fe466ccf7c75e232997e804"
+  },
+  {
+    "file": "Equip_Symbol_tab_categoryTab_selected_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/tab:categoryTab/selected/1",
+    "width": 92,
+    "height": 20,
+    "originX": -99,
+    "originY": -30,
+    "sha256": "0504ca888b0018c417536456989fed8d1e8b3cbd6cae185e9654754c0d3dea03"
+  },
+  {
+    "file": "Equip_Symbol_tab_categoryTab_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/tab:categoryTab/normal/0",
+    "width": 92,
+    "height": 20,
+    "originX": -7,
+    "originY": -30,
+    "sha256": "d3efeb4557c9edc61f009370cfea424116affff0225299b3c2a374b0a4e6f5fc"
+  },
+  {
+    "file": "Equip_Symbol_tab_categoryTab_normal_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/tab:categoryTab/normal/1",
+    "width": 92,
+    "height": 20,
+    "originX": -99,
+    "originY": -30,
+    "sha256": "2cb7f9a4a0957b48319509094243573b3c1c9db20fd131ce9a22cdb0607fc3f1"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_backgrnd.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/backgrnd",
+    "width": 184,
+    "height": 272,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "ebb2e1d9c5da40e226c143827d334571f33d1cfa93447375cfe96240d3089363"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_base.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/base",
+    "width": 24,
+    "height": 3,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e20e99ae42aec1f3d9394177842005d980895cce22cb32741f45946825c71395"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_base2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/base2",
+    "width": 27,
+    "height": 12,
+    "originX": 2,
+    "originY": 0,
+    "sha256": "6549c09c3c44e7eb6799923915d03231aca1470743876483b506c205bb0f2b9f"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_button_enchant_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/button:enchant/normal/0",
+    "width": 39,
+    "height": 20,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "dcf480c4262009530aff91c72093d375ca8c2ce4749d14b94fcbac64d7a336d2"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_force.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/force",
+    "width": 24,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "6213b556da0fdd1a853b5de1e858830277fd1fbabd11151564dd7b77c0279ea2"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_str.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/str",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "2ba60affb7bce95294af5265aac0af3d28f946dff28958ff3fdef3543e1b460c"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_int.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/int",
+    "width": 21,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1e53b8c42c8e645f0895b4cd727111333e52fb57d0164095d52353a70f331cee"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_dex.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/dex",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "974f572fa1f68b34b9cb6ae6c36187324ef326429976cc5f7b8286760f877954"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_luk.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/luk",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "04f3470c327cbde42ccf018eeac0fb0a835d6fb3ff42e1032364d050db0f0e57"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_hp.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/hp",
+    "width": 16,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1eb59ff961131fc75115d94ce7721db26bba6209cf897a79a3cfcdae2ba564b2"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_plus.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/\u002B",
+    "width": 8,
+    "height": 7,
+    "originX": 0,
+    "originY": -1,
+    "sha256": "400fa03d903fb34fc3ac16d1cff18234095fcf06f53f9279d1665eb10a9cc13f"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/0",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5bba52b7f818a8f98f6097109a51301990d3f91f8d7c4d4a4914f6fe5ac03330"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/1",
+    "width": 6,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "a91e3b8956719ae4f0c48649e42c5dcd08062bd6b6595f45c129538dcce4e602"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/2",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "926bf10560b1394c36c4cd7aa8a0133fcea0ceb2962e626f82bf6885cea6761f"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/3",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "f4aa9964245c35666ebde6885a6900b6bd7847ef11065800e534ba7a367d4376"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/4",
+    "width": 9,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "c11c7740fabdfecb468d7217063f52c8d93689f4c65067afb252d7b33a5bcf46"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/5",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4c3ffcd3fa6927465bef776fe46042a69176eb4001e83887d0a5a4aeba43e9a2"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/6",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "c0e964d736d7c6e7344a89b2cbdcf4ca88ff0843ca3d10a3c48096f3218b15ae"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/7",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "c5212993d0a5230c4e5df03ff61a22d41b09f0cec00e58fcca9dd29d05e159cb"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/8",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "55698cab107fac092acd020825e8c7be4e2ad1e4e515a10499c70f3c16d586cb"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textUp_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textUp/9",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "de79b0e35184a909bf81406d7aae604c1bb6c5f1812b02d5f4eb5f9db7e87307"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_v.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/v",
+    "width": 16,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "3dce3058fb44dbb54acb5b5079ba3840061b81c684c012d213d5bedba8531c6b"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/0",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "76c73637f84e2d677517af481720a9eb744b88f6562199af4a4a42a0fe9c2966"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/1",
+    "width": 5,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "a8c48f80ca546339a61cb8734818c803c306472803180b375dc71a6cf58a6a8e"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/2",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "f2c39a8bcedd92b1d206e4b7f2d1823f6ff7e76f56cfe43727efae856b91fd43"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/3",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "7f0db20690fffa67cfa4da5dca219fd61e24df450047993d14af3b93a5f46872"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/4",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "7c105e6280ab90b27ebf95ee5d38914c9ad1166f26dc73269d804e6fcb623bfc"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/5",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e761a17e700a3e1a4a7b196bb9a6ee8486ee42cfad8de58cd492fd80e7a25009"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/6",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "b7dcb6f6c76e4ca303571fe751f27627dc709d68912db93f1f2be80e422d4470"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/7",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "593678387e9a41975a44ae52f20c43505b5cf0661e5d04e6251189009a2e40a7"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/8",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "6eb138686f21f49b0caa8b41677956389179463dd0c9a89f3d5015a8096f57d1"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_textDown_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/textDown/9",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "75eb15af2a88ac074f3c8ff06a1324556d1521a73e30a80892d68a6973847f5b"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_disablebox.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/disablebox",
+    "width": 46,
+    "height": 86,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5f4a150db46ba9a9dc22dab83b99fe1b655f73052d67ed7b4313c4a285178bf6"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_box.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/box",
+    "width": 46,
+    "height": 86,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "904daacdc0779530fe893cf8162189e984a07c406f716a2398ea68ef29783c4b"
+  },
+  {
+    "file": "Equip_Symbol_ArcEquip_canvas_gauge.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/ArcEquip/canvas:gauge",
+    "width": 24,
+    "height": 3,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e20e99ae42aec1f3d9394177842005d980895cce22cb32741f45946825c71395"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_backgrnd.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/backgrnd",
+    "width": 184,
+    "height": 272,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "685af1b634d2a059cf9eb2c2ef935b95853b556ad3066746f44de081a802ed06"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_base2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/base2",
+    "width": 27,
+    "height": 12,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "6e8ced8b01cb698ba7a008b12bd886d02b363af0275d7405cb3e8dc08a74d12a"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_disablebox.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/disablebox",
+    "width": 44,
+    "height": 89,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "0e466c828801fa4630794e7e7d630969ca5257c3f3da86c7620895dc3f7cfa36"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_box.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/box",
+    "width": 44,
+    "height": 89,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "9f5c899151b8b5d23b244eb728f42358e11af6f0dd0ef4ddeb38370ea738a949"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_button_enchant_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/button:enchant/normal/0",
+    "width": 44,
+    "height": 20,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "c3a08270b3cf1db574fc89f6adaf97966aefb124c612b2540d6c4a196d5276cf"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_force.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/force",
+    "width": 25,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "a8178773ec1c7e602410305913d486377a6ad86e1b0dbe45c7119885cfc5e2eb"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_str.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/str",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "0937348168716e8d7202e0ad28f261d9ed0bbee43095cc7d4d4e5220fabeb2dd"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_int.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/int",
+    "width": 21,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "22deeda87f53aaeafaef73d4889967d969737517023b0d5e0b33765064f09705"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_dex.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/dex",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "854a1741d1d61ee84ac1212bf67791d329c635ea8680e7e159c86b6062959a43"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_luk.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/luk",
+    "width": 23,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "b1733a338cf24e36418990f8fa5d7d3c040b7b179e1da1cdb0c007c13df38937"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_hp.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/hp",
+    "width": 16,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "10b35fc2122ef52df0d00127180cf886bc97689df1b6aee8b50d6fcd4977e003"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_plus.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/\u002B",
+    "width": 8,
+    "height": 7,
+    "originX": 0,
+    "originY": -1,
+    "sha256": "ff40e1415465f5506c88909cb304a489bf22cf5d1d70d356039ff76bcff3faeb"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/0",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1e26870f640d4452bebbf5f38e99b3fc375b6ff4d05e2b563cc934ec87e1aa1d"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/1",
+    "width": 6,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "ba9e4697f5d0a684bf070f16cf310b657490fcedc7b890e3cafd337b56b4ac90"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/2",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5aebacf081cf7f4488e4d5f11aabcd179f19343911ec7e5711b374d4e8f0af4d"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/3",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "23bfd3e06b59ec79a8d01d075c6429ae8a2d6bcaa2f4d0967697a4eb19ae7cd9"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/4",
+    "width": 9,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "c507d99a2c1c5ef4cc3e5f71121ea2e4e035c768083eaf546f6db29cfc4e1f7c"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/5",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "d08f1add3ee9732a73ba764e7311ff9fafa960f74b5674a371a7b13d24dd0edf"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/6",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "3d9c0592b48d47392bda271caf2fcc393339e3f2b2978944fcdb4139995fdf59"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/7",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4ed9ad8a59804db85c9a01b9861a14ffcd632180941157b632b9299ed3440d33"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/8",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "d60bd8a2a9f2d57ff2f79676122613363aaef0daf570b5d5ccd629d7ed5652a3"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textUp_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textUp/9",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "23a3a2b12922b03c60278f73bb7c0772d04d8f6af990a39f050afe3f2ecbbc98"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_v.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/v",
+    "width": 16,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e0a5ad7d84fd90f0fbac514b6d342ad279c4d031334049a3d489898b69c5e566"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/0",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "483937cb6135a37c42ecda608c63e7489e7823f382ed10722a38e3d2ed15765d"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/1",
+    "width": 5,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e644c11babe0161bbd61270b6105c5947754cbcbe89b6cb286413db904717cd2"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/2",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "98e72b16ae2ea61618a76d663488e618f7873d02a7a3ce443daee7bce533de7b"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/3",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e06eee14e48ef81110e517a233bae749b5fb38f02a4f1a4902f442cbd1665609"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/4",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5f6df06177a816a3c913a5b266bdc1e2c50993a886f01219c07f50a8758fdd79"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/5",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "034123db3908b791a7e8c94801681356bce17ed391bf4aa166b11954e27a77f1"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/6",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "dadf67aea83a03e77845436efa14e5564f7f0bebe10ccd877a6983f3cdddd741"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/7",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "686879a0977d1556896236d2624225482f8cd3a1b4701ca1906fd9c08b74aff9"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/8",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4f9d2c6b8439b6a7d1462b5e80704190102eea128b40e06033d93492dd733c8d"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_textDown_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/textDown/9",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "8c30bf28203bd96b0e8587021199000441fded68c561af18b34be819ce46fef7"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_canvas_gauge.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/canvas:gauge",
+    "width": 24,
+    "height": 3,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e20e99ae42aec1f3d9394177842005d980895cce22cb32741f45946825c71395"
+  },
+  {
+    "file": "Equip_Symbol_AutEquip_button_next_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/AutEquip/button:next/normal/0",
+    "width": 24,
+    "height": 11,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "eca4eacd794d0adde86346f70f5b7e6ab0618dc4881abc107265265907d39cac"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_backgrnd.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/backgrnd",
+    "width": 184,
+    "height": 272,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "83893ae9d392b93a1159430f5914e23c4740388a0737d118c05cd7fdeef4728b"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_base2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/base2",
+    "width": 27,
+    "height": 12,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "f13e0052c9a8c37c1636e846f179b70196daec114869480149bea2e07a476c62"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_disablebox.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/disablebox",
+    "width": 44,
+    "height": 89,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "f2afbadb6f4d1c1df4f9aab533ec9a46ca9125124296a66f505beb8ccf6b168f"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_box.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/box",
+    "width": 44,
+    "height": 89,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "2c64e3d3786b81054949b49e68035075aadd2a5eaebd24ed3fdbea7e44e2776e"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_button_enchant_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/button:enchant/normal/0",
+    "width": 42,
+    "height": 22,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "017da11c9c74afa693dcf2668610c395b0694c113ffe39a9e263199a7f08065d"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_force.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/force",
+    "width": 25,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "0454487b418fc9b1a0d21b7a4b0062dfd1b0fd4544c9b65f7fd4c1202309f037"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_exp.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/exp",
+    "width": 24,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5a0c78d6e6138ac89c7b75fe27c6885209c1287bad63581bbf29edb7075d6e37"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_meso.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/meso",
+    "width": 34,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "daa9aa88c629131dca88f0ca7c3ab4405d91d068948cebf4431b039f5e4f08ea"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_drop.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/drop",
+    "width": 33,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "9ae105d8fcbd6597401ff50fe1a9addde7b518727362e4cce5ecda596044d7ef"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_plus.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/\u002B",
+    "width": 8,
+    "height": 7,
+    "originX": 0,
+    "originY": -1,
+    "sha256": "af0a42bccd18c90b6f7f715b85679550eeb39cfcb24f90902eca96c0c5711bac"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_percent.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/%",
+    "width": 13,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1f828d005434886df9dd88de617a7d87b5253b23c2ece4422ff30ede23ce3265"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_dot.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/.",
+    "width": 3,
+    "height": 3,
+    "originX": 10,
+    "originY": -74,
+    "sha256": "83972092a1ab4df8e251cbde10eb0769d5c43de28b1cbb4a953dc1c61da8335a"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/1",
+    "width": 6,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "9d58dea74a3134709b76adb785a1b26ffb71c582a4264ae8762ea1f1ca59e958"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/2",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "56874cfc44c720a0abc3066cdd0c0e53233ba217606c868b430062622fc76c42"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/3",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4735c9d2afe789854256f8a8d38791da7911da30b78383d7adfb02250fd8c083"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/4",
+    "width": 9,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "bbcd5001e2f2e67559a38f78d9db8eb5040dc06730a2ed55bc2a23020499bf4c"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/5",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "63d3bde2c8f364a61a9f89092ed4b24f6935752e7e3eb40b6f380587d18bd15a"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/6",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "6a83515f7921a0a9cdd88b4eb977d49a7ff7da19a193958b99481d450163b2e5"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/7",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "d6168eeb40edb6c266fe7fbeaf307b35b6fc4b1e4a346711fa405052dd835a69"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/8",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "d653ab88aecb315efe24208d792f916ba2e93229a1588bddb7951d1eb6c25cee"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/9",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4cf95387f4cfbd60160ef3c0d6673123496e87a04203dbfcdfa6aaaf865832dc"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textUp_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textUp/0",
+    "width": 7,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "4c1693aab1755f87852da27d009fcdcff85f12004e469b79949dbcb711ddfb7c"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_v.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/v",
+    "width": 16,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1c2b93945b8160863df74bbb97893bb6f7a7e6d801b9ec61bc402a5f61124608"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/0",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "1d24394f80c636178d17149bd5ba75fabeee20c7cdca8a0f790db09299512b2b"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_1.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/1",
+    "width": 5,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "a126e2465d6f25ca70f91a3c2e4b05c20fcd150fda11ec2d35a8780ee349b10b"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_2.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/2",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "ff6007921c166bc4619565164f390e9d0f0a671d957a29b635a84f2eebd8cf67"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_3.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/3",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "dc8df7b063985e195350eb0a06d6160347c6defd41bf3ec2579ab73da764cb57"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_4.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/4",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "fbdb9fcaabc342ffcc2b39ca31a5673f9d08708ab494c314711dc0e43c365e22"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_5.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/5",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "6b3aecbf624b86746cb239ae5b5f329beec69c4a82e7d349a59d349734c78ebd"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_6.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/6",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "b995b5130529aa5a08c0437d16cc535e6fc300c1c8125bcf34be02a78c09ccb9"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_7.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/7",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "61f40bc2309d0de643b29b2cf6a37d90ed8c4022faa262db13876309c131f339"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_8.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/8",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "cddcf1b7eb83f24af2dc43f20ef3dd1c7d82f22a7ab46d748ca7584f9bdce3f6"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_textDown_9.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/textDown/9",
+    "width": 8,
+    "height": 10,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "62976f44beb889c4b45a67390dc21d838548d6655ad7ef4f2dd0f20dff83c187"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_canvas_gauge.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/canvas:gauge",
+    "width": 24,
+    "height": 3,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e20e99ae42aec1f3d9394177842005d980895cce22cb32741f45946825c71395"
+  },
+  {
+    "file": "Equip_Symbol_GrandAutEquip_button_next_normal_0.png",
+    "source": "UI/UIEquip.img/./Equip/Symbol/GrandAutEquip/button:next/normal/0",
+    "width": 24,
+    "height": 11,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "e626c484b61ea30c576f0e5aefe5e1efd08991936ae43dd4561bed43889cf655"
+  },
+  {
+    "file": "Equip_AvatarImage_canvas_highlightCustom0.png",
+    "source": "UI/UIEquip.img/./Equip/AvatarImage/canvas:highlightCustom0",
+    "width": 132,
+    "height": 177,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "5c550324b410e06cdc8ca686806e311a6eee329f98f59fbac48d0ff252bb1204"
+  },
+  {
+    "file": "Deco_main_backgrnd.png",
+    "source": "UI/UIEquip.img/./Deco/main/backgrnd",
+    "width": 366,
+    "height": 444,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "2ddcbcdd49cae175ccd175bb5881d41c172960b6c4c781ebb8dae895af450e4c"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_selected_0.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/selected/0",
+    "width": 113,
+    "height": 22,
+    "originX": -12,
+    "originY": -31,
+    "sha256": "8f8cf243018273462c66e43786f94c0330343295436d22aeffdf02d000aea3b1"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_selected_1.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/selected/1",
+    "width": 114,
+    "height": 22,
+    "originX": -127,
+    "originY": -31,
+    "sha256": "a261d1eca43e9cfc12bbd3ac0358d82e38f6b62fb0f5e094e95c3a43cc9fcb62"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_selected_2.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/selected/2",
+    "width": 113,
+    "height": 22,
+    "originX": -243,
+    "originY": -31,
+    "sha256": "adc867c3b0cf29d242522a2094d901c50f54fd06afbe0e375b247a6ee47cf6e3"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/normal/0",
+    "width": 113,
+    "height": 22,
+    "originX": -12,
+    "originY": -31,
+    "sha256": "19f3ce4f9e79bd81e24debad4f38a6e9b79e7d412e6ab43f34333484c8cbb6c2"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_normal_1.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/normal/1",
+    "width": 114,
+    "height": 22,
+    "originX": -127,
+    "originY": -31,
+    "sha256": "1c9d2b2a2f0dd402d1336764c81535ddf4cd08ba4d22eddcc8b9a21b736b9981"
+  },
+  {
+    "file": "Deco_main_tab_detailTab_normal_2.png",
+    "source": "UI/UIEquip.img/./Deco/main/tab:detailTab/normal/2",
+    "width": 113,
+    "height": 22,
+    "originX": -243,
+    "originY": -31,
+    "sha256": "d3a952761fa3752cc6cb81723fe578b7cc0c1ec1a605febc7b07464d1cc74bc0"
+  },
+  {
+    "file": "Deco_CoordiTab_canvas_coordi.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/canvas:coordi",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "4ac0ce86a8c6417a921e3e80f3239b2307e8bb10420e7faa18210264beb681fd"
+  },
+  {
+    "file": "Deco_CoordiTab_canvas_zero.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/canvas:zero",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "2fa28b650e78d4c60f941b75bffe6d2202c92b49ab84c93f093d3645775eb50c"
+  },
+  {
+    "file": "Deco_CoordiTab_canvas_dressup.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/canvas:dressup",
+    "width": 342,
+    "height": 349,
+    "originX": -12,
+    "originY": -61,
+    "sha256": "8957c5ce0156e08f97664a64250cd3f79407e57b39f74eea8d0749950087cb37"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_101.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/101",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_102.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/102",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_103.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/103",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_104.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/104",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_105.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/105",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_106.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/106",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_107.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/107",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_108.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/108",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_109.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/109",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_110.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/110",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -235,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_111.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/111",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -235,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_112.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/112",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -235,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_113.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/113",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -190,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_115.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/115",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -145,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_116.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/116",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -100,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_hair.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/hair",
+    "width": 42,
+    "height": 42,
+    "originX": -117,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_face.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/face",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Deco_CoordiTab_Slots_skin.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Slots/skin",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "3cf75e6c61e85c762a36e09c501e6e6ea45a280f0bb680215afe8cecc7a3d5f3"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_101.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/101",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_102.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/102",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_103.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/103",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_104.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/104",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_105.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/105",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_106.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/106",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_107.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/107",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_108.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/108",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_109.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/109",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_110.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/110",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -235,
+    "sha256": "77354a96d69f96df35beaca2a84545d50dd317de62ba5c11ef306950d4b049b5"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_111.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/111",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -235,
+    "sha256": "60c86d7e56aa48ac9d6877a154b97f721a9236de1864ccac63407fb399562dfb"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_112.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/112",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -235,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_113.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/113",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -190,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_115.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/115",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -145,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_116.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/116",
+    "width": 42,
+    "height": 42,
+    "originX": -27,
+    "originY": -100,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_hair.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/hair",
+    "width": 42,
+    "height": 42,
+    "originX": -117,
+    "originY": -280,
+    "sha256": "eb4af16a0c166d39acdc8c228e0d2e9b13cf3d228bcd4eacbf0a6f47c1873905"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_face.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/face",
+    "width": 42,
+    "height": 42,
+    "originX": -162,
+    "originY": -280,
+    "sha256": "30c64c8f4e928eb8724a231a0ecd0810c3f49956373c7607559ab24f15328859"
+  },
+  {
+    "file": "Deco_CoordiTab_SlotName_skin.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/SlotName/skin",
+    "width": 42,
+    "height": 42,
+    "originX": -207,
+    "originY": -280,
+    "sha256": "72477d3a6bd52b0a540a835addb3d87f3a1745ef063b4232016e44b6e456845f"
+  },
+  {
+    "file": "Deco_CoordiTab_button_CoordiPreset_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:CoordiPreset/normal/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "f944d2299e300be45243c2831ca65d4e9086dd3ed5eca522c3d6bf20a155a09c"
+  },
+  {
+    "file": "Deco_CoordiTab_button_CoordiPreset_pressed_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:CoordiPreset/pressed/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "e7ec3cfafbbd4df32e52126502721f7967e310740362798a1d4d1c443f32f440"
+  },
+  {
+    "file": "Deco_CoordiTab_button_CoordiPreset_disabled_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:CoordiPreset/disabled/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "2c19b3aee50e2dde2c96b522b028703f4ccbb9f4bf194d54d2664e05fb6444ea"
+  },
+  {
+    "file": "Deco_CoordiTab_button_CoordiPreset_mouseOver_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:CoordiPreset/mouseOver/0",
+    "width": 101,
+    "height": 23,
+    "originX": -255,
+    "originY": -414,
+    "sha256": "9892ee6def8fdb1c858f4ae432a5c903373dac69f647e4d88f35c2bf0aa9527d"
+  },
+  {
+    "file": "Deco_CoordiTab_button_BeautyRoom_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:BeautyRoom/normal/0",
+    "width": 101,
+    "height": 23,
+    "originX": -11,
+    "originY": -414,
+    "sha256": "b4e9cb0ab3a971e7b9845fc12a6f8f34066273332a8493e8e2f0d4bd15d012f7"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1300.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1300",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1301.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1301",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1302.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1302",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1303.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1303",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1304.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1304",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1305.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1305",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1306.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1306",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1307.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1307",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1308.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1308",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_Slots_1309.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/Slots/1309",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1300.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1300",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -100,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1301.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1301",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -100,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1302.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1302",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -100,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1303.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1303",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1304.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1304",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -145,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1305.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1305",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -145,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1306.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1306",
+    "width": 42,
+    "height": 42,
+    "originX": -72,
+    "originY": -190,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1307.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1307",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -145,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1308.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1308",
+    "width": 42,
+    "height": 42,
+    "originX": -252,
+    "originY": -190,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Deco_CoordiTab_Angel_SlotName_1309.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/Angel/SlotName/1309",
+    "width": 42,
+    "height": 42,
+    "originX": -297,
+    "originY": -190,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Deco_CoordiTab_button_EquipUI_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:EquipUI/normal/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -72,
+    "sha256": "0e27cc59c38afd6389aea1ecfd2f0243cc42d6ffc17c511491e003d124d64c46"
+  },
+  {
+    "file": "Deco_CoordiTab_button_EquipUI_mouseOver_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:EquipUI/mouseOver/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -74,
+    "sha256": "88416694909103710418d26e7ee8e85f0b058404c01e59360330173e3596ca63"
+  },
+  {
+    "file": "Deco_CoordiTab_button_EquipUI_disabled_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:EquipUI/disabled/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -74,
+    "sha256": "ff2bb18db0da8f019d0b503c5dfd4e8b6477e6b5da233bc74436d88f06d99f58"
+  },
+  {
+    "file": "Deco_CoordiTab_button_EquipUI_pressed_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:EquipUI/pressed/0",
+    "width": 89,
+    "height": 22,
+    "originX": -251,
+    "originY": -74,
+    "sha256": "822d7dfe59610b3a812dea4b4371c66e8af0261295bcdfbc25ce655a91e1f707"
+  },
+  {
+    "file": "Deco_CoordiTab_button_EffectSetting_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiTab/button:EffectSetting/normal/0",
+    "width": 92,
+    "height": 25,
+    "originX": -248,
+    "originY": -376,
+    "sha256": "ef04ab8c32691fe73a06ba9156cee511e71e5127531a1c2d2e748c84c129e54b"
+  },
+  {
+    "file": "Deco_CoordiPreset_backgrnd.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/backgrnd",
+    "width": 358,
+    "height": 352,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "84b6bc284edeab1b3a0c3d44ec458a8fa35c602f90226cda879300a2f8bfdada"
+  },
+  {
+    "file": "Deco_CoordiPreset_canvas_coordiPreset.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/canvas:coordiPreset",
+    "width": 358,
+    "height": 352,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "84b6bc284edeab1b3a0c3d44ec458a8fa35c602f90226cda879300a2f8bfdada"
+  },
+  {
+    "file": "Deco_CoordiPreset_canvas_zero.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/canvas:zero",
+    "width": 358,
+    "height": 352,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "63cccdb0678aee38c7ddbb5b73872c4b2cdb334716ac5869fe089e12932180f7"
+  },
+  {
+    "file": "Deco_CoordiPreset_canvas_dressup.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/canvas:dressup",
+    "width": 358,
+    "height": 352,
+    "originX": 0,
+    "originY": 0,
+    "sha256": "895f68f38eb997b4d652ab172b259f802476de99a44e34570ae44d2cb8cab21c"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset1_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset1/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": -117,
+    "originY": -286,
+    "sha256": "07ab94216a16e8075a44c0f927bc258aa3e875c84841865129e7b0d4e65eb1e7"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset1_checked_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset1/checked/0",
+    "width": 19,
+    "height": 19,
+    "originX": -117,
+    "originY": -286,
+    "sha256": "62e20d94010907611ed9718fa3cdb9336c73ebf17cfdac32a76bee48374b3074"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset2_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset2/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": -147,
+    "originY": -286,
+    "sha256": "6569f948ac2bb9f9b8953e49f784a61c310119a41bf0b5096b0e90ea564505db"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset2_checked_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset2/checked/0",
+    "width": 19,
+    "height": 19,
+    "originX": -147,
+    "originY": -286,
+    "sha256": "00870d755adfaebb9914f3af1365ef7c126fb1677db3af12ddf74f415773b491"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset3_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset3/normal/0",
+    "width": 19,
+    "height": 19,
+    "originX": -177,
+    "originY": -286,
+    "sha256": "bb63fd9af9e11a1851a14db8a6426ebac61f4218b09ab937bda6fd14ef12a57a"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_preset3_checked_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:preset3/checked/0",
+    "width": 19,
+    "height": 19,
+    "originX": -177,
+    "originY": -286,
+    "sha256": "fcbadef97eb298fcad788e763c32f90dd625c0736c664c14d59cc22c3d54c35d"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_apply_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:apply/normal/0",
+    "width": 58,
+    "height": 25,
+    "originX": -215,
+    "originY": -284,
+    "sha256": "42fc9a39322243e2d2544c8870931c0830670f96a28f560447c2445f186fb1e0"
+  },
+  {
+    "file": "Deco_CoordiPreset_button_cancel_normal_0.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/button:cancel/normal/0",
+    "width": 58,
+    "height": 25,
+    "originX": -278,
+    "originY": -284,
+    "sha256": "67ce4119bca3d749dc4ba15c8757776828dd7de5f49af010b9dcfa1a73e4de4a"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_101.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/101",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_102.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/102",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_103.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/103",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_104.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/104",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_105.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/105",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_106.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/106",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_107.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/107",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_108.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/108",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_109.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/109",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_110.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/110",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -182,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_111.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/111",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -182,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_112.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/112",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -182,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_113.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/113",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -137,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_115.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/115",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -92,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_Slots_116.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Slots/116",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -47,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_101.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/101",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_102.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/102",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_103.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/103",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_104.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/104",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_105.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/105",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_106.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/106",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_107.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/107",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_108.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/108",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_109.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/109",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_110.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/110",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -182,
+    "sha256": "77354a96d69f96df35beaca2a84545d50dd317de62ba5c11ef306950d4b049b5"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_111.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/111",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -182,
+    "sha256": "60c86d7e56aa48ac9d6877a154b97f721a9236de1864ccac63407fb399562dfb"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_112.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/112",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -182,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_113.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/113",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -137,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_115.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/115",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -92,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiPreset_SlotName_116.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/SlotName/116",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -47,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1300.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1300",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1301.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1301",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1302.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1302",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1303.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1303",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1304.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1304",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1305.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1305",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1306.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1306",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1307.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1307",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1308.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1308",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_Slots_1309.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/Slots/1309",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1300.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1300",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1301.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1301",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1302.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1302",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1303.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1303",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1304.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1304",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1305.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1305",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1306.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1306",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1307.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1307",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1308.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1308",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Deco_CoordiPreset_Angelic_SlotName_1309.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Angelic/SlotName/1309",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1501.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1501",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1502.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1502",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1500.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1500",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1503.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1503",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1505.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1505",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1508.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1508",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1509.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1509",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1506.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1506",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1504.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1504",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "627d3efeb6ac7f010fbd80d7e17146d22f32b48a588d7c406cccd2379d27b194"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1507.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1507",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -182,
+    "sha256": "5f4f1099e70be347aac26cdbf3bf76562215608d72f74dbb0bf04a2be2ea8da2"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1510.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1510",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -182,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_Slots_1511.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/Slots/1511",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -137,
+    "sha256": "452d00dc0b755a2bd6e8fd2ea5395054242c5c2b348dc21ec9b7a54a75602395"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1501.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1501",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -47,
+    "sha256": "fdbd6a4fcb575e533c36a8ad1111dee9f1513564422235a0a981c6b38406551b"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1502.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1502",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -47,
+    "sha256": "21c7d5ca3d9b17af3c29e2bc52e7dedb7b8e5ef0982534930786fdd66332a3b2"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1500.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1500",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -92,
+    "sha256": "1006ef1d5163ea00e871a6f0c1f8a4865faca216a0fc55a0c8513d08fe60f7aa"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1503.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1503",
+    "width": 42,
+    "height": 42,
+    "originX": -68,
+    "originY": -137,
+    "sha256": "6c8a2ad301d5fd266a9ea115b38bf96ed7d8e932a946b22a9038e14149ee18ab"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1505.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1505",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -92,
+    "sha256": "f4162efa968946e26b8942938415f4f03793fca9481c898c5ae44d363b655c62"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1508.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1508",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -137,
+    "sha256": "0ccd4be08c2d5f378baf01c8182b27bafbeb009524b6ff47850a8e1dfa77b143"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1509.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1509",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -137,
+    "sha256": "eb70357d60fc7013e5f452310e31f7b3ee4c5a1c25a0f94b81f0a6a0bb2a3b85"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1506.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1506",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -92,
+    "sha256": "67b54a534c7b1e1a5446d88012adf15e65145b2eb7c254f3e6827709c89e07f6"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1504.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1504",
+    "width": 42,
+    "height": 42,
+    "originX": -293,
+    "originY": -47,
+    "sha256": "91e62f79189a85bd10811ea84bd72da142e4e82c41f5396736259b2d172f2526"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1507.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1507",
+    "width": 42,
+    "height": 42,
+    "originX": -248,
+    "originY": -182,
+    "sha256": "60c86d7e56aa48ac9d6877a154b97f721a9236de1864ccac63407fb399562dfb"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1510.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1510",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -182,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  },
+  {
+    "file": "Deco_CoordiPreset_Zero_SlotName_1511.png",
+    "source": "UI/UIEquip.img/./Deco/CoordiPreset/Zero/SlotName/1511",
+    "width": 42,
+    "height": 42,
+    "originX": -23,
+    "originY": -137,
+    "sha256": "1d673ad4878f337d8adc9eb0e4b7c4a817f3f572d7cf0e1c8f8dfa0d34f4b718"
+  }
+]

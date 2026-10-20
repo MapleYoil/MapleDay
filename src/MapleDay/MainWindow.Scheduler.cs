@@ -71,6 +71,7 @@ public sealed partial class MainWindow
             _schedulerSelectedOcid = null;
         RebuildIncomeCharacters();
         RebuildLevelCharacters();
+        CharacterInfoPage.SetContext(_api, _apiKey, SchedulerAvatars);
         ApplySchedulerView();
         RefreshIncomeOverview();
     }

@@ -9,4 +9,6 @@
 
 메요일은 NEXON의 공식 프로그램이 아니며 이 고지는 제3자 권리자의 승인·보증을 의미하지 않습니다.
 
+- **캐릭터 장비 UI**: 신형 장비·코디·프리셋·심볼 창은 설치된 게임의 `UI/UIEquip.img`에서 추출한 NEXON 원본 이미지입니다. 아이템·심볼 아이콘은 NEXON Open API가 제공하는 공개 이미지 주소로 조회합니다. 추출 경로·크기·원점·해시는 `src/MapleDay/Assets/Equipment/UIEquip/manifest.json`에 기록하며 원본 자료의 권리는 해당 권리자에게 있습니다. 리소스 추출 도구는 기존 WzComparerR2 라이브러리를 참조하며 게임 데이터나 도구 바이너리를 별도 실행 앱에 포함하지 않습니다.
+
 - **SkiaSharp / Skia**: 수익 집계 렌더링과 이미지 저장에 사용합니다. 구성 요소의 라이선스와 저작권 고지는 [SkiaSharp-LICENSE.txt](src/MapleDay/Assets/Licenses/SkiaSharp-LICENSE.txt)에 포함되어 있습니다.

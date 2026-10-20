@@ -1398,5 +1398,2065 @@
     "width": 31,
     "height": 26,
     "file": "BossLoot/2832969.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1300.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1300.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1301.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1301.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1302.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1302.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1303.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1303.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1304.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1304.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1305.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1305.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1306.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1306.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1307.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1307.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1308.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1308.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1309.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_SlotName_1309.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1300.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1300.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1301.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1301.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1302.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1302.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1303.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1303.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1304.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1304.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1305.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1305.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1306.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1306.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1307.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1307.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1308.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1308.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1309.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Angelic_Slots_1309.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_backgrnd.png": {
+    "width": 358,
+    "height": 352,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_apply_normal_0.png": {
+    "width": 58,
+    "height": 25,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_apply_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_cancel_normal_0.png": {
+    "width": 58,
+    "height": 25,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_cancel_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset1_checked_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset1_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset1_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset1_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset2_checked_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset2_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset2_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset2_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset3_checked_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset3_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_button_preset3_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_button_preset3_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_canvas_coordiPreset.png": {
+    "width": 358,
+    "height": 352,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_canvas_coordiPreset.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_canvas_dressup.png": {
+    "width": 358,
+    "height": 352,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_canvas_dressup.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_canvas_zero.png": {
+    "width": 358,
+    "height": 352,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_canvas_zero.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_101.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_102.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_103.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_104.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_105.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_105.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_106.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_106.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_107.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_107.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_108.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_108.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_109.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_109.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_110.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_110.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_111.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_111.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_112.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_112.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_113.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_113.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_115.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_115.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_SlotName_116.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_SlotName_116.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_101.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_102.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_103.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_104.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_105.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_105.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_106.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_106.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_107.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_107.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_108.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_108.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_109.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_109.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_110.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_110.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_111.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_111.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_112.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_112.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_113.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_113.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_115.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_115.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Slots_116.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Slots_116.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1500.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1500.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1501.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1501.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1502.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1502.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1503.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1503.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1504.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1504.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1505.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1505.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1506.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1506.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1507.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1507.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1508.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1508.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1509.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1509.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1510.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1510.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1511.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_SlotName_1511.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1500.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1500.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1501.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1501.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1502.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1502.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1503.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1503.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1504.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1504.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1505.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1505.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1506.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1506.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1507.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1507.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1508.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1508.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1509.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1509.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1510.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1510.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1511.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiPreset_Zero_Slots_1511.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1300.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1300.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1301.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1301.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1302.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1302.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1303.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1303.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1304.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1304.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1305.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1305.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1306.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1306.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1307.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1307.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1308.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1308.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1309.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_SlotName_1309.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1300.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1300.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1301.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1301.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1302.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1302.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1303.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1303.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1304.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1304.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1305.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1305.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1306.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1306.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1307.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1307.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1308.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1308.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1309.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Angel_Slots_1309.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_BeautyRoom_normal_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_BeautyRoom_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_disabled_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_disabled_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_mouseOver_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_mouseOver_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_normal_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_pressed_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_CoordiPreset_pressed_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_EffectSetting_normal_0.png": {
+    "width": 92,
+    "height": 25,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_EffectSetting_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_disabled_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_disabled_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_mouseOver_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_mouseOver_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_normal_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_pressed_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_button_EquipUI_pressed_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_canvas_coordi.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_canvas_coordi.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_canvas_dressup.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_canvas_dressup.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_canvas_zero.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_canvas_zero.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_101.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_102.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_103.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_104.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_105.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_105.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_106.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_106.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_107.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_107.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_108.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_108.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_109.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_109.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_110.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_110.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_111.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_111.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_112.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_112.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_113.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_113.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_115.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_115.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_116.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_116.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_face.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_face.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_hair.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_hair.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_SlotName_skin.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_SlotName_skin.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_101.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_102.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_103.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_104.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_105.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_105.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_106.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_106.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_107.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_107.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_108.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_108.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_109.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_109.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_110.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_110.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_111.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_111.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_112.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_112.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_113.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_113.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_115.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_115.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_116.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_116.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_face.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_face.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_hair.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_hair.bgra"
+  },
+  "Equipment/UIEquip/Deco_CoordiTab_Slots_skin.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Deco_CoordiTab_Slots_skin.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_backgrnd.png": {
+    "width": 366,
+    "height": 444,
+    "file": "Equipment/UIEquip/Deco_main_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_normal_0.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_normal_1.png": {
+    "width": 114,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_normal_1.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_normal_2.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_normal_2.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_selected_0.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_selected_0.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_selected_1.png": {
+    "width": 114,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_selected_1.bgra"
+  },
+  "Equipment/UIEquip/Deco_main_tab_detailTab_selected_2.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Deco_main_tab_detailTab_selected_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_AvatarImage_canvas_highlightCustom0.png": {
+    "width": 132,
+    "height": 177,
+    "file": "Equipment/UIEquip/Equip_AvatarImage_canvas_highlightCustom0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_btSkillRingClose_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Equip_EquipTab_btSkillRingClose_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_btSkillRingOpen_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Equip_EquipTab_btSkillRingOpen_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_btUnionRoidUI_normal_0.png": {
+    "width": 19,
+    "height": 19,
+    "file": "Equipment/UIEquip/Equip_EquipTab_btUnionRoidUI_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_disabled_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_disabled_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_mouseOver_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_mouseOver_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_normal_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_pressed_0.png": {
+    "width": 89,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_DecoUI_pressed_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_dragonEquipClose_normal_0.png": {
+    "width": 92,
+    "height": 25,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_dragonEquipClose_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_dragonEquipOpen_normal_0.png": {
+    "width": 92,
+    "height": 25,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_dragonEquipOpen_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_mechanicEquipClose_normal_0.png": {
+    "width": 92,
+    "height": 25,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_mechanicEquipClose_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_mechanicEquipOpen_normal_0.png": {
+    "width": 92,
+    "height": 25,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_mechanicEquipOpen_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset1_checked_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset1_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset1_normal_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset1_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset2_checked_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset2_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset2_normal_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset2_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset3_checked_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset3_checked_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_preset3_normal_0.png": {
+    "width": 18,
+    "height": 18,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_preset3_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_symbol_disabled_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_symbol_disabled_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_symbol_mouseOver_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_symbol_mouseOver_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_symbol_normal_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_symbol_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_button_symbol_pressed_0.png": {
+    "width": 101,
+    "height": 23,
+    "file": "Equipment/UIEquip/Equip_EquipTab_button_symbol_pressed_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_canvas_equip.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Equip_EquipTab_canvas_equip.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_canvas_equip2.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Equip_EquipTab_canvas_equip2.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_canvas_equip3.png": {
+    "width": 342,
+    "height": 349,
+    "file": "Equipment/UIEquip/Equip_EquipTab_canvas_equip3.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_canvas_dragon.png": {
+    "width": 108,
+    "height": 257,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_canvas_dragon.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1000.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1000.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1001.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1001.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1002.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1002.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1003.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_SlotName_1003.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1000.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1000.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1001.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1001.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1002.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1002.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1003.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_dragonEquip_Slots_1003.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_canvas_mechanic.png": {
+    "width": 108,
+    "height": 302,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_canvas_mechanic.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1100.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1100.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1101.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1102.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1103.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_SlotName_1104.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1100.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1100.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1101.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1101.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1102.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1102.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1103.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1103.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1104.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_mechanicEquip_Slots_1104.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_1.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_10.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_10.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_11.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_11.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_12.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_12.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_13.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_13.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_15.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_15.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_16.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_16.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_17.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_17.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_2.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_21.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_21.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_22.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_22.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_23.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_23.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_26.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_26.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_27.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_27.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_28.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_28.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_29.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_29.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_3.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_30.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_30.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_30_2.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_30_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_31.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_31.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_32.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_32.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_4.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_5.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_6.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_7.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_8.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_9.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_SlotName_title.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_SlotName_title.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_1.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_10.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_10.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_11.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_11.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_12.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_12.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_13.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_13.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_15.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_15.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_16.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_16.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_17.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_17.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_2.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_21.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_21.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_22.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_22.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_23.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_23.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_26.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_26.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_27.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_27.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_28.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_28.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_29.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_29.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_3.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_30.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_30.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_30_2.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_30_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_31.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_31.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_32.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_32.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_4.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_5.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_6.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_7.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_8.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_9.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_EquipTab_Slots_title.png": {
+    "width": 42,
+    "height": 42,
+    "file": "Equipment/UIEquip/Equip_EquipTab_Slots_title.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_backgrnd.png": {
+    "width": 366,
+    "height": 444,
+    "file": "Equipment/UIEquip/Equip_main_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_0.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_1.png": {
+    "width": 114,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_2.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_normal_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_0.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_1.png": {
+    "width": 114,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_2.png": {
+    "width": 113,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab2_selected_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab_normal_0.png": {
+    "width": 171,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab_normal_1.png": {
+    "width": 171,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab_normal_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab_selected_0.png": {
+    "width": 171,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab_selected_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_main_tab_detailTab_selected_1.png": {
+    "width": 171,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_main_tab_detailTab_selected_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_backgrnd.png": {
+    "width": 184,
+    "height": 272,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_base.png": {
+    "width": 24,
+    "height": 3,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_base.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_base2.png": {
+    "width": 27,
+    "height": 12,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_base2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_box.png": {
+    "width": 46,
+    "height": 86,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_box.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_button_enchant_normal_0.png": {
+    "width": 39,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_button_enchant_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_canvas_gauge.png": {
+    "width": 24,
+    "height": 3,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_canvas_gauge.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_disablebox.png": {
+    "width": 46,
+    "height": 86,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_disablebox.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_0.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_1.png": {
+    "width": 5,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_2.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_3.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_4.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_5.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_6.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_7.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_8.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_9.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_v.png": {
+    "width": 16,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textDown_v.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_0.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_1.png": {
+    "width": 6,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_2.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_3.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_4.png": {
+    "width": 9,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_5.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_6.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_7.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_8.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_9.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_dex.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_dex.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_force.png": {
+    "width": 24,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_force.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_hp.png": {
+    "width": 16,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_hp.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_int.png": {
+    "width": 21,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_int.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_luk.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_luk.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_plus.png": {
+    "width": 8,
+    "height": 7,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_plus.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_str.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_ArcEquip_textUp_str.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_backgrnd.png": {
+    "width": 184,
+    "height": 272,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_base2.png": {
+    "width": 27,
+    "height": 12,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_base2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_box.png": {
+    "width": 44,
+    "height": 89,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_box.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_button_enchant_normal_0.png": {
+    "width": 44,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_button_enchant_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_button_next_normal_0.png": {
+    "width": 24,
+    "height": 11,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_button_next_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_canvas_gauge.png": {
+    "width": 24,
+    "height": 3,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_canvas_gauge.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_disablebox.png": {
+    "width": 44,
+    "height": 89,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_disablebox.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_0.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_1.png": {
+    "width": 5,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_2.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_3.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_4.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_5.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_6.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_7.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_8.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_9.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_v.png": {
+    "width": 16,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textDown_v.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_0.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_1.png": {
+    "width": 6,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_2.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_3.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_4.png": {
+    "width": 9,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_5.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_6.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_7.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_8.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_9.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_dex.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_dex.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_force.png": {
+    "width": 25,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_force.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_hp.png": {
+    "width": 16,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_hp.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_int.png": {
+    "width": 21,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_int.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_luk.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_luk.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_plus.png": {
+    "width": 8,
+    "height": 7,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_plus.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_str.png": {
+    "width": 23,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_AutEquip_textUp_str.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_backgrnd.png": {
+    "width": 228,
+    "height": 339,
+    "file": "Equipment/UIEquip/Equip_Symbol_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_backgrnd.png": {
+    "width": 184,
+    "height": 272,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_backgrnd.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_base2.png": {
+    "width": 27,
+    "height": 12,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_base2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_box.png": {
+    "width": 44,
+    "height": 89,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_box.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_button_enchant_normal_0.png": {
+    "width": 42,
+    "height": 22,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_button_enchant_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_button_next_normal_0.png": {
+    "width": 24,
+    "height": 11,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_button_next_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_canvas_gauge.png": {
+    "width": 24,
+    "height": 3,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_canvas_gauge.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_disablebox.png": {
+    "width": 44,
+    "height": 89,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_disablebox.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_0.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_1.png": {
+    "width": 5,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_2.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_3.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_4.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_5.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_6.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_7.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_8.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_9.png": {
+    "width": 8,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_v.png": {
+    "width": 16,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textDown_v.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_0.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_1.png": {
+    "width": 6,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_2.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_2.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_3.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_3.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_4.png": {
+    "width": 9,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_4.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_5.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_5.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_6.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_6.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_7.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_7.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_8.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_8.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_9.png": {
+    "width": 7,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_9.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_dot.png": {
+    "width": 3,
+    "height": 3,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_dot.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_drop.png": {
+    "width": 33,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_drop.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_exp.png": {
+    "width": 24,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_exp.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_force.png": {
+    "width": 25,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_force.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_meso.png": {
+    "width": 34,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_meso.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_percent.png": {
+    "width": 13,
+    "height": 10,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_percent.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_plus.png": {
+    "width": 8,
+    "height": 7,
+    "file": "Equipment/UIEquip/Equip_Symbol_GrandAutEquip_textUp_plus.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_normal_0.png": {
+    "width": 92,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_normal_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_normal_1.png": {
+    "width": 92,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_normal_1.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_selected_0.png": {
+    "width": 92,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_selected_0.bgra"
+  },
+  "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_selected_1.png": {
+    "width": 92,
+    "height": 20,
+    "file": "Equipment/UIEquip/Equip_Symbol_tab_categoryTab_selected_1.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_box.png": {
+    "width": 73,
+    "height": 20,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_box.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_btm.png": {
+    "width": 324,
+    "height": 12,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_btm.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_category_c.png": {
+    "width": 1,
+    "height": 14,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_category_c.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_category_e.png": {
+    "width": 8,
+    "height": 14,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_category_e.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_category_w.png": {
+    "width": 8,
+    "height": 14,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_category_w.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_cover.png": {
+    "width": 1,
+    "height": 1,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_cover.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_line.png": {
+    "width": 324,
+    "height": 3,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_line.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_mid.png": {
+    "width": 324,
+    "height": 1,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_mid.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/frame_common_top.png": {
+    "width": 324,
+    "height": 30,
+    "file": "Equipment/UIToolTip_Item_Equip/frame_common_top.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/imgFont_atkPow_equipped.png": {
+    "width": 159,
+    "height": 20,
+    "file": "Equipment/UIToolTip_Item_Equip/imgFont_atkPow_equipped.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/itemIcon_base.png": {
+    "width": 82,
+    "height": 82,
+    "file": "Equipment/UIToolTip_Item_Equip/itemIcon_base.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/itemIcon_cover.png": {
+    "width": 1,
+    "height": 1,
+    "file": "Equipment/UIToolTip_Item_Equip/itemIcon_cover.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/itemIcon_shade.png": {
+    "width": 82,
+    "height": 82,
+    "file": "Equipment/UIToolTip_Item_Equip/itemIcon_shade.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_epic.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_epic.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_legendary.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_legendary.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_normal.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_normal.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_rare.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_rare.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_unique.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_additionalPotential_title_unique.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_epic.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_epic.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_legendary.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_legendary.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_normal.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_normal.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_rare.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_rare.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_unique.png": {
+    "width": 10,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_potential_title_unique.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_starForce_blue.png": {
+    "width": 11,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_starForce_blue.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_starForce_empty.png": {
+    "width": 11,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_starForce_empty.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_starForce_enhanced.png": {
+    "width": 11,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_starForce_enhanced.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_starForce_normal.png": {
+    "width": 11,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_starForce_normal.bgra"
+  },
+  "Equipment/UIToolTip_Item_Equip/textIcon_starForce_star.png": {
+    "width": 11,
+    "height": 10,
+    "file": "Equipment/UIToolTip_Item_Equip/textIcon_starForce_star.bgra"
   }
 }

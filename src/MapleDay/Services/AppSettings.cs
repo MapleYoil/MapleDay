@@ -58,7 +58,7 @@ public sealed class AppSettings
     public Dictionary<string, DateTimeOffset> CheckedReminders { get; set; } = [];
     public List<ReminderNotice> ReminderNotices { get; set; } = [];
     public string StartPage { get; set; } = "characters";
-    public string ValidStartPage => StartPage is "characters" or "scheduler" or "income" or "party" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
+    public string ValidStartPage => StartPage is "characters" or "character-info" or "scheduler" or "income" or "party" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
     public bool MarkRemindersRead()
     {
         var changed = false;

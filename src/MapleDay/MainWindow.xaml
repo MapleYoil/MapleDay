@@ -83,6 +83,9 @@
                                     AutomationProperties.AutomationId="CharactersNavigationItem">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE77B;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem x:Name="CharacterInfoNavigationItem" Content="캐릭터 정보" Tag="character-info">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE946;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem x:Name="SchedulerNavigationItem" Content="스케줄러" Tag="scheduler">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE787;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>
@@ -575,6 +578,7 @@
         <ScrollViewer x:Name="CalendarPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <views:ScheduleCalendarView x:Name="CalendarPanel" Margin="24,24,24,20" MaxWidth="1000" HorizontalAlignment="Stretch"/>
         </ScrollViewer>
+        <views:CharacterEquipmentView x:Name="CharacterInfoPage" Visibility="Collapsed" />
         <views:PartyManagerView x:Name="PartyPage" Visibility="Collapsed" />
         <ScrollViewer x:Name="LevelPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="24,28" Spacing="20" MaxWidth="1000" HorizontalAlignment="Stretch">
@@ -870,7 +874,7 @@
                     <StackPanel Spacing="12">
                         <TextBlock Text="시작 페이지" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="StartPageSelector" SelectionChanged="StartPageSelector_SelectionChanged" MinWidth="220" AutomationProperties.Name="시작 페이지">
-                            <ComboBoxItem Content="내 캐릭터" Tag="characters" /><ComboBoxItem Content="스케줄러" Tag="scheduler" /><ComboBoxItem Content="수익" Tag="income" />
+                            <ComboBoxItem Content="내 캐릭터" Tag="characters" /><ComboBoxItem Content="캐릭터 정보" Tag="character-info" /><ComboBoxItem Content="스케줄러" Tag="scheduler" /><ComboBoxItem Content="수익" Tag="income" />
                             <ComboBoxItem Content="파티" Tag="party" /><ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
                         </ComboBox>
                     </StackPanel>

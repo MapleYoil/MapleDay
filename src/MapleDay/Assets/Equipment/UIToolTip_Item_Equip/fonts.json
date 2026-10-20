@@ -1,0 +1,184 @@
+{
+  "common/itemName": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/itemName",
+    "family": "\uB3CB\uC6C0",
+    "size": 14,
+    "bold": 1,
+    "color": "FFFFFFFF"
+  },
+  "common/itemNameGray": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/itemNameGray",
+    "family": "\uB3CB\uC6C0",
+    "size": 14,
+    "bold": 1,
+    "color": "FFB7BFC5"
+  },
+  "common/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFFFFF"
+  },
+  "common/normalBold": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/normalBold",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 1,
+    "color": "FFFFFFFF"
+  },
+  "common/gray": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/gray",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFB7BFC5"
+  },
+  "common/grayBold": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/grayBold",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 1,
+    "color": "FFB7BFC5"
+  },
+  "common/darkGray": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/darkGray",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF85919F"
+  },
+  "common/red": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/red",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFF8A18"
+  },
+  "common/emphasis": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/emphasis",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFCC00"
+  },
+  "common/abilityTimeLimited": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/common/abilityTimeLimited",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFF54D"
+  },
+  "starForce/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/starForce/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFCC00"
+  },
+  "scroll/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/scroll/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFAFADFF"
+  },
+  "bonusStat/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/bonusStat/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF0AE3AD"
+  },
+  "potential/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/potential/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF85919F"
+  },
+  "potential/rare": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/potential/rare",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF66FFFF"
+  },
+  "potential/epic": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/potential/epic",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFBB77FF"
+  },
+  "potential/unique": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/potential/unique",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFCC00"
+  },
+  "potential/legendary": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/potential/legendary",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFCCFF00"
+  },
+  "additionalPotential/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/additionalPotential/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF85919F"
+  },
+  "additionalPotential/rare": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/additionalPotential/rare",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FF66FFFF"
+  },
+  "additionalPotential/epic": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/additionalPotential/epic",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFBB77FF"
+  },
+  "additionalPotential/unique": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/additionalPotential/unique",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFCC00"
+  },
+  "additionalPotential/legendary": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/additionalPotential/legendary",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFCCFF00"
+  },
+  "soul/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/soul/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFFFFF"
+  },
+  "soul/amplify": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/soul/amplify",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFFFFFF"
+  },
+  "exceptional/normal": {
+    "source": "UI/UIToolTip.img/Item/Equip/font/exceptional/normal",
+    "family": "MD\uBAA8\uB9AC\uC2A49",
+    "size": 12,
+    "bold": 0,
+    "color": "FFFF3333"
+  }
+}
