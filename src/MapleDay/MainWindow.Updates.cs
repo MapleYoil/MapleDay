@@ -212,8 +212,8 @@ public sealed partial class MainWindow
     private async void InstallUpdateButton_Click(object sender, RoutedEventArgs args)
     {
         if (_readyUpdate is null || _preparedUpdate is not { } prepared || _updateChecking || _updateInstalling || _closed || _dataDeleting) return;
-        if (_supportSubmitting || !string.IsNullOrWhiteSpace(SupportSubject.Text) || !string.IsNullOrWhiteSpace(SupportBody.Text))
-        { UpdateStatusText.Text = "작성 중인 문의를 보내거나 내용을 비운 뒤 업데이트해주세요."; return; }
+        if (_supportSubmitting || _supportReplySending)
+        { UpdateStatusText.Text = "문의·답장 전송이 끝난 뒤 업데이트해주세요."; return; }
         var launcher = WindowsStartup.FindLauncher(AppContext.BaseDirectory);
         if (launcher is null) { UpdateStatusText.Text = "배포 폴더의 MapleDay.exe로 실행한 뒤 업데이트해주세요."; return; }
         _updateInstalling = true;

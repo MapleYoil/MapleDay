@@ -60,17 +60,8 @@ public sealed partial class MainWindow
     private async Task InitializeSupportForLaunchAsync()
     {
         UpdateSupportLogin();
-        try
-        {
-            var draft = await _support.PendingDraftAsync();
-            if (draft is not null && !_closed && !_dataDeleting)
-            {
-                SupportSubject.Text = draft.Subject;
-                SupportBody.Text = draft.Body;
-                SupportKind.SelectedIndex = draft.Kind == "suggestion" ? 1 : 0;
-            }
-        }
-        catch (Exception error) when (IsSupportError(error)) { }
+        // Pending requests retain their idempotency ID in SupportClient only.
+        // They must not populate a new inquiry form at startup.
         await RefreshSupportAsync(showErrors: false);
     }
 
