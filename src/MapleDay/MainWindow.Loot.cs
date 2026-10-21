@@ -43,7 +43,13 @@ public sealed partial class MainWindow
             mode.Items.Add("균등 분배"); mode.Items.Add("비율 분배"); mode.Items.Add("수령액 직접 입력"); mode.Items.Add("수수료 반영 정산");
             var settlement = new PartySettlementView();
             var preset = new ComboBox { Header = "저장한 파티 불러오기", DisplayMemberPath = "Name", ItemsSource = _settings.Parties.Where(PartySettlement.Valid).ToArray(), HorizontalAlignment = HorizontalAlignment.Stretch };
-            preset.SelectionChanged += (_, _) => { if (preset.SelectedItem is PartyPreset selected) settlement.Apply(PartySettlement.ForBoss(selected, boss.SelectedItem as string ?? "", (difficulty.SelectedItem as ComboBoxItem)?.Tag as string ?? ""), (character.SelectedItem as SchedulerCharacter)?.Ocid); };
+            var sharedPartyId = existing?.SharedPartyId ?? "";
+            preset.SelectionChanged += (_, _) =>
+            {
+                if (preset.SelectedItem is not PartyPreset selected) return;
+                sharedPartyId = selected.Id;
+                settlement.Apply(PartySettlement.ForBoss(selected, boss.SelectedItem as string ?? "", (difficulty.SelectedItem as ComboBoxItem)?.Tag as string ?? ""), (character.SelectedItem as SchedulerCharacter)?.Ocid);
+            };
             var settlementPanel = new StackPanel { Spacing = 12 }; settlementPanel.Children.Add(preset); settlementPanel.Children.Add(settlement);
             var party = new NumberBox { Header = "파티 인원 (인)", Value = existing?.PartySize ?? source?.Boss.PartySize ?? 1, Minimum = 1,
                 Maximum = 6, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
@@ -129,9 +135,17 @@ public sealed partial class MainWindow
                 var record = new BossLootRecord(existing?.Id ?? Guid.NewGuid().ToString("N"), owner.Ocid, day, name,
                     chosen?.Id ?? "", title, selectedMode, enteredAmount, (int)party.Value, ratio.Text.Trim(),
                     selectedMode == "ratio" ? (int)member.Value : 1, selectedDifficulty,
-                    source?.Boss.Id ?? (addDate is not null ? ManualWeeklyHistory.Id(ClearDraft()) : ""));
+                    source?.Boss.Id ?? (addDate is not null ? ManualWeeklyHistory.Id(ClearDraft()) : ""),
+                    selectedMode == "settlement" && _partyShares.IsShared(sharedPartyId) ? sharedPartyId : "",
+                    selectedMode == "settlement" && _partyShares.IsShared(sharedPartyId) ? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() : 0);
                 record = record with { Settlement = snapshot };
                 if (!BossLoot.Valid(record)) throw new ArgumentException("보상·파티 인원·정산 정보를 확인해주세요.");
+                if (!string.IsNullOrEmpty(record.SharedPartyId))
+                {
+                    var sharedParty = _settings.Parties.FirstOrDefault(value => value.Id == record.SharedPartyId)
+                        ?? throw new ArgumentException("공유 파티를 찾을 수 없습니다.");
+                    _ = PartyShareRecords.NormalizeLoot(record, PartyShareRecords.NormalizeParty(sharedParty));
+                }
                 return record;
             }
             void UpdatePreview()
@@ -247,6 +261,8 @@ public sealed partial class MainWindow
             {
                 if (source is null) return;
                 existing = (recordChoice.SelectedItem as ComboBoxItem)?.Tag as BossLootRecord;
+                sharedPartyId = existing?.SharedPartyId ?? "";
+                preset.SelectedItem = ((PartyPreset[])preset.ItemsSource).FirstOrDefault(party => party.Id == sharedPartyId);
                 date.Date = Offset(existing?.Date ?? source.Boss.Date);
                 party.Value = existing?.PartySize ?? source.Boss.PartySize;
                 amount.Text = (existing?.Amount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture); ratio.Text = existing?.Ratios ?? "1:1"; member.Value = existing?.OwnMember ?? 1;
@@ -266,7 +282,12 @@ public sealed partial class MainWindow
                 var day = source.Boss.Date;
                 var scheduledParty = _settings.CalendarSchedules.FirstOrDefault(schedule => schedule.Party is not null && schedule.Ocid == source.Ocid && schedule.Boss == source.Boss.Name && schedule.Difficulty == source.Boss.Difficulty
                     && (schedule.Date == day || schedule.Weekly && day >= schedule.Date && (schedule.RepeatUntil is null || day <= schedule.RepeatUntil) && (day.DayNumber - schedule.Date.DayNumber) % 7 == 0))?.Party;
-                if (scheduledParty is not null && PartySettlement.Valid(scheduledParty)) settlement.Apply(scheduledParty, source.Ocid);
+                if (scheduledParty is not null && PartySettlement.Valid(scheduledParty))
+                {
+                    sharedPartyId = scheduledParty.Id;
+                    preset.SelectedItem = ((PartyPreset[])preset.ItemsSource).FirstOrDefault(party => party.Id == scheduledParty.Id);
+                    settlement.Apply(scheduledParty, source.Ocid);
+                }
             }
             UpdateMode();
             async Task LoadMarket()

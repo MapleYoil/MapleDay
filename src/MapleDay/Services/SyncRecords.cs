@@ -5,20 +5,48 @@ public sealed record SyncedCharacter(string Ocid, int Position);
 
 public static class SyncRecords
 {
+    private static void Add<T>(SyncDocument result, string kind, IEnumerable<T> items, Func<T, string> key)
+    { foreach (var item in items) result.Records[kind + "/" + key(item)] = JsonSerializer.SerializeToElement(item); }
     public static SyncDocument Capture(AppSettings settings)
     {
         var result = SyncDocument.Empty;
-        void Add<T>(string kind, IEnumerable<T> items, Func<T, string> key)
-        { foreach (var item in items) result.Records[kind + "/" + key(item)] = JsonSerializer.SerializeToElement(item); }
-        Add("hunting", settings.HuntingIncomeRecords, row => row.Ocid + "/" + row.Date.ToString("yyyy-MM-dd"));
-        Add("loot", settings.BossLootRecords, row => row.Id);
-        Add("calendar", settings.CalendarSchedules, row => row.Id);
-        Add("party", settings.Parties, row => row.Id);
-        Add("clear", settings.ManualWeeklyClears, ManualWeeklyHistory.Key);
-        Add("change", settings.BossClearChanges, row => row.Ocid + "/" + row.OriginalId);
-        Add("size", settings.BossPartySizes, row => row.Key);
-        Add("character", settings.SchedulerOcids.Select((ocid, position) => new SyncedCharacter(ocid, position)), row => row.Ocid);
+        var sharedParties = settings.SharedPartyLinks.Select(link => link.PartyId).ToHashSet(StringComparer.Ordinal);
+        Add(result, "hunting", settings.HuntingIncomeRecords, row => row.Ocid + "/" + row.Date.ToString("yyyy-MM-dd"));
+        Add(result, "loot", settings.BossLootRecords.Where(row => string.IsNullOrEmpty(row.SharedPartyId)), row => row.Id);
+        Add(result, "calendar", settings.CalendarSchedules, row => row.Id);
+        Add(result, "party", settings.Parties.Where(row => !sharedParties.Contains(row.Id)), row => row.Id);
+        Add(result, "clear", settings.ManualWeeklyClears, ManualWeeklyHistory.Key);
+        Add(result, "change", settings.BossClearChanges, row => row.Ocid + "/" + row.OriginalId);
+        Add(result, "size", settings.BossPartySizes, row => row.Key);
+        Add(result, "character", settings.SchedulerOcids.Select((ocid, position) => new SyncedCharacter(ocid, position)), row => row.Ocid);
         return result;
+    }
+    public static SyncDocument CapturePartyShare(AppSettings settings)
+    {
+        var result = SyncDocument.Empty;
+        Add(result, "party", settings.Parties, row => row.Id);
+        Add(result, "loot", settings.BossLootRecords, row => row.Id);
+        return result;
+    }
+    public static void ApplyPartyShare(AppSettings settings, SyncDocument document)
+    {
+        if (document.Version != 1 || document.Records is null || document.Records.Count > 10000
+            || document.Records.Keys.Any(key => !key.StartsWith("party/", StringComparison.Ordinal) && !key.StartsWith("loot/", StringComparison.Ordinal)))
+            throw new ArgumentException("공유 파티 기록 버전을 확인해주세요.");
+        var parties = document.Records.Where(item => item.Key.StartsWith("party/", StringComparison.Ordinal))
+            .Select(item => item.Value.Deserialize<PartyPreset>() ?? throw new ArgumentException("공유 파티 형식을 확인해주세요.")).ToArray();
+        var loot = document.Records.Where(item => item.Key.StartsWith("loot/", StringComparison.Ordinal))
+            .Select(item => item.Value.Deserialize<BossLootRecord>() ?? throw new ArgumentException("공유 물욕템 형식을 확인해주세요.")).ToArray();
+        if (parties.Length > 1 || parties.Any(party => !PartySettlement.Valid(party) || party.Members.Any(member => member.Ocid.Length > 0))
+            || loot.Any(record => parties.Length != 1 || record.SharedPartyId != parties[0].Id || !record.Ocid.StartsWith("shared-party:", StringComparison.Ordinal)
+                || record.ClearId.Length > 0 || record.Settlement is null || record.Settlement.Members.Any(member => member.Ocid.Length > 0)
+                || !BossLoot.Valid(record)))
+            throw new ArgumentException("유효하지 않은 공유 파티 기록입니다.");
+        var candidate = new AppSettings { Parties = parties.ToList(), BossLootRecords = loot.ToList() };
+        var canonical = CapturePartyShare(candidate);
+        if (canonical.Records.Count != document.Records.Count || canonical.Records.Keys.Except(document.Records.Keys).Any())
+            throw new ArgumentException("중복되거나 잘못 연결된 공유 파티 기록입니다.");
+        settings.Parties = candidate.Parties; settings.BossLootRecords = candidate.BossLootRecords;
     }
     public static void Apply(AppSettings settings, SyncDocument document)
     {
@@ -44,7 +72,13 @@ public static class SyncRecords
             throw new ArgumentException("중복되거나 잘못 연결된 동기화 기록입니다.");
         try { _ = checked(hunting.Sum(row => row.Total) + loot.Sum(row => row.Received)); }
         catch (OverflowException) { throw new ArgumentException("수익 합계가 지원하는 범위를 초과했습니다."); }
-        settings.HuntingIncomeRecords = candidate.HuntingIncomeRecords; settings.BossLootRecords = candidate.BossLootRecords; settings.CalendarSchedules = candidate.CalendarSchedules; settings.Parties = candidate.Parties;
+        var sharedIds = settings.SharedPartyLinks.Select(link => link.PartyId).ToHashSet(StringComparer.Ordinal);
+        var sharedLoot = settings.BossLootRecords.Where(row => !string.IsNullOrEmpty(row.SharedPartyId) && sharedIds.Contains(row.SharedPartyId)).ToArray();
+        var sharedParties = settings.Parties.Where(row => sharedIds.Contains(row.Id)).ToArray();
+        settings.HuntingIncomeRecords = candidate.HuntingIncomeRecords;
+        settings.BossLootRecords = candidate.BossLootRecords.Where(row => string.IsNullOrEmpty(row.SharedPartyId)).Concat(sharedLoot).ToList();
+        settings.CalendarSchedules = candidate.CalendarSchedules;
+        settings.Parties = candidate.Parties.Where(row => !sharedIds.Contains(row.Id)).Concat(sharedParties).ToList();
         settings.ManualWeeklyClears = candidate.ManualWeeklyClears; settings.BossClearChanges = candidate.BossClearChanges; settings.BossPartySizes = candidate.BossPartySizes; settings.SchedulerOcids = candidate.SchedulerOcids;
     }
     public static bool Same(SyncDocument a, SyncDocument b) => a.Records.Count == b.Records.Count && a.Records.All(row => b.Records.TryGetValue(row.Key, out var other) && RecordSync.Same(row.Value, other));

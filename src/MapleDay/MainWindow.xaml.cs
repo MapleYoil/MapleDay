@@ -16,6 +16,7 @@ public sealed partial class MainWindow : Window
     private readonly ApiKeyStore _keyStore = new();
     private readonly CharacterCacheStore _characterCache = new();
     private readonly CharacterImageLoader _images = new();
+    private readonly PartyShareService _partyShares = new();
     private CancellationTokenSource? _loadCts;
     private string _apiKey = "";
     private bool _busy;
@@ -56,11 +57,18 @@ public sealed partial class MainWindow : Window
         InitializeWebHost();
         InitializeIncomeDisplay();
         InitializeCalendar();
+        PartyPage.SetShareService(_partyShares);
         CharacterInfoPage.SelectionChanged += (_, _) =>
         {
             if (_currentPage == "character-info") BackButton.IsEnabled = _backStack.Count > 0 || CharacterInfoPage.HasSelection;
         };
         PartyPage.Changed += (_, _) => CalendarPanel.SetContext(_settings, SchedulerAvatars);
+        _partyShares.Changed += (_, _) =>
+        {
+            if (_closed || _dataDeleting) return;
+            PartyPage.SetContext(_settings, SchedulerAvatars); CalendarPanel.SetContext(_settings, SchedulerAvatars);
+            RefreshManualIncome();
+        };
         RecordSyncPanel.Changed += async (_, _) =>
         {
             if (_closed || _dataDeleting) return;
@@ -83,6 +91,7 @@ public sealed partial class MainWindow : Window
             _apiKey = "";
             ApiKeyInput.Password = "";
             await RecordSyncPanel.StopAsync();
+            await _partyShares.StopAsync();
         };
     }
 
@@ -106,6 +115,7 @@ public sealed partial class MainWindow : Window
         StartAutomaticUpdates();
         StartTelemetry();
         await RecordSyncPanel.InitializeAsync(_settings);
+        await _partyShares.InitializeAsync(_settings, DispatcherQueue);
         await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
         _ = RefreshCalendarAsync();
         _ = SendTelemetryAsync();

@@ -76,6 +76,54 @@ public class RecordSyncClientTests : IDisposable
         Assert.Throws<ArgumentException>(() => SyncRecords.Apply(_settings, broken));
         Assert.True(SyncRecords.Same(original, SyncRecords.Capture(_settings)));
     }
+    [Fact] public void PersonalSyncExcludesSharedPartyRecordsAndPreservesThemWhenApplyingRemoteData()
+    {
+        var members = new[] { new PartyMember("one", "내 캐릭터", "local-ocid"), new PartyMember("two", "파티원") };
+        var party = new PartyPreset("shared", "공유 파티", members, "one", [new("스우", "hard", ["one", "two"])]);
+        var settlement = new LootSettlement(members, "one", "one");
+        var loot = new BossLootRecord("shared-loot", "local-ocid", new(2026, 10, 20), "스우", "", "물욕템 정산", "settlement", 10, 2,
+            Difficulty: "hard", SharedPartyId: party.Id, SharedUpdatedAt: 1) { Settlement = settlement };
+        var settings = new AppSettings { Parties = [party], BossLootRecords = [loot], SharedPartyLinks = [new(party.Id, "one", "local-ocid")] };
+        var captured = SyncRecords.Capture(settings);
+        Assert.DoesNotContain(captured.Records.Keys, key => key.StartsWith("party/") || key.StartsWith("loot/"));
+        SyncRecords.Apply(settings, SyncDocument.Empty);
+        Assert.Equal(party, Assert.Single(settings.Parties)); Assert.Equal(loot, Assert.Single(settings.BossLootRecords));
+        Assert.Single(settings.SharedPartyLinks);
+    }
+    [Fact] public void PartyShareDocumentContainsOnlySanitizedPartyAndLoot()
+    {
+        var members = new[] { new PartyMember("one", "파티장"), new PartyMember("two", "파티원") };
+        var party = new PartyPreset("shared", "공유 파티", members, "one", [new("스우", "hard", ["one", "two"])]);
+        var settlement = new LootSettlement(members, "one", "one");
+        var loot = new BossLootRecord("loot", "shared-party:shared", new(2026, 10, 20), "스우", "", "물욕템 정산", "settlement", 10, 2,
+            Difficulty: "hard", SharedPartyId: party.Id, SharedUpdatedAt: 1) { Settlement = settlement };
+        var source = new AppSettings { Parties = [party], BossLootRecords = [loot], SchedulerOcids = ["must-not-leak"], HuntingIncomeRecords = _settings.HuntingIncomeRecords };
+        var document = SyncRecords.CapturePartyShare(source);
+        Assert.Equal(2, document.Records.Count); Assert.All(document.Records.Keys, key => Assert.True(key.StartsWith("party/") || key.StartsWith("loot/")));
+        Assert.DoesNotContain("must-not-leak", JsonSerializer.Serialize(document));
+        var restored = new AppSettings(); SyncRecords.ApplyPartyShare(restored, document);
+        Assert.True(RecordSync.Same(JsonSerializer.SerializeToElement(party), JsonSerializer.SerializeToElement(Assert.Single(restored.Parties))));
+        Assert.True(RecordSync.Same(JsonSerializer.SerializeToElement(loot), JsonSerializer.SerializeToElement(Assert.Single(restored.BossLootRecords))));
+        document.Records["hunting/forbidden"] = JsonSerializer.SerializeToElement(_settings.HuntingIncomeRecords[0]);
+        Assert.Throws<ArgumentException>(() => SyncRecords.ApplyPartyShare(new(), document));
+    }
+    [Fact] public async Task PartyShareClientEncryptsAndUploadsOnlyItsCustomRecordSet()
+    {
+        var members = new[] { new PartyMember("one", "파티장"), new PartyMember("two", "파티원") };
+        var party = new PartyPreset("shared", "공유 파티", members, "one", [new("스우", "hard", ["one", "two"])]);
+        var loot = new BossLootRecord("loot", "shared-party:shared", new(2026, 10, 20), "스우", "", "물욕템 정산", "settlement", 10, 2,
+            Difficulty: "hard", SharedPartyId: party.Id, SharedUpdatedAt: 1) { Settlement = new(members, "one", "one") };
+        var settings = new AppSettings { Parties = [party], BossLootRecords = [loot], SchedulerOcids = ["must-not-leak"] };
+        using var client = new RecordSyncClient(_root, _server, _ => { }, SyncRecords.CapturePartyShare, SyncRecords.ApplyPartyShare);
+        await client.ConnectAsync("", "파티 공유 PC", default);
+        await client.SynchronizeAsync(settings, Confirm, Resolve, default);
+        var checkpoint = client.Checkpoint!;
+        var uploaded = RecordSync.Decrypt(Convert.FromBase64String(_server.Data), checkpoint.Credentials.Key, checkpoint.Credentials.Vault);
+        Assert.Equal(2, uploaded.Records.Count);
+        Assert.DoesNotContain("must-not-leak", JsonSerializer.Serialize(uploaded));
+        var restored = new AppSettings(); SyncRecords.ApplyPartyShare(restored, uploaded);
+        Assert.Equal(party.Id, Assert.Single(restored.Parties).Id); Assert.Equal(loot.Id, Assert.Single(restored.BossLootRecords).Id);
+    }
     [Fact] public async Task UnchangedRevisionDoesNotDownloadOrRewriteSnapshotAndLocalEditsStillUpload()
     {
         using var client = Client(); await client.ConnectAsync("", "시험 PC", default); await client.SynchronizeAsync(_settings, Confirm, Resolve, default);

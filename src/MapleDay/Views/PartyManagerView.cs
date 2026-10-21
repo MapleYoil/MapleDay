@@ -2,7 +2,10 @@ using MapleDay.Core;
 using MapleDay.Models;
 using MapleDay.Services;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace MapleDay.Views;
 
@@ -12,7 +15,10 @@ public sealed class PartyManagerView : UserControl
     private readonly ListView _list = new() { DisplayMemberPath = "Name", MaxHeight = 220 };
     private readonly TextBlock _summary = new() { TextWrapping = TextWrapping.Wrap };
     private readonly TextBlock _status = new() { TextWrapping = TextWrapping.Wrap };
+    private readonly TextBlock _sharedLootHint = new() { TextWrapping = TextWrapping.Wrap };
+    private readonly ListView _sharedLoot = new() { MaxHeight = 260 };
     private readonly PartySettlementView _settlement = new();
+    private PartyShareService? _share;
     private AppSettings? _settings;
     private SchedulerCharacter[] _characters = [];
     private bool _dialog;
@@ -20,22 +26,62 @@ public sealed class PartyManagerView : UserControl
     public PartyManagerView()
     {
         Content = new ScrollViewer { Content = _root, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
+        AutomationProperties.SetLiveSetting(_status, AutomationLiveSetting.Polite);
         _root.Children.Add(new TextBlock { Text = "파티", FontSize = 28, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         _root.Children.Add(new TextBlock { Text = "구성원과 보스를 저장하고 캘린더·물욕템 정산에서 불러오세요.", TextWrapping = TextWrapping.Wrap });
         var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         foreach (var (label, handler) in new (string, RoutedEventHandler)[] { ("파티 추가", async (_, _) => await EditAsync(null)),
             ("수정", async (_, _) => { if (_list.SelectedItem is PartyPreset party) await EditAsync(party); }), ("삭제", async (_, _) => await DeleteAsync()) })
         { var button = new Button { Content = label }; button.Click += handler; actions.Children.Add(button); }
-        _root.Children.Add(actions); _root.Children.Add(_list); _root.Children.Add(_summary); _root.Children.Add(_status);
+        var shareActions = new Grid { RowSpacing = 8, ColumnSpacing = 8 };
+        for (var i = 0; i < 3; i++) shareActions.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
+        for (var i = 0; i < 2; i++) shareActions.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        var shareIndex = 0;
+        foreach (var (label, handler) in new (string, RoutedEventHandler)[] { ("공유 시작", async (_, _) => await ShareAsync()),
+            ("파티원 초대", async (_, _) => await InviteAsync()), ("공유 파티 참여", async (_, _) => await JoinAsync()),
+            ("지금 동기화", async (_, _) => await SyncAsync()), ("공유 해제", async (_, _) => await LeaveAsync()) })
+        {
+            var button = new Button { Content = label, HorizontalAlignment = HorizontalAlignment.Stretch };
+            AutomationProperties.SetName(button, label); button.Click += handler;
+            Grid.SetRow(button, shareIndex / 3); Grid.SetColumn(button, shareIndex % 3); shareActions.Children.Add(button); shareIndex++;
+        }
+        _root.Children.Add(actions); _root.Children.Add(shareActions); _root.Children.Add(_list); _root.Children.Add(_summary); _root.Children.Add(_status);
+        _root.Children.Add(new TextBlock { Text = "공유 물욕 현황", FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        _root.Children.Add(_sharedLootHint); _root.Children.Add(_sharedLoot);
         _root.Children.Add(new TextBlock { Text = "파티 분배금 계산", FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         _root.Children.Add(new TextBlock { Text = "판매 수수료와 전달 수수료를 반영한 예상 정산입니다. 저장은 처치 기록의 물욕템 정산에서 진행합니다.", TextWrapping = TextWrapping.Wrap });
         _root.Children.Add(_settlement);
         _list.SelectionChanged += (_, _) =>
         {
             if (_list.SelectedItem is not PartyPreset party) return;
-            _summary.Text = string.Join(" · ", party.Members.Select(member => member.Name)) + "\n" + string.Join(" / ", party.Bosses.Select(boss => BossLootCatalog.DifficultyLabel(boss.Difficulty) + " " + boss.Name + $" {boss.Members.Length}인"));
+            RefreshSelection(party);
             _settlement.Apply(party);
         };
+    }
+    public void SetShareService(PartyShareService service)
+    {
+        if (_share == service) return;
+        if (_share is not null) _share.StatusChanged -= ShareStatusChanged;
+        _share = service; _share.StatusChanged += ShareStatusChanged;
+    }
+    private void ShareStatusChanged(string status) => DispatcherQueue.TryEnqueue(() =>
+    {
+        _status.Text = status;
+        if (_list.SelectedItem is PartyPreset party) RefreshSelection(party);
+    });
+    private void RefreshSelection(PartyPreset party)
+    {
+        var link = _share?.Link(party.Id);
+        var sharing = link is null ? "공유하지 않음" : "공유 중 · 내 기록 " + (party.Members.FirstOrDefault(member => member.Id == link.MemberId)?.Name ?? "연결 확인 필요");
+        _summary.Text = string.Join(" · ", party.Members.Select(member => member.Name)) + "\n"
+            + string.Join(" / ", party.Bosses.Select(boss => BossLootCatalog.DifficultyLabel(boss.Difficulty) + " " + boss.Name + $" {boss.Members.Length}인"))
+            + "\n" + sharing;
+        var loot = _settings?.BossLootRecords.Where(record => record.SharedPartyId == party.Id).OrderByDescending(record => record.Date).ThenBy(record => record.ItemName).ToArray() ?? [];
+        _sharedLoot.ItemsSource = loot.Select(record => $"{record.Date:yy.MM.dd} · {BossLootCatalog.DifficultyLabel(record.Difficulty)} {record.Boss} · {record.ItemName} · 판매 {BossIncome.Money(record.Amount)} · "
+            + (record.Settlement?.State == "complete" ? "정산 완료" : record.Settlement?.State == "partial" ? "부분 수령" : "미정산")).ToArray();
+        _sharedLootHint.Text = link is null ? "파티 공유를 시작하면 이 파티의 물욕템과 판매·정산 상태를 함께 볼 수 있습니다."
+            : loot.Length == 0 ? "아직 공유한 물욕템 기록이 없습니다." : $"{loot.Length:N0}건 · 변경하면 연결된 파티원에게 자동 반영됩니다.";
+        _sharedLoot.Visibility = loot.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
     public void SetContext(AppSettings settings, IEnumerable<SchedulerCharacter> characters)
     {
@@ -44,6 +90,7 @@ public sealed class PartyManagerView : UserControl
         _list.ItemsSource = settings.Parties.Where(PartySettlement.Valid).ToArray();
         _list.SelectedItem = settings.Parties.FirstOrDefault(party => party.Id == selected) ?? settings.Parties.FirstOrDefault();
         if (settings.Parties.Count == 0) _summary.Text = "등록한 파티가 없습니다. 파티 없이도 아래에서 분배금을 계산할 수 있습니다.";
+        else if (_list.SelectedItem is PartyPreset party) RefreshSelection(party);
     }
     private bool Save(List<PartyPreset> parties)
     {
@@ -55,6 +102,7 @@ public sealed class PartyManagerView : UserControl
     private async Task DeleteAsync()
     {
         if (_dialog || _settings is null || _list.SelectedItem is not PartyPreset party) return;
+        if (_share?.IsShared(party.Id) == true) { _status.Text = "공유 중인 파티는 공유 연결을 해제한 뒤 삭제해주세요."; return; }
         _dialog = true;
         try
         {
@@ -63,9 +111,95 @@ public sealed class PartyManagerView : UserControl
         }
         finally { _dialog = false; }
     }
+
+    private async Task ShareAsync()
+    {
+        if (_dialog || _share is null || _list.SelectedItem is not PartyPreset party) return;
+        if (_share.IsShared(party.Id)) { _status.Text = "이미 공유 중인 파티입니다."; return; }
+        var candidates = party.Members.Where(member => !string.IsNullOrWhiteSpace(member.Ocid)).ToArray();
+        if (candidates.Length == 0) { _status.Text = "파티 수정에서 내 파티원에 스케줄러 캐릭터를 연결해주세요."; return; }
+        _dialog = true;
+        try
+        {
+            var choice = new ComboBox { Header = "이 PC에서 기록할 파티원", ItemsSource = candidates, DisplayMemberPath = "Name", SelectedIndex = 0, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var panel = new StackPanel { Spacing = 12 };
+            panel.Children.Add(new TextBlock { Text = "이 파티에서 등록한 물욕템과 판매·정산 상태를 초대된 파티원에게 암호화해 공유합니다.", TextWrapping = TextWrapping.Wrap }); panel.Children.Add(choice);
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "파티 공유 시작", Content = panel, PrimaryButtonText = "공유 시작", CloseButtonText = "취소" };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary || choice.SelectedItem is not PartyMember member) return;
+            _status.Text = "파티 공유를 준비하는 중…"; await _share.CreateAsync(party, member.Id); RefreshSelection(party);
+        }
+        catch (Exception error) when (error is ArgumentException or IOException or System.Net.Http.HttpRequestException or InvalidOperationException) { _status.Text = error.Message; }
+        finally { _dialog = false; }
+    }
+
+    private async Task InviteAsync()
+    {
+        if (_dialog || _share is null || _list.SelectedItem is not PartyPreset party) return;
+        if (!_share.IsShared(party.Id)) { _status.Text = "먼저 파티 공유를 시작해주세요."; return; }
+        _dialog = true;
+        try
+        {
+            var members = party.Members.Where(member => member.Id != _share.Link(party.Id)?.MemberId).ToArray();
+            if (members.Length == 0) { _status.Text = "초대할 다른 파티원이 없습니다."; return; }
+            var choice = new ComboBox { Header = "초대할 파티원", ItemsSource = members, DisplayMemberPath = "Name", SelectedIndex = 0, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var choose = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "파티원 초대", Content = choice, PrimaryButtonText = "코드 만들기", CloseButtonText = "취소" };
+            if (await choose.ShowAsync() != ContentDialogResult.Primary || choice.SelectedItem is not PartyMember member) return;
+            var code = await _share.InviteAsync(party.Id, member.Id);
+            var box = new TextBox { Text = code, IsReadOnly = true, TextWrapping = TextWrapping.Wrap };
+            var panel = new StackPanel { Spacing = 12 };
+            panel.Children.Add(new TextBlock { Text = $"{member.Name} 전용 코드입니다. 5분 안에 한 번만 사용할 수 있으며 공유 기록을 여는 키가 포함되어 있습니다.", TextWrapping = TextWrapping.Wrap }); panel.Children.Add(box);
+            var show = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "파티 초대 코드", Content = panel, PrimaryButtonText = "코드 복사", CloseButtonText = "닫기" };
+            if (await show.ShowAsync() == ContentDialogResult.Primary) { var data = new DataPackage(); data.SetText(code); Clipboard.SetContent(data); _status.Text = "초대 코드를 복사했어요."; }
+        }
+        catch (Exception error) when (error is ArgumentException or IOException or System.Net.Http.HttpRequestException or InvalidOperationException) { _status.Text = error.Message; }
+        finally { _dialog = false; }
+    }
+
+    private async Task JoinAsync()
+    {
+        if (_dialog || _share is null || _characters.Length == 0) return; _dialog = true;
+        try
+        {
+            var code = new PasswordBox { Header = "받은 파티 초대 코드" };
+            var character = new ComboBox { Header = "내 파티원으로 연결할 캐릭터", ItemsSource = _characters, DisplayMemberPath = "Name", SelectedIndex = 0, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var panel = new StackPanel { Spacing = 12 }; panel.Children.Add(code); panel.Children.Add(character);
+            panel.Children.Add(new TextBlock { Text = "참여하면 기존 물욕템과 판매 상태를 불러오고, 이후 변경을 실시간으로 공유합니다.", TextWrapping = TextWrapping.Wrap });
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "공유 파티 참여", Content = panel, PrimaryButtonText = "참여", CloseButtonText = "취소" };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary || character.SelectedItem is not SchedulerCharacter selected) return;
+            _status.Text = "공유 파티를 불러오는 중…"; await _share.JoinAsync(code.Password, selected.Ocid); SetContext(_settings!, _characters); Changed?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception error) when (error is ArgumentException or IOException or System.Net.Http.HttpRequestException or InvalidOperationException or FormatException) { _status.Text = error.Message; }
+        finally { _dialog = false; }
+    }
+
+    private async Task SyncAsync()
+    {
+        if (_share is null || _list.SelectedItem is not PartyPreset party || !_share.IsShared(party.Id)) { _status.Text = "선택한 파티는 공유 중이 아닙니다."; return; }
+        _status.Text = "공유 기록을 확인하는 중…"; _status.Text = await _share.SynchronizeAsync(party.Id); SetContext(_settings!, _characters); Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async Task LeaveAsync()
+    {
+        if (_dialog || _share is null || _list.SelectedItem is not PartyPreset party || !_share.IsShared(party.Id)) { _status.Text = "선택한 파티는 공유 중이 아닙니다."; return; }
+        _dialog = true;
+        try
+        {
+            var all = _share.CanDeleteSharedData(party.Id);
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "파티 공유 해제",
+                Content = new TextBlock { Text = all ? "공유를 만든 PC이므로 모든 파티원의 공유 연결을 종료합니다. 각 PC의 파티와 물욕템 기록은 유지됩니다." : "이 PC만 공유에서 나갑니다. 이 PC의 파티와 물욕템 기록은 유지됩니다.", TextWrapping = TextWrapping.Wrap },
+                PrimaryButtonText = all ? "전체 공유 종료" : "이 PC 연결 해제", CloseButtonText = "취소" };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+            await _share.LeaveAsync(party.Id, all); RefreshSelection(party);
+        }
+        finally { _dialog = false; }
+    }
     private async Task EditAsync(PartyPreset? existing)
     {
         if (_dialog || _settings is null) return; _dialog = true;
+        if (existing is not null && _share?.IsShared(existing.Id) == true)
+        {
+            _dialog = false; _status.Text = "공유 중에는 파티 구성 변경으로 연결이 어긋나지 않도록 수정할 수 없습니다. 공유를 종료한 뒤 수정해주세요."; return;
+        }
         try
         {
             var name = new TextBox { Header = "파티 이름", MaxLength = 80, Text = existing?.Name ?? "" };

@@ -19,15 +19,19 @@ public sealed class RecordSyncClient : IDisposable
     private readonly string _root;
     private readonly ApiKeyStore _store;
     private readonly Action<AppSettings> _save;
+    private readonly Func<AppSettings, SyncDocument> _capture;
+    private readonly Action<AppSettings, SyncDocument> _apply;
     public SyncCheckpoint? Checkpoint { get; private set; }
     public bool Applying { get; private set; }
     private readonly SemaphoreSlim _gate = new(1);
-    public RecordSyncClient(string? root = null, HttpMessageHandler? handler = null, Action<AppSettings>? save = null)
+    public RecordSyncClient(string? root = null, HttpMessageHandler? handler = null, Action<AppSettings>? save = null,
+        Func<AppSettings, SyncDocument>? capture = null, Action<AppSettings, SyncDocument>? apply = null)
     {
         _http = handler is null ? new() : new(handler); _http.Timeout = TimeSpan.FromSeconds(25);
         _root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MapleDay");
         _store = new(Path.Combine(_root, "sync.dat"));
         _save = save ?? (settings => settings.Save());
+        _capture = capture ?? SyncRecords.Capture; _apply = apply ?? SyncRecords.Apply;
     }
     public async Task LoadAsync()
     {
@@ -37,7 +41,7 @@ public sealed class RecordSyncClient : IDisposable
         if (value.Credentials is not { } c || !Hex(c.Vault, 32) || !Hex(c.Device, 32) || !Hex(c.Token, 64) || !Hex(c.Key, 64)
             || c.Recovery is null || c.Recovery.Length != 0 && !Hex(c.Recovery, 64) || value.Baseline is null)
             throw new ArgumentException("저장된 연결 정보를 확인해주세요.");
-        SyncRecords.Apply(new AppSettings(), value.Baseline); Checkpoint = value;
+        _apply(new AppSettings(), value.Baseline); Checkpoint = value;
     }
     private async Task SaveAsync(SyncCheckpoint checkpoint, CancellationToken ct) { await _store.SaveAsync(JsonSerializer.Serialize(checkpoint), ct); Checkpoint = checkpoint; }
     private async Task<(JsonElement Data, HttpStatusCode Status)> RequestAsync(string path, object? body = null, bool anonymous = false, CancellationToken ct = default, long revision = -1)
@@ -111,10 +115,10 @@ public sealed class RecordSyncClient : IDisposable
         ct.ThrowIfCancellationRequested();
         var raw = await new ApiKeyStore(path).LoadAsync() ?? throw new ArgumentException("백업을 읽지 못했어요.");
         var document = JsonSerializer.Deserialize<SyncDocument>(raw) ?? throw new ArgumentException("백업 형식을 확인해주세요.");
-        SyncRecords.Apply(new AppSettings(), document);
-        var original = SyncRecords.Capture(settings); await BackupAsync(original, ct);
-        SyncRecords.Apply(settings, document);
-        try { _save(settings); } catch { SyncRecords.Apply(settings, original); throw; }
+        _apply(new AppSettings(), document);
+        var original = _capture(settings); await BackupAsync(original, ct);
+        _apply(settings, document);
+        try { _save(settings); } catch { _apply(settings, original); throw; }
     }
     public async Task<string> SynchronizeAsync(AppSettings settings, Func<int, int, Task<bool>> confirm,
         Func<IReadOnlyList<SyncConflict>, Task<IReadOnlySet<string>?>> resolve, CancellationToken ct)
@@ -122,7 +126,7 @@ public sealed class RecordSyncClient : IDisposable
         if (Checkpoint is null || !await _gate.WaitAsync(0, ct)) return "";
         try
         {
-            var checkpoint = Checkpoint; var local = SyncRecords.Capture(settings);
+            var checkpoint = Checkpoint; var local = _capture(settings);
             var (raw, status) = await RequestAsync("state", ct: ct, revision: checkpoint.Confirmed ? checkpoint.Revision : -1);
             var state = status == HttpStatusCode.NotModified ? new SyncState(checkpoint.Revision, "") : raw.Deserialize<SyncState>()!;
             var remote = status == HttpStatusCode.NotModified ? checkpoint.Baseline : state.data.Length == 0 ? SyncDocument.Empty
@@ -135,9 +139,9 @@ public sealed class RecordSyncClient : IDisposable
                 if (choices is null) return $"충돌 {merge.Conflicts.Count}건 · 다음 동기화에서 해결해주세요. 자동 덮어쓰기는 하지 않습니다.";
                 merge = RecordSync.Merge(checkpoint.Baseline, local, remote, choices);
             }
-            if (!SyncRecords.Same(local, SyncRecords.Capture(settings))) return "동기화 중 기록이 바뀌었습니다. 다음 동기화에서 다시 병합합니다.";
+            if (!SyncRecords.Same(local, _capture(settings))) return "동기화 중 기록이 바뀌었습니다. 다음 동기화에서 다시 병합합니다.";
             // Validate the complete incoming record set before saving or uploading.
-            var probe = new AppSettings(); SyncRecords.Apply(probe, merge.Document);
+            var probe = new AppSettings(); _apply(probe, merge.Document);
             if (!SyncRecords.Same(local, merge.Document))
             {
                 await BackupAsync(local, ct);
@@ -151,15 +155,15 @@ public sealed class RecordSyncClient : IDisposable
                 revision = response.Data.GetProperty("revision").GetInt64();
             }
             ct.ThrowIfCancellationRequested();
-            if (Checkpoint != checkpoint || !SyncRecords.Same(local, SyncRecords.Capture(settings)))
+            if (Checkpoint != checkpoint || !SyncRecords.Same(local, _capture(settings)))
                 return "동기화 중 기록이 바뀌었습니다. 새 기록을 유지하고 다시 비교합니다.";
             Applying = true;
             try
             {
                 if (!SyncRecords.Same(local, merge.Document))
                 {
-                    SyncRecords.Apply(settings, merge.Document);
-                    try { _save(settings); } catch { SyncRecords.Apply(settings, local); throw; }
+                    _apply(settings, merge.Document);
+                    try { _save(settings); } catch { _apply(settings, local); throw; }
                 }
                 if (!checkpoint.Confirmed || checkpoint.Revision != revision || !SyncRecords.Same(checkpoint.Baseline, merge.Document))
                     await SaveAsync(checkpoint with { Baseline = merge.Document, Confirmed = true, Revision = revision }, ct);

@@ -44,6 +44,7 @@ public sealed class AppSettings
     public List<HuntingIncomeRecord> HuntingIncomeRecords { get; set; } = [];
     public List<CalendarSchedule> CalendarSchedules { get; set; } = [];
     public List<PartyPreset> Parties { get; set; } = [];
+    public List<SharedPartyLink> SharedPartyLinks { get; set; } = [];
     public bool CalendarHideSunday { get; set; }
     public List<SundayNotice> SundayNotices { get; set; } = [];
     public DateTimeOffset? EventNoticesCheckedAt { get; set; }

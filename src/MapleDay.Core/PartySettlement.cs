@@ -6,6 +6,7 @@ public sealed record PartyMember(string Id, string Name, string Ocid = "", decim
 public sealed record PartyBoss(string Name, string Difficulty, string[] Members);
 public sealed record PartyPreset(string Id, string Name, PartyMember[] Members, string LeaderId,
     PartyBoss[] Bosses, int AuctionFee = 3, string Transfer = "auction", string Note = "");
+public sealed record SharedPartyLink(string PartyId, string MemberId, string LocalOcid);
 public sealed record PartyPayout(string MemberId, string Name, long TransferAmount, long Received, bool Leader);
 public sealed record SettlementResult(long Sale, long SaleNet, long Fees, IReadOnlyList<PartyPayout> Members)
 {
@@ -77,5 +78,66 @@ public static class PartySettlement
                 party.Name + " · " + boss.Name, date, time, party.Note, own.Ocid, own.Name, boss.Name, boss.Difficulty, weekly, until, members.Length)
                 { Party = ForBoss(party, boss.Name, boss.Difficulty) };
         }).ToArray();
+    }
+}
+
+public static class PartyShareRecords
+{
+    private static string SharedOcid(string partyId) => "shared-party:" + partyId;
+
+    public static PartyPreset NormalizeParty(PartyPreset party) => party with
+    {
+        Members = party.Members.Select(member => member with { Ocid = "" }).ToArray(),
+        Bosses = party.Bosses.Select(boss => boss with { Members = boss.Members.ToArray() }).ToArray()
+    };
+
+    public static BossLootRecord NormalizeLoot(BossLootRecord record, PartyPreset party)
+    {
+        if (record.SharedPartyId != party.Id || record.Mode != "settlement" || record.Settlement is null)
+            throw new ArgumentException("공유 파티의 정산 기록만 공유할 수 있습니다.");
+        var boss = party.Bosses.FirstOrDefault(item => SchedulerBossHistory.BossKey(item.Name) == SchedulerBossHistory.BossKey(record.Boss)
+            && CrystalPrices.DifficultyKey(item.Difficulty) == CrystalPrices.DifficultyKey(record.Difficulty));
+        if (boss is null || record.Settlement.Members.Select(member => member.Id).ToHashSet(StringComparer.Ordinal)
+            .SetEquals(boss.Members) is false)
+            throw new ArgumentException("공유 파티에 설정한 보스·난이도·참여자를 확인해주세요.");
+        var settlement = record.Settlement with
+        {
+            Members = record.Settlement.Members.Select(member => member with { Ocid = "" }).ToArray(),
+            OwnId = record.Settlement.LeaderId
+        };
+        var normalized = record with { Ocid = SharedOcid(party.Id), ClearId = "", Settlement = settlement };
+        if (!BossLoot.Valid(normalized)) throw new ArgumentException("공유할 물욕템 정산 기록을 확인해주세요.");
+        return normalized;
+    }
+
+    public static PartyPreset ProjectParty(PartyPreset shared, SharedPartyLink link, PartyPreset? local)
+    {
+        if (shared.Id != link.PartyId || !shared.Members.Any(member => member.Id == link.MemberId)
+            || string.IsNullOrWhiteSpace(link.LocalOcid) || link.LocalOcid.Length > 200)
+            throw new ArgumentException("공유 파티의 내 캐릭터 연결을 확인해주세요.");
+        var localOcids = local?.Members.ToDictionary(member => member.Id, member => member.Ocid, StringComparer.Ordinal)
+            ?? new Dictionary<string, string>(StringComparer.Ordinal);
+        var members = shared.Members.Select(member => member with
+        {
+            Ocid = member.Id == link.MemberId ? link.LocalOcid : localOcids.GetValueOrDefault(member.Id, "")
+        }).ToArray();
+        var result = shared with { Members = members, Bosses = shared.Bosses.Select(boss => boss with { Members = boss.Members.ToArray() }).ToArray() };
+        if (!PartySettlement.Valid(result)) throw new ArgumentException("공유 파티 정보를 확인해주세요.");
+        return result;
+    }
+
+    public static BossLootRecord ProjectLoot(BossLootRecord shared, SharedPartyLink link, BossLootRecord? local = null)
+    {
+        if (shared.SharedPartyId != link.PartyId || shared.Mode != "settlement" || shared.Settlement is null
+            || !shared.Settlement.Members.Any(member => member.Id == link.MemberId))
+            throw new ArgumentException("공유 물욕템 기록의 파티원을 확인해주세요.");
+        var settlement = shared.Settlement with
+        {
+            Members = shared.Settlement.Members.Select(member => member with { }).ToArray(),
+            OwnId = link.MemberId
+        };
+        var result = shared with { Ocid = link.LocalOcid, ClearId = local?.ClearId ?? "", Settlement = settlement };
+        if (!BossLoot.Valid(result)) throw new ArgumentException("공유 물욕템 기록을 확인해주세요.");
+        return result;
     }
 }

@@ -34,7 +34,8 @@ public static class BossLootCatalog
         { "easy" => "이지", "normal" => "노멀", "hard" => "하드", "chaos" => "카오스", "extreme" => "익스트림", _ => difficulty };
 }
 public sealed record BossLootRecord(string Id, string Ocid, DateOnly Date, string Boss, string ItemId, string ItemName,
-    string Mode, long Amount, int PartySize, string Ratios = "", int OwnMember = 1, string Difficulty = "", string ClearId = "")
+    string Mode, long Amount, int PartySize, string Ratios = "", int OwnMember = 1, string Difficulty = "", string ClearId = "",
+    string SharedPartyId = "", long SharedUpdatedAt = 0)
 {
     public LootSettlement? Settlement { get; init; }
     public long Received => Mode == "settlement" && Settlement is { } value ? value.Received(Amount)

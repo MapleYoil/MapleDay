@@ -58,4 +58,29 @@ public class PartySettlementTests
         Assert.False(BossLoot.Valid(record with { Settlement = snapshot with { OwnId = "missing", State = "complete" } }));
         Assert.False(BossLoot.Valid(record with { PartySize = 3 }));
     }
+    [Fact] public void SharedPartyLootHidesOcidsAndProjectsTheSameSaleForEachMember()
+    {
+        var members = new[] { new PartyMember("leader", "파티장", "leader-ocid"), new PartyMember("member", "파티원", "member-ocid") };
+        var party = new PartyPreset("shared", "공유 파티", members, "leader", [new("스우", "hard", ["leader", "member"])]);
+        var settlement = new LootSettlement(members, "leader", "leader", 3, "auction", "complete");
+        var local = new BossLootRecord("loot", "leader-ocid", new(2026, 10, 20), "스우", "", "물욕템 정산", "settlement",
+            500_000_000, 2, Difficulty: "hard", SharedPartyId: party.Id, SharedUpdatedAt: 100) { Settlement = settlement };
+        var sharedParty = PartyShareRecords.NormalizeParty(party);
+        var shared = PartyShareRecords.NormalizeLoot(local, sharedParty);
+        Assert.All(sharedParty.Members, member => Assert.Empty(member.Ocid));
+        Assert.All(shared.Settlement!.Members, member => Assert.Empty(member.Ocid));
+        Assert.StartsWith("shared-party:", shared.Ocid); Assert.Empty(shared.ClearId);
+        var projected = PartyShareRecords.ProjectLoot(shared, new(party.Id, "member", "member-ocid"));
+        Assert.Equal("member-ocid", projected.Ocid); Assert.Equal("member", projected.Settlement!.OwnId);
+        Assert.Equal(238_807_106, projected.Received); Assert.Equal(local.Id, projected.Id);
+    }
+    [Fact] public void SharedPartyProjectionKeepsOnlyThisPcCharacterConnection()
+    {
+        var shared = new PartyPreset("party", "공유", [new("one", "한 명"), new("two", "두 명")], "one",
+            [new("스우", "hard", ["one", "two"])]);
+        var prior = shared with { Members = [new("one", "한 명", "old-one"), new("two", "두 명", "old-two")] };
+        var projected = PartyShareRecords.ProjectParty(shared, new("party", "two", "new-two"), prior);
+        Assert.Equal("old-one", projected.Members[0].Ocid); Assert.Equal("new-two", projected.Members[1].Ocid);
+        Assert.Throws<ArgumentException>(() => PartyShareRecords.ProjectParty(shared, new("party", "missing", "x"), prior));
+    }
 }
