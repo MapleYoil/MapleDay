@@ -12,6 +12,7 @@ namespace MapleDay.Views;
 public sealed class PartyManagerView : UserControl
 {
     private sealed record PartyBossRow(PartyBoss Boss, string Label);
+    private sealed record BossDifficultyRow(string Value, string Label);
     private readonly StackPanel _root = new() { Spacing = 16, Padding = new Thickness(24), MaxWidth = 1000, HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly ListView _list = new() { DisplayMemberPath = "Name", MaxHeight = 220 };
     private readonly ListView _bosses = new() { DisplayMemberPath = "Label", MaxHeight = 220 };
@@ -132,14 +133,26 @@ public sealed class PartyManagerView : UserControl
         try
         {
             var choices = BossRecordChoices.Single.ToArray();
-            var search = new TextBox { Header = "보스 검색", PlaceholderText = "보스 이름 또는 난이도" };
-            var boss = new ComboBox { Header = "보스·난이도 (하드 스우 이상 체력 순)", DisplayMemberPath = "Label", ItemsSource = choices, HorizontalAlignment = HorizontalAlignment.Stretch };
-            boss.SelectedItem = choices.FirstOrDefault(item => item.Name == existing?.Name && item.Difficulty == existing?.Difficulty) ?? choices.FirstOrDefault();
+            var allBosses = choices.Select(item => item.Name).Distinct(StringComparer.Ordinal).ToArray();
+            var search = new TextBox { Header = "보스 검색", PlaceholderText = "보스 이름" };
+            var boss = new ComboBox { Header = "보스 (하드 스우 이상 체력 순)", ItemsSource = allBosses, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var difficulty = new ComboBox { Header = "난이도", DisplayMemberPath = "Label", HorizontalAlignment = HorizontalAlignment.Stretch };
+            void RefreshDifficulties(string? preferred = null)
+            {
+                preferred ??= (difficulty.SelectedItem as BossDifficultyRow)?.Value;
+                var rows = choices.Where(item => item.Name == boss.SelectedItem as string)
+                    .Select(item => new BossDifficultyRow(item.Difficulty, BossLootCatalog.DifficultyLabel(item.Difficulty))).ToArray();
+                difficulty.ItemsSource = rows;
+                difficulty.SelectedItem = rows.FirstOrDefault(item => item.Value == preferred) ?? rows.FirstOrDefault();
+            }
+            boss.SelectionChanged += (_, _) => RefreshDifficulties();
+            boss.SelectedItem = allBosses.FirstOrDefault(item => item == existing?.Name) ?? allBosses.FirstOrDefault();
+            RefreshDifficulties(existing?.Difficulty);
             search.TextChanged += (_, _) =>
             {
-                var selected = boss.SelectedItem as BossRecordChoice;
-                var filtered = choices.Where(item => item.Label.Contains(search.Text, StringComparison.OrdinalIgnoreCase)).ToArray();
-                boss.ItemsSource = filtered; boss.SelectedItem = filtered.FirstOrDefault(item => item.Name == selected?.Name && item.Difficulty == selected?.Difficulty) ?? filtered.FirstOrDefault();
+                var selected = boss.SelectedItem as string;
+                var filtered = allBosses.Where(item => item.Contains(search.Text, StringComparison.OrdinalIgnoreCase)).ToArray();
+                boss.ItemsSource = filtered; boss.SelectedItem = filtered.FirstOrDefault(item => item == selected) ?? filtered.FirstOrDefault();
             };
             var memberGrid = new Grid { RowSpacing = 8, ColumnSpacing = 12 };
             for (var column = 0; column < 3; column++) memberGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
@@ -148,14 +161,14 @@ public sealed class PartyManagerView : UserControl
             for (var index = 0; index < party.Members.Length; index++)
             {
                 var member = party.Members[index];
-                var check = new CheckBox { Content = member.Name, IsChecked = existing?.Members.Contains(member.Id) ?? index < BossParty.Maximum((boss.SelectedItem as BossRecordChoice)?.Name ?? "") };
+                var check = new CheckBox { Content = member.Name, IsChecked = existing?.Members.Contains(member.Id) ?? index < BossParty.Maximum(boss.SelectedItem as string ?? "") };
                 Grid.SetRow(check, index / 3); Grid.SetColumn(check, index % 3); memberGrid.Children.Add(check); memberChecks.Add((member, check));
             }
             var limit = new TextBlock { TextWrapping = TextWrapping.Wrap };
             void UpdateLimit()
             {
-                if (boss.SelectedItem is not BossRecordChoice selected) { limit.Text = "보스와 난이도를 선택해주세요."; return; }
-                var maximum = BossParty.Maximum(selected.Name);
+                if (boss.SelectedItem is not string selected) { limit.Text = "보스를 선택해주세요."; return; }
+                var maximum = BossParty.Maximum(selected);
                 var checkedMembers = memberChecks.Where(item => item.Check.IsChecked == true).ToArray();
                 foreach (var extra in checkedMembers.Skip(maximum)) extra.Check.IsChecked = false;
                 limit.Text = $"참여자 선택 · 최대 {maximum}인";
@@ -165,7 +178,10 @@ public sealed class PartyManagerView : UserControl
             var form = new StackPanel { Spacing = 14 };
             form.Children.Add(new TextBlock { Text = party.Name, FontSize = 16, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
             form.Children.Add(new TextBlock { Text = "이 파티가 함께 잡을 보스와 난이도, 참여자만 선택하세요.", TextWrapping = TextWrapping.Wrap });
-            form.Children.Add(search); form.Children.Add(boss); form.Children.Add(limit); form.Children.Add(memberGrid); form.Children.Add(error);
+            var selections = new Grid { ColumnSpacing = 12 };
+            selections.ColumnDefinitions.Add(new() { Width = new GridLength(2, GridUnitType.Star) }); selections.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
+            Grid.SetColumn(difficulty, 1); selections.Children.Add(boss); selections.Children.Add(difficulty);
+            form.Children.Add(search); form.Children.Add(selections); form.Children.Add(limit); form.Children.Add(memberGrid); form.Children.Add(error);
             var width = Math.Min(680, Math.Max(420, XamlRoot.Size.Width - 96));
             var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = existing is null ? "보스 추가" : "보스 수정",
                 PrimaryButtonText = "저장", CloseButtonText = "취소", Content = form, Width = width, MinWidth = width, MaxWidth = width };
@@ -173,13 +189,14 @@ public sealed class PartyManagerView : UserControl
             {
                 try
                 {
-                    if (boss.SelectedItem is not BossRecordChoice selected) throw new ArgumentException("보스와 난이도를 선택해주세요.");
+                    if (boss.SelectedItem is not string selectedBoss || difficulty.SelectedItem is not BossDifficultyRow selectedDifficulty)
+                        throw new ArgumentException("보스와 난이도를 선택해주세요.");
                     var memberIds = memberChecks.Where(item => item.Check.IsChecked == true).Select(item => item.Member.Id).ToArray();
-                    if (memberIds.Length == 0 || memberIds.Length > BossParty.Maximum(selected.Name)) throw new ArgumentException("보스 참여 인원을 확인해주세요.");
-                    if (party.Bosses.Any(item => item.Name == selected.Name && item.Difficulty == selected.Difficulty
+                    if (memberIds.Length == 0 || memberIds.Length > BossParty.Maximum(selectedBoss)) throw new ArgumentException("보스 참여 인원을 확인해주세요.");
+                    if (party.Bosses.Any(item => item.Name == selectedBoss && item.Difficulty == selectedDifficulty.Value
                         && (existing is null || item.Name != existing.Name || item.Difficulty != existing.Difficulty)))
                         throw new ArgumentException("이미 등록한 보스와 난이도입니다.");
-                    var value = new PartyBoss(selected.Name, selected.Difficulty, memberIds);
+                    var value = new PartyBoss(selectedBoss, selectedDifficulty.Value, memberIds);
                     var slots = existing is null ? party.Bosses.Append(value).ToArray()
                         : party.Bosses.Select(item => item.Name == existing.Name && item.Difficulty == existing.Difficulty ? value : item).ToArray();
                     var updated = party with { Bosses = slots };
