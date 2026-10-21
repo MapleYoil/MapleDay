@@ -11,8 +11,10 @@ namespace MapleDay.Views;
 
 public sealed class PartyManagerView : UserControl
 {
+    private sealed record PartyBossRow(PartyBoss Boss, string Label);
     private readonly StackPanel _root = new() { Spacing = 16, Padding = new Thickness(24), MaxWidth = 1000, HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly ListView _list = new() { DisplayMemberPath = "Name", MaxHeight = 220 };
+    private readonly ListView _bosses = new() { DisplayMemberPath = "Label", MaxHeight = 220 };
     private readonly TextBlock _summary = new() { TextWrapping = TextWrapping.Wrap };
     private readonly TextBlock _status = new() { TextWrapping = TextWrapping.Wrap };
     private readonly TextBlock _sharedLootHint = new() { TextWrapping = TextWrapping.Wrap };
@@ -30,9 +32,14 @@ public sealed class PartyManagerView : UserControl
         _root.Children.Add(new TextBlock { Text = "파티", FontSize = 28, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         _root.Children.Add(new TextBlock { Text = "구성원과 보스를 저장하고 캘린더·물욕템 정산에서 불러오세요.", TextWrapping = TextWrapping.Wrap });
         var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-        foreach (var (label, handler) in new (string, RoutedEventHandler)[] { ("파티 추가", async (_, _) => await EditAsync(null)),
-            ("수정", async (_, _) => { if (_list.SelectedItem is PartyPreset party) await EditAsync(party); }), ("삭제", async (_, _) => await DeleteAsync()) })
+        foreach (var (label, handler) in new (string, RoutedEventHandler)[] { ("파티 추가", async (_, _) => await EditPartyAsync(null)),
+            ("파티 수정", async (_, _) => { if (_list.SelectedItem is PartyPreset party) await EditPartyAsync(party); }), ("파티 삭제", async (_, _) => await DeleteAsync()) })
         { var button = new Button { Content = label }; button.Click += handler; actions.Children.Add(button); }
+        var bossActions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        foreach (var (label, handler) in new (string, RoutedEventHandler)[] { ("보스 추가", async (_, _) => await EditBossAsync(null)),
+            ("보스 수정", async (_, _) => { if (_bosses.SelectedItem is PartyBossRow row) await EditBossAsync(row.Boss); else _status.Text = "수정할 보스를 선택해주세요."; }),
+            ("보스 삭제", async (_, _) => await DeleteBossAsync()) })
+        { var button = new Button { Content = label }; button.Click += handler; bossActions.Children.Add(button); }
         var shareActions = new Grid { RowSpacing = 8, ColumnSpacing = 8 };
         for (var i = 0; i < 3; i++) shareActions.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
         for (var i = 0; i < 2; i++) shareActions.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -45,7 +52,9 @@ public sealed class PartyManagerView : UserControl
             AutomationProperties.SetName(button, label); button.Click += handler;
             Grid.SetRow(button, shareIndex / 3); Grid.SetColumn(button, shareIndex % 3); shareActions.Children.Add(button); shareIndex++;
         }
-        _root.Children.Add(actions); _root.Children.Add(shareActions); _root.Children.Add(_list); _root.Children.Add(_summary); _root.Children.Add(_status);
+        _root.Children.Add(actions); _root.Children.Add(_list); _root.Children.Add(_summary);
+        _root.Children.Add(new TextBlock { Text = "등록한 보스", FontSize = 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        _root.Children.Add(bossActions); _root.Children.Add(_bosses); _root.Children.Add(shareActions); _root.Children.Add(_status);
         _root.Children.Add(new TextBlock { Text = "공유 물욕 현황", FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         _root.Children.Add(_sharedLootHint); _root.Children.Add(_sharedLoot);
         _root.Children.Add(new TextBlock { Text = "파티 분배금 계산", FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
@@ -73,9 +82,12 @@ public sealed class PartyManagerView : UserControl
     {
         var link = _share?.Link(party.Id);
         var sharing = link is null ? "공유하지 않음" : "공유 중 · 내 기록 " + (party.Members.FirstOrDefault(member => member.Id == link.MemberId)?.Name ?? "연결 확인 필요");
-        _summary.Text = string.Join(" · ", party.Members.Select(member => member.Name)) + "\n"
-            + string.Join(" / ", party.Bosses.Select(boss => BossLootCatalog.DifficultyLabel(boss.Difficulty) + " " + boss.Name + $" {boss.Members.Length}인"))
-            + "\n" + sharing;
+        _summary.Text = string.Join(" · ", party.Members.Select(member => member.Name)) + "\n" + sharing;
+        var selectedBoss = (_bosses.SelectedItem as PartyBossRow)?.Boss;
+        var rows = party.Bosses.Select(boss => new PartyBossRow(boss,
+            BossLootCatalog.DifficultyLabel(boss.Difficulty) + " " + boss.Name + $" · {boss.Members.Length}인")).ToArray();
+        _bosses.ItemsSource = rows;
+        _bosses.SelectedItem = rows.FirstOrDefault(row => row.Boss.Name == selectedBoss?.Name && row.Boss.Difficulty == selectedBoss?.Difficulty) ?? rows.FirstOrDefault();
         var loot = _settings?.BossLootRecords.Where(record => record.SharedPartyId == party.Id).OrderByDescending(record => record.Date).ThenBy(record => record.ItemName).ToArray() ?? [];
         _sharedLoot.ItemsSource = loot.Select(record => $"{record.Date:yy.MM.dd} · {BossLootCatalog.DifficultyLabel(record.Difficulty)} {record.Boss} · {record.ItemName} · 판매 {BossIncome.Money(record.Amount)} · "
             + (record.Settlement?.State == "complete" ? "정산 완료" : record.Settlement?.State == "partial" ? "부분 수령" : "미정산")).ToArray();
@@ -89,7 +101,7 @@ public sealed class PartyManagerView : UserControl
         var selected = (_list.SelectedItem as PartyPreset)?.Id;
         _list.ItemsSource = settings.Parties.Where(PartySettlement.Valid).ToArray();
         _list.SelectedItem = settings.Parties.FirstOrDefault(party => party.Id == selected) ?? settings.Parties.FirstOrDefault();
-        if (settings.Parties.Count == 0) _summary.Text = "등록한 파티가 없습니다. 파티 없이도 아래에서 분배금을 계산할 수 있습니다.";
+        if (settings.Parties.Count == 0) { _summary.Text = "등록한 파티가 없습니다. 파티 없이도 아래에서 분배금을 계산할 수 있습니다."; _bosses.ItemsSource = null; }
         else if (_list.SelectedItem is PartyPreset party) RefreshSelection(party);
     }
     private bool Save(List<PartyPreset> parties)
@@ -108,6 +120,93 @@ public sealed class PartyManagerView : UserControl
         {
             var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "파티 삭제", Content = "파티만 삭제합니다. 이미 저장한 일정과 정산은 유지됩니다.", PrimaryButtonText = "삭제", CloseButtonText = "취소" };
             if (await dialog.ShowAsync() == ContentDialogResult.Primary) Save(_settings.Parties.Where(item => item.Id != party.Id).ToList());
+        }
+        finally { _dialog = false; }
+    }
+
+    private async Task EditBossAsync(PartyBoss? existing)
+    {
+        if (_dialog || _settings is null || _list.SelectedItem is not PartyPreset party) { _status.Text = "먼저 파티를 만들고 선택해주세요."; return; }
+        if (_share?.IsShared(party.Id) == true) { _status.Text = "공유 중인 파티는 공유를 종료한 뒤 보스를 변경해주세요."; return; }
+        _dialog = true;
+        try
+        {
+            var choices = BossRecordChoices.Single.ToArray();
+            var search = new TextBox { Header = "보스 검색", PlaceholderText = "보스 이름 또는 난이도" };
+            var boss = new ComboBox { Header = "보스·난이도 (하드 스우 이상 체력 순)", DisplayMemberPath = "Label", ItemsSource = choices, HorizontalAlignment = HorizontalAlignment.Stretch };
+            boss.SelectedItem = choices.FirstOrDefault(item => item.Name == existing?.Name && item.Difficulty == existing?.Difficulty) ?? choices.FirstOrDefault();
+            search.TextChanged += (_, _) =>
+            {
+                var selected = boss.SelectedItem as BossRecordChoice;
+                var filtered = choices.Where(item => item.Label.Contains(search.Text, StringComparison.OrdinalIgnoreCase)).ToArray();
+                boss.ItemsSource = filtered; boss.SelectedItem = filtered.FirstOrDefault(item => item.Name == selected?.Name && item.Difficulty == selected?.Difficulty) ?? filtered.FirstOrDefault();
+            };
+            var memberGrid = new Grid { RowSpacing = 8, ColumnSpacing = 12 };
+            for (var column = 0; column < 3; column++) memberGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
+            for (var row = 0; row < Math.Max(1, (party.Members.Length + 2) / 3); row++) memberGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            var memberChecks = new List<(PartyMember Member, CheckBox Check)>();
+            for (var index = 0; index < party.Members.Length; index++)
+            {
+                var member = party.Members[index];
+                var check = new CheckBox { Content = member.Name, IsChecked = existing?.Members.Contains(member.Id) ?? index < BossParty.Maximum((boss.SelectedItem as BossRecordChoice)?.Name ?? "") };
+                Grid.SetRow(check, index / 3); Grid.SetColumn(check, index % 3); memberGrid.Children.Add(check); memberChecks.Add((member, check));
+            }
+            var limit = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            void UpdateLimit()
+            {
+                if (boss.SelectedItem is not BossRecordChoice selected) { limit.Text = "보스와 난이도를 선택해주세요."; return; }
+                var maximum = BossParty.Maximum(selected.Name);
+                var checkedMembers = memberChecks.Where(item => item.Check.IsChecked == true).ToArray();
+                foreach (var extra in checkedMembers.Skip(maximum)) extra.Check.IsChecked = false;
+                limit.Text = $"참여자 선택 · 최대 {maximum}인";
+            }
+            boss.SelectionChanged += (_, _) => UpdateLimit(); UpdateLimit();
+            var error = new TextBlock { TextWrapping = TextWrapping.Wrap }; AutomationProperties.SetLiveSetting(error, AutomationLiveSetting.Polite);
+            var form = new StackPanel { Spacing = 14 };
+            form.Children.Add(new TextBlock { Text = party.Name, FontSize = 16, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            form.Children.Add(new TextBlock { Text = "이 파티가 함께 잡을 보스와 난이도, 참여자만 선택하세요.", TextWrapping = TextWrapping.Wrap });
+            form.Children.Add(search); form.Children.Add(boss); form.Children.Add(limit); form.Children.Add(memberGrid); form.Children.Add(error);
+            var width = Math.Min(680, Math.Max(420, XamlRoot.Size.Width - 96));
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = existing is null ? "보스 추가" : "보스 수정",
+                PrimaryButtonText = "저장", CloseButtonText = "취소", Content = form, Width = width, MinWidth = width, MaxWidth = width };
+            dialog.PrimaryButtonClick += (_, args) =>
+            {
+                try
+                {
+                    if (boss.SelectedItem is not BossRecordChoice selected) throw new ArgumentException("보스와 난이도를 선택해주세요.");
+                    var memberIds = memberChecks.Where(item => item.Check.IsChecked == true).Select(item => item.Member.Id).ToArray();
+                    if (memberIds.Length == 0 || memberIds.Length > BossParty.Maximum(selected.Name)) throw new ArgumentException("보스 참여 인원을 확인해주세요.");
+                    if (party.Bosses.Any(item => item.Name == selected.Name && item.Difficulty == selected.Difficulty
+                        && (existing is null || item.Name != existing.Name || item.Difficulty != existing.Difficulty)))
+                        throw new ArgumentException("이미 등록한 보스와 난이도입니다.");
+                    var value = new PartyBoss(selected.Name, selected.Difficulty, memberIds);
+                    var slots = existing is null ? party.Bosses.Append(value).ToArray()
+                        : party.Bosses.Select(item => item.Name == existing.Name && item.Difficulty == existing.Difficulty ? value : item).ToArray();
+                    var updated = party with { Bosses = slots };
+                    if (!PartySettlement.Valid(updated)) throw new ArgumentException("보스·난이도·참여자를 확인해주세요.");
+                    if (!Save(_settings.Parties.Select(item => item.Id == party.Id ? updated : item).ToList())) { error.Text = _status.Text; args.Cancel = true; }
+                }
+                catch (Exception exception) when (exception is ArgumentException or OverflowException) { error.Text = exception.Message; args.Cancel = true; }
+            };
+            await dialog.ShowAsync();
+        }
+        finally { _dialog = false; }
+    }
+
+    private async Task DeleteBossAsync()
+    {
+        if (_dialog || _settings is null || _list.SelectedItem is not PartyPreset party || _bosses.SelectedItem is not PartyBossRow selected)
+        { _status.Text = "삭제할 보스를 선택해주세요."; return; }
+        if (_share?.IsShared(party.Id) == true) { _status.Text = "공유 중인 파티는 공유를 종료한 뒤 보스를 변경해주세요."; return; }
+        _dialog = true;
+        try
+        {
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, Title = "보스 삭제",
+                Content = $"{BossLootCatalog.DifficultyLabel(selected.Boss.Difficulty)} {selected.Boss.Name}을(를) 이 파티에서 삭제합니다. 기존 일정과 정산은 유지됩니다.",
+                PrimaryButtonText = "삭제", CloseButtonText = "취소" };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+            var updated = party with { Bosses = party.Bosses.Where(item => item.Name != selected.Boss.Name || item.Difficulty != selected.Boss.Difficulty).ToArray() };
+            Save(_settings.Parties.Select(item => item.Id == party.Id ? updated : item).ToList());
         }
         finally { _dialog = false; }
     }
@@ -193,7 +292,7 @@ public sealed class PartyManagerView : UserControl
         }
         finally { _dialog = false; }
     }
-    private async Task EditAsync(PartyPreset? existing)
+    private async Task EditPartyAsync(PartyPreset? existing)
     {
         if (_dialog || _settings is null) return; _dialog = true;
         if (existing is not null && _share?.IsShared(existing.Id) == true)
@@ -208,8 +307,6 @@ public sealed class PartyManagerView : UserControl
             var editors = new List<(string Id, TextBox Name, ComboBox Character, NumberBox Weight)>();
             var options = new[] { new ScheduleCharacter("", "", "직접 입력 (다른 파티원)") }.Concat(_characters.Select(character => new ScheduleCharacter(character.Ocid, character.Name, character.Name + " · " + character.Character.World))).ToArray();
             var leader = new ComboBox { Header = "파티장", DisplayMemberPath = "Name" };
-            var bossList = new StackPanel { Spacing = 8 };
-            var slots = new List<PartyBoss>(existing?.Bosses ?? []);
             void Members()
             {
                 var n = double.IsFinite(count.Value) ? (int)count.Value : 0; if (n is < 1 or > 6) return;
@@ -243,89 +340,35 @@ public sealed class PartyManagerView : UserControl
                 }
                 leader.ItemsSource = editors.Select(editor => new PartyMember(editor.Id, editor.Name.Text)).ToArray();
                 leader.SelectedItem = ((PartyMember[])leader.ItemsSource).FirstOrDefault(member => member.Id == selectedLeader) ?? ((PartyMember[])leader.ItemsSource)[0];
-                var memberIds = editors.Select(editor => editor.Id).ToHashSet(StringComparer.Ordinal);
-                for (var slotIndex = 0; slotIndex < slots.Count; slotIndex++)
-                {
-                    var selected = slots[slotIndex].Members.Where(memberIds.Contains).Take(BossParty.Maximum(slots[slotIndex].Name)).ToArray();
-                    slots[slotIndex] = slots[slotIndex] with { Members = selected.Length > 0 ? selected : editors.Take(BossParty.Maximum(slots[slotIndex].Name)).Select(editor => editor.Id).ToArray() };
-                }
             }
             Members(); count.ValueChanged += (_, _) => Members();
-            void RefreshBosses()
-            {
-                bossList.Children.Clear();
-                foreach (var slot in slots.ToArray())
-                {
-                    var row = new StackPanel { Spacing = 4 }; row.Children.Add(new TextBlock { Text = BossLootCatalog.DifficultyLabel(slot.Difficulty) + " " + slot.Name });
-                    var checks = new StackPanel { Spacing = 8 };
-                    foreach (var editor in editors)
-                    {
-                        var check = new CheckBox { Content = editor.Name.Text, IsChecked = slot.Members.Contains(editor.Id) };
-                        void Update() { var i = slots.FindIndex(item => item.Name == slot.Name && item.Difficulty == slot.Difficulty); if (i < 0) return; var ids = slots[i].Members.ToHashSet(); if (check.IsChecked == true) ids.Add(editor.Id); else ids.Remove(editor.Id); slots[i] = slots[i] with { Members = ids.ToArray() }; }
-                        check.Checked += (_, _) => Update(); check.Unchecked += (_, _) => Update(); checks.Children.Add(check);
-                    }
-                    row.Children.Add(checks); var remove = new Button { Content = "보스 제거" }; remove.Click += (_, _) => { slots.RemoveAll(item => item.Name == slot.Name && item.Difficulty == slot.Difficulty); RefreshBosses(); }; row.Children.Add(remove); bossList.Children.Add(row);
-                }
-            }
-            var search = new TextBox { Header = "보스 검색", PlaceholderText = "보스 이름 또는 난이도" };
-            var bosses = new ComboBox { Header = "보스·난이도 (하드 스우 이상 체력 순)", DisplayMemberPath = "Label", ItemsSource = BossRecordChoices.Single, HorizontalAlignment = HorizontalAlignment.Stretch };
-            search.TextChanged += (_, _) => bosses.ItemsSource = BossRecordChoices.Single.Where(item => item.Label.Contains(search.Text, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var addBoss = new Button { Content = "보스 추가" };
-            addBoss.Click += (_, _) => { if (bosses.SelectedItem is not BossRecordChoice item || slots.Any(slot => slot.Name == item.Name && slot.Difficulty == item.Difficulty)) return; slots.Add(new(item.Name, item.Difficulty, editors.Take(BossParty.Maximum(item.Name)).Select(editor => editor.Id).ToArray())); RefreshBosses(); };
-            count.ValueChanged += (_, _) => RefreshBosses(); RefreshBosses();
             var note = new TextBox { Header = "메모", AcceptsReturn = true, MaxLength = 2000, Text = existing?.Note ?? "" };
             var fee = new ComboBox { Header = "기본 경매장 수수료", ItemsSource = new[] { "0%", "3%", "5%" }, SelectedIndex = existing?.AuctionFee switch { 0 => 0, 5 => 2, _ => 1 } };
             var transfer = new ComboBox { Header = "기본 전달 방식", ItemsSource = new[] { "경매장", "직접 교환 5%", "수수료 없음" }, SelectedIndex = existing?.Transfer switch { "trade" => 1, "none" => 2, _ => 0 } };
-            var error = new TextBlock { TextWrapping = TextWrapping.Wrap };
             var memberError = new TextBlock { TextWrapping = TextWrapping.Wrap };
-            AutomationProperties.SetLiveSetting(error, AutomationLiveSetting.Polite); AutomationProperties.SetLiveSetting(memberError, AutomationLiveSetting.Polite);
+            AutomationProperties.SetLiveSetting(memberError, AutomationLiveSetting.Polite);
 
             var basics = new Grid { ColumnSpacing = 12 };
             basics.ColumnDefinitions.Add(new() { Width = new GridLength(2, GridUnitType.Star) });
             basics.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
             Grid.SetColumn(count, 1); basics.Children.Add(name); basics.Children.Add(count);
             var memberForm = new StackPanel { Spacing = 14 };
-            memberForm.Children.Add(new TextBlock { Text = "1 / 2 · 구성원", FontSize = 16, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            memberForm.Children.Add(new TextBlock { Text = "파티 이름과 구성원만 먼저 입력하세요. 내 캐릭터는 본인 항목에만 연결하면 됩니다.", TextWrapping = TextWrapping.Wrap });
+            memberForm.Children.Add(new TextBlock { Text = "파티 정보", FontSize = 16, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            memberForm.Children.Add(new TextBlock { Text = "파티를 저장한 뒤 메인 화면에서 보스를 하나씩 추가할 수 있습니다. 내 캐릭터는 본인 항목에만 연결하세요.", TextWrapping = TextWrapping.Wrap });
             memberForm.Children.Add(basics); memberForm.Children.Add(fields); memberForm.Children.Add(leader); memberForm.Children.Add(memberError);
 
-            var addGrid = new Grid { ColumnSpacing = 10 };
-            addGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) }); addGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            Grid.SetColumn(addBoss, 1); addBoss.VerticalAlignment = VerticalAlignment.Bottom; addGrid.Children.Add(bosses); addGrid.Children.Add(addBoss);
             var settlementGrid = new Grid { ColumnSpacing = 12 };
             settlementGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) }); settlementGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
             Grid.SetColumn(transfer, 1); settlementGrid.Children.Add(fee); settlementGrid.Children.Add(transfer);
-            var bossForm = new StackPanel { Spacing = 14 };
-            bossForm.Children.Add(new TextBlock { Text = "2 / 2 · 보스와 정산", FontSize = 16, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            bossForm.Children.Add(new TextBlock { Text = "함께 잡는 보스와 참여자를 고르고 기본 정산 방식을 정하세요.", TextWrapping = TextWrapping.Wrap });
-            bossForm.Children.Add(search); bossForm.Children.Add(addGrid);
-            bossForm.Children.Add(new TextBlock { Text = "등록한 보스", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            bossForm.Children.Add(new ScrollViewer { Content = bossList, MaxHeight = 250, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-            bossForm.Children.Add(settlementGrid); bossForm.Children.Add(note); bossForm.Children.Add(error);
+            memberForm.Children.Insert(memberForm.Children.Count - 1, settlementGrid);
+            memberForm.Children.Insert(memberForm.Children.Count - 1, note);
             var pageHeight = Math.Max(280, XamlRoot.Size.Height - 230);
             var memberPage = new ScrollViewer { Content = memberForm, MaxHeight = pageHeight, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            var bossPage = new ScrollViewer { Content = bossForm, MaxHeight = pageHeight, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
 
             var width = Math.Min(760, Math.Max(420, XamlRoot.Size.Width - 96));
-            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme, PrimaryButtonText = "다음", CloseButtonText = "취소",
+            var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = RequestedTheme,
+                Title = existing is null ? "새 파티" : "파티 수정", PrimaryButtonText = "저장", CloseButtonText = "취소", Content = memberPage,
                 Width = width, MinWidth = width, MaxWidth = width };
-            var step = 0;
-            void ShowStep(int value)
-            {
-                step = value; error.Text = ""; memberError.Text = "";
-                if (step == 0)
-                {
-                    dialog.Title = existing is null ? "새 파티 · 구성원" : "파티 수정 · 구성원";
-                    dialog.PrimaryButtonText = "다음"; dialog.SecondaryButtonText = "";
-                    dialog.Content = memberPage;
-                }
-                else
-                {
-                    RefreshBosses(); dialog.Title = existing is null ? "새 파티 · 보스와 정산" : "파티 수정 · 보스와 정산";
-                    dialog.PrimaryButtonText = "저장"; dialog.SecondaryButtonText = "이전";
-                    dialog.Content = bossPage;
-                }
-            }
             dialog.PrimaryButtonClick += (_, args) =>
             {
                 try
@@ -334,21 +377,19 @@ public sealed class PartyManagerView : UserControl
                     var leaderId = (leader.SelectedItem as PartyMember)?.Id ?? "";
                     if (name.Text.Trim().Length is 0 or > 80 || !PartySettlement.ValidMembers(members, leaderId))
                         throw new ArgumentException("파티 이름·구성원 이름·분배 비율·파티장을 확인해주세요.");
-                    if (step == 0)
+                    var memberIds = members.Select(member => member.Id).ToHashSet(StringComparer.Ordinal);
+                    var preservedBosses = (existing?.Bosses ?? []).Select(slot =>
                     {
-                        args.Cancel = true;
-                        var leaderItems = editors.Select(editor => new PartyMember(editor.Id, editor.Name.Text.Trim())).ToArray();
-                        leader.ItemsSource = leaderItems; leader.SelectedItem = leaderItems.First(member => member.Id == leaderId);
-                        ShowStep(1); return;
-                    }
-                    var party = new PartyPreset(existing?.Id ?? Guid.NewGuid().ToString("N"), name.Text.Trim(), members, (leader.SelectedItem as PartyMember)?.Id ?? "", slots.ToArray(), fee.SelectedIndex switch { 0 => 0, 2 => 5, _ => 3 }, transfer.SelectedIndex switch { 1 => "trade", 2 => "none", _ => "auction" }, note.Text);
+                        var selected = slot.Members.Where(memberIds.Contains).Take(BossParty.Maximum(slot.Name)).ToArray();
+                        return slot with { Members = selected.Length > 0 ? selected : members.Take(BossParty.Maximum(slot.Name)).Select(member => member.Id).ToArray() };
+                    }).ToArray();
+                    var party = new PartyPreset(existing?.Id ?? Guid.NewGuid().ToString("N"), name.Text.Trim(), members, leaderId,
+                        preservedBosses, fee.SelectedIndex switch { 0 => 0, 2 => 5, _ => 3 }, transfer.SelectedIndex switch { 1 => "trade", 2 => "none", _ => "auction" }, note.Text);
                     if (!PartySettlement.Valid(party)) throw new ArgumentException("이름·비율·보스별 참여자를 확인해주세요. 보스별 최대 인원을 초과할 수 없습니다.");
-                    if (!Save(_settings.Parties.Where(item => item.Id != party.Id).Append(party).ToList())) { error.Text = _status.Text; args.Cancel = true; }
+                    if (!Save(_settings.Parties.Where(item => item.Id != party.Id).Append(party).ToList())) { memberError.Text = _status.Text; args.Cancel = true; }
                 }
-                catch (Exception ex) when (ex is ArgumentException or OverflowException) { if (step == 0) memberError.Text = ex.Message; else error.Text = ex.Message; args.Cancel = true; }
+                catch (Exception ex) when (ex is ArgumentException or OverflowException) { memberError.Text = ex.Message; args.Cancel = true; }
             };
-            dialog.SecondaryButtonClick += (_, args) => { if (step == 1) { args.Cancel = true; ShowStep(0); } };
-            ShowStep(0);
             await dialog.ShowAsync();
         }
         finally { _dialog = false; }
