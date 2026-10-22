@@ -111,7 +111,7 @@ public sealed partial class MainWindow
         CancelScheduler();
         if (!_settings.SchedulerOcids.Contains(character.Ocid)) _settings.SchedulerOcids.Add(character.Ocid);
         _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
-                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid));
+                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid), () => _settings.IncomeCumulativeStartDate);
         character.SetSchedulerAdded(true);
         SaveSchedulerSelection();
         RebuildSchedulerViews();

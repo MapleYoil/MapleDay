@@ -36,10 +36,22 @@ public sealed partial class MainWindow
             id => PartySize(character.Ocid, id), character.Character.Level);
     }
     private IncomeDisplay CurrentIncomeDisplay => new(_settings.IncomeDisplayMode, _settings.MesoCashRate);
+    private DateOnly IncomeCumulativeStart(DateOnly today) => _settings.IncomeCumulativeStartDate is { } start
+        ? start > today ? today : start : DateOnly.MinValue;
+    private string IncomeSettingsStatus()
+        => "현금 금액은 설정한 환산가로 계산한 값입니다.\n" + (_settings.IncomeCumulativeStartDate is { } start
+            ? $"누적 수익과 집계 재생은 {start:yyyy.MM.dd}부터 계산합니다." : "누적 수익과 집계 재생은 저장된 전체 기록을 계산합니다.");
     private void InitializeIncomeDisplay()
     {
         IncomeDisplaySelector.SelectedIndex = CurrentIncomeDisplay.ValidMode switch { "cash" => 1, "both" => 2, "fragments" => 3, _ => 0 };
         IncomeCashRateInput.Value = (double)CurrentIncomeDisplay.Rate;
+        var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
+        DateTimeOffset Offset(DateOnly date) => new(date.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(9));
+        IncomeCumulativeStartDateInput.MinDate = Offset(new(2003, 4, 29));
+        IncomeCumulativeStartDateInput.MaxDate = Offset(today);
+        if (_settings.IncomeCumulativeStartDate is { } start)
+            IncomeCumulativeStartDateInput.Date = Offset(start > today ? today : start);
+        IncomeCurrencyStatus.Text = IncomeSettingsStatus();
         IncomeReplayPanel.OwnerWindow = WinRT.Interop.WindowNative.GetWindowHandle(this);
         Closed += (_, _) => { IncomeReplayPanel.Pause(); _ = IncomeReplayPanel.StopAsync(); };
         _incomeDisplayReady = true;
@@ -56,10 +68,26 @@ public sealed partial class MainWindow
         _settings.MesoCashRate = (decimal)sender.Value;
         SaveIncomeDisplay();
     }
+    private void IncomeCumulativeStartDateInput_DateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
+    {
+        if (!_incomeDisplayReady || _dataDeleting) return;
+        _settings.IncomeCumulativeStartDate = sender.Date is { } value ? DateOnly.FromDateTime(value.DateTime) : null;
+        SaveIncomeDisplay();
+    }
+    private void IncomeCumulativeAll_Click(object sender, RoutedEventArgs args)
+    {
+        if (!_incomeDisplayReady || _dataDeleting) return;
+        _incomeDisplayReady = false;
+        IncomeCumulativeStartDateInput.Date = null;
+        _settings.IncomeCumulativeStartDate = null;
+        _incomeDisplayReady = true;
+        SaveIncomeDisplay();
+    }
     private void SaveIncomeDisplay()
     {
-        try { _settings.Save(); IncomeCurrencyStatus.Text = "현금 금액은 설정한 환산가로 계산한 값입니다."; }
-        catch (Exception error) when (IsStorageError(error)) { IncomeCurrencyStatus.Text = "환산 설정을 저장하지 못했어요. 이번 실행에서만 적용합니다."; }
+        try { _settings.Save(); IncomeCurrencyStatus.Text = IncomeSettingsStatus(); }
+        catch (Exception error) when (IsStorageError(error)) { IncomeCurrencyStatus.Text = "수익 설정을 저장하지 못했어요. 이번 실행에서만 적용합니다.\n" + IncomeSettingsStatus(); }
+        foreach (var character in SchedulerAvatars) character.RefreshIncome(id => PartySize(character.Ocid, id));
         RefreshIncomeOverview();
         IncomeReplayPanel.SetDisplay(CurrentIncomeDisplay);
         PublishWebSnapshot();
@@ -67,7 +95,9 @@ public sealed partial class MainWindow
     private void HuntingIncome_ReplayRequested(object? sender, EventArgs args)
     {
         var owners = SchedulerAvatars.Where(owner => _incomeSelectedOcid is null || owner.Ocid == _incomeSelectedOcid).ToDictionary(owner => owner.Ocid);
-        var records = (_settings.HuntingIncomeRecords ?? []).Where(row => owners.ContainsKey(row.Ocid));
+        var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
+        var start = IncomeCumulativeStart(today);
+        var records = (_settings.HuntingIncomeRecords ?? []).Where(row => owners.ContainsKey(row.Ocid) && row.Date >= start && row.Date <= today);
         IncomeReplayPanel.Visibility = Visibility.Visible;
         IncomeReplayPanel.SetRecords(HuntingIncome.Replay(records, ocid => owners[ocid].Name), CurrentIncomeDisplay,
             _incomeSelectedOcid is null ? "전체 캐릭터 사냥 기록" : owners.Values.FirstOrDefault()?.Name ?? "사냥 기록", _settings);
@@ -75,10 +105,13 @@ public sealed partial class MainWindow
     private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
         var characters = SchedulerAvatars.Where(character => _incomeSelectedOcid is null || character.Ocid == _incomeSelectedOcid).ToArray();
-        var records = characters.SelectMany(character => (character.Income?.Records ?? []).Select(clear => (character.Ocid, Clear: clear))).ToArray();
+        var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
+        var start = IncomeCumulativeStart(today);
+        var records = characters.SelectMany(character => (character.Income?.Records ?? []).Where(clear => clear.Date >= start && clear.Date <= today)
+            .Select(clear => (character.Ocid, Clear: clear))).ToArray();
         var ocids = characters.Select(character => character.Ocid).ToHashSet(StringComparer.Ordinal);
         IncomeReplayPanel.Visibility = Visibility.Visible;
-        IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid))), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터", _settings);
+        IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid) && item.Date >= start && item.Date <= today)), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터", _settings);
     }
 
     public ObservableCollection<string> CrystalPriceRows { get; } = new(CrystalPrices.All
@@ -186,23 +219,25 @@ public sealed partial class MainWindow
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         var weekStart = SchedulerBossHistory.Start(BossCycle.Weekly, today);
         var monthStart = SchedulerBossHistory.Start(BossCycle.Monthly, today);
+        var cumulativeStart = IncomeCumulativeStart(today);
         var loot = StoredLoot.Where(record => selected.Any(character => character.Ocid == record.Ocid)).ToArray();
         var hunting = (_settings.HuntingIncomeRecords ?? []).Where(row => selected.Any(owner => owner.Ocid == row.Ocid)).ToArray();
         var bossWeekly = loaded.Sum(character => character.Income!.Sum(weekStart, today)) + BossLoot.Sum(loot, weekStart, today);
         var bossMonthly = loaded.Sum(character => character.Income!.Sum(monthStart, today)) + BossLoot.Sum(loot, monthStart, today);
-        var bossTotal = loaded.Sum(character => character.Income!.Total) + BossLoot.Sum(loot, DateOnly.MinValue, today);
+        var bossTotal = loaded.Sum(character => character.Income!.Sum(cumulativeStart, today)) + BossLoot.Sum(loot, cumulativeStart, today);
         var huntWeekly = HuntingIncome.Sum(hunting, weekStart, today);
         var huntMonthly = HuntingIncome.Sum(hunting, monthStart, today);
-        var huntTotal = HuntingIncome.Sum(hunting, DateOnly.MinValue, today);
+        var huntTotal = HuntingIncome.Sum(hunting, cumulativeStart, today);
         long Amount(long boss, long hunt) => _incomeMode == 1 ? boss : _incomeMode == 2 ? hunt : boss + hunt;
         string Display(long boss, long hunt, DateOnly start) => _incomeMode == 1 ? CurrentIncomeDisplay.Format(boss)
             : CurrentIncomeDisplay.Hunting((_incomeMode == 0 ? boss : 0) + hunting.Where(row => HuntingIncome.Valid(row) && row.Date >= start && row.Date <= today).DistinctBy(row => row.Id).Sum(row => row.Meso),
                 hunting.Where(row => HuntingIncome.Valid(row) && row.Date >= start && row.Date <= today).DistinctBy(row => row.Id).Sum(row => (long)row.Fragments), Amount(boss, hunt));
         WeeklyIncomeAmount.Text = Display(bossWeekly, huntWeekly, weekStart);
         MonthlyIncomeAmount.Text = Display(bossMonthly, huntMonthly, monthStart);
-        TotalIncomeAmount.Text = Display(bossTotal, huntTotal, DateOnly.MinValue);
+        TotalIncomeAmount.Text = Display(bossTotal, huntTotal, cumulativeStart);
+        TotalIncomeLabel.Text = _settings.IncomeCumulativeStartDate is { } ? $"누적 ({cumulativeStart:yy.MM.dd}~)" : "누적";
         IncomeHeading.Text = _incomeMode == 1 ? "보스 수익" : _incomeMode == 2 ? "사냥 수익" : "전체 수익";
-        IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {Display(0, huntWeekly, weekStart)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {Display(0, huntMonthly, monthStart)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {Display(0, huntTotal, DateOnly.MinValue)}" : "";
+        IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {Display(0, huntWeekly, weekStart)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {Display(0, huntMonthly, monthStart)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {Display(0, huntTotal, cumulativeStart)}" : "";
         BossIncomeDetails.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
         HuntingIncomePanel.Visibility = _incomeMode == 1 ? Visibility.Collapsed : Visibility.Visible;
         HuntingIncomePanel.SetContext(_settings, selected, _incomeSelectedOcid, CurrentIncomeDisplay);

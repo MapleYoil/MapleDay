@@ -18,6 +18,7 @@ public sealed class AppSettings
     public DateTimeOffset? PublicHolidaysCheckedAt { get; set; }
     public int WebPort { get; set; } = 17831;
     public string IncomeDisplayMode { get; set; } = "meso";
+    public DateOnly? IncomeCumulativeStartDate { get; set; }
     public int IncomeMesoDropEok { get; set; } = IncomeMesoRain.DefaultGoldEok;
     public int ValidIncomeMesoDropEok => IncomeMesoDropEok is >= 1 and <= 10000000 ? IncomeMesoDropEok : IncomeMesoRain.DefaultGoldEok;
     public decimal MesoCashRate { get; set; } = 1500;

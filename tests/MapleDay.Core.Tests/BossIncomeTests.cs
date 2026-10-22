@@ -165,6 +165,7 @@ public sealed class BossIncomeTests
         var oct = new DateOnly(2026, 10, 1);
         var result = BossIncome.Calculate([Snapshot(june, Boss("스우", true)), Snapshot(oct, Boss("스우", true))], oct);
         Assert.Equal(16700000L + 8350000L, result.Total);
+        Assert.Equal(8350000L, result.Sum(oct, oct));
         Assert.Equal(8350000L, result.Weekly);
         Assert.True(result.CompleteRange(BossCycle.Weekly));
         Assert.Equal("0.08억 메소", BossIncome.Money(result.Weekly));

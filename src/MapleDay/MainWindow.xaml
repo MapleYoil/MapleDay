@@ -496,6 +496,8 @@
                                         <ComboBoxItem Content="메소" Tag="meso" /><ComboBoxItem Content="현금" Tag="cash" /><ComboBoxItem Content="메소 + 현금" Tag="both" /><ComboBoxItem Content="메소 + 조각" Tag="fragments" />
                                     </ComboBox>
                                     <NumberBox x:Name="IncomeCashRateInput" Header="1억 메소당 환산 금액 (원)" Minimum="1" Maximum="1000000000" SpinButtonPlacementMode="Compact" ValueChanged="IncomeCashRateInput_ValueChanged" />
+                                    <CalendarDatePicker x:Name="IncomeCumulativeStartDateInput" Header="누적 집계 시작일" PlaceholderText="전체 기록" HorizontalAlignment="Stretch" DateChanged="IncomeCumulativeStartDateInput_DateChanged" />
+                                    <Button Content="전체 기록부터 집계" HorizontalAlignment="Left" Click="IncomeCumulativeAll_Click" />
                                     <TextBlock x:Name="IncomeCurrencyStatus" Text="현금 금액은 설정한 환산가로 계산한 값입니다." Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                                 </StackPanel>
                             </Flyout>
@@ -532,7 +534,7 @@
                                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
                                 <StackPanel Spacing="6"><TextBlock Text="이번 주" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="1" Spacing="6"><TextBlock Text="이번 달" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="MonthlyIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
-                                <StackPanel Grid.Column="2" Spacing="6"><TextBlock Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="6"><TextBlock x:Name="TotalIncomeLabel" Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                             </Grid>
                             <TextBlock x:Name="IncomeBreakdown" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <StackPanel x:Name="BossIncomeDetails" Spacing="14">
@@ -552,7 +554,7 @@
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="클리어 기록으로 계산한 예상 수익입니다. 실제 결정 판매 여부는 API에 없으며, 파티 인원은 기본 1인입니다. 보스 오른쪽 버튼에서 개별 설정할 수 있습니다." TextWrapping="Wrap" FontSize="12" />
                                     <TextBlock Text="요청한 계산 기준에 따라 캐릭터당 주간 결정은 금액이 높은 12개까지만 합산합니다. 게임의 캐릭터당 판매 12개 제한은 2026-09-17에 삭제되었습니다. 일일 결정과 월드 전체 판매 한도는 계산에 포함하지 않습니다." TextWrapping="Wrap" FontSize="12" />
-                                    <TextBlock Text="누적은 이 앱에 저장된 기록의 합계입니다. API가 제공하는 최근 14일을 조회해 저장하므로, 앱을 처음 사용하기 전의 더 오래된 기록은 포함되지 않습니다. 처치일을 확인할 수 없는 기록은 집계에서 제외합니다." TextWrapping="Wrap" FontSize="12" />
+                                    <TextBlock Text="누적은 수익 설정에서 선택한 시작일부터 저장된 기록을 합산합니다. 시작일을 비우면 전체 기록을 사용합니다. API가 제공하는 최근 14일을 조회해 저장하므로, 앱을 처음 사용하기 전의 더 오래된 기록은 포함되지 않습니다. 처치일을 확인할 수 없는 기록은 집계에서 제외합니다." TextWrapping="Wrap" FontSize="12" />
                                     <TextBlock Text="가격 확인: 2026-10-06 · 1인 기준 · 날짜별 변경 적용 (같은 날 점검 전후는 구분할 수 없음)" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <HyperlinkButton Content="6월 가격 변경" NavigateUri="https://maplestory.nexon.com/News/Update/806" />

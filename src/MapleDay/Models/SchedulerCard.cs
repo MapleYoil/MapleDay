@@ -104,7 +104,7 @@ public sealed class SchedulerRow
 }
 
 public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable<ManualWeeklyClear>>? manualClears = null,
-    Func<IEnumerable<BossClearChange>>? clearChanges = null) : INotifyPropertyChanged
+    Func<IEnumerable<BossClearChange>>? clearChanges = null, Func<DateOnly?>? cumulativeStart = null) : INotifyPropertyChanged
 {
     public CharacterCard Character => character;
     public string Ocid => character.Ocid;
@@ -252,8 +252,10 @@ public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable
         if (history is null && manual.Length == 0 && changes.Length == 0) return;
         foreach (var tile in Bosses.Concat(UnregisteredBosses)) tile.SetPartySize(partySize?.Invoke(tile.PartyId) ?? 1);
         Income = BossIncome.Calculate(history?.Snapshots ?? [], SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow), partySize, manual, changes);
-        IncomeSummary = $"이번 주 {BossIncome.Money(Income.Weekly)} · 이번 달 {BossIncome.Money(Income.Monthly)} · 누적 {BossIncome.Money(Income.Total)}";
+        var cumulativeFrom = cumulativeStart?.Invoke() ?? DateOnly.MinValue;
+        IncomeSummary = $"이번 주 {BossIncome.Money(Income.Weekly)} · 이번 달 {BossIncome.Money(Income.Monthly)} · 누적 {BossIncome.Money(Income.Sum(cumulativeFrom, Income.Today))}";
         IncomeStatus = $"{Income.FirstDate:yyyy-MM-dd}부터 저장된 기록 · 일일 결정 제외";
+        if (cumulativeStart?.Invoke() is { } configured) IncomeStatus += $" · 누적 {configured:yyyy-MM-dd}부터";
         if (!Income.CompleteRange(BossCycle.Monthly) || !Income.CompleteRange(BossCycle.Weekly)) IncomeStatus += " · 일부 기간의 기록이 없어 합계가 적게 표시될 수 있어요";
         if (Income.Unpriced > 0) IncomeStatus += $" · 가격 미확인 {Income.Unpriced}건 제외";
         if (Income.CapExcluded > 0) IncomeStatus += $" · 주간 상한 초과 {Income.CapExcluded}건 제외";

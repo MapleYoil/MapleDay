@@ -34,6 +34,7 @@ public sealed class WebAndIncomeSettingsTests
         var settings = JsonSerializer.Deserialize<AppSettings>("{}")!;
         Assert.Equal(17831, settings.WebPort); Assert.Empty(settings.WebPasswordHash);
         Assert.False(settings.WebHttps); Assert.Equal("meso", settings.IncomeDisplayMode); Assert.Equal(1500, settings.MesoCashRate);
+        Assert.Null(settings.IncomeCumulativeStartDate);
         Assert.Empty(settings.ManualWeeklyClears);
         Assert.Empty(settings.BossLootRecords);
     }
@@ -60,9 +61,10 @@ public sealed class WebAndIncomeSettingsTests
     public void Web_hash_and_currency_preferences_round_trip_without_plaintext_password()
     {
         var settings = new AppSettings { WebPasswordSalt = "salt", WebPasswordHash = "hash", WebPort = 18000, WebHttps = true,
-            WebPublicHost = "maple.example", IncomeDisplayMode = "both", MesoCashRate = 1700 };
+            WebPublicHost = "maple.example", IncomeDisplayMode = "both", MesoCashRate = 1700, IncomeCumulativeStartDate = new(2026, 10, 1) };
         var json = JsonSerializer.Serialize(settings); var loaded = JsonSerializer.Deserialize<AppSettings>(json)!;
         Assert.Equal("both", loaded.IncomeDisplayMode); Assert.Equal(1700, loaded.MesoCashRate); Assert.Equal(18000, loaded.WebPort);
+        Assert.Equal(new DateOnly(2026, 10, 1), loaded.IncomeCumulativeStartDate);
         Assert.DoesNotContain("CertificatePassword", json); Assert.Equal(1700, new IncomeDisplay(loaded.IncomeDisplayMode, loaded.MesoCashRate).Cash(100_000_000));
     }
 }

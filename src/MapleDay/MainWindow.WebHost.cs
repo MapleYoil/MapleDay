@@ -202,6 +202,7 @@ public sealed partial class MainWindow
                 day.Value.Exp.ToString(CultureInfo.InvariantCulture), (double)day.Value.Percent)).ToArray() ?? [];
             var income = group.Income;
             var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
+            var cumulativeStart = IncomeCumulativeStart(today);
             var loot = StoredLoot.Where(record => record.Ocid == group.Ocid && record.Date <= today).ToArray();
             var forecast = ForecastFor(group, today);
             characters.Add(new(id, character.Name, character.World, character.Class, character.Level, level?.LevelText ?? character.LevelText,
@@ -209,7 +210,7 @@ public sealed partial class MainWindow
                 group.Bosses.Concat(group.UnregisteredBosses).Select(WebTile).ToArray(),
                 new((income?.Weekly ?? 0) + BossLoot.Sum(loot, SchedulerBossHistory.Start(BossCycle.Weekly, today), today),
                     (income?.Monthly ?? 0) + BossLoot.Sum(loot, new(today.Year, today.Month, 1), today),
-                    (income?.Total ?? 0) + BossLoot.Sum(loot, DateOnly.MinValue, today), income?.Records.Where(record => !record.DateEstimated)
+                    (income?.Sum(cumulativeStart, today) ?? 0) + BossLoot.Sum(loot, cumulativeStart, today), income?.Records.Where(record => !record.DateEstimated)
                     .Select(record => new WebClear(record.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), record.Name, record.Difficulty,
                         record.PartySize, record.Meso, record.Included)).ToArray() ?? [], forecast?.Meso ?? 0, forecast?.Unpriced ?? 0,
                     loot.Select(record => new WebLoot(record.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), record.Boss
