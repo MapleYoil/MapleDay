@@ -33,6 +33,7 @@
     <Compile Include="../../src/MapleDay/Services/SchedulerLabelPixels.cs" Link="SchedulerLabelPixels.cs" />
     <Compile Include="../../src/MapleDay/Services/UpdateBadgeIcon.cs" Link="UpdateBadgeIcon.cs" />
     <Compile Include="../../src/MapleDay/Services/SchedulerHistoryStore.cs" Link="SchedulerHistoryStore.cs" />
+    <Compile Include="../../src/MapleDay/Services/SchedulerCharacterRetention.cs" Link="SchedulerCharacterRetention.cs" />
     <Compile Include="../../src/MapleDay/Services/SchedulerHistoryLoader.cs" Link="SchedulerHistoryLoader.cs" />
     <Compile Include="../../src/MapleDay/Services/ExperienceHistoryStore.cs" Link="ExperienceHistoryStore.cs" />
     <Compile Include="../../src/MapleDay/Services/ExperienceHistoryLoader.cs" Link="ExperienceHistoryLoader.cs" />

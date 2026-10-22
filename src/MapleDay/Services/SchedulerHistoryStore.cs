@@ -61,4 +61,14 @@ public sealed class SchedulerHistoryStore(string? root = null)
             finally { gate.Release(); }
         }
     }
+
+    public async Task CopyAsync(string apiKey, string oldOcid, string newOcid, CancellationToken token)
+    {
+        if (oldOcid == newOcid) return;
+        var oldSnapshots = await LoadAsync(apiKey, oldOcid, token);
+        var current = (await LoadAsync(apiKey, newOcid, token)).ToDictionary(snapshot => snapshot.Date);
+        foreach (var snapshot in oldSnapshots)
+            if (!current.TryGetValue(snapshot.Date, out var existing) || snapshot.FetchedAt > existing.FetchedAt)
+                await SaveAsync(apiKey, newOcid, snapshot, token);
+    }
 }

@@ -38,6 +38,7 @@ public sealed class AppSettings
     public Dictionary<string, long> ReadReplies { get; set; } = [];
     public HashSet<string> ReadTickets { get; set; } = [];
     public List<string> SchedulerOcids { get; set; } = [];
+    public List<SavedSchedulerCharacter> SchedulerCharacters { get; set; } = [];
     public Dictionary<string, int> BossPartySizes { get; set; } = [];
     public List<ManualWeeklyClear> ManualWeeklyClears { get; set; } = [];
     public List<BossClearChange> BossClearChanges { get; set; } = [];

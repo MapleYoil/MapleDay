@@ -25,6 +25,7 @@ public sealed partial class MainWindow
         SchedulerAvatarList.AddHandler(UIElement.PointerWheelChangedEvent,
             new Microsoft.UI.Xaml.Input.PointerEventHandler(SchedulerAvatarScroller_PointerWheelChanged), true);
         _settings.SchedulerOcids ??= [];
+        _settings.SchedulerCharacters ??= [];
         _settings.BossPartySizes ??= [];
         _settings.ManualWeeklyClears ??= [];
         _settings.BossClearChanges ??= [];
@@ -43,9 +44,17 @@ public sealed partial class MainWindow
     {
         CancelScheduler();
         _schedulerCharacters.Clear();
-        foreach (var character in Characters.Where(character => _settings.SchedulerOcids.Contains(character.Ocid)))
+        var available = Characters.ToDictionary(character => character.Ocid, StringComparer.Ordinal);
+        foreach (var saved in _settings.SchedulerCharacters.Where(saved => _settings.SchedulerOcids.Contains(saved.Ocid)
+            && !available.ContainsKey(saved.Ocid) && SavedSchedulerCharacter.Valid(saved)).DistinctBy(saved => saved.Ocid))
+        {
+            var archived = new CharacterCard(saved.Summary);
+            archived.MarkFailed("현재 캐릭터 목록에 없음 · 저장된 스케줄러와 수익 기록 유지");
+            available[saved.Ocid] = archived;
+        }
+        foreach (var character in available.Values.Where(character => _settings.SchedulerOcids.Contains(character.Ocid)))
             _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
-                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid));
+                () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid), () => _settings.IncomeCumulativeStartDate);
         foreach (var character in Characters) character.SetSchedulerAdded(_schedulerCharacters.ContainsKey(character.Ocid));
         RebuildSchedulerViews();
         UpdateSchedulerLogin();
@@ -65,7 +74,7 @@ public sealed partial class MainWindow
     private void RebuildSchedulerViews()
     {
         SchedulerAvatars.Clear();
-        foreach (var ocid in SchedulerSelection.Visible(_settings.SchedulerOcids, Characters.Select(character => character.Ocid), null))
+        foreach (var ocid in SchedulerSelection.Visible(_settings.SchedulerOcids, _schedulerCharacters.Keys, null))
             if (_schedulerCharacters.TryGetValue(ocid, out var character)) SchedulerAvatars.Add(character);
         if (_schedulerSelectedOcid is not null && !_schedulerCharacters.ContainsKey(_schedulerSelectedOcid))
             _schedulerSelectedOcid = null;
@@ -79,7 +88,7 @@ public sealed partial class MainWindow
     private void ApplySchedulerView()
     {
         var visible = _hasLoadedCharacters
-            ? SchedulerSelection.Visible(_settings.SchedulerOcids, Characters.Select(character => character.Ocid), _schedulerSelectedOcid)
+            ? SchedulerSelection.Visible(_settings.SchedulerOcids, _schedulerCharacters.Keys, _schedulerSelectedOcid)
             : [];
         SchedulerGroups.Clear();
         foreach (var ocid in visible)
@@ -110,6 +119,8 @@ public sealed partial class MainWindow
         if (!_hasLoadedCharacters || !Characters.Contains(character) || _schedulerCharacters.ContainsKey(character.Ocid)) return false;
         CancelScheduler();
         if (!_settings.SchedulerOcids.Contains(character.Ocid)) _settings.SchedulerOcids.Add(character.Ocid);
+        SchedulerCharacterRetention.Remember(_settings, new CharacterSummary[] { new()
+            { Ocid = character.Ocid, Name = character.Name, World = character.World, Class = character.Class, Level = character.Level } });
         _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
                 () => _settings.BossClearChanges.Where(change => change.Ocid == character.Ocid), () => _settings.IncomeCumulativeStartDate);
         character.SetSchedulerAdded(true);
@@ -117,6 +128,29 @@ public sealed partial class MainWindow
         RebuildSchedulerViews();
         UpdateSchedulerButtons();
         return true;
+    }
+
+    private async Task PreserveSchedulerCharactersAsync(string apiKey, IEnumerable<CharacterSummary> current,
+        IEnumerable<CharacterSummary> previouslyKnown, CancellationToken token)
+    {
+        var changed = SchedulerCharacterRetention.Remember(_settings, previouslyKnown);
+        foreach (var ocid in _settings.SchedulerOcids.Where(ocid => !_settings.SchedulerCharacters.Any(saved => saved.Ocid == ocid)).ToArray())
+        {
+            List<SchedulerSnapshot> snapshots;
+            try { snapshots = await _schedulerHistory.LoadAsync(apiKey, ocid, token); }
+            catch (Exception error) when (IsStorageError(error)) { continue; }
+            var state = snapshots.OrderByDescending(snapshot => snapshot.Date).Select(snapshot => snapshot.State)
+                .FirstOrDefault(state => !string.IsNullOrWhiteSpace(state?.Name));
+            if (state is not null) changed |= SchedulerCharacterRetention.Remember(_settings,
+                new SavedSchedulerCharacter(ocid, state.Name!, state.World ?? "", "", 0));
+        }
+        var migrations = SchedulerCharacterRetention.Reconcile(_settings, current);
+        foreach (var migration in migrations)
+            await _schedulerHistory.CopyAsync(apiKey, migration.OldOcid, migration.NewOcid, token);
+        if (!changed && migrations.Count == 0) return;
+        try { _settings.Save(); }
+        catch (Exception error) when (IsStorageError(error))
+        { ShowError("캐릭터 기록 연결을 저장하지 못했어요", "이번 실행에는 적용됩니다. 저장 공간을 확인해주세요.", false); }
     }
 
     private async void SchedulerRemoveButton_Click(object sender, RoutedEventArgs e)

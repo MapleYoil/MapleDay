@@ -19,6 +19,8 @@ public static class SyncRecords
         Add(result, "change", settings.BossClearChanges, row => row.Ocid + "/" + row.OriginalId);
         Add(result, "size", settings.BossPartySizes, row => row.Key);
         Add(result, "character", settings.SchedulerOcids.Select((ocid, position) => new SyncedCharacter(ocid, position)), row => row.Ocid);
+        Add(result, "character-meta", (settings.SchedulerCharacters ?? []).Where(row => settings.SchedulerOcids.Contains(row.Ocid))
+            .Where(SavedSchedulerCharacter.Valid), row => row.Ocid);
         return result;
     }
     public static SyncDocument CapturePartyShare(AppSettings settings)
@@ -52,20 +54,23 @@ public static class SyncRecords
     {
         if (document.Version != 1 || document.Records is null || document.Records.Count > 100000)
             throw new ArgumentException("동기화 기록 버전을 확인해주세요.");
-        string[] allowed = ["hunting", "loot", "calendar", "party", "clear", "change", "size", "character"];
+        string[] allowed = ["hunting", "loot", "calendar", "party", "clear", "change", "size", "character", "character-meta"];
         if (document.Records.Keys.Any(key => !allowed.Contains(key.Split('/')[0])))
             throw new ArgumentException("새 형식의 기록입니다. 앱을 업데이트해주세요.");
         T[] Read<T>(string kind) => document.Records.Where(item => item.Key.StartsWith(kind + "/", StringComparison.Ordinal))
             .Select(item => item.Value.Deserialize<T>() ?? throw new ArgumentException("동기화 기록 형식을 확인해주세요.")).ToArray();
         var hunting = Read<HuntingIncomeRecord>("hunting"); var loot = Read<BossLootRecord>("loot"); var schedules = Read<CalendarSchedule>("calendar"); var parties = Read<PartyPreset>("party");
         var clears = Read<ManualWeeklyClear>("clear"); var changes = Read<BossClearChange>("change"); var sizes = Read<KeyValuePair<string, int>>("size"); var characters = Read<SyncedCharacter>("character");
+        var characterMetadata = Read<SavedSchedulerCharacter>("character-meta");
         if (hunting.Any(row => !HuntingIncome.Valid(row)) || loot.Any(row => !BossLoot.Valid(row)) || schedules.Any(row => !ScheduleCalendar.Valid(row))
             || parties.Any(row => !PartySettlement.Valid(row)) || clears.Any(row => !ManualWeeklyHistory.Valid(row)) || sizes.Any(row => row.Value is < 1 or > 6 || string.IsNullOrWhiteSpace(row.Key) || row.Key.Length > 500)
-            || characters.Any(row => string.IsNullOrWhiteSpace(row.Ocid) || row.Ocid.Length > 200 || row.Position is < 0 or > 10000) || changes.Any(row => string.IsNullOrWhiteSpace(row.Ocid) || row.Ocid.Length > 200 || string.IsNullOrWhiteSpace(row.OriginalId) || row.OriginalId.Length > 500
+            || characters.Any(row => string.IsNullOrWhiteSpace(row.Ocid) || row.Ocid.Length > 200 || row.Position is < 0 or > 10000)
+            || characterMetadata.Any(row => !SavedSchedulerCharacter.Valid(row) || !characters.Any(character => character.Ocid == row.Ocid)) || changes.Any(row => string.IsNullOrWhiteSpace(row.Ocid) || row.Ocid.Length > 200 || string.IsNullOrWhiteSpace(row.OriginalId) || row.OriginalId.Length > 500
                 || row.Replacement is { } replacement && (!ManualWeeklyHistory.Valid(replacement) || replacement.Ocid != row.Ocid)))
             throw new ArgumentException("유효하지 않은 동기화 기록입니다. 로컬 기록은 유지됩니다.");
         var candidate = new AppSettings { HuntingIncomeRecords = hunting.ToList(), BossLootRecords = loot.ToList(), CalendarSchedules = schedules.ToList(), Parties = parties.ToList(),
-            ManualWeeklyClears = clears.ToList(), BossClearChanges = changes.ToList(), BossPartySizes = sizes.ToDictionary(row => row.Key, row => row.Value), SchedulerOcids = characters.OrderBy(row => row.Position).ThenBy(row => row.Ocid).Select(row => row.Ocid).Distinct().ToList() };
+            ManualWeeklyClears = clears.ToList(), BossClearChanges = changes.ToList(), BossPartySizes = sizes.ToDictionary(row => row.Key, row => row.Value), SchedulerOcids = characters.OrderBy(row => row.Position).ThenBy(row => row.Ocid).Select(row => row.Ocid).Distinct().ToList(),
+            SchedulerCharacters = characterMetadata.DistinctBy(row => row.Ocid).ToList() };
         // Keys identify the same logical record on every device; reject mismatched or duplicate IDs.
         var canonical = Capture(candidate);
         if (canonical.Records.Count != document.Records.Count || canonical.Records.Keys.Except(document.Records.Keys).Any())
@@ -79,7 +84,7 @@ public static class SyncRecords
         settings.BossLootRecords = candidate.BossLootRecords.Where(row => string.IsNullOrEmpty(row.SharedPartyId)).Concat(sharedLoot).ToList();
         settings.CalendarSchedules = candidate.CalendarSchedules;
         settings.Parties = candidate.Parties.Where(row => !sharedIds.Contains(row.Id)).Concat(sharedParties).ToList();
-        settings.ManualWeeklyClears = candidate.ManualWeeklyClears; settings.BossClearChanges = candidate.BossClearChanges; settings.BossPartySizes = candidate.BossPartySizes; settings.SchedulerOcids = candidate.SchedulerOcids;
+        settings.ManualWeeklyClears = candidate.ManualWeeklyClears; settings.BossClearChanges = candidate.BossClearChanges; settings.BossPartySizes = candidate.BossPartySizes; settings.SchedulerOcids = candidate.SchedulerOcids; settings.SchedulerCharacters = candidate.SchedulerCharacters;
     }
     public static bool Same(SyncDocument a, SyncDocument b) => a.Records.Count == b.Records.Count && a.Records.All(row => b.Records.TryGetValue(row.Key, out var other) && RecordSync.Same(row.Value, other));
 }

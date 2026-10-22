@@ -397,6 +397,7 @@ public sealed partial class MainWindow : Window
                     .OrderByDescending(character => character.Level)
                     .ThenBy(character => character.World).ThenBy(character => character.Name).ToList();
                 var previous = _cachedCharacters;
+                await PreserveSchedulerCharactersAsync(key, summaries, previous.Values.Select(character => character.Summary), token);
                 _cachedCharacters = summaries.ToDictionary(summary => summary.Ocid,
                     summary => previous.TryGetValue(summary.Ocid, out var saved) ? saved with { Summary = summary } : new CachedCharacter(summary));
                 _characterAccountCount = list.Accounts.Count;
