@@ -138,8 +138,14 @@
                                        Style="{StaticResource SecondaryText}" TextWrapping="Wrap" LineHeight="23" />
                         </StackPanel>
                         <StackPanel Spacing="10">
-                            <ComboBox x:Name="SavedKeySelector" Header="저장된 API 키" ItemsSource="{x:Bind SavedApiKeys}" DisplayMemberPath="DisplayName"
-                                      SelectionChanged="SavedKeySelector_SelectionChanged" HorizontalAlignment="Stretch" Visibility="Collapsed" />
+                            <Grid x:Name="SavedKeyControls" ColumnSpacing="8" Visibility="Collapsed">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <ComboBox x:Name="SavedKeySelector" Header="저장된 API 키" ItemsSource="{x:Bind SavedApiKeys}" DisplayMemberPath="DisplayName"
+                                          SelectionChanged="SavedKeySelector_SelectionChanged" HorizontalAlignment="Stretch" />
+                                <Button x:Name="AddApiKeyButton" Grid.Column="1" Content="키 추가" Click="AddApiKeyButton_Click"
+                                        VerticalAlignment="Bottom" MinHeight="40" Padding="14,6"
+                                        AutomationProperties.Name="새 API 키 추가" />
+                            </Grid>
                             <TextBlock x:Name="MultiKeySchedulerHint" Visibility="Collapsed" Style="{StaticResource SecondaryText}"
                                        TextWrapping="Wrap" FontSize="12" LineHeight="20" />
                             <TextBlock Text="API 키" FontSize="14" />

@@ -547,6 +547,8 @@ public sealed partial class MainWindow : Window
         _busy = busy;
         ConnectButton.IsEnabled = !busy && !string.IsNullOrWhiteSpace(ApiKeyInput.Password);
         ApiKeyInput.IsEnabled = !busy;
+        SavedKeySelector.IsEnabled = !busy;
+        AddApiKeyButton.IsEnabled = !busy;
         RefreshButton.IsEnabled = !busy;
         KeyLoading.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
     }

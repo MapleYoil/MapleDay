@@ -14,6 +14,7 @@ public sealed partial class MainWindow
     private readonly ApiKeyProfileStore _profileStore = new();
     private readonly SemaphoreSlim _profileSaveGate = new(1, 1);
     private bool _updatingProfiles;
+    private bool _addingApiKey;
     private int _profileWrites;
 
     private async Task LoadKeyProfilesAsync(string? activeKey)
@@ -54,7 +55,7 @@ public sealed partial class MainWindow
         _updatingProfiles = true;
         try
         {
-            SavedKeySelector.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            SavedKeyControls.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
             UpdateMultiKeySchedulerHint();
         }
@@ -72,12 +73,46 @@ public sealed partial class MainWindow
     private void SavedKeySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_updatingProfiles || _busy || SavedKeySelector.SelectedItem is not ApiKeyProfile profile) return;
+        SetApiKeyEntryMode(false);
         RevealKeyButton.IsChecked = false;
         ApiKeyInput.Password = profile.Key;
     }
 
+    private void AddApiKeyButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_busy || _dataDeleting) return;
+        RevealKeyButton.IsChecked = false;
+        if (_addingApiKey)
+        {
+            SetApiKeyEntryMode(false);
+            var profile = SavedApiKeys.FirstOrDefault(item => item.Key == _apiKey) ?? SavedApiKeys.FirstOrDefault();
+            _updatingProfiles = true;
+            try { SavedKeySelector.SelectedItem = profile; }
+            finally { _updatingProfiles = false; }
+            ApiKeyInput.Password = profile?.Key ?? "";
+            return;
+        }
+        SetApiKeyEntryMode(true);
+        _updatingProfiles = true;
+        try { SavedKeySelector.SelectedItem = null; }
+        finally { _updatingProfiles = false; }
+        ApiKeyInput.Password = "";
+        KeyError.IsOpen = false;
+        ApiKeyInput.Focus(FocusState.Programmatic);
+    }
+
+    private void SetApiKeyEntryMode(bool adding)
+    {
+        _addingApiKey = adding;
+        AddApiKeyButton.Content = adding ? "취소" : "키 추가";
+        ConnectButton.Content = adding ? "API 키 추가하고 캐릭터 불러오기" : "캐릭터 불러오기";
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(AddApiKeyButton,
+            adding ? "API 키 추가 취소" : "새 API 키 추가");
+    }
+
     private void UpdateRepresentativeCharacter()
     {
+        SetApiKeyEntryMode(false);
         _updatingProfiles = true;
         try
         {
@@ -97,7 +132,7 @@ public sealed partial class MainWindow
                     else SavedApiKeys[SavedApiKeys.IndexOf(existing)] = updated;
                 }
             }
-            SavedKeySelector.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            SavedKeyControls.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
         }
         finally { _updatingProfiles = false; }
