@@ -57,6 +57,43 @@ public class HuntingIncomeTests
         Assert.Throws<ArgumentException>(() => HuntingIncome.Bulk([], daily, old.Date, old.Date.AddDays(1), old.Date));
         Assert.Throws<ArgumentException>(() => HuntingIncome.Bulk([], daily with { Meso = -1 }, old.Date, old.Date, old.Date));
     }
+    [Fact]
+    public void Add_accumulates_an_existing_day_without_replacing_its_identity_or_fragment_price()
+    {
+        var date = new DateOnly(2026, 10, 29);
+        var existing = new HuntingIncomeRecord("kept-id", "owner", date, 100_000_000, 10, 5_000_000,
+            280, null, 300, 50_000_000);
+        var addition = new HuntingIncomeRecord("new-id", "owner", date, 50_000_000, 3, 6_000_000,
+            0, null, 300);
+
+        var result = HuntingIncome.Add(existing, addition);
+
+        Assert.Equal("kept-id", result.Id);
+        Assert.Equal(150_000_000, result.Meso);
+        Assert.Equal(13, result.Fragments);
+        Assert.Equal(5_000_000, result.FragmentUnitPrice);
+        Assert.Null(result.LimitMeso);
+        Assert.Null(result.LimitPercent);
+        Assert.Equal(280, result.MesoBonus);
+    }
+
+    [Fact]
+    public void Add_adopts_price_and_limit_metadata_when_the_existing_record_has_only_the_other_amount()
+    {
+        var date = new DateOnly(2026, 10, 29);
+        var existing = new HuntingIncomeRecord("id", "owner", date, 0, 10, 5_000_000);
+        var addition = new HuntingIncomeRecord("addition", "owner", date, 380_000_000, 0, 6_000_000,
+            280, null, 300, 100_000_000);
+        var result = HuntingIncome.Add(existing, addition);
+        Assert.Equal(100_000_000, result.LimitMeso);
+        Assert.Equal(280, result.MesoBonus);
+        Assert.Equal(5_000_000, result.FragmentUnitPrice);
+
+        var fragments = HuntingIncome.Add(new("empty-fragments", "owner", date, 1, 0, 10_000),
+            new("fragments", "owner", date, 0, 2, 6_000_000));
+        Assert.Equal(6_000_000, fragments.FragmentUnitPrice);
+        Assert.Throws<ArgumentException>(() => HuntingIncome.Add(existing, addition with { Ocid = "other" }));
+    }
     [Theory]
     [InlineData(99, 20000000)] [InlineData(100, 40000000)]
     [InlineData(200, 80000000)] [InlineData(204, 80000000)] [InlineData(205, 85000000)]

@@ -131,7 +131,7 @@ public sealed partial class HuntingIncomeView : UserControl
         LimitAmount.IsEnabled = MaximumLimit.IsChecked != true;
         if (MaximumLimit.IsChecked == true)
         { _loading = true; _liveNumbers.Remove(LimitAmount); LimitAmount.Value = HuntingIncome.DailyLimit(RecordLevel); _loading = false; }
-        DeleteButton.IsEnabled = Existing is not null;
+        AddButton.IsEnabled = DeleteButton.IsEnabled = Existing is not null && !_saving;
         try
         {
             var row = Draft();
@@ -215,6 +215,59 @@ public sealed partial class HuntingIncomeView : UserControl
             Persist((_settings.HuntingIncomeRecords ?? []).Where(saved => saved.Ocid != row.Ocid || saved.Date != row.Date).Append(row).ToList(), row);
         }
         catch (Exception error) when (error is ArgumentException or OverflowException) { Status.Text = "입력값을 확인해주세요."; }
+    }
+    private async void Add_Click(object sender, RoutedEventArgs args)
+    {
+        if (_settings is null || _saving || Existing is not { } existing) return;
+        var meso = new TextBox { Header = "추가할 메소", Text = "0" };
+        var fragments = new TextBox { Header = "추가할 조각 (개)", Text = "0" };
+        var preview = new TextBlock { TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["AccentBrush"] };
+        var price = existing.FragmentUnitPrice;
+        var priceText = new TextBlock
+        {
+            Text = $"조각 가격은 기존 기록의 {IncomeReplay.CompactMeso(price)} 메소를 유지합니다.",
+            TextWrapping = TextWrapping.Wrap,
+            Style = (Style)Application.Current.Resources["SecondaryText"]
+        };
+        var panel = new StackPanel { Spacing = 12 };
+        panel.Children.Add(new TextBlock { Text = $"현재 기록 · 메소 {existing.Meso:N0} · 조각 {existing.Fragments:N0}개", TextWrapping = TextWrapping.Wrap });
+        panel.Children.Add(meso); panel.Children.Add(fragments); panel.Children.Add(priceText); panel.Children.Add(preview);
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, Title = "기존 사냥 기록에 추가", Content = panel,
+            PrimaryButtonText = "기록에 추가", CloseButtonText = "취소", DefaultButton = ContentDialogButton.Primary,
+            IsPrimaryButtonEnabled = false
+        };
+        HuntingIncomeRecord? merged = null;
+        var formatting = false;
+        void Update(object? sender = null, TextChangedEventArgs? changed = null)
+        {
+            if (formatting) return;
+            if (sender is TextBox editor)
+            {
+                var formatted = IntegerInputFormatter.Format(editor.Text, editor.SelectionStart);
+                if (formatted.Text != editor.Text)
+                {
+                    formatting = true; editor.Text = formatted.Text; editor.SelectionStart = formatted.Caret;
+                    editor.SelectionLength = 0; formatting = false;
+                }
+            }
+            try
+            {
+                var addition = HuntingIncome.Draft(Guid.NewGuid().ToString("N"), existing.Ocid, existing.Date,
+                    existing.Level is >= 1 and <= 300 ? existing.Level : RecordLevel,
+                    new(meso.Text, fragments.Text, price / 10000d), CultureInfo.CurrentCulture);
+                merged = HuntingIncome.Add(existing, addition);
+                preview.Text = $"추가 후 · 메소 {merged.Meso:N0} · 조각 {merged.Fragments:N0}개 · {_display.Hunting(merged.Meso, merged.Fragments, merged.Total)}";
+                dialog.IsPrimaryButtonEnabled = true;
+            }
+            catch (Exception error) when (error is ArgumentException or OverflowException)
+            { merged = null; preview.Text = "추가할 메소 또는 조각 수량을 입력해주세요."; dialog.IsPrimaryButtonEnabled = false; }
+        }
+        meso.TextChanged += Update; fragments.TextChanged += Update; Update();
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary || merged is null) return;
+        Persist(_settings.HuntingIncomeRecords.Where(row => row.Id != existing.Id).Append(merged).ToList(), merged,
+            $"기존 기록에 메소 {merged.Meso - existing.Meso:N0}, 조각 {merged.Fragments - existing.Fragments:N0}개를 추가했어요.");
     }
     private void Delete_Click(object sender, RoutedEventArgs args)
     { if (_settings is not null && Existing is { } row) Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Id != row.Id).ToList(), null); }

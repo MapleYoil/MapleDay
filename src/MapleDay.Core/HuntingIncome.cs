@@ -77,6 +77,25 @@ public static class HuntingIncome
         && (record.LimitPercent is null || record.LimitPercent is >= 0 and <= 100)
         && (record.LimitMeso is null || (record.Level is >= 1 and <= 300 && record.LimitMeso >= 0 && record.LimitMeso <= DailyLimit(record.Level)))
         && (record.Meso > 0 || record.Fragments > 0);
+    public static HuntingIncomeRecord Add(HuntingIncomeRecord existing, HuntingIncomeRecord addition)
+    {
+        if (!Valid(existing) || !Valid(addition) || existing.Ocid != addition.Ocid || existing.Date != addition.Date)
+            throw new ArgumentException("같은 캐릭터와 날짜의 유효한 사냥 기록만 합칠 수 있습니다.");
+        var addedMeso = addition.Meso > 0;
+        var existingMeso = existing.Meso > 0;
+        var result = existing with
+        {
+            Meso = checked(existing.Meso + addition.Meso),
+            Fragments = checked(existing.Fragments + addition.Fragments),
+            FragmentUnitPrice = existing.Fragments > 0 ? existing.FragmentUnitPrice : addition.FragmentUnitPrice,
+            MesoBonus = !existingMeso && addedMeso ? addition.MesoBonus : existing.MesoBonus,
+            LimitPercent = addedMeso ? !existingMeso ? addition.LimitPercent : null : existing.LimitPercent,
+            LimitMeso = addedMeso ? !existingMeso ? addition.LimitMeso : null : existing.LimitMeso,
+            Level = existing.Level is >= 1 and <= 300 ? existing.Level : addition.Level
+        };
+        if (!Valid(result)) throw new ArgumentException("추가한 뒤의 메소 또는 조각 수량이 허용 범위를 벗어납니다.");
+        return result;
+    }
     public static long Sum(IEnumerable<HuntingIncomeRecord> records, DateOnly start, DateOnly end)
         => records.Where(Valid).Where(record => record.Date >= start && record.Date <= end).DistinctBy(record => record.Id).Sum(record => record.Total);
     public static BulkResult Bulk(IEnumerable<HuntingIncomeRecord> existing, HuntingIncomeRecord daily,
