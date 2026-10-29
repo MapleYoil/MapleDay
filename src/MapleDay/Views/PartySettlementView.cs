@@ -32,10 +32,11 @@ public sealed class PartySettlementView : UserControl
     {
         Content = _root;
         foreach (var element in new FrameworkElement[] { _sale, _net, _fee, _transfer, _count, _weights, _leader, _own, _state, _partial, _hint, _rows }) _root.Children.Add(element);
-        _sale.TextChanged += (_, _) => Refresh();
+        _sale.TextChanged += (_, _) => { if (_updating) return; FormatAmount(_sale); Refresh(); };
         _net.TextChanged += (_, _) =>
         {
             if (_updating) return;
+            FormatAmount(_net);
             try { if (!BossLoot.TryParseAmount(_net.Text, out var value)) return; SetSale(PartySettlement.Gross(value, Fee)); }
             catch (ArgumentException) { _hint.Text = "유효한 금액을 입력해주세요."; }
         };
@@ -50,10 +51,24 @@ public sealed class PartySettlementView : UserControl
             Refresh();
         };
         _weights.TextChanged += (_, _) => Refresh(); _leader.SelectionChanged += (_, _) => Refresh(); _own.SelectionChanged += (_, _) => Refresh();
-        _state.SelectionChanged += (_, _) => Refresh(); _partial.TextChanged += (_, _) => Refresh();
+        _state.SelectionChanged += (_, _) => Refresh();
+        _partial.TextChanged += (_, _) => { if (_updating) return; FormatAmount(_partial); Refresh(); };
         SetMembers([new("1", "파티장"), new("2", "파티원 1")]); Refresh();
     }
-    public void SetSale(long sale) { _updating = true; _sale.Text = sale.ToString(CultureInfo.InvariantCulture); _updating = false; Refresh(); }
+    public void SetSale(long sale) { _updating = true; _sale.Text = sale.ToString("N0", CultureInfo.InvariantCulture); _updating = false; Refresh(); }
+    private void FormatAmount(TextBox editor)
+    {
+        var formatted = IntegerInputFormatter.Format(editor.Text, editor.SelectionStart);
+        if (formatted.Text == editor.Text) return;
+        _updating = true;
+        try
+        {
+            editor.Text = formatted.Text;
+            editor.SelectionStart = formatted.Caret;
+            editor.SelectionLength = 0;
+        }
+        finally { _updating = false; }
+    }
     private void SetMembers(PartyMember[] members)
     {
         _updating = true;
@@ -75,7 +90,7 @@ public sealed class PartySettlementView : UserControl
         _leader.SelectedItem = _members.FirstOrDefault(member => member.Id == snapshot.LeaderId) ?? _members[0];
         _own.SelectedItem = _members.FirstOrDefault(member => member.Id == snapshot.OwnId) ?? _members[0];
         _state.SelectedIndex = snapshot.State switch { "pending" => 0, "partial" => 1, _ => 2 };
-        _partial.Text = snapshot.ActualReceived.ToString(CultureInfo.InvariantCulture); _updating = false; Refresh();
+        _partial.Text = snapshot.ActualReceived.ToString("N0", CultureInfo.InvariantCulture); _updating = false; Refresh();
     }
     public LootSettlement Snapshot()
     {
@@ -97,7 +112,7 @@ public sealed class PartySettlementView : UserControl
         {
             _partial.Visibility = _state.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
             var snapshot = Snapshot(); var result = snapshot.Calculate(Sale);
-            _net.Text = result.SaleNet.ToString(CultureInfo.InvariantCulture);
+            _net.Text = result.SaleNet.ToString("N0", CultureInfo.InvariantCulture);
             _hint.Text = $"판매 후 {BossIncome.Money(result.SaleNet)} · 총 수수료 {BossIncome.Money(result.Fees)}\n"
                 + $"내 확정 수익 {BossIncome.Money(snapshot.Received(Sale))} · 1메소 단위 절사 잔액은 파티장에게 남습니다.";
             _rows.Children.Clear();
