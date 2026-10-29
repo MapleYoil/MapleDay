@@ -15,6 +15,7 @@ public sealed partial class MainWindow : Window
     private readonly NexonApiClient _api = new();
     private readonly ApiKeyStore _keyStore = new();
     private readonly CharacterCacheStore _characterCache = new();
+    private readonly CharacterApiKeyMap _characterApiKeys = new();
     private readonly CharacterImageLoader _images = new();
     private readonly PartyShareService _partyShares = new();
     private CancellationTokenSource? _loadCts;
@@ -396,6 +397,7 @@ public sealed partial class MainWindow : Window
                     .DistinctBy(character => character.Ocid)
                     .OrderByDescending(character => character.Level)
                     .ThenBy(character => character.World).ThenBy(character => character.Name).ToList();
+                _characterApiKeys.Remember(key, summaries);
                 var previous = _cachedCharacters;
                 await PreserveSchedulerCharactersAsync(key, summaries, previous.Values.Select(character => character.Summary), token);
                 _cachedCharacters = summaries.ToDictionary(summary => summary.Ocid,

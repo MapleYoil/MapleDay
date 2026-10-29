@@ -31,7 +31,22 @@ public sealed partial class MainWindow
             SavedApiKeys.Add(new(activeKey));
             await SaveKeyProfilesAsync();
         }
+        await RestoreSavedKeyOwnershipAsync();
         UpdateSavedKeySelector();
+    }
+
+    private async Task RestoreSavedKeyOwnershipAsync()
+    {
+        foreach (var profile in SavedApiKeys)
+        {
+            try
+            {
+                if (await _characterCache.LoadAsync(profile.Key) is { } cache)
+                    _characterApiKeys.Remember(profile.Key, cache.Characters.Select(character => character.Summary));
+            }
+            catch (Exception error) when (IsStorageError(error) || error is JsonException) { }
+        }
+        UpdateSchedulerCharacters();
     }
 
     private void UpdateSavedKeySelector()
@@ -41,8 +56,17 @@ public sealed partial class MainWindow
         {
             SavedKeySelector.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
+            UpdateMultiKeySchedulerHint();
         }
         finally { _updatingProfiles = false; }
+    }
+
+    private void UpdateMultiKeySchedulerHint()
+    {
+        MultiKeySchedulerHint.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        MultiKeySchedulerHint.Text = SavedApiKeys.Count > 1
+            ? $"저장된 API 키 {SavedApiKeys.Count}개의 등록 캐릭터를 한 스케줄러에서 함께 조회합니다."
+            : "다른 계정의 API 키를 추가로 연결하면 등록 캐릭터를 한 스케줄러에서 함께 볼 수 있습니다.";
     }
 
     private void SavedKeySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -77,6 +101,7 @@ public sealed partial class MainWindow
             SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
         }
         finally { _updatingProfiles = false; }
+        UpdateMultiKeySchedulerHint();
     }
 
     private async void RepresentativeCharacter_SelectionChanged(object sender, SelectionChangedEventArgs e)

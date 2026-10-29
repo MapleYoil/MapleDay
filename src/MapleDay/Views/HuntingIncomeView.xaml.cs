@@ -21,6 +21,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private FragmentMarketPrice? _price;
     private readonly Dictionary<NumberBox, TextBox> _editors = [];
     private readonly Dictionary<NumberBox, string> _liveNumbers = [];
+    private bool _formattingNumber;
     private bool _ready;
     private bool _loading;
     private bool _saving;
@@ -55,7 +56,7 @@ public sealed partial class HuntingIncomeView : UserControl
     {
         _loading = true; _liveNumbers.Clear();
         var row = Existing;
-        MesoInput.Text = (row?.Meso ?? 0).ToString(CultureInfo.CurrentCulture); FragmentCount.Text = (row?.Fragments ?? 0).ToString(CultureInfo.CurrentCulture);
+        MesoInput.Text = (row?.Meso ?? 0).ToString("N0", CultureInfo.CurrentCulture); FragmentCount.Text = (row?.Fragments ?? 0).ToString("N0", CultureInfo.CurrentCulture);
         FragmentPrice.Value = row is null ? Math.Clamp(_settings?.HuntingFragmentPriceMan ?? 1, 1, 9999) : row.FragmentUnitPrice / 10000d;
         BonusInput.Value = (double)(row?.MesoBonus ?? Math.Clamp(_settings?.HuntingMesoBonus ?? 0, 0, 10000));
         var limit = HuntingIncome.DailyLimit(RecordLevel);
@@ -83,17 +84,38 @@ public sealed partial class HuntingIncomeView : UserControl
     }
     private void LiveNumber_Changed(object sender, TextChangedEventArgs args)
     {
+        if (_formattingNumber || sender is not TextBox editor) return;
         var box = _editors.FirstOrDefault(pair => ReferenceEquals(pair.Value, sender)).Key;
         if (box is null) return;
         if (!_ready || _loading) { _liveNumbers.Remove(box); return; }
-        _liveNumbers[box] = ((TextBox)sender).Text;
+        FormatThousands(editor);
+        _liveNumbers[box] = editor.Text;
         Calculate();
     }
     private double NumberValue(NumberBox box) => !_liveNumbers.TryGetValue(box, out var text) ? box.Value
         : double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out var value) ? value : double.NaN;
     private void Input_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args)
     { _liveNumbers.Remove(sender); if (_ready && !_loading) Calculate(); }
-    private void AmountText_Changed(object sender, TextChangedEventArgs args) { if (_ready && !_loading) Calculate(); }
+    private void AmountText_Changed(object sender, TextChangedEventArgs args)
+    {
+        if (_formattingNumber || sender is not TextBox editor || !_ready || _loading) return;
+        FormatThousands(editor);
+        Calculate();
+    }
+
+    private void FormatThousands(TextBox editor)
+    {
+        var formatted = IntegerInputFormatter.Format(editor.Text, editor.SelectionStart);
+        if (formatted.Text == editor.Text) return;
+        _formattingNumber = true;
+        try
+        {
+            editor.Text = formatted.Text;
+            editor.SelectionStart = formatted.Caret;
+            editor.SelectionLength = 0;
+        }
+        finally { _formattingNumber = false; }
+    }
     private void Limit_Changed(object sender, RoutedEventArgs args) { if (_ready && !_loading) Calculate(); }
     private HuntingIncomeRecord Draft()
     {
@@ -113,7 +135,7 @@ public sealed partial class HuntingIncomeView : UserControl
         try
         {
             var row = Draft();
-            if (UseLimit.IsChecked == true) { _loading = true; MesoInput.Text = row.Meso.ToString(CultureInfo.CurrentCulture); _loading = false; }
+            if (UseLimit.IsChecked == true) { _loading = true; MesoInput.Text = row.Meso.ToString("N0", CultureInfo.CurrentCulture); _loading = false; }
             LimitText.Text = $"Lv. {row.Level} · 기본 메소 제한 {IncomeReplay.CompactMeso(HuntingIncome.DailyLimit(row.Level))} 메소";
             Calculation.Text = _display.ValidMode == "fragments" ? _display.Hunting(row.Meso, row.Fragments, row.Total)
                 : $"메소 {_display.Format(row.Meso)} + 조각 {row.Fragments:N0}개 × {IncomeReplay.CompactMeso(row.FragmentUnitPrice)} = {_display.Format(row.Total)}";

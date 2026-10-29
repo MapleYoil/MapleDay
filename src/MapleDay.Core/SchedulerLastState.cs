@@ -32,6 +32,52 @@ public static class SchedulerLastState
         bool Reset(BossCycle cycle) => SchedulerBossHistory.Start(cycle, source.Date) != SchedulerBossHistory.Start(cycle, today);
     }
 
+    public static SchedulerSnapshot? BestRoster(IEnumerable<SchedulerSnapshot> snapshots, DateOnly today) => snapshots
+        .Where(snapshot => snapshot.Date < today && !string.IsNullOrWhiteSpace(snapshot.State?.Name))
+        .OrderByDescending(snapshot => RosterSize(snapshot.State!)).ThenByDescending(snapshot => snapshot.Date)
+        .ThenByDescending(snapshot => snapshot.FetchedAt).FirstOrDefault();
+
+    public static SchedulerState? FillMissingRoster(SchedulerState current, SchedulerSnapshot source, DateOnly today)
+    {
+        var projected = Project(source, today);
+        if (!LooksPartial(current, projected)) return null;
+        return new()
+        {
+            Date = current.Date, Name = current.Name, World = current.World,
+            Daily = Merge(current.Daily, projected.Daily, content => $"{content.Name}\n{content.Type}"),
+            Weekly = Merge(current.Weekly, projected.Weekly, content => $"{content.Name}\n{content.Type}"),
+            Bosses = Merge(current.Bosses, projected.Bosses,
+                boss => $"{boss.Name}\n{boss.Difficulty}\n{boss.Cycle}"),
+            WeeklyBossClearCount = current.WeeklyBossClearCount ?? projected.WeeklyBossClearCount,
+            WeeklyBossClearLimit = current.WeeklyBossClearLimit ?? projected.WeeklyBossClearLimit
+        };
+    }
+
+    private static bool LooksPartial(SchedulerState current, SchedulerState source)
+    {
+        var currentCounts = new[] { current.Daily?.Count ?? 0, current.Weekly?.Count ?? 0, current.Bosses?.Count ?? 0 };
+        var sourceCounts = new[] { source.Daily?.Count ?? 0, source.Weekly?.Count ?? 0, source.Bosses?.Count ?? 0 };
+        return currentCounts.Zip(sourceCounts).Any(pair => pair.Second - pair.First >= 3 && pair.First * 2 < pair.Second)
+            || sourceCounts.Sum() - currentCounts.Sum() >= 10 && currentCounts.Sum() * 2 < sourceCounts.Sum();
+    }
+
+    private static int RosterSize(SchedulerState state) => (state.Daily?.Count ?? 0) + (state.Weekly?.Count ?? 0) + (state.Bosses?.Count ?? 0);
+
+    private static List<T>? Merge<T>(List<T>? current, List<T>? source, Func<T, string> key)
+    {
+        if (current is null && source is null) return null;
+        var currentByKey = (current ?? []).ToDictionary(key, StringComparer.Ordinal);
+        var known = new HashSet<string>(StringComparer.Ordinal);
+        var result = (source ?? []).Select(item =>
+        {
+            var itemKey = key(item);
+            known.Add(itemKey);
+            return currentByKey.GetValueOrDefault(itemKey) ?? item;
+        }).ToList();
+        result.AddRange((current ?? []).Where(item => known.Add(key(item))));
+        return result;
+    }
+
     private static List<SchedulerContent>? Contents(List<SchedulerContent>? contents, bool reset) => contents?.Select(content => new SchedulerContent
     {
         Name = content.Name, Type = content.Type, Registration = content.Registration, Maximum = content.Maximum,

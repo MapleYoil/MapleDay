@@ -3,6 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Spacing="12">
         <TextBlock Text="사냥 수익 기록" FontSize="20" FontWeight="SemiBold" />
+        <TextBlock Text="사냥 수익은 자동으로 수집되지 않습니다. 실제로 획득한 메소와 솔 에르다 조각을 직접 기록해주세요."
+                   TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
         <Button Content="사냥 집계 재생 · 영상 / 이미지 내보내기" Click="Replay_Click" HorizontalAlignment="Left" />
         <StackPanel Orientation="Horizontal" Spacing="12">
             <ComboBox x:Name="CharacterInput" Header="캐릭터" DisplayMemberPath="Label" MinWidth="210" SelectionChanged="Character_Changed" />

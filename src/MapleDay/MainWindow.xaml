@@ -140,6 +140,8 @@
                         <StackPanel Spacing="10">
                             <ComboBox x:Name="SavedKeySelector" Header="저장된 API 키" ItemsSource="{x:Bind SavedApiKeys}" DisplayMemberPath="DisplayName"
                                       SelectionChanged="SavedKeySelector_SelectionChanged" HorizontalAlignment="Stretch" Visibility="Collapsed" />
+                            <TextBlock x:Name="MultiKeySchedulerHint" Visibility="Collapsed" Style="{StaticResource SecondaryText}"
+                                       TextWrapping="Wrap" FontSize="12" LineHeight="20" />
                             <TextBlock Text="API 키" FontSize="14" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>

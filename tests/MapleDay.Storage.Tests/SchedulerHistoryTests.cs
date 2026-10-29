@@ -153,6 +153,39 @@ public sealed class SchedulerHistoryTests
     }
 
     [Fact]
+    public async Task SparseLiveRosterUsesSavedRosterForDisplayButKeepsRawTodaySnapshot()
+    {
+        var directory = Temporary();
+        try
+        {
+            var store = new SchedulerHistoryStore(directory);
+            var savedDate = new DateOnly(2026, 10, 28);
+            var saved = JsonSerializer.Deserialize<SchedulerState>("""{"character_name":"캐릭터","daily_contents":[{"content_name":"일일1","type":"quest","registration_flag":true},{"content_name":"일일2","type":"quest","registration_flag":true},{"content_name":"일일3","type":"quest","registration_flag":true},{"content_name":"일일4","type":"quest","registration_flag":true}],"boss_contents":[{"content_name":"보스1","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true},{"content_name":"보스2","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true},{"content_name":"보스3","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true},{"content_name":"보스4","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true}]}""")!;
+            await store.SaveAsync("key", "id", new(savedDate, saved, true, DateTimeOffset.UtcNow), default);
+            using var http = new HttpClient(new Handler((request, _) => Task.FromResult(Json(
+                request.RequestUri!.Query.Contains("date=") ? """{"character_name":null}"""
+                : """{"character_name":"캐릭터","daily_contents":[{"content_name":"일일1","type":"quest","registration_flag":true,"quest_state":"2"}],"boss_contents":[{"content_name":"보스1","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true}]}"""))));
+            using var api = new NexonApiClient(http);
+
+            var result = await new SchedulerHistoryLoader(api, store).LoadAsync("id", "key",
+                DateTimeOffset.Parse("2026-10-29T12:00:00+09:00"), default);
+
+            Assert.True(result.PartialFallback);
+            Assert.Equal(savedDate, result.FallbackDate);
+            Assert.Equal(4, result.Current.Daily!.Count);
+            Assert.Equal(4, result.Current.Bosses!.Count);
+            Assert.Equal("2", result.Current.Daily.Single(item => item.Name == "일일1").QuestState);
+            Assert.True(SchedulerEntries.Flag(result.Current.Bosses.Single(boss => boss.Name == "보스1").Complete));
+            Assert.All(result.Current.Bosses.Where(boss => boss.Name != "보스1"),
+                boss => Assert.False(SchedulerEntries.Flag(boss.Complete)));
+            var rawToday = (await store.LoadAsync("key", "id", default)).Single(snapshot => snapshot.Date == new DateOnly(2026, 10, 29));
+            Assert.Single(rawToday.State!.Daily!);
+            Assert.Single(rawToday.State.Bosses!);
+        }
+        finally { Directory.Delete(directory, true); }
+    }
+
+    [Fact]
     public async Task FirstNoLoginFetchStillFindsPastRosterAndMissingAllRecordsDoesNotInventContent()
     {
         var directory = Temporary();

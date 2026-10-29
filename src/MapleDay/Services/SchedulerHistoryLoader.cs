@@ -7,6 +7,7 @@ namespace MapleDay.Services;
 public sealed record SchedulerHistoryResult(SchedulerState Current, IReadOnlyList<SchedulerSnapshot> Snapshots, DateOnly Today, int FailedDates, bool StorageFailed)
 {
     public DateOnly? FallbackDate { get; init; }
+    public bool PartialFallback { get; init; }
 }
 
 public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryStore store)
@@ -49,6 +50,7 @@ public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryS
             catch (OperationCanceledException) when (!cancellation.IsCancellationRequested) { Interlocked.Increment(ref failed); }
         });
         DateOnly? fallbackDate = null;
+        var partialFallback = false;
         if (current is null)
         {
             var source = SchedulerLastState.Latest(snapshots.Values, today)
@@ -56,8 +58,15 @@ public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryS
             current = SchedulerLastState.Project(source, today);
             fallbackDate = source.Date;
         }
+        else if (SchedulerLastState.BestRoster(snapshots.Values, today) is { } source
+            && SchedulerLastState.FillMissingRoster(current, source, today) is { } filled)
+        {
+            current = filled;
+            fallbackDate = source.Date;
+            partialFallback = true;
+        }
         return new(current, snapshots.Values.OrderBy(snapshot => snapshot.Date).ToArray(), today, failed, storageFailed != 0)
-            { FallbackDate = fallbackDate };
+            { FallbackDate = fallbackDate, PartialFallback = partialFallback };
 
         SchedulerSnapshot WithCompletionEvidence(SchedulerSnapshot snapshot) => snapshot with
         {

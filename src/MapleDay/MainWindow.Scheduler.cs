@@ -119,6 +119,8 @@ public sealed partial class MainWindow
         if (!_hasLoadedCharacters || !Characters.Contains(character) || _schedulerCharacters.ContainsKey(character.Ocid)) return false;
         CancelScheduler();
         if (!_settings.SchedulerOcids.Contains(character.Ocid)) _settings.SchedulerOcids.Add(character.Ocid);
+        _characterApiKeys.Remember(_apiKey, [new CharacterSummary
+            { Ocid = character.Ocid, Name = character.Name, World = character.World, Class = character.Class, Level = character.Level }]);
         SchedulerCharacterRetention.Remember(_settings, new CharacterSummary[] { new()
             { Ocid = character.Ocid, Name = character.Name, World = character.World, Class = character.Class, Level = character.Level } });
         _schedulerCharacters[character.Ocid] = new(character, () => _settings.ManualWeeklyClears.Where(clear => clear.Ocid == character.Ocid),
@@ -133,6 +135,9 @@ public sealed partial class MainWindow
     private async Task PreserveSchedulerCharactersAsync(string apiKey, IEnumerable<CharacterSummary> current,
         IEnumerable<CharacterSummary> previouslyKnown, CancellationToken token)
     {
+        current = current.ToArray();
+        previouslyKnown = previouslyKnown.ToArray();
+        _characterApiKeys.Remember(apiKey, current.Concat(previouslyKnown));
         var changed = SchedulerCharacterRetention.Remember(_settings, previouslyKnown);
         foreach (var ocid in _settings.SchedulerOcids.Where(ocid => !_settings.SchedulerCharacters.Any(saved => saved.Ocid == ocid)).ToArray())
         {
@@ -299,7 +304,6 @@ public sealed partial class MainWindow
         _schedulerActiveLoads++;
         var cts = new CancellationTokenSource();
         _schedulerCts = cts;
-        var key = _apiKey;
         foreach (var character in targets) character.BeginLoad();
         UpdateSchedulerButtons();
         try
@@ -309,6 +313,7 @@ public sealed partial class MainWindow
                 {
                     SchedulerHistoryResult? result = null;
                     string? error = null;
+                    var key = _characterApiKeys.Resolve(character.Ocid) ?? _apiKey;
                     try { result = await new SchedulerHistoryLoader(_api, _schedulerHistory).LoadAsync(character.Ocid, key, DateTimeOffset.UtcNow, token); }
                     catch (NexonApiException exception) { error = exception.Message; if (!exception.IsAuthenticationError) ReportDiagnostic(exception, "scheduler"); }
                     catch (HttpRequestException exception) { error = "서버에 연결할 수 없어요. 잠시 후 새로고침해주세요."; ReportDiagnostic(exception, "scheduler"); }

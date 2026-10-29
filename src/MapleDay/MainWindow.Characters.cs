@@ -21,6 +21,7 @@ public sealed partial class MainWindow
             var cache = await _characterCache.LoadAsync(key);
             if (cache is null || _closed || _apiKey != key) return;
             _cachedCharacters = cache.Characters.ToDictionary(character => character.Summary.Ocid);
+            _characterApiKeys.Remember(key, cache.Characters.Select(character => character.Summary));
             await PreserveSchedulerCharactersAsync(key, cache.Characters.Select(character => character.Summary),
                 cache.Characters.Select(character => character.Summary), _supportLifetime.Token);
             _characterAccountCount = cache.AccountCount;
