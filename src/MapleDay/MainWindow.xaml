@@ -369,10 +369,10 @@
                                 <Border Padding="18" CornerRadius="0,0,12,12" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1,0,1,1">
                                     <StackPanel Spacing="16">
                                         <TextBlock Text="{x:Bind Conversation}" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="24" />
-                                        <StackPanel x:Name="ReplyForm" Spacing="8" x:Load="{x:Bind IsInquiry}">
-                                            <TextBox Text="{x:Bind ReplyDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="이 문의에 답장" AcceptsReturn="True" TextWrapping="Wrap"
+                                        <StackPanel x:Name="ReplyForm" Spacing="8" x:Load="{x:Bind CanReply}">
+                                            <TextBox Text="{x:Bind ReplyDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="{x:Bind ReplyHeader}" AcceptsReturn="True" TextWrapping="Wrap"
                                                      MinHeight="100" MaxLength="6000" IsEnabled="{x:Bind ReplyEnabled, Mode=OneWay}" />
-                                            <Button Tag="{x:Bind Id}" Content="답장 보내기" Click="SupportReplySend_Click" Style="{StaticResource AccentButtonStyle}"
+                                            <Button Tag="{x:Bind Id}" Content="{x:Bind ReplyButtonText}" Click="SupportReplySend_Click" Style="{StaticResource AccentButtonStyle}"
                                                     IsEnabled="{x:Bind ReplyEnabled, Mode=OneWay}" HorizontalAlignment="Left" />
                                             <TextBlock Text="{x:Bind ReplyStatus, Mode=OneWay}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                                         </StackPanel>

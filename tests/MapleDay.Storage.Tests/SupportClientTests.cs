@@ -74,6 +74,15 @@ public sealed class SupportClientTests
     }
 
     [Fact]
+    public void SuggestionOffersAFollowUpFormEvenAfterCompletion()
+    {
+        var ticket = new SupportTicket { Kind = "suggestion", State = "implemented", Completed = 1800000000 };
+        Assert.True(ticket.CanReply);
+        Assert.Equal("이 건의사항에 추가 내용 보내기", ticket.ReplyHeader);
+        Assert.Equal("추가 내용 보내기", ticket.ReplyButtonText);
+    }
+
+    [Fact]
     public void ReadTicketRemainsReadAfterRefreshButANewReplyBecomesUnread()
     {
         var ticket = new SupportTicket { Id = "one", State = "sent" };

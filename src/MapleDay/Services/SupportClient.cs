@@ -34,7 +34,9 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public long Created { get; set; }
     public string? Version { get; set; }
     public List<SupportReply> Replies { get; set; } = [];
-    [JsonIgnore] public bool IsInquiry => Kind == "inquiry";
+    [JsonIgnore] public bool CanReply => Kind is "inquiry" or "suggestion";
+    [JsonIgnore] public string ReplyHeader => Kind == "suggestion" ? "이 건의사항에 추가 내용 보내기" : "이 문의에 답장";
+    [JsonIgnore] public string ReplyButtonText => Kind == "suggestion" ? "추가 내용 보내기" : "답장 보내기";
     [JsonIgnore] public bool IsExpanded
     {
         get => _isExpanded;

@@ -243,7 +243,7 @@ public sealed partial class MainWindow
     {
         if (_supportReplySending || _closed || _dataDeleting || sender is not Button { Tag: string identifier }) return;
         var ticket = Tickets.FirstOrDefault(item => item.Id == identifier);
-        if (ticket is null || !ticket.IsInquiry) return;
+        if (ticket is null || !ticket.CanReply) return;
         var body = ticket.ReplyDraft.Trim();
         if (body.Length == 0) { ticket.ReplyStatus = "답장 내용을 입력해주세요."; return; }
         if (_supportReplyBody != body || _supportReplyRequestTicket != identifier || _supportReplyRequest is null)
@@ -255,7 +255,9 @@ public sealed partial class MainWindow
             if (_closed || _dataDeleting) return;
             _supportReplyRequest = null;
             ticket.ReplyDraft = "";
-            ticket.ReplyStatus = "답장을 보냈어요. 이 문의에서 계속 대화할 수 있어요.";
+            ticket.ReplyStatus = ticket.Kind == "suggestion"
+                ? "추가 내용을 보냈어요. 처리 결과가 있던 건의사항은 다시 접수 상태로 바뀝니다."
+                : "답장을 보냈어요. 이 문의에서 계속 대화할 수 있어요.";
             await RefreshSupportAsync(false);
         }
         catch (Exception error) when (IsSupportError(error)) { if (!_closed) ticket.ReplyStatus = "답장을 보내지 못했어요. 다시 보내면 중복 답장을 방지합니다."; }
