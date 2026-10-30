@@ -203,6 +203,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Publish.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Test-MSIX.ps1
 ```
 
+UI 코드 수정 중에는 `scripts/Build-Fast.ps1`을 사용하면 기존 NuGet 복원 결과와 증분 출력물을 재사용해 빠르게 컴파일만 확인합니다. 기본은 Debug이며 `-Configuration Release`와 강제 복원이 필요한 경우 `-Restore`를 지정할 수 있습니다. 이 명령은 배포 파일을 만들지 않습니다. EXE·MSIX·설치기와 업데이트 압축이 모두 필요한 최종 빌드만 `scripts/Publish.ps1`을 사용합니다.
+
 모든 실행 가능한 테스트·배포 빌드는 `scripts/Publish.ps1`로 `artifacts/MapleDay` 한 폴더에 덮어쓰고 **MSIX도 함께 생성**합니다. 앱 본체는 `artifacts/MapleDay/App`에 게시하고 C++ 실행기를 바깥에 빌드합니다. 실행기에는 기존 메요일 아이콘을 포함하며 CRT를 정적으로 링크합니다. 실행기 빌드에는 이미 설치된 Visual Studio C++ x64 도구와 Windows SDK가 필요합니다. `MapleDay.exe --verify`는 창이나 앱을 실행하지 않고 본체·런타임 필수 파일의 존재를 검증합니다. 다른 `MapleDay-*` 실행 폴더는 만들지 않습니다.
 
 MSIX 출력은 `artifacts/MSIX/MapleDay.msix`, 공개 인증서는 `MapleYoil.cer`, 직접 설치 안내는 `INSTALL.txt`, Store 제출 안내는 `STORE-SUBMISSION.md`입니다. Store 앱 표시 이름은 예약된 이름인 **메요일**, 제작자는 **MapleYoil**, Store 퍼블리셔 표시 이름은 할당 값인 **메요일**입니다. 패키지 이름은 `ABB731EC.2576917430647`, Publisher는 `CN=6E3CA1EF-722B-49DC-A96F-96F95E7B9BB8`이며 Store ID는 `9N133XQDNS1F`입니다. .NET과 Windows App SDK를 포함한 x64 패키지이며 Windows 10 2004(19041) 이상을 대상으로 합니다. 기존 로고를 Windows 패키지에 맞는 크기로 변환합니다. 설치형 앱은 패키지의 StartupTask로 자동 실행을 관리하고, 알림 COM 활성화 설정을 포함합니다. 기존 실행 폴더의 DLL·에셋은 계속 `App` 내부에 둡니다.

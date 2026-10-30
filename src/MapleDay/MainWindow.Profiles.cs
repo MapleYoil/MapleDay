@@ -56,7 +56,10 @@ public sealed partial class MainWindow
         try
         {
             SavedKeyControls.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
+            CharacterKeySelector.Visibility = SavedApiKeys.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+            var activeProfile = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
+            SavedKeySelector.SelectedItem = activeProfile;
+            CharacterKeySelector.SelectedItem = activeProfile;
             UpdateMultiKeySchedulerHint();
         }
         finally { _updatingProfiles = false; }
@@ -76,6 +79,17 @@ public sealed partial class MainWindow
         SetApiKeyEntryMode(false);
         RevealKeyButton.IsChecked = false;
         ApiKeyInput.Password = profile.Key;
+    }
+
+    private async void CharacterKeySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_updatingProfiles || _busy || _dataDeleting
+            || CharacterKeySelector.SelectedItem is not ApiKeyProfile profile
+            || profile.Key == _apiKey) return;
+        SetApiKeyEntryMode(false);
+        RevealKeyButton.IsChecked = false;
+        ApiKeyInput.Password = profile.Key;
+        await ConnectAsync();
     }
 
     private void AddApiKeyButton_Click(object sender, RoutedEventArgs e)
@@ -133,7 +147,10 @@ public sealed partial class MainWindow
                 }
             }
             SavedKeyControls.Visibility = SavedApiKeys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            SavedKeySelector.SelectedItem = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
+            CharacterKeySelector.Visibility = SavedApiKeys.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+            var activeProfile = SavedApiKeys.FirstOrDefault(profile => profile.Key == _apiKey);
+            SavedKeySelector.SelectedItem = activeProfile;
+            CharacterKeySelector.SelectedItem = activeProfile;
         }
         finally { _updatingProfiles = false; }
         UpdateMultiKeySchedulerHint();

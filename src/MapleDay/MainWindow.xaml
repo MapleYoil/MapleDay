@@ -232,12 +232,20 @@
                     <TextBlock Text="내 캐릭터" FontSize="28" FontWeight="SemiBold" />
                     <TextBlock x:Name="CharacterCount" Style="{StaticResource SecondaryText}" />
                 </StackPanel>
-                <StackPanel x:Name="Toolbar" Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <Button x:Name="RefreshButton" Click="RefreshButton_Click" MinHeight="44" AutomationProperties.AutomationId="RefreshButton">
-                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72C;" FontSize="14" /><TextBlock Text="새로고침" /></StackPanel>
-                    </Button>
-                    <Button Content="키 변경" Click="ChangeKeyButton_Click" MinHeight="44" AutomationProperties.AutomationId="ChangeKeyButton" />
-                </StackPanel>
+                <Grid x:Name="Toolbar" Grid.Column="1" RowSpacing="8" VerticalAlignment="Center">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <ComboBox x:Name="CharacterKeySelector" ItemsSource="{x:Bind SavedApiKeys}" DisplayMemberPath="DisplayName"
+                              PlaceholderText="계정 선택" MinWidth="250" HorizontalAlignment="Stretch" Visibility="Collapsed"
+                              SelectionChanged="CharacterKeySelector_SelectionChanged"
+                              AutomationProperties.Name="내 캐릭터 계정 선택"
+                              ToolTipService.ToolTip="선택 즉시 해당 계정의 캐릭터 목록으로 전환합니다." />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                        <Button x:Name="RefreshButton" Click="RefreshButton_Click" MinHeight="44" AutomationProperties.AutomationId="RefreshButton">
+                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72C;" FontSize="14" /><TextBlock Text="새로고침" /></StackPanel>
+                        </Button>
+                        <Button Content="키 관리" Click="ChangeKeyButton_Click" MinHeight="44" AutomationProperties.AutomationId="ChangeKeyButton" />
+                    </StackPanel>
+                </Grid>
             </Grid>
             <StackPanel x:Name="CharacterFilterControls" Grid.Row="1" Orientation="Horizontal" Spacing="12" Visibility="Collapsed" Margin="0,0,0,12">
                 <ComboBox x:Name="CharacterWorldFilter" ItemsSource="{x:Bind CharacterWorlds}" Width="190" SelectionChanged="CharacterWorldFilter_SelectionChanged" AutomationProperties.Name="캐릭터 서버 필터">

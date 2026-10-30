@@ -336,6 +336,7 @@ public sealed partial class MainWindow : Window
             _characterAccountCount = 0;
             _hasLoadedCharacters = false;
             _apiKey = key;
+            CharacterCount.Text = "선택한 계정의 캐릭터를 불러오는 중…";
             UpdateCharacterWorlds();
             UpdateSchedulerCharacters();
             UpdateSupportLogin();
@@ -548,6 +549,7 @@ public sealed partial class MainWindow : Window
         ConnectButton.IsEnabled = !busy && !string.IsNullOrWhiteSpace(ApiKeyInput.Password);
         ApiKeyInput.IsEnabled = !busy;
         SavedKeySelector.IsEnabled = !busy;
+        CharacterKeySelector.IsEnabled = !busy;
         AddApiKeyButton.IsEnabled = !busy;
         RefreshButton.IsEnabled = !busy;
         KeyLoading.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
