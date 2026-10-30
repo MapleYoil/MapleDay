@@ -10,6 +10,46 @@ namespace MapleDay.Storage.Tests;
 public sealed class SchedulerHistoryTests
 {
     [Fact]
+    public async Task RestoresSavedSchedulerWithoutApiAndProjectsItToTheCurrentDay()
+    {
+        var directory = Temporary();
+        try
+        {
+            var store = new SchedulerHistoryStore(directory);
+            var savedDay = new DateOnly(2026, 10, 28);
+            var saved = JsonSerializer.Deserialize<SchedulerState>("""{"character_name":"캐릭터","boss_contents":[{"content_name":"스우","cycle":"bossWeekly","difficulty":"hard","registration_flag":true,"complete_flag":true}]}""")!;
+            var fetched = DateTimeOffset.Parse("2026-10-28T18:00:00+09:00");
+            await store.SaveAsync("key", "id", new(savedDay, saved, true, fetched), default);
+            var calls = 0;
+            using var http = new HttpClient(new Handler((_, _) => { Interlocked.Increment(ref calls); return Task.FromResult(Json("{}")); }));
+            using var api = new NexonApiClient(http);
+
+            var restored = await new SchedulerHistoryLoader(api, store).RestoreAsync("id", "key",
+                DateTimeOffset.Parse("2026-10-30T12:00:00+09:00"), default);
+
+            Assert.NotNull(restored);
+            Assert.True(restored.Restored);
+            Assert.Equal(savedDay, restored.FallbackDate);
+            Assert.False(SchedulerEntries.Flag(Assert.Single(restored.Current.Bosses!).Complete));
+            Assert.Equal(0, calls);
+            Assert.Single(await store.LoadAsync("key", "id", default));
+        }
+        finally { Directory.Delete(directory, true); }
+    }
+
+    [Fact]
+    public async Task RestoreReturnsNullWhenNoSavedSchedulerExists()
+    {
+        var directory = Temporary();
+        try
+        {
+            using var api = new NexonApiClient(new HttpClient(new Handler((_, _) => throw new InvalidOperationException("API must not be called"))));
+            Assert.Null(await new SchedulerHistoryLoader(api, new(directory)).RestoreAsync("id", "key", DateTimeOffset.UtcNow, default));
+        }
+        finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+
+    [Fact]
     public async Task FetchesAll14DaysOnceThenReusesFinalDatesAcrossRestarts()
     {
         var directory = Temporary();

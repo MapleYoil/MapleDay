@@ -8,10 +8,38 @@ public sealed record SchedulerHistoryResult(SchedulerState Current, IReadOnlyLis
 {
     public DateOnly? FallbackDate { get; init; }
     public bool PartialFallback { get; init; }
+    public bool Restored { get; init; }
 }
 
 public sealed class SchedulerHistoryLoader(NexonApiClient api, SchedulerHistoryStore store)
 {
+    public async Task<SchedulerHistoryResult?> RestoreAsync(string ocid, string apiKey, DateTimeOffset now, CancellationToken token)
+    {
+        var today = SchedulerBossHistory.KoreanToday(now);
+        List<SchedulerSnapshot> cached;
+        try { cached = await store.LoadAsync(apiKey, ocid, token); }
+        catch (Exception error) when (StorageError(error)) { return null; }
+        if (cached.Count == 0) return null;
+        var source = SchedulerLastState.Latest(cached, today);
+        if (source is null) return null;
+        var current = source.Date == today ? source.State! : SchedulerLastState.Project(source, today);
+        DateOnly? fallbackDate = source.Date == today ? null : source.Date;
+        var partialFallback = false;
+        if (SchedulerLastState.BestRoster(cached, today) is { } roster
+            && SchedulerLastState.FillMissingRoster(current, roster, today) is { } filled)
+        {
+            current = filled;
+            fallbackDate = roster.Date;
+            partialFallback = true;
+        }
+        return new(current, cached.OrderBy(snapshot => snapshot.Date).ToArray(), today, 0, false)
+        {
+            FallbackDate = fallbackDate,
+            PartialFallback = partialFallback,
+            Restored = true
+        };
+    }
+
     public async Task<SchedulerHistoryResult> LoadAsync(string ocid, string apiKey, DateTimeOffset now, CancellationToken token)
     {
         var today = SchedulerBossHistory.KoreanToday(now);

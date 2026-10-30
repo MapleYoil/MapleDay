@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using MapleDay.Core;
 using MapleDay.Models;
 using MapleDay.Services;
@@ -14,10 +15,12 @@ public sealed partial class MainWindow
     public ObservableCollection<SchedulerCharacter> SchedulerGroups { get; } = [];
     public ObservableCollection<SchedulerCharacter> SchedulerAvatars { get; } = [];
     private readonly Dictionary<string, SchedulerCharacter> _schedulerCharacters = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, byte> _schedulerRequestedThisSession = new(StringComparer.Ordinal);
     private CancellationTokenSource? _schedulerCts;
     private string? _schedulerSelectedOcid;
     private readonly SchedulerHistoryStore _schedulerHistory = new();
     private int _schedulerActiveLoads;
+    private bool _schedulerRemoveDialogOpen;
     private readonly DispatcherTimer _schedulerDayTimer = new() { Interval = TimeSpan.FromSeconds(30) };
 
     private void InitializeScheduler()
@@ -160,7 +163,24 @@ public sealed partial class MainWindow
 
     private async void SchedulerRemoveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button { Tag: string ocid }) return;
+        if (_schedulerRemoveDialogOpen || sender is not Button { Tag: string ocid }
+            || !_schedulerCharacters.TryGetValue(ocid, out var character)) return;
+        _schedulerRemoveDialogOpen = true;
+        try
+        {
+            var confirm = new ContentDialog
+            {
+                XamlRoot = Root.XamlRoot,
+                RequestedTheme = Root.RequestedTheme,
+                Title = "스케줄러에서 제거",
+                Content = $"‘{character.Name}’ 캐릭터를 스케줄러 표시 목록에서 제거할까요?\n\n저장된 스케줄러·수익 기록은 삭제하지 않으며, 캐릭터 목록에서 다시 추가할 수 있습니다.",
+                PrimaryButtonText = "제거",
+                CloseButtonText = "취소",
+                DefaultButton = ContentDialogButton.Close
+            };
+            if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
+        }
+        finally { _schedulerRemoveDialogOpen = false; }
         CancelScheduler();
         _settings.SchedulerOcids.RemoveAll(value => value == ocid);
         _schedulerCharacters.Remove(ocid);
@@ -297,9 +317,8 @@ public sealed partial class MainWindow
         if (_closed || _dataDeleting || !_hasLoadedCharacters || string.IsNullOrEmpty(_apiKey)) return;
         if (!force && _schedulerCts is not null) return;
         if (force) CancelScheduler();
-        var targets = _schedulerCharacters.Values.Where(character => force || character.UpdatedAt is null
-            || character.HistoryDate != SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow)
-            || DateTimeOffset.Now - character.UpdatedAt > TimeSpan.FromMinutes(1)).ToArray();
+        var targets = _schedulerCharacters.Values.Where(character => force || !_schedulerRequestedThisSession.ContainsKey(character.Ocid)
+            || character.HistoryDate != SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow)).ToArray();
         if (targets.Length == 0) return;
         _schedulerActiveLoads++;
         var cts = new CancellationTokenSource();
@@ -314,7 +333,15 @@ public sealed partial class MainWindow
                     SchedulerHistoryResult? result = null;
                     string? error = null;
                     var key = _characterApiKeys.Resolve(character.Ocid) ?? _apiKey;
-                    try { result = await new SchedulerHistoryLoader(_api, _schedulerHistory).LoadAsync(character.Ocid, key, DateTimeOffset.UtcNow, token); }
+                    try
+                    {
+                        var loader = new SchedulerHistoryLoader(_api, _schedulerHistory);
+                        var firstRequestThisSession = !_schedulerRequestedThisSession.ContainsKey(character.Ocid);
+                        result = force || firstRequestThisSession
+                            ? await loader.LoadAsync(character.Ocid, key, DateTimeOffset.UtcNow, token)
+                            : await loader.RestoreAsync(character.Ocid, key, DateTimeOffset.UtcNow, token);
+                        if (result is null) error = "저장된 스케줄러 기록이 없어요. 갱신을 눌러 조회해주세요.";
+                    }
                     catch (NexonApiException exception) { error = exception.Message; if (!exception.IsAuthenticationError) ReportDiagnostic(exception, "scheduler"); }
                     catch (HttpRequestException exception) { error = "서버에 연결할 수 없어요. 잠시 후 새로고침해주세요."; ReportDiagnostic(exception, "scheduler"); }
                     catch (OperationCanceledException) when (!token.IsCancellationRequested) { error = "응답 시간이 초과됐어요. 새로고침해주세요."; }
@@ -323,6 +350,7 @@ public sealed partial class MainWindow
                     {
                         if (_closed || _schedulerCts != cts || !_schedulerCharacters.TryGetValue(character.Ocid, out var current)
                             || !ReferenceEquals(current, character)) return;
+                        _schedulerRequestedThisSession.TryAdd(character.Ocid, 0);
                         if (result is not null) character.Apply(result, id => PartySize(character.Ocid, id));
                         else character.Failed(error ?? "스케줄러를 불러오지 못했어요.");
                         RefreshIncomeOverview();

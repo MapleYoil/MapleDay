@@ -23,7 +23,7 @@ public sealed partial class MainWindow
     private string? _notificationLandingPage;
     private string? _expandedSupportTicketId;
     private bool _supportRefreshAgain, _supportReplySending;
-    private string? _supportReplyRequest, _supportReplyBody, _supportReplyTicket, _supportReplyRequestTicket;
+    private string? _supportReplyRequest, _supportReplyBody, _supportReplyRequestTicket;
 
     private void InitializeSupport()
     {
@@ -157,6 +157,9 @@ public sealed partial class MainWindow
         SupportRefreshButton.IsEnabled = false;
         try
         {
+            var previous = Tickets.FirstOrDefault(ticket => ticket.Id == _expandedSupportTicketId);
+            var previousDraft = previous?.ReplyDraft ?? "";
+            var previousStatus = previous?.ReplyStatus ?? "";
             var inbox = await _support.InboxAsync(_supportLifetime.Token);
             if (_closed || _dataDeleting) return;
             var selectedId = _notificationTicket ?? _expandedSupportTicketId;
@@ -164,6 +167,7 @@ public sealed partial class MainWindow
             foreach (var ticket in inbox.Tickets)
             {
                 ticket.RestoreReadState(_settings.ReadTickets.Contains(ticket.Id) || _settings.ReadReplies.ContainsKey(ticket.Id), _settings.ReadReplies.GetValueOrDefault(ticket.Id));
+                if (ticket.Id == selectedId) { ticket.ReplyDraft = previousDraft; ticket.ReplyStatus = previousStatus; }
                 Tickets.Add(ticket);
             }
             if (Tickets.Count == 0) _replyTimer.Stop();
@@ -200,23 +204,23 @@ public sealed partial class MainWindow
         }
     }
 
-    private void SupportTickets_ItemClick(object sender, ItemClickEventArgs e)
+    private void SupportTicket_Expanding(Expander sender, ExpanderExpandingEventArgs args)
     {
-        if (e.ClickedItem is SupportTicket ticket)
-            ShowSupportTicket(_expandedSupportTicketId == ticket.Id ? null : ticket);
+        if (sender.DataContext is SupportTicket ticket) ShowSupportTicket(ticket);
+    }
+
+    private void SupportTicket_Collapsed(Expander sender, ExpanderCollapsedEventArgs args)
+    {
+        if (sender.DataContext is SupportTicket ticket && _expandedSupportTicketId == ticket.Id && !ticket.IsExpanded)
+            _expandedSupportTicketId = null;
     }
 
     private void ShowSupportTicket(SupportTicket? ticket)
     {
         _expandedSupportTicketId = ticket?.Id;
-        SupportReplyForm.Visibility = ticket?.Kind == "inquiry" ? Visibility.Visible : Visibility.Collapsed;
-        if (_supportReplyTicket != ticket?.Id && !_supportReplySending) { SupportReplyBody.Text = ""; SupportReplyStatus.Text = ""; }
-        _supportReplyTicket = ticket?.Id;
+        foreach (var item in Tickets) item.IsExpanded = item.Id == ticket?.Id;
         if (ticket is not null)
         {
-            SupportConversationPanel.Visibility = Visibility.Visible;
-            SupportConversationTitle.Text = ticket.Subject;
-            SupportConversation.Text = ticket.Conversation;
             if (AppWindow.IsVisible && _currentPage == "support")
             {
                 _settings.ReadTickets.Add(ticket.Id);
@@ -226,7 +230,6 @@ public sealed partial class MainWindow
                 UpdateSupportBadge();
             }
         }
-        else SupportConversationPanel.Visibility = Visibility.Collapsed;
     }
 
     private void UpdateSupportBadge()
@@ -238,26 +241,25 @@ public sealed partial class MainWindow
 
     private async void SupportReplySend_Click(object sender, RoutedEventArgs args)
     {
-        if (_supportReplySending || _closed || _dataDeleting || _expandedSupportTicketId is not { } identifier) return;
-        var body = SupportReplyBody.Text.Trim();
-        if (body.Length == 0) { SupportReplyStatus.Text = "답장 내용을 입력해주세요."; return; }
+        if (_supportReplySending || _closed || _dataDeleting || sender is not Button { Tag: string identifier }) return;
+        var ticket = Tickets.FirstOrDefault(item => item.Id == identifier);
+        if (ticket is null || !ticket.IsInquiry) return;
+        var body = ticket.ReplyDraft.Trim();
+        if (body.Length == 0) { ticket.ReplyStatus = "답장 내용을 입력해주세요."; return; }
         if (_supportReplyBody != body || _supportReplyRequestTicket != identifier || _supportReplyRequest is null)
         { _supportReplyRequest = Guid.NewGuid().ToString("N"); _supportReplyBody = body; _supportReplyRequestTicket = identifier; }
-        _supportReplySending = true; SupportReplySend.IsEnabled = SupportReplyBody.IsEnabled = false;
+        _supportReplySending = true; ticket.SetReplySending(true);
         try
         {
             await _support.ReplyAsync(identifier, _supportReplyRequest, body, _supportLifetime.Token);
             if (_closed || _dataDeleting) return;
             _supportReplyRequest = null;
-            if (_expandedSupportTicketId == identifier)
-            {
-                SupportReplyBody.Text = "";
-                SupportReplyStatus.Text = "답장을 보냈어요. 이 문의에서 계속 대화할 수 있어요.";
-            }
+            ticket.ReplyDraft = "";
+            ticket.ReplyStatus = "답장을 보냈어요. 이 문의에서 계속 대화할 수 있어요.";
             await RefreshSupportAsync(false);
         }
-        catch (Exception error) when (IsSupportError(error)) { if (!_closed) SupportReplyStatus.Text = "답장을 보내지 못했어요. 다시 보내면 중복 답장을 방지합니다."; }
-        finally { _supportReplySending = false; if (!_closed) SupportReplySend.IsEnabled = SupportReplyBody.IsEnabled = true; }
+        catch (Exception error) when (IsSupportError(error)) { if (!_closed) ticket.ReplyStatus = "답장을 보내지 못했어요. 다시 보내면 중복 답장을 방지합니다."; }
+        finally { _supportReplySending = false; if (!_closed) ticket.SetReplySending(false); }
     }
 
     public void ShowFromActivation(AppActivationArguments? activation = null)

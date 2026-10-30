@@ -203,10 +203,13 @@ public sealed class CharacterEquipmentView : UserControl
                 else Slot(board, position, "Equip_EquipTab_SlotName_" + pair.Key, item?.Name, item?.Icon,
                     () => { }, pair.Value, item);
             }
+            var selectedPreset = _gearPreset == 0 ? _gear?.PresetNo : _gearPreset;
             for (var i = 1; i <= 3; i++)
             {
                 var preset = i;
-                ArtButton(board, $"Equip_EquipTab_button_preset{i}_{(_gearPreset == i ? "checked" : "normal")}_0", $"장비 프리셋 {i} 보기", () => { _gearPreset = preset; Render(); });
+                var selected = selectedPreset == i;
+                ArtButton(board, $"Equip_EquipTab_button_preset{i}_{(selected ? "checked" : "normal")}_0",
+                    $"장비 프리셋 {i} 보기{(selected ? ", 현재 선택됨" : "")}", () => { _gearPreset = preset; Render(); });
             }
             var current = new Button { Content = "현재", FontSize = 11, Padding = new Thickness(6, 0, 6, 0), Height = 24, MinHeight = 0 };
             current.Click += (_, _) => { _gearPreset = 0; Render(); }; Place(board, current, 282, 376);

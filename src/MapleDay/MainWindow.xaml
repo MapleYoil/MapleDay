@@ -352,31 +352,36 @@
                     <Button x:Name="SupportRefreshButton" Content="결과 새로고침" HorizontalAlignment="Right" Click="SupportRefreshButton_Click" />
                 </Grid>
                 <TextBlock x:Name="SupportEmpty" Text="아직 보낸 문의·건의사항이 없어요." Style="{StaticResource SecondaryText}" />
-                <ListView x:Name="SupportTickets" ItemsSource="{x:Bind Tickets}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="SupportTickets_ItemClick" MaxHeight="240">
-                    <ListView.ItemTemplate>
+                <ItemsControl x:Name="SupportTickets" ItemsSource="{x:Bind Tickets}">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="services:SupportTicket">
-                            <Grid Padding="10" ColumnSpacing="16" CornerRadius="8" Background="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadBrush|TransparentBrush'}">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                                <StackPanel Spacing="4"><TextBlock Text="{x:Bind Subject}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                    <TextBlock Text="{x:Bind Summary}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontSize="12" />
-                                </StackPanel>
-                                <TextBlock Grid.Column="1" Text="{x:Bind StatusText, Mode=OneWay}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|AccentTextBrush'}" VerticalAlignment="Center" />
-                            </Grid>
+                            <Expander Margin="0,0,0,8" IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}" Expanding="SupportTicket_Expanding" Collapsed="SupportTicket_Collapsed"
+                                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Expander.Header>
+                                    <Grid Padding="10" ColumnSpacing="16" Background="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadBrush|TransparentBrush'}">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                        <StackPanel Spacing="4"><TextBlock Text="{x:Bind Subject}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                            <TextBlock Text="{x:Bind Summary}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|InkBrush'}" FontSize="12" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind StatusText, Mode=OneWay}" Foreground="{Binding IsRead, Converter={StaticResource ReadTicketBrush}, ConverterParameter='ReadTextBrush|AccentTextBrush'}" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Expander.Header>
+                                <Border Padding="18" CornerRadius="0,0,12,12" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1,0,1,1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="{x:Bind Conversation}" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="24" />
+                                        <StackPanel x:Name="ReplyForm" Spacing="8" x:Load="{x:Bind IsInquiry}">
+                                            <TextBox Text="{x:Bind ReplyDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="이 문의에 답장" AcceptsReturn="True" TextWrapping="Wrap"
+                                                     MinHeight="100" MaxLength="6000" IsEnabled="{x:Bind ReplyEnabled, Mode=OneWay}" />
+                                            <Button Tag="{x:Bind Id}" Content="답장 보내기" Click="SupportReplySend_Click" Style="{StaticResource AccentButtonStyle}"
+                                                    IsEnabled="{x:Bind ReplyEnabled, Mode=OneWay}" HorizontalAlignment="Left" />
+                                            <TextBlock Text="{x:Bind ReplyStatus, Mode=OneWay}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Expander>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <Border x:Name="SupportConversationPanel" Visibility="Collapsed" Padding="24" CornerRadius="16"
-                        Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                    <StackPanel Spacing="16">
-                        <TextBlock x:Name="SupportConversationTitle" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock x:Name="SupportConversation" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="24" />
-                        <StackPanel x:Name="SupportReplyForm" Spacing="8" Visibility="Collapsed">
-                            <TextBox x:Name="SupportReplyBody" Header="이 문의에 답장" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="100" MaxLength="6000" />
-                            <Button x:Name="SupportReplySend" Content="답장 보내기" Click="SupportReplySend_Click" Style="{StaticResource AccentButtonStyle}" />
-                            <TextBlock x:Name="SupportReplyStatus" TextWrapping="Wrap" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </ScrollViewer>
         <Grid x:Name="SchedulerPage" Visibility="Collapsed" Padding="8">
@@ -449,21 +454,24 @@
                             </ListView.ItemTemplate>
                     </ListView>
                     <StackPanel Grid.Row="1" Spacing="4" HorizontalAlignment="Stretch">
-                        <Button x:Name="SchedulerRefreshButton" Content="새로고침" Click="SchedulerRefreshButton_Click" IsEnabled="False" MinHeight="30" FontSize="12" Padding="10,4" HorizontalAlignment="Stretch" />
+                        <Button x:Name="SchedulerRefreshButton" Content="갱신" Click="SchedulerRefreshButton_Click" IsEnabled="False" MinHeight="36" FontSize="12" Padding="10,6" HorizontalAlignment="Stretch"
+                                ToolTipService.ToolTip="등록한 캐릭터의 최신 스케줄러를 다시 조회합니다." />
                         <Button x:Name="SchedulerCancelButton" Content="중단" Click="SchedulerCancelButton_Click" Visibility="Collapsed" MinHeight="30" FontSize="12" Padding="10,4" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Column="1" RowSpacing="8">
-                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
                     <InfoBar x:Name="SchedulerMessage" Severity="Warning" IsOpen="False" IsClosable="True" />
-                    <ScrollViewer x:Name="SchedulerProgressView" Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
+                    <TextBlock Grid.Row="1" Text="앱을 새로 실행하면 한 번 자동 갱신합니다. 같은 실행 중에는 저장된 결과를 유지하며, 최신 상태가 필요할 때 왼쪽의 ‘갱신’을 눌러주세요."
+                               Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                    <ScrollViewer x:Name="SchedulerProgressView" Grid.Row="2" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
                         <StackPanel Spacing="8" Padding="0,0,0,8">
                             <TextBlock x:Name="SchedulerEmpty" Text="캐릭터 목록에서 ‘스케줄러에 추가’를 눌러 등록해주세요." Style="{StaticResource SecondaryText}" Margin="0,24" TextWrapping="Wrap" />
                             <ItemsControl ItemsSource="{x:Bind SchedulerAvatars}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="models:SchedulerCharacter">
                                         <StackPanel Width="786" Margin="0,0,0,12" Spacing="4" HorizontalAlignment="Left" Visibility="{x:Bind ViewVisibility, Mode=OneWay}">
-                                                <Grid ColumnSpacing="8" Height="32">
+                                                <Grid ColumnSpacing="8" MinHeight="32">
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                                                     <StackPanel Spacing="1">
                                                         <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
@@ -471,7 +479,7 @@
                                                     </StackPanel>
                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                                         <ProgressRing Width="12" Height="12" IsActive="{x:Bind Loading, Mode=OneWay}" Visibility="{x:Bind LoadingVisibility, Mode=OneWay}" />
-                                                        <TextBlock Text="{x:Bind Status, Mode=OneWay}" FontSize="11" MaxWidth="200" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Status, Mode=OneWay}" AutomationProperties.LiveSetting="Polite" />
+                                                        <TextBlock Text="{x:Bind Status, Mode=OneWay}" FontSize="11" MaxWidth="320" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" ToolTipService.ToolTip="{x:Bind Status, Mode=OneWay}" AutomationProperties.LiveSetting="Polite" />
                                                     </StackPanel>
                                                     <Button Grid.Column="2" Content="제거" Tag="{x:Bind Ocid}" Click="SchedulerRemoveButton_Click" VerticalAlignment="Center" MinHeight="28" Padding="8,3" FontSize="11" />
                                                 </Grid>

@@ -61,6 +61,19 @@ public sealed class SupportClientTests
     }
 
     [Fact]
+    public void PendingSuggestionShowsCustomAdminReplyAsUnreadThenRead()
+    {
+        var ticket = new SupportTicket { Kind = "suggestion", State = "received",
+            Replies = [new() { Id = 15, Body = "검토 중입니다.", Author = "admin", Created = 1800000000 }] };
+        ticket.RestoreReadState(true, 0);
+        Assert.Equal("답변 도착", ticket.StatusText);
+        Assert.Contains("운영자 답변", ticket.Conversation);
+        Assert.Contains("답변이 도착", ticket.NotificationTitle);
+        ticket.RestoreReadState(true, 15);
+        Assert.Equal("답변 읽음", ticket.StatusText);
+    }
+
+    [Fact]
     public void ReadTicketRemainsReadAfterRefreshButANewReplyBecomesUnread()
     {
         var ticket = new SupportTicket { Id = "one", State = "sent" };

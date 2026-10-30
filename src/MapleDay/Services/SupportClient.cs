@@ -20,6 +20,10 @@ public sealed class SupportReply
 }
 public sealed class SupportTicket : INotifyPropertyChanged
 {
+    private bool _isExpanded;
+    private string _replyDraft = "";
+    private string _replyStatus = "";
+    private bool _replySending;
     public string Id { get; set; } = "";
     public string Nickname { get; set; } = "";
     public string Subject { get; set; } = "";
@@ -30,11 +34,29 @@ public sealed class SupportTicket : INotifyPropertyChanged
     public long Created { get; set; }
     public string? Version { get; set; }
     public List<SupportReply> Replies { get; set; } = [];
+    [JsonIgnore] public bool IsInquiry => Kind == "inquiry";
+    [JsonIgnore] public bool IsExpanded
+    {
+        get => _isExpanded;
+        set { if (_isExpanded == value) return; _isExpanded = value; Changed(); }
+    }
+    [JsonIgnore] public string ReplyDraft
+    {
+        get => _replyDraft;
+        set { if (_replyDraft == value) return; _replyDraft = value; Changed(); }
+    }
+    [JsonIgnore] public string ReplyStatus
+    {
+        get => _replyStatus;
+        set { if (_replyStatus == value) return; _replyStatus = value; Changed(); }
+    }
+    [JsonIgnore] public bool ReplyEnabled => !_replySending;
     public string Summary => $"{Nickname} · {DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime():MM.dd HH:mm} · {(Kind == "suggestion" ? "건의사항" : "1:1 문의")}" + (string.IsNullOrEmpty(Version) ? "" : $" · v{Version}");
     [JsonIgnore] public bool IsRead { get; private set; }
     public string StatusText => Kind == "suggestion" ? State switch
     {
-        "implemented" => "반영 완료", "rejected" => "반려", _ => Completed is not null ? "처리 완료" : "접수"
+        "implemented" => "반영 완료", "rejected" => "반려", _ => Completed is not null ? "처리 완료"
+            : Replies.Any(reply => reply.IsAdmin) ? IsRead ? "답변 읽음" : "답변 도착" : "접수"
     } : Completed is not null ? "처리 완료" : Replies.Any(reply => reply.IsAdmin) ? IsRead ? "답변 읽음" : "답변 도착" : (State switch
     {
         "queued" or "sending" => "발송 대기", "sent" or "received" => "답변 대기", _ => "발송 확인 필요"
@@ -45,14 +67,16 @@ public sealed class SupportTicket : INotifyPropertyChanged
         var read = opened && !Replies.Any(reply => reply.IsAdmin && reply.Id > readReplyId);
         if (IsRead == read) return;
         IsRead = read;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        Changed();
     }
+    public void SetReplySending(bool sending) { _replySending = sending; Changed(nameof(ReplyEnabled)); }
+    private void Changed(string? property = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property ?? string.Empty));
     public string NotificationTitle => Kind == "suggestion" ? State switch
     {
-        "implemented" => "메요일 · 건의사항이 반영됐어요", "rejected" => "메요일 · 건의사항이 반려됐어요", _ => "메요일 · 건의사항 처리 결과가 도착했어요"
+        "implemented" => "메요일 · 건의사항이 반영됐어요", "rejected" => "메요일 · 건의사항이 반려됐어요", _ => "메요일 · 건의사항 답변이 도착했어요"
     } : "메요일 · 문의 답변이 도착했어요";
     public string Conversation => $"[{Nickname} · {(Kind == "suggestion" ? "건의사항" : "문의")}]\n{Body}" + string.Concat(Replies.Select(reply =>
-        $"\n\n[{(!reply.IsAdmin ? "내 답장" : Kind == "suggestion" ? "처리 결과" : "운영자 답변")} · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
+        $"\n\n[{(!reply.IsAdmin ? "내 답장" : "운영자 답변")} · {DateTimeOffset.FromUnixTimeSeconds(reply.Created).ToLocalTime():yyyy.MM.dd HH:mm}]\n{reply.Body}"));
 }
 public sealed record SupportInbox(List<SupportTicket> Tickets);
 public sealed record SupportReceipt(string Id, string State);

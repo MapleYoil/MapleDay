@@ -233,10 +233,13 @@ public sealed class SchedulerCharacter(CharacterCard character, Func<IEnumerable
             BossRows.Add(new("contents", text: "미등록 보스 · 클리어 기록"));
             foreach (var tile in UnregisteredBosses) BossRows.Add(new(tile, true));
         }
-        UpdatedAt = DateTimeOffset.Now;
+        UpdatedAt = history.Restored && history.Snapshots.Count > 0
+            ? history.Snapshots.Max(snapshot => snapshot.FetchedAt).ToLocalTime()
+            : DateTimeOffset.Now;
         var count = entries.Count;
-        Status = count == 0 ? $"등록된 콘텐츠나 미등록 보스 클리어 기록이 없어요. · {UpdatedAt:HH:mm} 조회"
-            : $"{entries.Count(entry => entry.Complete)} / {count} 완료 · {UpdatedAt:HH:mm} 조회";
+        var timing = history.Restored ? $"{UpdatedAt:MM.dd HH:mm} 저장 결과" : $"{UpdatedAt:HH:mm} 갱신";
+        Status = count == 0 ? $"등록된 콘텐츠나 미등록 보스 클리어 기록이 없어요. · {timing}"
+            : $"{entries.Count(entry => entry.Complete)} / {count} 완료 · {timing}";
         if (history.FallbackDate is { } savedDate)
             Status = history.PartialFallback
                 ? $"현재 일부 항목 누락 · {savedDate:yyyy.MM.dd} 저장 목록 보충 · 초기화 반영"

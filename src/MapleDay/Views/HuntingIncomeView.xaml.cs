@@ -25,6 +25,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private bool _ready;
     private bool _loading;
     private bool _saving;
+    private bool _deleteDialogOpen;
     private int _marketGeneration;
     private List<HuntingIncomeRecord>? _bulkUndo;
     private List<HuntingIncomeRecord>? _bulkApplied;
@@ -269,8 +270,27 @@ public sealed partial class HuntingIncomeView : UserControl
         Persist(_settings.HuntingIncomeRecords.Where(row => row.Id != existing.Id).Append(merged).ToList(), merged,
             $"기존 기록에 메소 {merged.Meso - existing.Meso:N0}, 조각 {merged.Fragments - existing.Fragments:N0}개를 추가했어요.");
     }
-    private void Delete_Click(object sender, RoutedEventArgs args)
-    { if (_settings is not null && Existing is { } row) Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Id != row.Id).ToList(), null); }
+    private async void Delete_Click(object sender, RoutedEventArgs args)
+    {
+        if (_deleteDialogOpen || _settings is null || Existing is not { } row) return;
+        _deleteDialogOpen = true;
+        try
+        {
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                RequestedTheme = RequestedTheme,
+                Title = "사냥 기록 삭제",
+                Content = $"{row.Date:yyyy.MM.dd}의 메소·솔 에르다 조각 기록을 삭제할까요?",
+                PrimaryButtonText = "삭제",
+                CloseButtonText = "취소",
+                DefaultButton = ContentDialogButton.Close
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Id != row.Id).ToList(), null);
+        }
+        finally { _deleteDialogOpen = false; }
+    }
     private bool Persist(List<HuntingIncomeRecord> records, HuntingIncomeRecord? saved, string? successMessage = null)
     {
         if (_settings is null) return false;
