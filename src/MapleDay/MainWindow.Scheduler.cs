@@ -35,6 +35,7 @@ public sealed partial class MainWindow
         UpdateSchedulerCharacters();
         _schedulerDayTimer.Tick += async (_, _) =>
         {
+            UpdateSchedulerButtons();
             var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
             if ((_currentPage is "scheduler" or "income") && _schedulerCharacters.Values.Any(character => character.HistoryDate is { } date && date != today))
                 await LoadSchedulerAsync();
@@ -112,6 +113,14 @@ public sealed partial class MainWindow
     {
         if (SchedulerRefreshButton is null) return;
         SchedulerRefreshButton.IsEnabled = _hasLoadedCharacters && SchedulerGroups.Count > 0;
+        var refreshDue = SchedulerRefreshIndicator.IsDue(_schedulerCharacters.Values.Select(character => character.UpdatedAt), DateTimeOffset.Now);
+        SchedulerRefreshButton.Content = refreshDue ? "갱신 필요" : "갱신";
+        SchedulerRefreshButton.Style = refreshDue ? (Style)Application.Current.Resources["AccentButtonStyle"] : null;
+        ToolTipService.SetToolTip(SchedulerRefreshButton, refreshDue
+            ? "마지막 갱신 후 2시간이 지났습니다. 최신 스케줄러를 조회해주세요."
+            : "등록한 캐릭터의 최신 스케줄러를 다시 조회합니다.");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(SchedulerRefreshButton,
+            refreshDue ? "스케줄러 갱신 필요, 마지막 갱신 후 2시간 경과" : "스케줄러 갱신");
         SchedulerCancelButton.Visibility = _schedulerCts is null ? Visibility.Collapsed : Visibility.Visible;
         IncomeRefreshButton.IsEnabled = _hasLoadedCharacters && SchedulerAvatars.Count > 0;
         IncomeCancelButton.Visibility = _schedulerCts is null ? Visibility.Collapsed : Visibility.Visible;
