@@ -342,7 +342,8 @@ public sealed partial class MainWindow
         }
     }
 
-    private int PartySize(string ocid, string id) => _settings.BossPartySizes.GetValueOrDefault(ocid + "|" + id, 1);
+    private int PartySize(string ocid, string id) => BossParty.Resolve(_settings.BossPartySizes, ocid, id,
+        SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow));
 
     private Flyout? _partyFlyout;
     private void SchedulerBoard_PartySizeRequested(object? sender, PartySizeRequest request)
@@ -376,13 +377,17 @@ public sealed partial class MainWindow
         {
             if (_dataDeleting || !apply.IsEnabled || !_schedulerCharacters.TryGetValue(row.Ocid, out var active)
                 || !ReferenceEquals(owner, active)) { flyout.Hide(); return; }
-            var prefKey = row.Ocid + "|" + row.PartyId;
-            var previous = _settings.BossPartySizes.GetValueOrDefault(prefKey);
-            _settings.BossPartySizes[prefKey] = (int)number.Value;
+            var recordKey = row.Ocid + "|" + row.PartyId;
+            var preferenceKey = row.Ocid + "|" + BossParty.PreferenceId(row.PartyId);
+            var hadRecord = _settings.BossPartySizes.TryGetValue(recordKey, out var previousRecord);
+            var hadPreference = _settings.BossPartySizes.TryGetValue(preferenceKey, out var previousPreference);
+            _settings.BossPartySizes[recordKey] = (int)number.Value;
+            _settings.BossPartySizes[preferenceKey] = (int)number.Value;
             try { _settings.Save(); }
             catch (Exception error) when (IsStorageError(error))
             {
-                if (previous == 0) _settings.BossPartySizes.Remove(prefKey); else _settings.BossPartySizes[prefKey] = previous;
+                if (hadRecord) _settings.BossPartySizes[recordKey] = previousRecord; else _settings.BossPartySizes.Remove(recordKey);
+                if (hadPreference) _settings.BossPartySizes[preferenceKey] = previousPreference; else _settings.BossPartySizes.Remove(preferenceKey);
                 SchedulerMessage.Title = "파티 인원을 저장하지 못했어요";
                 SchedulerMessage.Message = "저장 공간과 접근 권한을 확인한 뒤 다시 시도해주세요.";
                 SchedulerMessage.Severity = InfoBarSeverity.Warning; SchedulerMessage.IsOpen = true;
