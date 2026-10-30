@@ -62,6 +62,7 @@ public sealed class TelemetryTests : IDisposable
         using var first=JsonDocument.Parse(server.Requests[0].Body);using var second=JsonDocument.Parse(server.Requests[1].Body);
         Assert.Equal("현재최고",first.RootElement.GetProperty("nicknames")[0].GetString());
         Assert.False(first.RootElement.GetProperty("anonymous").GetBoolean());
+        Assert.Equal("github",first.RootElement.GetProperty("channel").GetString());
         Assert.Empty(second.RootElement.GetProperty("nicknames").EnumerateArray());
         Assert.Equal(first.RootElement.GetProperty("installation").GetString(),second.RootElement.GetProperty("installation").GetString());
         Assert.Equal(first.RootElement.GetProperty("aliases")[0].GetString(),second.RootElement.GetProperty("aliases")[0].GetString());
@@ -85,8 +86,9 @@ public sealed class TelemetryTests : IDisposable
         var server=new Server();using var http=new HttpClient(server){BaseAddress=new("https://test/api/mapleday/")};
         using var client=new TelemetryClient(http,Path.Combine(_root,"profile.dat"));
         var queue=new DiagnosticQueue(Path.Combine(_root,"errors"));var profile=new UsageCharacter("현재최고",291,"오로라");
-        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile);
+        await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile,channel:"store");
         using var shared=JsonDocument.Parse(server.Requests[0].Body);
+        Assert.Equal("store",shared.RootElement.GetProperty("channel").GetString());
         Assert.Equal(291,shared.RootElement.GetProperty("profiles")[0].GetProperty("level").GetInt32());
         Assert.Equal("오로라",shared.RootElement.GetProperty("profiles")[0].GetProperty("world").GetString());
         await client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,anonymous:true,character:profile);
@@ -107,6 +109,7 @@ public sealed class TelemetryTests : IDisposable
         Assert.Equal(2,server.Requests.Count);
         using var fallback=JsonDocument.Parse(server.Requests[1].Body);
         Assert.False(fallback.RootElement.TryGetProperty("profiles",out _));
+        Assert.False(fallback.RootElement.TryGetProperty("channel",out _));
         Assert.Equal(profile.Nickname,fallback.RootElement.GetProperty("nicknames")[0].GetString());
         server.RejectProfiles="집계 캐릭터 정보를 확인해주세요.";
         await Assert.ThrowsAsync<HttpRequestException>(()=>client.SendAsync([profile.Nickname],new(1,0,37,0),queue,true,default,character:profile));
@@ -121,5 +124,11 @@ public sealed class TelemetryTests : IDisposable
         Assert.Single(queue.Pending());queue.Suspend();queue.SetEnabled(true);Assert.Single(queue.Pending());
         queue.SetEnabled(false);Assert.Empty(queue.Pending());queue.Capture(new IOException(),"storage",new(1,0,35,0));Assert.Empty(queue.Pending());
     }
+    [Theory]
+    [InlineData(false,false,"github")]
+    [InlineData(true,false,"msix")]
+    [InlineData(true,true,"store")]
+    public void DistributionChannelSeparatesStoreFromOtherPackages(bool packaged,bool storeSigned,string expected)
+        => Assert.Equal(expected,AppDistribution.Classify(packaged,storeSigned));
     public void Dispose(){if(Directory.Exists(_root))Directory.Delete(_root,true);}
 }

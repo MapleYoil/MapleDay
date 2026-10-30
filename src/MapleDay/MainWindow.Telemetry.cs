@@ -64,7 +64,8 @@ public sealed partial class MainWindow
             var selected = candidates.Where(character => character.Name == highest).OrderByDescending(character => character.Level).FirstOrDefault();
             var usageProfile = highest is null ? null : new UsageCharacter(highest, selected.Level, selected.World);
             await _telemetry.SendAsync(highest is null ? [] : [highest], CurrentAppVersion, App.Diagnostics,
-                _settings.UsageAnalyticsEnabled, request.Token, _settings.AnonymousUsageAnalytics, usageProfile);
+                _settings.UsageAnalyticsEnabled, request.Token, _settings.AnonymousUsageAnalytics, usageProfile,
+                AppDistribution.Current);
         }
         catch (Exception) { /* Retry offline failures without interrupting the app or reporting themselves. */ }
         finally
