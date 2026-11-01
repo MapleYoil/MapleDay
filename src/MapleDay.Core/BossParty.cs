@@ -20,11 +20,14 @@ public static class BossParty
     public static int Resolve(IReadOnlyDictionary<string, int> sizes, string owner, string recordId, DateOnly today)
     {
         var exactKey = owner + "|" + recordId;
-        if (sizes.TryGetValue(exactKey, out var exact)) return exact;
         if (!TryParseRecordId(recordId, out var cycle, out var start, out var boss)
-            || start != SchedulerBossHistory.Start(cycle, today)) return 1;
+            || start != SchedulerBossHistory.Start(cycle, today))
+            return sizes.TryGetValue(exactKey, out var historical) ? historical : 1;
 
+        // The current scheduler follows the user's persistent boss preference.
+        // Period-specific values remain available for older income history.
         if (sizes.TryGetValue(owner + "|" + PreferenceId(recordId), out var preferred)) return preferred;
+        if (sizes.TryGetValue(exactKey, out var exact)) return exact;
 
         var prefix = owner + "|";
         var latest = sizes.Where(pair => pair.Key.StartsWith(prefix, StringComparison.Ordinal)
@@ -35,6 +38,14 @@ public static class BossParty
             .OrderByDescending(pair => pair.Start)
             .FirstOrDefault();
         return latest.Start is null ? 1 : latest.Value;
+    }
+
+    public static void SetCurrentPreference(IDictionary<string, int> sizes, string owner, string recordId, int size, DateOnly today)
+    {
+        sizes[owner + "|" + recordId] = size;
+        if (TryParseRecordId(recordId, out var cycle, out var start, out _)
+            && start == SchedulerBossHistory.Start(cycle, today))
+            sizes[owner + "|" + PreferenceId(recordId)] = size;
     }
 
     private static DateOnly? ParseStart(string recordId) =>

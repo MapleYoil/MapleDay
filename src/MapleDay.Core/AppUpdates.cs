@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace MapleDay.Core;
 
-public sealed record AppUpdate(Version Version, string FileName, Uri Download, string Sha256, long Size);
+public sealed record AppUpdate(Version Version, string FileName, Uri Download, string Sha256, long Size,
+    string ReleaseNotes = "", Uri? ReleasePage = null);
 
 public static partial class AppUpdatePolicy
 {
@@ -26,6 +27,9 @@ public static partial class AppUpdatePolicy
         var tag = release.GetProperty("tag_name").GetString() ?? "";
         var match = VersionTag().Match(tag);
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out var version) || version <= current) return null;
+        var notes = release.TryGetProperty("body", out var body) && body.ValueKind == JsonValueKind.String
+            ? NormalizeReleaseNotes(body.GetString()) : "";
+        var releasePage = new Uri($"https://github.com/{Repository}/releases/tag/{tag}");
         var filename = ManifestName(version);
         foreach (var asset in release.GetProperty("assets").EnumerateArray())
         {
@@ -35,9 +39,17 @@ public static partial class AppUpdatePolicy
             var expected = $"https://github.com/{Repository}/releases/download/{tag}/{filename}";
             if (size <= 0 || size > 4 * 1024 * 1024 || digest?.Success != true
                 || asset.GetProperty("browser_download_url").GetString() != expected) throw new InvalidDataException("업데이트 파일 정보를 확인하지 못했어요.");
-            return new(version, filename, new Uri(expected), digest.Groups[1].Value.ToLowerInvariant(), size);
+            return new(version, filename, new Uri(expected), digest.Groups[1].Value.ToLowerInvariant(), size, notes, releasePage);
         }
         throw new InvalidDataException("새 버전의 앱 내부 업데이트 파일이 아직 준비되지 않았어요.");
+    }
+
+    public static string NormalizeReleaseNotes(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "";
+        const int maximumLength = 20_000;
+        var normalized = value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Trim();
+        return normalized.Length <= maximumLength ? normalized : normalized[..maximumLength].TrimEnd() + "\n…";
     }
 
     public static bool IsDownloadHost(Uri uri) => uri.Scheme == Uri.UriSchemeHttps && uri.IsDefaultPort

@@ -414,12 +414,12 @@ public sealed partial class MainWindow
         {
             if (_dataDeleting || !apply.IsEnabled || !_schedulerCharacters.TryGetValue(row.Ocid, out var active)
                 || !ReferenceEquals(owner, active)) { flyout.Hide(); return; }
+            var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
             var recordKey = row.Ocid + "|" + row.PartyId;
             var preferenceKey = row.Ocid + "|" + BossParty.PreferenceId(row.PartyId);
             var hadRecord = _settings.BossPartySizes.TryGetValue(recordKey, out var previousRecord);
             var hadPreference = _settings.BossPartySizes.TryGetValue(preferenceKey, out var previousPreference);
-            _settings.BossPartySizes[recordKey] = (int)number.Value;
-            _settings.BossPartySizes[preferenceKey] = (int)number.Value;
+            BossParty.SetCurrentPreference(_settings.BossPartySizes, row.Ocid, row.PartyId, (int)number.Value, today);
             try { _settings.Save(); }
             catch (Exception error) when (IsStorageError(error))
             {

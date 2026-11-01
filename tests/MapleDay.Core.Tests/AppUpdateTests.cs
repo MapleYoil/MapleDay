@@ -10,9 +10,9 @@ public sealed class AppUpdateTests
     private static readonly byte[] Installer = "verified test installer"u8.ToArray();
     private static readonly string Hash = Convert.ToHexString(SHA256.HashData(Installer)).ToLowerInvariant();
     private static string Release(string version = "v1.0.34.0", bool draft = false, bool prerelease = false,
-        string? url = null, string? digest = null, long? size = null, string? name = null) => JsonSerializer.Serialize(new
+        string? url = null, string? digest = null, long? size = null, string? name = null, string? body = "- 스케줄러 저장 개선") => JsonSerializer.Serialize(new
     {
-        tag_name = version, draft, prerelease,
+        tag_name = version, draft, prerelease, body,
         assets = new[] { new { name = name ?? "MapleDay-Update-1.0.34.0-x64.json", state = "uploaded", size = size ?? Installer.Length,
             digest = digest ?? "sha256:" + Hash,
             browser_download_url = url ?? "https://github.com/MapleYoil/MapleDay/releases/download/v1.0.34.0/MapleDay-Update-1.0.34.0-x64.json" } }
@@ -26,6 +26,16 @@ public sealed class AppUpdateTests
         Assert.Equal(new Version(1, 0, 34, 0), result.Version);
         Assert.Equal(Hash, result.Sha256);
         Assert.Equal(Installer.Length, result.Size);
+        Assert.Equal("- 스케줄러 저장 개선", result.ReleaseNotes);
+        Assert.Equal("https://github.com/MapleYoil/MapleDay/releases/tag/v1.0.34.0", result.ReleasePage!.AbsoluteUri);
+    }
+
+    [Fact]
+    public void ReleaseNotesAreOptionalNormalizedAndBounded()
+    {
+        Assert.Equal("첫 줄\n둘째 줄", AppUpdatePolicy.NormalizeReleaseNotes("  첫 줄\r\n둘째 줄  "));
+        Assert.Equal("", AppUpdatePolicy.NormalizeReleaseNotes(null));
+        Assert.EndsWith("\n…", AppUpdatePolicy.NormalizeReleaseNotes(new string('가', 20_001)));
     }
 
     [Theory]

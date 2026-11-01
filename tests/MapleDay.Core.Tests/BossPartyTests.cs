@@ -42,7 +42,7 @@ public sealed class BossPartyTests
     }
 
     [Fact]
-    public void SavedDefaultContinuesAcrossWeeksAndAnExactWeekStillWins()
+    public void SavedDefaultStaysFixedForCurrentWeekWhileHistoricalExactValuesRemain()
     {
         var today = new DateOnly(2026, 10, 30);
         var current = BossParty.RecordId("스우", BossCycle.Weekly, today);
@@ -53,9 +53,28 @@ public sealed class BossPartyTests
         };
 
         Assert.Equal("Default:Weekly:Bosses/icon_13.png", BossParty.PreferenceId(current));
-        Assert.Equal(2, BossParty.Resolve(sizes, "character", current, today));
+        Assert.Equal(5, BossParty.Resolve(sizes, "character", current, today));
+        var previous = BossParty.RecordId("스우", BossCycle.Weekly, today.AddDays(-7));
+        sizes["character|" + previous] = 2;
+        Assert.Equal(2, BossParty.Resolve(sizes, "character", previous, today));
         sizes.Remove("character|" + current);
         Assert.Equal(5, BossParty.Resolve(sizes, "character", current, today));
+    }
+
+    [Fact]
+    public void SettingCurrentPartySizeWritesBothHistoryAndPersistentPreference()
+    {
+        var today = new DateOnly(2026, 11, 1);
+        var current = BossParty.RecordId("스우", BossCycle.Weekly, today);
+        var previous = BossParty.RecordId("스우", BossCycle.Weekly, today.AddDays(-7));
+        var sizes = new Dictionary<string, int>();
+
+        BossParty.SetCurrentPreference(sizes, "character", current, 4, today);
+        BossParty.SetCurrentPreference(sizes, "character", previous, 2, today);
+
+        Assert.Equal(4, sizes["character|" + current]);
+        Assert.Equal(4, sizes["character|" + BossParty.PreferenceId(current)]);
+        Assert.Equal(2, sizes["character|" + previous]);
     }
 
     [Fact]

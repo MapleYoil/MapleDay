@@ -41,7 +41,8 @@ public sealed partial class MainWindow
         {
             AutomaticUpdatesToggle.Visibility = Visibility.Collapsed;
             UpdateNotificationsHint.Text = "새 버전이 있으면 Windows·앱 알림과 ①을 표시합니다. MSIX 업데이트는 스토어 또는 새 MSIX 다운로드 페이지에서 진행합니다. 기본은 꺼짐입니다.";
-            CheckUpdateButton.Content = IsStoreInstall ? "Microsoft Store에서 업데이트 확인" : "새 MSIX 다운로드 페이지";
+            CheckUpdateButton.Content = "업데이트 확인";
+            InstallUpdateButton.Content = IsStoreInstall ? "Microsoft Store 열기" : "새 MSIX 다운로드 페이지";
             UpdateStatusText.Text = IsStoreInstall ? "Microsoft Store에서 자동 업데이트를 관리합니다."
                 : "직접 설치한 MSIX는 릴리즈에서 새 MSIX를 받아 설치해주세요. 저장된 데이터는 유지됩니다.";
         }
@@ -85,15 +86,7 @@ public sealed partial class MainWindow
     }
 
     private async void CheckUpdateButton_Click(object sender, RoutedEventArgs args)
-    {
-        if (WindowsStartup.IsPackaged)
-        {
-            try { await Launcher.LaunchUriAsync(new Uri(IsStoreInstall ? "ms-windows-store://downloadsandupdates" : "https://github.com/MapleYoil/MapleDay/releases/latest")); }
-            catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
-            { UpdateStatusText.Text = "업데이트 페이지를 열지 못했어요. 설치한 경로에서 새 버전을 확인해주세요."; }
-        }
-        else await CheckForUpdatesAsync();
-    }
+        => await CheckForUpdatesAsync();
 
     private void UpdateNotificationsToggle_Toggled(object sender, RoutedEventArgs args)
     {
@@ -146,12 +139,15 @@ public sealed partial class MainWindow
             _readyUpdate = null;
             if (_preparedUpdate is { } previous) { Directory.Delete(previous.Directory, true); _preparedUpdate = null; }
             InstallUpdateButton.Visibility = Visibility.Collapsed;
+            UpdateDetailsExpander.Visibility = Visibility.Collapsed;
             RefreshUpdateBadge();
             if (update is null) { UpdateStatusText.Text = "최신 버전을 사용 중입니다."; return; }
+            ShowUpdateDetails(update);
             if (WindowsStartup.IsPackaged)
             {
                 _readyUpdate = update;
-                UpdateStatusText.Text = $"{update.Version} 새 버전이 있어요. 스토어 또는 다운로드 페이지에서 업데이트해주세요.";
+                InstallUpdateButton.Visibility = Visibility.Visible;
+                UpdateStatusText.Text = $"{update.Version} 새 버전이 있어요. 변경사항을 확인한 뒤 업데이트할 수 있습니다.";
                 RefreshUpdateBadge(); NotifyPreparedUpdate();
                 return;
             }
@@ -195,6 +191,16 @@ public sealed partial class MainWindow
         }
     }
 
+    private void ShowUpdateDetails(AppUpdate update)
+    {
+        UpdateDetailsExpander.Header = $"{update.Version.ToString(4)} 업데이트 내용";
+        UpdateDetailsText.Text = string.IsNullOrWhiteSpace(update.ReleaseNotes)
+            ? "이번 버전의 상세 변경사항이 등록되지 않았습니다."
+            : update.ReleaseNotes;
+        UpdateDetailsExpander.Visibility = Visibility.Visible;
+        UpdateDetailsExpander.IsExpanded = true;
+    }
+
     private void NotifyPreparedUpdate()
     {
         if (_readyUpdate is null || _preparedUpdate is null && !WindowsStartup.IsPackaged || !_settings.UpdateNotifications || !_settings.RemindersEnabled
@@ -203,14 +209,27 @@ public sealed partial class MainWindow
         if (_settings.NotifiedUpdateVersion == version) return;
         var previous = _settings.NotifiedUpdateVersion;
         _settings.NotifiedUpdateVersion = version;
-        var message = WindowsStartup.IsPackaged ? $"{version} 새 버전이 있어요. 설정에서 스토어 또는 새 MSIX 다운로드 페이지를 열어주세요."
-            : $"{version} 버전이 준비됐어요. 설정에서 업데이트하고 다시 시작할 수 있습니다.";
+        var message = WindowsStartup.IsPackaged ? $"{version} 새 버전이 있어요. 설정에서 변경사항을 확인하고 업데이트할 수 있습니다."
+            : $"{version} 버전이 준비됐어요. 설정에서 변경사항을 확인하고 업데이트할 수 있습니다.";
         if (!AddAnnouncementNotice("앱 업데이트", message, "mapleday:update"))
             _settings.NotifiedUpdateVersion = previous;
     }
 
     private async void InstallUpdateButton_Click(object sender, RoutedEventArgs args)
     {
+        if (WindowsStartup.IsPackaged)
+        {
+            if (_readyUpdate is null || _updateChecking || _closed || _dataDeleting) return;
+            try
+            {
+                var target = IsStoreInstall ? new Uri("ms-windows-store://downloadsandupdates")
+                    : _readyUpdate.ReleasePage ?? new Uri("https://github.com/MapleYoil/MapleDay/releases/latest");
+                await Launcher.LaunchUriAsync(target);
+            }
+            catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
+            { UpdateStatusText.Text = "업데이트 페이지를 열지 못했어요. 잠시 후 다시 시도해주세요."; }
+            return;
+        }
         if (_readyUpdate is null || _preparedUpdate is not { } prepared || _updateChecking || _updateInstalling || _closed || _dataDeleting) return;
         if (_supportSubmitting || _supportReplySending)
         { UpdateStatusText.Text = "문의·답장 전송이 끝난 뒤 업데이트해주세요."; return; }
