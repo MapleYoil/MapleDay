@@ -1,7 +1,8 @@
 param(
     [ValidateSet('Debug', 'Release')][string]$Configuration = 'Release',
     [string]$PackageVersion = 'auto',
-    [string]$CertificateThumbprint = ''
+    [string]$CertificateThumbprint = '',
+    [switch]$IncludeReleaseNotesPreview
 )
 
 $ErrorActionPreference = 'Stop'
@@ -11,6 +12,7 @@ $appDirectory = Join-Path $releaseDirectory 'App'
 $launcherSource = Join-Path $projectDirectory 'src\MapleDay.Launcher'
 $launcherBuild = Join-Path $projectDirectory 'artifacts\build\launcher'
 $launcherPath = Join-Path $releaseDirectory 'MapleDay.exe'
+$releaseNotesPreview = Join-Path $appDirectory 'release-notes-preview.txt'
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
 $visualStudio = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
 if (-not $visualStudio) { throw 'Visual Studio C++ x64 build tools are required for the launcher.' }
@@ -23,6 +25,7 @@ $compilerBin = Join-Path $msvc.FullName 'bin\Hostx64\x64'
 $sdkBin = Join-Path $sdkRoot "bin\$($sdk.Name)\x64"
 
 New-Item -ItemType Directory -Force -Path $appDirectory,$launcherBuild | Out-Null
+if (Test-Path -LiteralPath $releaseNotesPreview) { Remove-Item -LiteralPath $releaseNotesPreview -Force }
 if ($PackageVersion -eq 'auto') {
     [xml]$versionManifest = [IO.File]::ReadAllText((Join-Path $projectDirectory 'packaging\AppxManifest.xml'))
     $previousVersion = [version]$versionManifest.Package.Identity.Version
@@ -92,4 +95,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Incremental update archive build failed.' }
 & (Join-Path $PSScriptRoot 'Build-MSIX.ps1') -AppDirectory $appDirectory -SdkBin $sdkBin `
     -PackageVersion $PackageVersion -CertificateThumbprint $CertificateThumbprint
 & (Join-Path $PSScriptRoot 'Build-Installer.ps1')
+if ($IncludeReleaseNotesPreview) {
+    Copy-Item -LiteralPath (Join-Path $projectDirectory 'docs\release-notes-draft.txt') -Destination $releaseNotesPreview -Force
+}
 Write-Output $launcherPath

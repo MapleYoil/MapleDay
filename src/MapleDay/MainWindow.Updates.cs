@@ -16,6 +16,8 @@ public sealed partial class MainWindow
     private readonly DispatcherTimer _updateTimer = new() { Interval = TimeSpan.FromHours(6) };
     private CancellationTokenSource? _updateRequest;
     private bool _updatesInitialized, _updateChecking, _updateInstalling;
+    private bool _updateHistoryDialogOpen;
+    private string _localUpdatePreview = "";
     private AppUpdate? _readyUpdate;
     private PreparedUpdate? _preparedUpdate;
     private TaskbarUpdateBadge? _taskbarUpdateBadge;
@@ -47,6 +49,7 @@ public sealed partial class MainWindow
                 : "직접 설치한 MSIX는 릴리즈에서 새 MSIX를 받아 설치해주세요. 저장된 데이터는 유지됩니다.";
         }
         else UpdateStatusText.Text = "실행 시와 6시간마다 새 버전을 확인하고 변경된 파일만 내려받습니다. 설치기 없이 적용 후 다시 시작합니다.";
+        LoadLocalUpdatePreview();
         _updateTimer.Tick += (_, _) => StartAutomaticUpdates();
         Closed += (_, _) => { StopUpdates(); _taskbarUpdateBadge?.Dispose(); };
         _updatesInitialized = true;
@@ -141,8 +144,13 @@ public sealed partial class MainWindow
             InstallUpdateButton.Visibility = Visibility.Collapsed;
             UpdateDetailsExpander.Visibility = Visibility.Collapsed;
             RefreshUpdateBadge();
-            if (update is null) { UpdateStatusText.Text = "최신 버전을 사용 중입니다."; return; }
-            ShowUpdateDetails(update);
+            if (update is null)
+            {
+                UpdateStatusText.Text = "최신 버전을 사용 중입니다.";
+                ShowLocalUpdatePreview();
+                return;
+            }
+            ShowUpdateDetails(update.Version, update.ReleaseNotes);
             if (WindowsStartup.IsPackaged)
             {
                 _readyUpdate = update;
@@ -191,14 +199,114 @@ public sealed partial class MainWindow
         }
     }
 
-    private void ShowUpdateDetails(AppUpdate update)
+    private void LoadLocalUpdatePreview()
     {
-        UpdateDetailsExpander.Header = $"{update.Version.ToString(4)} 업데이트 내용";
-        UpdateDetailsText.Text = string.IsNullOrWhiteSpace(update.ReleaseNotes)
+        var file = Path.Combine(AppContext.BaseDirectory, "release-notes-preview.txt");
+        try
+        {
+            if (!File.Exists(file) || new FileInfo(file).Length > 64 * 1024) return;
+            _localUpdatePreview = AppUpdatePolicy.NormalizeReleaseNotes(File.ReadAllText(file));
+            ShowLocalUpdatePreview();
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            _localUpdatePreview = "";
+        }
+    }
+
+    private void ShowLocalUpdatePreview()
+    {
+        if (string.IsNullOrWhiteSpace(_localUpdatePreview)) return;
+        ShowUpdateDetails(null, _localUpdatePreview, preview: true);
+    }
+
+    private void ShowUpdateDetails(Version? version, string notes, bool preview = false)
+    {
+        UpdateDetailsExpander.Header = preview ? "다음 업데이트 내용 미리보기" : $"{version?.ToString(4)} 업데이트 내용";
+        UpdateDetailsHint.Text = preview ? "검토용 빌드에만 표시되는 초안입니다. 아직 사용자에게 배포되지 않았습니다." : "설치하기 전에 변경사항을 확인하세요.";
+        UpdateDetailsHint.Visibility = Visibility.Visible;
+        UpdateDetailsText.Text = string.IsNullOrWhiteSpace(notes)
             ? "이번 버전의 상세 변경사항이 등록되지 않았습니다."
-            : update.ReleaseNotes;
+            : notes;
         UpdateDetailsExpander.Visibility = Visibility.Visible;
         UpdateDetailsExpander.IsExpanded = true;
+    }
+
+    private async void AllUpdateHistoryButton_Click(object sender, RoutedEventArgs args)
+    {
+        if (_updateHistoryDialogOpen || _closed || _dataDeleting) return;
+        _updateHistoryDialogOpen = true;
+        try
+        {
+            var page = 0;
+            var entries = new StackPanel { Spacing = 0 };
+            var previous = new Button { Content = "이전", MinWidth = 84 };
+            var next = new Button { Content = "다음", MinWidth = 84 };
+            var pageText = new TextBlock { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+            var pager = new Grid { ColumnSpacing = 12, Margin = new Thickness(0, 16, 0, 0) };
+            pager.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            pager.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
+            pager.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            Grid.SetColumn(previous, 0); Grid.SetColumn(pageText, 1); Grid.SetColumn(next, 2);
+            pager.Children.Add(previous); pager.Children.Add(pageText); pager.Children.Add(next);
+
+            void RenderPage()
+            {
+                entries.Children.Clear();
+                foreach (var entry in UpdateHistoryCatalog.Page(page))
+                {
+                    var item = new StackPanel { Spacing = 8, Padding = new Thickness(0, 16, 0, 16) };
+                    item.Children.Add(new TextBlock
+                    {
+                        Text = $"{entry.Version.ToString(4)} - {entry.Date:yyyy.MM.dd}",
+                        FontSize = 16,
+                        FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+                    });
+                    item.Children.Add(new TextBlock
+                    {
+                        Text = entry.Notes,
+                        TextWrapping = TextWrapping.Wrap,
+                        IsTextSelectionEnabled = true,
+                        LineHeight = 22
+                    });
+                    entries.Children.Add(new Border
+                    {
+                        BorderBrush = AppTheme.Brush("LineBrush"),
+                        BorderThickness = new Thickness(0, 0, 0, 1),
+                        Child = item
+                    });
+                }
+                previous.IsEnabled = page > 0;
+                next.IsEnabled = page + 1 < UpdateHistoryCatalog.PageCount;
+                pageText.Text = $"{page + 1} / {UpdateHistoryCatalog.PageCount}";
+                AutomationProperties.SetName(pageText, $"{UpdateHistoryCatalog.PageCount}페이지 중 {page + 1}페이지");
+            }
+
+            previous.Click += (_, _) => { if (page > 0) { page--; RenderPage(); } };
+            next.Click += (_, _) => { if (page + 1 < UpdateHistoryCatalog.PageCount) { page++; RenderPage(); } };
+            RenderPage();
+            var content = new Grid { Width = Math.Max(320, Math.Min(680, Root.ActualWidth - 96)) };
+            content.RowDefinitions.Add(new() { Height = new GridLength(1, GridUnitType.Star) });
+            content.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            var scroller = new ScrollViewer
+            {
+                MaxHeight = Math.Max(320, Math.Min(600, Root.ActualHeight - 220)),
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = entries
+            };
+            Grid.SetRow(scroller, 0); Grid.SetRow(pager, 1);
+            content.Children.Add(scroller); content.Children.Add(pager);
+            var dialog = new ContentDialog
+            {
+                XamlRoot = Root.XamlRoot,
+                RequestedTheme = Root.RequestedTheme,
+                Title = "모든 업데이트 내역",
+                Content = content,
+                CloseButtonText = "닫기"
+            };
+            await dialog.ShowAsync();
+        }
+        finally { _updateHistoryDialogOpen = false; }
     }
 
     private void NotifyPreparedUpdate()

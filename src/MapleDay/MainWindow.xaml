@@ -879,9 +879,6 @@
             <StackPanel Padding="24" Spacing="20">
                 <TextBlock Text="설정" FontSize="28" FontWeight="SemiBold" />
                 <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                    <views:RecordSyncView x:Name="RecordSyncPanel" />
-                </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="앱 업데이트" FontSize="18" FontWeight="SemiBold" />
                         <TextBlock x:Name="AppVersionText" Style="{StaticResource SecondaryText}" />
@@ -889,15 +886,22 @@
                         <TextBlock x:Name="UpdateStatusText" Text="업데이트를 확인할 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                         <Expander x:Name="UpdateDetailsExpander" Visibility="Collapsed" AutomationProperties.Name="업데이트 내용">
                             <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
-                                <TextBlock x:Name="UpdateDetailsText" Padding="0,8,8,12" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="22" />
+                                <StackPanel Padding="0,8,8,12" Spacing="10">
+                                    <TextBlock x:Name="UpdateDetailsHint" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                                    <TextBlock x:Name="UpdateDetailsText" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="22" />
+                                </StackPanel>
                             </ScrollViewer>
                         </Expander>
                         <ProgressBar x:Name="UpdateDownloadProgress" Visibility="Collapsed" Minimum="0" Maximum="100" AutomationProperties.Name="업데이트 다운로드 진행도" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Button x:Name="CheckUpdateButton" Content="업데이트 확인" Click="CheckUpdateButton_Click" />
                             <Button x:Name="InstallUpdateButton" Content="업데이트하고 다시 시작" Click="InstallUpdateButton_Click" Visibility="Collapsed" Style="{StaticResource AccentButtonStyle}" />
+                            <Button Content="모든 업데이트 내역 보기" Click="AllUpdateHistoryButton_Click" />
                         </StackPanel>
                     </StackPanel>
+                </Border>
+                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <views:RecordSyncView x:Name="RecordSyncPanel" />
                 </Border>
                 <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
