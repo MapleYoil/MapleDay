@@ -13,8 +13,6 @@ public sealed record HuntRow(HuntingIncomeRecord Record, string Label) { public 
 public sealed partial class HuntingIncomeView : UserControl
 {
     public event EventHandler? RecordsChanged;
-    public event EventHandler? ReplayRequested;
-    private void Replay_Click(object sender, RoutedEventArgs args) => ReplayRequested?.Invoke(this, EventArgs.Empty);
     private AppSettings? _settings;
     private IncomeDisplay _display = new();
     private readonly LootMarketClient _market = new();

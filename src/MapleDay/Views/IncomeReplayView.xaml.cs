@@ -43,6 +43,11 @@ public sealed partial class IncomeReplayView : UserControl
         InitializeComponent();
         Unloaded += (_, _) => { Pause(); _generation++; _exportCancellation?.Cancel(); lock (_renderGate) { _renderer?.Dispose(); _renderer = null; } };
     }
+    public void ShowPreparing()
+    {
+        Pause();
+        Status.Text = "집계 화면 준비 중…";
+    }
     public void SetRecords(IncomeReplay replay, IncomeDisplay display, string scope, AppSettings? settings = null)
     {
         if (_exportTask is { IsCompleted: false }) { Status.Text = "현재 내보내기를 마친 뒤 새 집계를 재생하세요."; return; }

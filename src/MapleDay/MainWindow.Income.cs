@@ -92,17 +92,17 @@ public sealed partial class MainWindow
         IncomeReplayPanel.SetDisplay(CurrentIncomeDisplay);
         PublishWebSnapshot();
     }
-    private void HuntingIncome_ReplayRequested(object? sender, EventArgs args)
+    private async void HuntingIncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
         var owners = SchedulerAvatars.Where(owner => _incomeSelectedOcid is null || owner.Ocid == _incomeSelectedOcid).ToDictionary(owner => owner.Ocid);
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         var start = IncomeCumulativeStart(today);
         var records = (_settings.HuntingIncomeRecords ?? []).Where(row => owners.ContainsKey(row.Ocid) && row.Date >= start && row.Date <= today);
-        IncomeReplayPanel.Visibility = Visibility.Visible;
+        await RevealIncomeReplayAsync();
         IncomeReplayPanel.SetRecords(HuntingIncome.Replay(records, ocid => owners[ocid].Name), CurrentIncomeDisplay,
             _incomeSelectedOcid is null ? "전체 캐릭터 사냥 기록" : owners.Values.FirstOrDefault()?.Name ?? "사냥 기록", _settings);
     }
-    private void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
+    private async void IncomeReplayOpen_Click(object sender, RoutedEventArgs args)
     {
         var characters = SchedulerAvatars.Where(character => _incomeSelectedOcid is null || character.Ocid == _incomeSelectedOcid).ToArray();
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
@@ -110,8 +110,22 @@ public sealed partial class MainWindow
         var records = characters.SelectMany(character => (character.Income?.Records ?? []).Where(clear => clear.Date >= start && clear.Date <= today)
             .Select(clear => (character.Ocid, Clear: clear))).ToArray();
         var ocids = characters.Select(character => character.Ocid).ToHashSet(StringComparer.Ordinal);
-        IncomeReplayPanel.Visibility = Visibility.Visible;
+        await RevealIncomeReplayAsync();
         IncomeReplayPanel.SetRecords(new IncomeReplay(records, StoredLoot.Where(item => ocids.Contains(item.Ocid) && item.Date >= start && item.Date <= today)), CurrentIncomeDisplay, _incomeSelectedOcid is null ? "전체 캐릭터" : characters.FirstOrDefault()?.Name ?? "캐릭터", _settings);
+    }
+
+    private async Task RevealIncomeReplayAsync()
+    {
+        IncomeReplayPanel.ShowPreparing();
+        IncomeReplayPanel.Visibility = Visibility.Visible;
+        await Task.Yield();
+        IncomeReplayPanel.UpdateLayout();
+        IncomeReplayPanel.StartBringIntoView(new BringIntoViewOptions
+        {
+            AnimationDesired = true,
+            VerticalAlignmentRatio = 0
+        });
+        await Task.Yield();
     }
 
     public ObservableCollection<string> CrystalPriceRows { get; } = new(CrystalPrices.All
@@ -236,10 +250,13 @@ public sealed partial class MainWindow
         MonthlyIncomeAmount.Text = Display(bossMonthly, huntMonthly, monthStart);
         TotalIncomeAmount.Text = Display(bossTotal, huntTotal, cumulativeStart);
         TotalIncomeLabel.Text = _settings.IncomeCumulativeStartDate is { } ? $"누적 ({cumulativeStart:yy.MM.dd}~)" : "누적";
-        IncomeHeading.Text = _incomeMode == 1 ? "보스 수익" : _incomeMode == 2 ? "사냥 수익" : "전체 수익";
+        IncomeHeading.Text = _incomeMode == 1 ? "보스 수익" : _incomeMode == 2 ? "사냥 수익" : _incomeMode == 3 ? "수익 집계" : "전체 수익";
         IncomeBreakdown.Text = _incomeMode == 0 ? $"이번 주 · 보스 {CurrentIncomeDisplay.Format(bossWeekly)} + 사냥 {Display(0, huntWeekly, weekStart)}\n이번 달 · 보스 {CurrentIncomeDisplay.Format(bossMonthly)} + 사냥 {Display(0, huntMonthly, monthStart)}\n누적 · 보스 {CurrentIncomeDisplay.Format(bossTotal)} + 사냥 {Display(0, huntTotal, cumulativeStart)}" : "";
-        BossIncomeDetails.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
-        HuntingIncomePanel.Visibility = _incomeMode == 1 ? Visibility.Collapsed : Visibility.Visible;
+        IncomeSummaryGrid.Visibility = _incomeMode == 3 ? Visibility.Collapsed : Visibility.Visible;
+        IncomeBreakdown.Visibility = _incomeMode == 0 ? Visibility.Visible : Visibility.Collapsed;
+        IncomeReplayDetails.Visibility = _incomeMode == 3 ? Visibility.Visible : Visibility.Collapsed;
+        BossIncomeDetails.Visibility = _incomeMode is 2 or 3 ? Visibility.Collapsed : Visibility.Visible;
+        HuntingIncomePanel.Visibility = _incomeMode is 1 or 3 ? Visibility.Collapsed : Visibility.Visible;
         HuntingIncomePanel.SetContext(_settings, selected, _incomeSelectedOcid, CurrentIncomeDisplay);
         var forecasts = selected.Select(character => (Character: character, Forecast: ForecastFor(character, today))).ToArray();
         RemainingWeeklyIncomeAmount.Text = CurrentIncomeDisplay.Format(forecasts.Sum(item => item.Forecast?.Meso ?? 0));
@@ -255,8 +272,10 @@ public sealed partial class MainWindow
                 || !character.Income.CompleteRange(BossCycle.Monthly) || character.Income.Today != today)
                 ? "일부 날짜의 기록이나 결정 가격을 확인하지 못했어요. 캘린더의 날짜를 눌러 상세 내역을 확인할 수 있습니다." : "";
         WeeklyCrystalCount.Text = $"이번 주 주간 보스 {loaded.Sum(character => character.Income!.Records.Count(record => record.Included && record.Cycle == BossCycle.Weekly && record.PeriodStart == weekStart))} / {selected.Length * BossIncome.WeeklyCap} · 캐릭터당 최대 12마리 기준";
-        IncomeBulkAddButton.Visibility = _incomeMode == 2 ? Visibility.Collapsed : Visibility.Visible;
-        IncomeCalendarPanel.SetCharacters(selected, CurrentIncomeDisplay, loot, hunting, (IncomeCalendarCategory)_incomeMode);
+        IncomeBulkAddButton.Visibility = _incomeMode is 2 or 3 ? Visibility.Collapsed : Visibility.Visible;
+        IncomeCalendarPanel.Visibility = _incomeMode == 3 ? Visibility.Collapsed : Visibility.Visible;
+        if (_incomeMode != 3)
+            IncomeCalendarPanel.SetCharacters(selected, CurrentIncomeDisplay, loot, hunting, (IncomeCalendarCategory)_incomeMode);
         IncomeOverview.Visibility = selected.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         IncomeEmpty.Visibility = _hasLoadedCharacters && SchedulerAvatars.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }

@@ -23,6 +23,7 @@
             <Button Content="닫기" Click="Close_Click" />
         </StackPanel>
         <ProgressBar x:Name="ExportProgress" Visibility="Collapsed" Minimum="0" Maximum="100" />
-        <TextBlock x:Name="Status" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+        <TextBlock x:Name="Status" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
+                   AutomationProperties.LiveSetting="Polite" />
     </StackPanel>
 </UserControl>

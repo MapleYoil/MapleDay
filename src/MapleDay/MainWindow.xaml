@@ -528,7 +528,7 @@
                         </Button.Flyout>
                     </Button>
                 </Grid>
-                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /></Pivot>
+                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /><PivotItem Header="수익 집계" /></Pivot>
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
             <StackPanel Padding="0,0,0,20" Spacing="16">
                 <StackPanel x:Name="IncomeLogin" Spacing="8">
@@ -554,15 +554,22 @@
                     <Border x:Name="IncomeOverview" Width="786" HorizontalAlignment="Left" Visibility="Collapsed" Padding="20" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                         <StackPanel Spacing="14">
                             <TextBlock x:Name="IncomeHeading" Text="전체 수익" FontSize="20" FontWeight="SemiBold" />
-                            <Grid ColumnSpacing="18">
+                            <Grid x:Name="IncomeSummaryGrid" ColumnSpacing="18">
                                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
                                 <StackPanel Spacing="6"><TextBlock Text="이번 주" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="1" Spacing="6"><TextBlock Text="이번 달" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="MonthlyIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="2" Spacing="6"><TextBlock x:Name="TotalIncomeLabel" Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                             </Grid>
                             <TextBlock x:Name="IncomeBreakdown" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
+                            <StackPanel x:Name="IncomeReplayDetails" Spacing="14" Visibility="Collapsed">
+                                <TextBlock Text="저장된 수익 기록을 애니메이션으로 재생하거나 영상·이미지로 내보낼 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Content="보스 수익 집계" Click="IncomeReplayOpen_Click" Style="{StaticResource AccentButtonStyle}" />
+                                    <Button Content="사냥 수익 집계" Click="HuntingIncomeReplayOpen_Click" />
+                                </StackPanel>
+                                <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
+                            </StackPanel>
                             <StackPanel x:Name="BossIncomeDetails" Spacing="14">
-                            <Button Content="결정 수익 집계 재생 · MP4 / GIF 내보내기" Click="IncomeReplayOpen_Click" HorizontalAlignment="Left" />
                             <TextBlock x:Name="IncomeScope" Style="{StaticResource SecondaryText}" FontSize="12" />
                             <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
@@ -594,8 +601,7 @@
                             </Expander>
                             </StackPanel>
                             <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
-                            <views:IncomeReplayView x:Name="IncomeReplayPanel" Visibility="Collapsed" />
-                            <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" ReplayRequested="HuntingIncome_ReplayRequested" />
+                            <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" />
                         </StackPanel>
                     </Border>
             </StackPanel>
