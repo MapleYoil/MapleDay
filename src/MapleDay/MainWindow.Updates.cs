@@ -242,12 +242,12 @@ public sealed partial class MainWindow
             var entries = new StackPanel { Spacing = 0 };
             var previous = new Button { Content = "이전", MinWidth = 84 };
             var next = new Button { Content = "다음", MinWidth = 84 };
-            var pageText = new TextBlock { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
-            var pager = new Grid { ColumnSpacing = 12, Margin = new Thickness(0, 16, 0, 0) };
-            pager.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            pager.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
-            pager.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            Grid.SetColumn(previous, 0); Grid.SetColumn(pageText, 1); Grid.SetColumn(next, 2);
+            var pageText = new TextBlock { MinWidth = 80, TextAlignment = TextAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+            var pager = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16,
+                HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 16, 0, 0) };
+            AutomationProperties.SetName(previous, "이전 업데이트 내역 페이지");
+            AutomationProperties.SetName(next, "다음 업데이트 내역 페이지");
             pager.Children.Add(previous); pager.Children.Add(pageText); pager.Children.Add(next);
 
             void RenderPage()
