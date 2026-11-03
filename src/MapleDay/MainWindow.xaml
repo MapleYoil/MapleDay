@@ -907,7 +907,7 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        <Grid x:Name="SettingsPage" Visibility="Collapsed">
+        <Grid x:Name="SettingsPage" Visibility="Collapsed" SizeChanged="SettingsPage_SizeChanged">
             <Grid.Resources>
                 <Style x:Key="SettingsSectionButtonStyle" TargetType="Button">
                     <Setter Property="Background" Value="Transparent" />
@@ -918,24 +918,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
                 </Style>
             </Grid.Resources>
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup>
-                    <VisualState x:Name="NarrowSettings">
-                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="0" /></VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="SettingsSectionNavigation.Visibility" Value="Collapsed" />
-                            <Setter Target="SettingsContent.Padding" Value="24" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="WideSettings">
-                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="760" /></VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="SettingsSectionNavigation.Visibility" Value="Visible" />
-                            <Setter Target="SettingsContent.Padding" Value="184,24,24,24" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
             <StackPanel x:Name="SettingsSectionNavigation" Width="148" Margin="24,74,0,24" Spacing="1"
                         HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Canvas.ZIndex="10"
                         Visibility="Collapsed" AutomationProperties.Name="설정 섹션">

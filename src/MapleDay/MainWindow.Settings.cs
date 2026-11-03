@@ -45,6 +45,16 @@ public sealed partial class MainWindow
     private void SettingsScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
         => UpdateSettingsSectionNavigation();
 
+    private void SettingsPage_SizeChanged(object sender, SizeChangedEventArgs args)
+    {
+        var showSections = args.NewSize.Width >= 760;
+        SettingsSectionNavigation.Visibility = showSections ? Visibility.Visible : Visibility.Collapsed;
+        SettingsContent.Padding = showSections
+            ? new Thickness(184, 24, 24, 24)
+            : new Thickness(24);
+        if (showSections) UpdateSettingsSectionNavigation();
+    }
+
     private void UpdateSettingsSectionNavigation()
     {
         if (_currentPage != "settings" || SettingsContent is null) return;
