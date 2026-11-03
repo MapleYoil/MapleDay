@@ -24,9 +24,9 @@ public sealed partial class MainWindow
         ("close", SettingsCloseSection, SettingsCloseLabel),
         ("startup", SettingsStartupSection, SettingsStartupLabel),
         ("window", SettingsWindowSection, SettingsWindowLabel),
-        ("data", SettingsDataSection, SettingsDataLabel),
         ("sync", SettingsSyncSection, SettingsSyncLabel),
         ("web", SettingsWebSection, SettingsWebLabel),
+        ("data", SettingsDataSection, SettingsDataLabel),
         ("privacy", SettingsPrivacySection, SettingsPrivacyLabel),
         ("github", SettingsGithubSection, SettingsGithubLabel)
     ];

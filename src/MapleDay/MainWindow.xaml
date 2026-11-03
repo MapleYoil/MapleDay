@@ -928,7 +928,7 @@
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="WideSettings">
-                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="980" /></VisualState.StateTriggers>
+                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="760" /></VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter Target="SettingsSectionNavigation.Visibility" Value="Visible" />
                             <Setter Target="SettingsContent.Padding" Value="184,24,24,24" />
@@ -945,9 +945,9 @@
                 <Button Tag="close" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsCloseLabel" Text="창 닫기" FontSize="12" /></Button>
                 <Button Tag="startup" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsStartupLabel" Text="Windows 자동 실행" FontSize="12" /></Button>
                 <Button Tag="window" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsWindowLabel" Text="창 크기" FontSize="12" /></Button>
-                <Button Tag="data" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsDataLabel" Text="앱 데이터" FontSize="12" /></Button>
                 <Button Tag="sync" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsSyncLabel" Text="PC 간 기록 동기화" FontSize="12" /></Button>
                 <Button Tag="web" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsWebLabel" Text="웹에서 보기" FontSize="12" /></Button>
+                <Button Tag="data" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsDataLabel" Text="앱 데이터" FontSize="12" /></Button>
                 <Button Tag="privacy" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsPrivacyLabel" Text="개인정보처리방침" FontSize="12" /></Button>
                 <Button Tag="github" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsGithubLabel" Text="GitHub" FontSize="12" /></Button>
             </StackPanel>
@@ -1028,17 +1028,6 @@
                         <TextBlock x:Name="WindowSizeStatus" Text="다음 실행부터 적용됩니다. 초기화하면 1200 × 800px로 돌아갑니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
-                <Border x:Name="SettingsDataSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="앱 데이터" FontSize="18" FontWeight="SemiBold" />
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock x:Name="AppDataSize" Text="확인 중…" FontSize="20" VerticalAlignment="Center" />
-                            <Button Content="용량 새로고침" Click="AppDataRefreshButton_Click" />
-                        </StackPanel>
-                        <TextBlock Text="이 PC에 저장된 캐릭터 목록, 스케줄러 기록, API 키와 설정 등의 용량입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="{StaticResource DangerTextBrush}" Background="{StaticResource DangerSoftBrush}" BorderBrush="{StaticResource DangerLineBrush}" HorizontalAlignment="Left" />
-                    </StackPanel>
-                </Border>
                 <Border x:Name="SettingsSyncSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <views:RecordSyncView x:Name="RecordSyncPanel" />
                 </Border>
@@ -1068,6 +1057,17 @@
                             <Button Content="이 PC에서 열기" Click="WebOpenButton_Click" />
                             <Button Content="접속 주소 복사" Click="WebCopyButton_Click" />
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border x:Name="SettingsDataSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="앱 데이터" FontSize="18" FontWeight="SemiBold" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock x:Name="AppDataSize" Text="확인 중…" FontSize="20" VerticalAlignment="Center" />
+                            <Button Content="용량 새로고침" Click="AppDataRefreshButton_Click" />
+                        </StackPanel>
+                        <TextBlock Text="이 PC에 저장된 캐릭터 목록, 스케줄러 기록, API 키와 설정 등의 용량입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="{StaticResource DangerTextBrush}" Background="{StaticResource DangerSoftBrush}" BorderBrush="{StaticResource DangerLineBrush}" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Border>
                 <Border x:Name="SettingsPrivacySection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
