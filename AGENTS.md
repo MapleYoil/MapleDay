@@ -6,6 +6,7 @@
 - 테스트에 Computer Use나 Windows 화면 조작을 사용하지 않는다. 앱을 전면에 띄워 조작하거나 전체 화면을 제어하지 않는다.
 - 검증은 빌드, 자동 테스트, API 요청, 파일 및 로그 검사로 수행한다.
 - 사용자가 배포를 요청했을 때 메요일이 배포 폴더 파일을 잠그고 있으면, 실행 경로가 이 저장소의 `artifacts/MapleDay` 아래인지 확인한 뒤 해당 메요일 프로세스를 강제 종료하고 배포를 계속한다.
+- Microsoft Store의 기존 앱 업데이트는 새 제출에 MSIX를 업로드한 뒤 Partner Center 검증과 `인증을 위해 제출` 버튼 활성화를 기다려 바로 제출한다. 제한 기능 사유나 다른 제출 항목을 다시 입력하지 않는다.
 - 실행 가능한 테스트·배포 빌드는 scripts/Publish.ps1로 artifacts/MapleDay 한 폴더에 덮어쓴다. 별도의 MapleDay-* 실행 폴더를 만들지 않는다.
 - 배포 폴더는 실행용 MapleDay.exe와 App 폴더로 구성한다. 앱 본체와 DLL·언어 폴더·에셋·런타임은 App 내부에 둔다. Windows Hidden/System 속성으로 숨기지 않는다.
 - scripts/Publish.ps1은 실행 폴더와 함께 artifacts/MSIX/MapleDay.msix도 항상 생성·서명·검증한다. 제작자는 MapleYoil이며 MSIX 식별자와 퍼블리셔 표시 이름(메요일)은 Partner Center의 할당 값과 일치해야 한다. 스토어용 버전의 마지막 자리는 항상 0이다. 인증서 개인키를 내보내거나 인증서를 자동 신뢰 설치하지 않는다.
