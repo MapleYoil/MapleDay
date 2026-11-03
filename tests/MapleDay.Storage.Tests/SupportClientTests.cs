@@ -8,6 +8,26 @@ namespace MapleDay.Storage.Tests;
 public sealed class SupportClientTests
 {
     [Fact]
+    public async Task Announcements_are_requested_for_the_exact_app_version()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "MapleDay-Announcement-" + Guid.NewGuid().ToString("N"));
+        HttpRequestMessage? captured = null;
+        try
+        {
+            using var client = new SupportClient(new HttpClient(new DelegateHandler(request =>
+            {
+                captured = request;
+                return new(HttpStatusCode.OK) { Content = new StringContent("{\"announcements\":[{\"id\":7,\"title\":\"점검\",\"body\":\"안내\",\"created\":1800000000}]}", Encoding.UTF8, "application/json") };
+            })) { BaseAddress = new Uri("https://test/") }, directory);
+            var result = await client.AnnouncementsAsync(new Version(1, 2, 3, 4), CancellationToken.None);
+            Assert.Equal("/announcements?version=1.2.3.4", captured!.RequestUri!.PathAndQuery);
+            Assert.Matches("^[a-f0-9]{64}$", captured.Headers.Authorization!.Parameter!);
+            Assert.Equal("점검", Assert.Single(result.Announcements).Title);
+        }
+        finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+
+    [Fact]
     public async Task Live_changes_refresh_immediately_and_watch_stops_on_cancellation()
     {
         var directory = Path.Combine(Path.GetTempPath(), "MapleDay-Support-Stream-" + Guid.NewGuid().ToString("N"));
@@ -185,5 +205,10 @@ public sealed class SupportClientTests
             Assert.DoesNotContain(server.Tokens[0]!, Encoding.UTF8.GetString(await File.ReadAllBytesAsync(Path.Combine(directory, "support-client.dat"))));
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true); }
+    }
+
+    private sealed class DelegateHandler(Func<HttpRequestMessage, HttpResponseMessage> send) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) => Task.FromResult(send(request));
     }
 }

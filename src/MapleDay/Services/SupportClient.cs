@@ -83,6 +83,17 @@ public sealed class SupportTicket : INotifyPropertyChanged
 public sealed record SupportInbox(List<SupportTicket> Tickets);
 public sealed record SupportReceipt(string Id, string State);
 public sealed record SupportDraft(string Id, string Kind, string Nickname, string Subject, string Body, string? Version = null);
+public sealed class AppAnnouncement
+{
+    public long Id { get; set; }
+    public string Title { get; set; } = "";
+    public string Body { get; set; } = "";
+    public string? TargetVersion { get; set; }
+    public long Created { get; set; }
+    [JsonIgnore] public string CreatedText => DateTimeOffset.FromUnixTimeSeconds(Created).ToLocalTime().ToString("yyyy.MM.dd HH:mm");
+    [JsonIgnore] public string TargetText => string.IsNullOrEmpty(TargetVersion) ? "전체 사용자" : $"버전 {TargetVersion}";
+}
+public sealed record AnnouncementInbox(List<AppAnnouncement> Announcements);
 
 public sealed class SupportClient : IDisposable
 {
@@ -127,6 +138,15 @@ public sealed class SupportClient : IDisposable
         return await response.Content.ReadFromJsonAsync<SupportInbox>(JsonOptions, token) ?? new([]);
     }
 
+    public async Task<AnnouncementInbox> AnnouncementsAsync(Version version, CancellationToken token)
+    {
+        await InitializeAsync(token);
+        using var request = Request(HttpMethod.Get, "announcements?version=" + Uri.EscapeDataString(version.ToString(4)));
+        using var response = await _http.SendAsync(request, token);
+        await EnsureSuccessAsync(response, token);
+        return await response.Content.ReadFromJsonAsync<AnnouncementInbox>(JsonOptions, token) ?? new([]);
+    }
+
     public async Task<SupportReceipt> SubmitAsync(string kind, string nickname, string subject, string body, CancellationToken token)
     {
         await InitializeAsync(token);
@@ -162,6 +182,12 @@ public sealed class SupportClient : IDisposable
     }
 
     public async Task WatchAsync(Action changed, CancellationToken token)
+        => await WatchAsync("support/events", changed, token);
+
+    public async Task WatchAnnouncementsAsync(Action changed, CancellationToken token)
+        => await WatchAsync("announcements/events", changed, token);
+
+    private async Task WatchAsync(string path, Action changed, CancellationToken token)
     {
         var retry = 1;
         while (!token.IsCancellationRequested)
@@ -173,7 +199,7 @@ public sealed class SupportClient : IDisposable
                 socket.Options.SetRequestHeader("Authorization", "Bearer " + _token);
                 socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
                 socket.Options.KeepAliveTimeout = TimeSpan.FromSeconds(15);
-                var uri = new UriBuilder(new Uri(_http.BaseAddress!, "support/events")) { Scheme = _http.BaseAddress!.Scheme == "https" ? "wss" : "ws" };
+                var uri = new UriBuilder(new Uri(_http.BaseAddress!, path)) { Scheme = _http.BaseAddress!.Scheme == "https" ? "wss" : "ws" };
                 await socket.ConnectAsync(uri.Uri, token);
                 retry = 1;
                 var buffer = new byte[256];

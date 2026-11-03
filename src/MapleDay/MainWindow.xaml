@@ -109,6 +109,10 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
+                <NavigationViewItem x:Name="AnnouncementsNavigationItem" Content="공지사항" Tag="announcements">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE789;" /></NavigationViewItem.Icon>
+                    <NavigationViewItem.InfoBadge><InfoBadge x:Name="AnnouncementBadge" Value="1" Visibility="Collapsed" AutomationProperties.Name="읽지 않은 공지사항 있음" /></NavigationViewItem.InfoBadge>
+                </NavigationViewItem>
                 <NavigationViewItem x:Name="ThemeNavigationItem" Content="다크 모드 · 끔" Tag="theme" SelectsOnInvoked="False"
                                     AutomationProperties.AutomationId="DarkModeToggleButton" AutomationProperties.Name="다크 모드로 전환">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE708;" /></NavigationViewItem.Icon>
@@ -732,6 +736,34 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
+        <ScrollViewer x:Name="AnnouncementsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Padding="24" Spacing="20">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="공지사항" FontSize="28" FontWeight="SemiBold" />
+                    <TextBlock Text="메요일의 중요한 안내를 확인합니다. 읽지 않은 공지는 직접 읽음으로 표시할 때까지 남아 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                </StackPanel>
+                <InfoBar x:Name="AnnouncementMessage" IsOpen="False" IsClosable="True" />
+                <ProgressRing x:Name="AnnouncementLoading" IsActive="False" Visibility="Collapsed" HorizontalAlignment="Left" />
+                <TextBlock x:Name="AnnouncementEmpty" Text="아직 공지사항이 없어요." Style="{StaticResource SecondaryText}" Visibility="Collapsed" />
+                <ItemsControl ItemsSource="{x:Bind Announcements}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="services:AppAnnouncement">
+                            <Border Padding="20" Margin="0,0,0,12" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                                <StackPanel Spacing="10">
+                                    <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Title}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        <Button Grid.Column="1" Content="읽음" Tag="{x:Bind Id}" Click="AnnouncementReadButton_Click" MinHeight="32" Padding="12,5" />
+                                    </Grid>
+                                    <TextBlock Text="{x:Bind CreatedText}" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                    <TextBlock Text="{x:Bind Body}" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="22" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
         <ScrollViewer x:Name="NotificationsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="24,28" Spacing="20" MaxWidth="980" HorizontalAlignment="Stretch">
                 <Grid ColumnSpacing="8">
@@ -752,6 +784,12 @@
                             <TextBlock Text="켜두면 앱을 새로 시작할 때 미완료 항목을 확인해 한 번 알립니다. 전체·종류별 알림과 주간 알림의 요일 설정을 따르며, 변경은 다음 실행부터 적용됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <TextBlock x:Name="ReminderRuntimeStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <Button Content="Windows 알림 다시 연결" Click="ReconnectNotifications_Click" HorizontalAlignment="Left" />
+                        </StackPanel>
+                    </Border>
+                    <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <StackPanel Spacing="12">
+                            <ToggleSwitch x:Name="AnnouncementNotificationsToggle" Header="공지사항" OnContent="켜짐" OffContent="꺼짐" Toggled="ReminderToggle_Toggled" />
+                            <TextBlock Text="새 공지를 Windows 알림으로 받습니다. 읽지 않은 공지는 앱을 다시 켤 때마다 알리며 기본은 켜짐입니다. 꺼도 공지사항 메뉴에서는 계속 확인할 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>
                     <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
@@ -916,7 +954,7 @@
                         <TextBlock Text="시작 페이지" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="StartPageSelector" SelectionChanged="StartPageSelector_SelectionChanged" MinWidth="220" AutomationProperties.Name="시작 페이지">
                             <ComboBoxItem Content="내 캐릭터" Tag="characters" /><ComboBoxItem Content="캐릭터 정보" Tag="character-info" /><ComboBoxItem Content="스케줄러" Tag="scheduler" /><ComboBoxItem Content="수익" Tag="income" />
-                            <ComboBoxItem Content="파티" Tag="party" /><ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
+                            <ComboBoxItem Content="파티" Tag="party" /><ComboBoxItem Content="캘린더" Tag="calendar" /><ComboBoxItem Content="레벨" Tag="level" /><ComboBoxItem Content="1:1 문의 / 건의사항" Tag="support" /><ComboBoxItem Content="공지사항" Tag="announcements" /><ComboBoxItem Content="알림" Tag="notifications" /><ComboBoxItem Content="설정" Tag="settings" /><ComboBoxItem Content="API 키" Tag="key" />
                         </ComboBox>
                     </StackPanel>
                 </Border>

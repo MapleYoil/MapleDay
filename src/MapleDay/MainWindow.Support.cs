@@ -294,6 +294,12 @@ public sealed partial class MainWindow
                 NavigateTo("notifications");
                 return;
             }
+            if (arguments.ContainsKey("announcement"))
+            {
+                _notificationLandingPage = "announcements";
+                NavigateTo("announcements");
+                return;
+            }
             if (arguments.TryGetValue("ticket", out var id)) _notificationTicket = id;
             _notificationLandingPage = "support";
             NavigateTo("support");

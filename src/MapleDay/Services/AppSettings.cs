@@ -13,6 +13,8 @@ public sealed class AppSettings
     public bool AutomaticUpdates { get; set; } = true;
     public bool UpdateNotifications { get; set; }
     public bool SundayNotifications { get; set; }
+    public bool AnnouncementNotifications { get; set; } = true;
+    public HashSet<long> ReadAnnouncements { get; set; } = [];
     public string NotifiedUpdateVersion { get; set; } = "";
     public Dictionary<int, List<DateOnly>> PublicHolidayDates { get; set; } = [];
     public DateTimeOffset? PublicHolidaysCheckedAt { get; set; }
@@ -61,7 +63,7 @@ public sealed class AppSettings
     public Dictionary<string, DateTimeOffset> CheckedReminders { get; set; } = [];
     public List<ReminderNotice> ReminderNotices { get; set; } = [];
     public string StartPage { get; set; } = "characters";
-    public string ValidStartPage => StartPage is "characters" or "character-info" or "scheduler" or "income" or "party" or "calendar" or "level" or "support" or "notifications" or "settings" or "key" ? StartPage : "characters";
+    public string ValidStartPage => StartPage is "characters" or "character-info" or "scheduler" or "income" or "party" or "calendar" or "level" or "support" or "announcements" or "notifications" or "settings" or "key" ? StartPage : "characters";
     public bool MarkRemindersRead()
     {
         var changed = false;

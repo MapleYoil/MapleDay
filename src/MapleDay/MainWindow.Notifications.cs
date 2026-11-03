@@ -59,6 +59,7 @@ public sealed partial class MainWindow
         DailyReminderToggle.IsOn = _settings.DailyQuestReminder.Enabled; DailyReminderHours.Value = _settings.DailyQuestReminder.HoursBefore;
         UnionQuestReminderToggle.IsOn = _settings.UnionQuestReminderEnabled;
         SundayNotificationsToggle.IsOn = _settings.SundayNotifications;
+        AnnouncementNotificationsToggle.IsOn = _settings.AnnouncementNotifications;
         WeeklyQuestReminderToggle.IsOn = _settings.WeeklyQuestReminder.Enabled;
         WeeklyQuestReminderDayMode.SelectedIndex = _settings.WeeklyQuestReminder.RestrictToDay ? 1 : 0;
         WeeklyQuestReminderDay.SelectedIndex = (int)_settings.WeeklyQuestReminder.Day;
@@ -101,6 +102,7 @@ public sealed partial class MainWindow
         { ShowReminderMessage("알림 시간은 정수로 입력해주세요.", InfoBarSeverity.Warning); return; }
         _settings.RemindersEnabled = AllRemindersToggle.IsOn;
         _settings.RemindOnStartup = StartupRemindersToggle.IsOn;
+        _settings.AnnouncementNotifications = AnnouncementNotificationsToggle.IsOn;
         _settings.DailyQuestReminder.Enabled = DailyReminderToggle.IsOn;
         _settings.UnionQuestReminderEnabled = UnionQuestReminderToggle.IsOn;
         _settings.WeeklyQuestReminder.Enabled = WeeklyQuestReminderToggle.IsOn;

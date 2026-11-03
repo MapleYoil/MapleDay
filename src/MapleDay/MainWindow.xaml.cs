@@ -47,6 +47,7 @@ public sealed partial class MainWindow : Window
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Branding", "mapleday.ico"));
         AppWindow.Resize(new Windows.Graphics.SizeInt32(_settings.ValidWindowWidth, _settings.ValidWindowHeight));
         InitializeSupport();
+        InitializeAnnouncements();
         UpdateCharacterWorlds();
         InitializeScheduler();
         InitializeReminders();
@@ -117,7 +118,8 @@ public sealed partial class MainWindow : Window
         StartTelemetry();
         await RecordSyncPanel.InitializeAsync(_settings);
         await _partyShares.InitializeAsync(_settings, DispatcherQueue);
-        await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync());
+        await Task.WhenAll(InitializeCharactersForLaunchAsync(), InitializeSupportForLaunchAsync(),
+            RefreshAnnouncementsAsync(showErrors: false, startup: true));
         _ = RefreshCalendarAsync();
         _ = SendTelemetryAsync();
     }
@@ -189,8 +191,9 @@ public sealed partial class MainWindow : Window
         CalendarPage.Visibility = page == "calendar" ? Visibility.Visible : Visibility.Collapsed;
         LevelPage.Visibility = page == "level" ? Visibility.Visible : Visibility.Collapsed;
         NotificationsPage.Visibility = page == "notifications" ? Visibility.Visible : Visibility.Collapsed;
+        AnnouncementsPage.Visibility = page == "announcements" ? Visibility.Visible : Visibility.Collapsed;
         ConnectState.Visibility = !_hasLoadedCharacters && string.IsNullOrEmpty(_apiKey) ? Visibility.Visible : Visibility.Collapsed;
-        ShellNavigation.SelectedItem = page switch { "character-info" => CharacterInfoNavigationItem, "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
+        ShellNavigation.SelectedItem = page switch { "character-info" => CharacterInfoNavigationItem, "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "announcements" => AnnouncementsNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
         BackButton.IsEnabled = _backStack.Count > 0;
         if (isKeyPage)
         {
@@ -208,6 +211,7 @@ public sealed partial class MainWindow : Window
             UpdateSupportLogin();
             _ = RefreshSupportAsync(showErrors: true);
         }
+        else if (page == "announcements") _ = RefreshAnnouncementsAsync(showErrors: true, startup: false);
         else if (page == "scheduler")
         {
             UpdateSchedulerLogin();
