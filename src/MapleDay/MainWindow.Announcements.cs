@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using MapleDay.Core;
 using MapleDay.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -14,6 +15,11 @@ public sealed partial class MainWindow
     private void InitializeAnnouncements()
     {
         _settings.ReadAnnouncements ??= [];
+        if (_settings.InstallationDateNeedsSave)
+        {
+            try { _settings.Save(); }
+            catch (Exception error) when (IsSupportError(error)) { }
+        }
         UpdateAnnouncementBadge();
         _ = _support.WatchAnnouncementsAsync(() => DispatcherQueue.TryEnqueue(() =>
         {
@@ -37,7 +43,9 @@ public sealed partial class MainWindow
             AnnouncementEmpty.Visibility = Announcements.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             UpdateAnnouncementBadge();
 
-            var unread = Announcements.Where(item => !_settings.ReadAnnouncements.Contains(item.Id)).ToArray();
+            var installedAt = _settings.InstalledAt ?? DateTimeOffset.UtcNow;
+            var unread = Announcements.Where(item => !_settings.ReadAnnouncements.Contains(item.Id)
+                && AnnouncementPolicy.IsForInstallation(item.Created, installedAt)).ToArray();
             var pending = startup ? unread : unread.Where(item => !_announcementsNotifiedThisRun.Contains(item.Id)).ToArray();
             foreach (var item in unread) _announcementsNotifiedThisRun.Add(item.Id);
             if (_settings.AnnouncementNotifications && pending.Length > 0 && _notificationReady)
@@ -87,7 +95,9 @@ public sealed partial class MainWindow
 
     private void UpdateAnnouncementBadge()
     {
-        var unread = Announcements.Any(item => !_settings.ReadAnnouncements.Contains(item.Id));
+        var installedAt = _settings.InstalledAt ?? DateTimeOffset.UtcNow;
+        var unread = Announcements.Any(item => !_settings.ReadAnnouncements.Contains(item.Id)
+            && AnnouncementPolicy.IsForInstallation(item.Created, installedAt));
         AnnouncementBadge.Visibility = unread ? Visibility.Visible : Visibility.Collapsed;
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MapleDay.Core;
 
 namespace MapleDay.Services;
@@ -14,6 +15,8 @@ public sealed class AppSettings
     public bool UpdateNotifications { get; set; }
     public bool SundayNotifications { get; set; }
     public bool AnnouncementNotifications { get; set; } = true;
+    public DateTimeOffset? InstalledAt { get; set; }
+    [JsonIgnore] public bool InstallationDateNeedsSave { get; private set; }
     public HashSet<long> ReadAnnouncements { get; set; } = [];
     public string NotifiedUpdateVersion { get; set; } = "";
     public Dictionary<int, List<DateOnly>> PublicHolidayDates { get; set; } = [];
@@ -72,20 +75,46 @@ public sealed class AppSettings
     }
     private static string FilePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MapleDay", "settings.json");
 
-    public static AppSettings Load()
+    public static AppSettings Load(string? path = null)
     {
-        try { return JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(FilePath)) ?? new(); }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException) { return new(); }
+        path ??= FilePath;
+        AppSettings settings;
+        try { settings = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(path)) ?? new(); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException) { settings = new(); }
+        var now = DateTimeOffset.UtcNow;
+        if (settings.InstalledAt is null || settings.InstalledAt < DateTimeOffset.UnixEpoch || settings.InstalledAt > now.AddMinutes(5))
+        {
+            settings.InstalledAt = EstimateInstalledAt(path, now);
+            settings.InstallationDateNeedsSave = true;
+        }
+        return settings;
     }
 
-    public void Save()
+    private static DateTimeOffset EstimateInstalledAt(string path, DateTimeOffset fallback)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
-        var temporary = FilePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            var folder = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+            {
+                var created = new DateTimeOffset(Directory.GetCreationTimeUtc(folder), TimeSpan.Zero);
+                if (created >= DateTimeOffset.UnixEpoch && created <= fallback.AddMinutes(5)) return created;
+            }
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException) { }
+        return fallback;
+    }
+
+    public void Save(string? path = null)
+    {
+        path ??= FilePath;
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        var temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
             File.WriteAllText(temporary, JsonSerializer.Serialize(this));
-            File.Move(temporary, FilePath, true);
+            File.Move(temporary, path, true);
+            InstallationDateNeedsSave = false;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
         Saved?.Invoke(this);
