@@ -16,6 +16,57 @@ public sealed partial class MainWindow
     private bool _windowSizeUpdating;
     private bool _privacyPolicyOpen;
 
+    private (string Key, FrameworkElement Section, TextBlock Label)[] SettingsSections =>
+    [
+        ("update", SettingsUpdateSection, SettingsUpdateLabel),
+        ("representative", SettingsRepresentativeSection, SettingsRepresentativeLabel),
+        ("start", SettingsStartSection, SettingsStartLabel),
+        ("close", SettingsCloseSection, SettingsCloseLabel),
+        ("startup", SettingsStartupSection, SettingsStartupLabel),
+        ("window", SettingsWindowSection, SettingsWindowLabel),
+        ("data", SettingsDataSection, SettingsDataLabel),
+        ("sync", SettingsSyncSection, SettingsSyncLabel),
+        ("web", SettingsWebSection, SettingsWebLabel),
+        ("privacy", SettingsPrivacySection, SettingsPrivacyLabel),
+        ("github", SettingsGithubSection, SettingsGithubLabel)
+    ];
+
+    private void SettingsSectionButton_Click(object sender, RoutedEventArgs args)
+    {
+        if (sender is not Button { Tag: string key }) return;
+        var target = SettingsSections.FirstOrDefault(item => item.Key == key).Section;
+        target?.StartBringIntoView(new BringIntoViewOptions
+        {
+            AnimationDesired = true,
+            VerticalAlignmentRatio = 0
+        });
+    }
+
+    private void SettingsScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+        => UpdateSettingsSectionNavigation();
+
+    private void UpdateSettingsSectionNavigation()
+    {
+        if (_currentPage != "settings" || SettingsContent is null) return;
+        var sections = SettingsSections;
+        var marker = SettingsScrollViewer.VerticalOffset + 104;
+        var active = sections[0].Key;
+        foreach (var item in sections)
+        {
+            var top = item.Section.TransformToVisual(SettingsContent).TransformPoint(new Windows.Foundation.Point()).Y;
+            if (top > marker) break;
+            active = item.Key;
+        }
+        if (SettingsScrollViewer.ScrollableHeight - SettingsScrollViewer.VerticalOffset < 2)
+            active = sections[^1].Key;
+        foreach (var item in sections)
+        {
+            var selected = item.Key == active;
+            item.Label.Foreground = AppTheme.Brush(selected ? "InkBrush" : "MutedBrush");
+            item.Label.FontWeight = selected ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Normal;
+        }
+    }
+
     private async void PrivacyPolicyButton_Click(object sender, RoutedEventArgs args)
     {
         if (_privacyPolicyOpen || _dataDeleting || _closed) return;

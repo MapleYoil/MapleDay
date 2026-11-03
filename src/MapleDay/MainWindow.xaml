@@ -847,12 +847,6 @@
                     </Border>
                     <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                         <StackPanel Spacing="12">
-                            <ToggleSwitch x:Name="UpdateNotificationsToggle" Header="앱 업데이트" OnContent="켜짐" OffContent="꺼짐" Toggled="UpdateNotificationsToggle_Toggled" />
-                            <TextBlock x:Name="UpdateNotificationsHint" Text="새 버전이 준비되면 Windows 알림과 앱 알림을 보내고 작업 표시줄·트레이·설정에 ①을 표시합니다. 기본은 꺼짐이며, 꺼도 자동 확인·다운로드는 계속됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                        </StackPanel>
-                    </Border>
-                    <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                        <StackPanel Spacing="12">
                             <ToggleSwitch x:Name="SundayNotificationsToggle" Header="썬데이 메이플" OnContent="켜짐" OffContent="꺼짐" Toggled="SundayNotificationsToggle_Toggled" />
                             <TextBlock Text="한국 시간 금요일 오전 10시에 공개된 혜택을 확인해 알립니다. 금요일이 공휴일이면 연속된 공휴일·주말을 건너뛴 직전 평일에 확인하고 금요일에는 확인하지 않습니다. 확인 실패 시 5초 뒤 다시 시도합니다. 기본은 꺼짐입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                             <TextBlock x:Name="SundayReminderNext" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
@@ -913,14 +907,61 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
-            <StackPanel Padding="24" Spacing="20">
+        <Grid x:Name="SettingsPage" Visibility="Collapsed">
+            <Grid.Resources>
+                <Style x:Key="SettingsSectionButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Padding" Value="4,3" />
+                    <Setter Property="MinHeight" Value="28" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                </Style>
+            </Grid.Resources>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="NarrowSettings">
+                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="0" /></VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="SettingsSectionNavigation.Visibility" Value="Collapsed" />
+                            <Setter Target="SettingsContent.Padding" Value="24" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="WideSettings">
+                        <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="980" /></VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="SettingsSectionNavigation.Visibility" Value="Visible" />
+                            <Setter Target="SettingsContent.Padding" Value="184,24,24,24" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <StackPanel x:Name="SettingsSectionNavigation" Width="148" Margin="24,74,0,24" Spacing="1"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Canvas.ZIndex="10"
+                        Visibility="Collapsed" AutomationProperties.Name="설정 섹션">
+                <Button Tag="update" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsUpdateLabel" Text="앱 업데이트" FontSize="12" /></Button>
+                <Button Tag="representative" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsRepresentativeLabel" Text="대표 캐릭터" FontSize="12" /></Button>
+                <Button Tag="start" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsStartLabel" Text="시작 페이지" FontSize="12" /></Button>
+                <Button Tag="close" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsCloseLabel" Text="창 닫기" FontSize="12" /></Button>
+                <Button Tag="startup" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsStartupLabel" Text="Windows 자동 실행" FontSize="12" /></Button>
+                <Button Tag="window" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsWindowLabel" Text="창 크기" FontSize="12" /></Button>
+                <Button Tag="data" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsDataLabel" Text="앱 데이터" FontSize="12" /></Button>
+                <Button Tag="sync" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsSyncLabel" Text="PC 간 기록 동기화" FontSize="12" /></Button>
+                <Button Tag="web" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsWebLabel" Text="웹에서 보기" FontSize="12" /></Button>
+                <Button Tag="privacy" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsPrivacyLabel" Text="개인정보처리방침" FontSize="12" /></Button>
+                <Button Tag="github" Click="SettingsSectionButton_Click" Style="{StaticResource SettingsSectionButtonStyle}"><TextBlock x:Name="SettingsGithubLabel" Text="GitHub" FontSize="12" /></Button>
+            </StackPanel>
+            <ScrollViewer x:Name="SettingsScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                          ViewChanged="SettingsScrollViewer_ViewChanged">
+            <StackPanel x:Name="SettingsContent" Padding="24" Spacing="20">
                 <TextBlock Text="설정" FontSize="28" FontWeight="SemiBold" />
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsUpdateSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="앱 업데이트" FontSize="18" FontWeight="SemiBold" />
                         <TextBlock x:Name="AppVersionText" Style="{StaticResource SecondaryText}" />
                         <ToggleSwitch x:Name="AutomaticUpdatesToggle" Header="새 버전 자동 확인 및 다운로드" Toggled="AutomaticUpdatesToggle_Toggled" />
+                        <ToggleSwitch x:Name="UpdateNotificationsToggle" Header="앱 업데이트 알림" OnContent="켜짐" OffContent="꺼짐" Toggled="UpdateNotificationsToggle_Toggled" />
+                        <TextBlock x:Name="UpdateNotificationsHint" Text="새 버전이 준비되면 Windows 알림과 앱 알림을 보내고 작업 표시줄·트레이·설정에 ①을 표시합니다. 기본은 꺼짐이며, 꺼도 자동 확인·다운로드는 계속됩니다. 알림 메뉴의 전체 알림이 꺼져 있으면 표시되지 않습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                         <TextBlock x:Name="UpdateStatusText" Text="업데이트를 확인할 수 있습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                         <Expander x:Name="UpdateDetailsExpander" Visibility="Collapsed" AutomationProperties.Name="업데이트 내용">
                             <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
@@ -938,10 +979,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                    <views:RecordSyncView x:Name="RecordSyncPanel" />
-                </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsRepresentativeSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="현재 API 키의 대표 캐릭터" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="RepresentativeCharacter" ItemsSource="{x:Bind Characters}" DisplayMemberPath="Name"
@@ -949,7 +987,7 @@
                         <TextBlock Text="키마다 따로 저장됩니다. 지정하지 않으면 가장 높은 레벨의 캐릭터를 사용하며, 문의의 기본 캐릭터와 저장된 키 목록에 표시됩니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsStartSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="시작 페이지" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="StartPageSelector" SelectionChanged="StartPageSelector_SelectionChanged" MinWidth="220" AutomationProperties.Name="시작 페이지">
@@ -958,7 +996,7 @@
                         </ComboBox>
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsCloseSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="X로 창을 닫을 때" FontSize="18" FontWeight="SemiBold" />
                         <ComboBox x:Name="CloseBehavior" SelectionChanged="CloseBehavior_SelectionChanged" MinWidth="220">
@@ -966,7 +1004,7 @@
                         </ComboBox>
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsStartupSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <ToggleSwitch x:Name="WindowsStartupToggle" Header="Windows 시작 시 자동 실행" OnContent="켜짐" OffContent="꺼짐" Toggled="WindowsStartupToggle_Toggled" />
                         <ComboBox x:Name="WindowsStartupBehavior" Header="자동 실행 시" SelectionChanged="WindowsStartupBehavior_SelectionChanged" MinWidth="220" AutomationProperties.Name="Windows 자동 실행 방식">
@@ -975,7 +1013,7 @@
                         <TextBlock x:Name="WindowsStartupStatus" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsWindowSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="기본 창 크기" FontSize="18" FontWeight="SemiBold" />
                         <Grid ColumnSpacing="12">
@@ -990,7 +1028,21 @@
                         <TextBlock x:Name="WindowSizeStatus" Text="다음 실행부터 적용됩니다. 초기화하면 1200 × 800px로 돌아갑니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsDataSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="앱 데이터" FontSize="18" FontWeight="SemiBold" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock x:Name="AppDataSize" Text="확인 중…" FontSize="20" VerticalAlignment="Center" />
+                            <Button Content="용량 새로고침" Click="AppDataRefreshButton_Click" />
+                        </StackPanel>
+                        <TextBlock Text="이 PC에 저장된 캐릭터 목록, 스케줄러 기록, API 키와 설정 등의 용량입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="{StaticResource DangerTextBrush}" Background="{StaticResource DangerSoftBrush}" BorderBrush="{StaticResource DangerLineBrush}" HorizontalAlignment="Left" />
+                    </StackPanel>
+                </Border>
+                <Border x:Name="SettingsSyncSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                    <views:RecordSyncView x:Name="RecordSyncPanel" />
+                </Border>
+                <Border x:Name="SettingsWebSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="웹에서 보기" FontSize="18" FontWeight="SemiBold" />
                         <TextBlock Text="이 PC의 스케줄러·수익·레벨을 휴대폰과 다른 PC에서 조회합니다. 앱이 트레이에 있어도 연결되며, 앱을 종료하면 웹 호스트도 종료됩니다. 앱 실행 때는 자동으로 켜지지 않습니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
@@ -1018,18 +1070,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="앱 데이터" FontSize="18" FontWeight="SemiBold" />
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock x:Name="AppDataSize" Text="확인 중…" FontSize="20" VerticalAlignment="Center" />
-                            <Button Content="용량 새로고침" Click="AppDataRefreshButton_Click" />
-                        </StackPanel>
-                        <TextBlock Text="이 PC에 저장된 캐릭터 목록, 스케줄러 기록, API 키와 설정 등의 용량입니다." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                        <Button Content="데이터 삭제" Click="DeleteAppDataButton_Click" Foreground="{StaticResource DangerTextBrush}" Background="{StaticResource DangerSoftBrush}" BorderBrush="{StaticResource DangerLineBrush}" HorizontalAlignment="Left" />
-                    </StackPanel>
-                </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsPrivacySection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="개인정보처리방침" FontSize="18" FontWeight="SemiBold" />
                         <ToggleSwitch x:Name="UsageAnalyticsToggle" Header="사용자·설치 수 집계" OnContent="켜짐" OffContent="꺼짐" Toggled="TelemetryToggle_Toggled" />
@@ -1042,7 +1083,7 @@
                         <Button Content="개인정보처리방침 보기" Click="PrivacyPolicyButton_Click" />
                     </StackPanel>
                 </Border>
-                <Border Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                <Border x:Name="SettingsGithubSection" Padding="24" CornerRadius="16" Background="{StaticResource CardBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="GitHub" FontSize="18" FontWeight="SemiBold" />
                         <HyperlinkButton Content="https://github.com/MapleYoil/MapleDay"
@@ -1052,6 +1093,7 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
+        </Grid>
         <Border Grid.Row="1" Padding="24,12" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
             <Grid ColumnSpacing="12">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>

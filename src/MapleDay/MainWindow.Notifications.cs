@@ -151,7 +151,7 @@ public sealed partial class MainWindow
         UpdateNotificationsToggle.IsEnabled = _settings.RemindersEnabled && !_updateInstalling;
         UpdateSundayReminderSchedule();
         var reminderStatus = !_settings.RemindersEnabled ? "전체 알림이 꺼져 있어요."
-            : "앱 실행 중 또는 트레이에 있을 때 동작합니다. 퀘스트·보스는 등록한 캐릭터의 미완료 항목만 알리고, 업데이트·썬데이는 아래 설정을 따릅니다.";
+            : "앱 실행 중 또는 트레이에 있을 때 동작합니다. 퀘스트·보스는 등록한 캐릭터의 미완료 항목만 알리고, 썬데이는 아래 설정을 따릅니다. 업데이트 알림은 설정의 앱 업데이트에서 관리합니다.";
         ReminderRuntimeStatus.Text = _windowsNotifications.Status + "\n" + reminderStatus;
     }
 

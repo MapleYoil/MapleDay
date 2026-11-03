@@ -223,7 +223,11 @@ public sealed partial class MainWindow : Window
             UpdateSchedulerLogin();
             _ = LoadSchedulerAsync();
         }
-        else if (page == "settings") _ = RefreshAppDataSizeAsync();
+        else if (page == "settings")
+        {
+            _ = RefreshAppDataSizeAsync();
+            DispatcherQueue.TryEnqueue(UpdateSettingsSectionNavigation);
+        }
         else if (page == "level") { UpdateLevelPage(); _ = LoadLevelsAsync(); }
         else if (page == "character-info")
         {
