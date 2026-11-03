@@ -81,11 +81,11 @@ public sealed partial class MainWindow
     {
         if (_privacyPolicyOpen || _dataDeleting || _closed) return;
         _privacyPolicyOpen = true;
+        var source = sender as Button;
+        if (source is not null) source.IsEnabled = false;
         try
         {
-            using var stream = typeof(MainWindow).Assembly.GetManifestResourceStream("MapleDay.PrivacyPolicy.txt")!;
-            using var reader = new StreamReader(stream);
-            var policy = await reader.ReadToEndAsync();
+            var policy = await _githubDocuments.PrivacyPolicyAsync(allowCachedFallback: true, _supportLifetime.Token);
             await new ContentDialog
             {
                 XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme, Title = "개인정보처리방침", CloseButtonText = "닫기",
@@ -94,11 +94,25 @@ public sealed partial class MainWindow
                     MaxHeight = Math.Max(180, Math.Min(480, Root.ActualHeight - 200)),
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Content = new TextBlock { Text = policy, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true }
+                    Content = MarkdownText.Create(policy)
                 }
             }.ShowAsync();
         }
-        finally { _privacyPolicyOpen = false; }
+        catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException or OperationCanceledException)
+        {
+            if (!_closed && !_dataDeleting)
+                await new ContentDialog
+                {
+                    XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme,
+                    Title = "개인정보처리방침을 불러오지 못했어요",
+                    Content = "GitHub 연결을 확인한 뒤 다시 시도해주세요.", CloseButtonText = "닫기"
+                }.ShowAsync();
+        }
+        finally
+        {
+            if (source is not null) source.IsEnabled = true;
+            _privacyPolicyOpen = false;
+        }
     }
 
     private async void InitializeWindowsStartup()

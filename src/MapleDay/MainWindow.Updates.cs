@@ -12,6 +12,7 @@ namespace MapleDay;
 public sealed partial class MainWindow
 {
     private readonly AppUpdateClient _updates = new();
+    private readonly GitHubDocumentClient _githubDocuments = new();
     private readonly IncrementalUpdateClient _incrementalUpdates = new();
     private readonly DispatcherTimer _updateTimer = new() { Interval = TimeSpan.FromHours(6) };
     private CancellationTokenSource? _updateRequest;
@@ -51,7 +52,7 @@ public sealed partial class MainWindow
         else UpdateStatusText.Text = "실행 시와 6시간마다 새 버전을 확인하고 변경된 파일만 내려받습니다. 설치기 없이 적용 후 다시 시작합니다.";
         LoadLocalUpdatePreview();
         _updateTimer.Tick += (_, _) => StartAutomaticUpdates();
-        Closed += (_, _) => { StopUpdates(); _taskbarUpdateBadge?.Dispose(); };
+        Closed += (_, _) => { StopUpdates(); _githubDocuments.Dispose(); _taskbarUpdateBadge?.Dispose(); };
         _updatesInitialized = true;
     }
 
@@ -150,7 +151,11 @@ public sealed partial class MainWindow
                 ShowLocalUpdatePreview();
                 return;
             }
-            ShowUpdateDetails(update.Version, update.ReleaseNotes);
+            var historyJson = await _githubDocuments.UpdateHistoryAsync(allowCachedFallback: false, request.Token);
+            var pendingHistory = UpdateHistoryCatalog.Between(UpdateHistoryCatalog.Parse(historyJson), CurrentAppVersion, update.Version);
+            if (pendingHistory.Count == 0 || pendingHistory[0].Version != update.Version)
+                throw new InvalidDataException("최신 업데이트 내역을 확인하지 못했어요. 잠시 후 다시 시도해주세요.");
+            ShowUpdateDetails(update.Version, UpdateHistoryCatalog.ToMarkdown(pendingHistory), pendingHistory);
             if (WindowsStartup.IsPackaged)
             {
                 _readyUpdate = update;
@@ -183,7 +188,7 @@ public sealed partial class MainWindow
         }
         catch (OperationCanceledException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = request.IsCancellationRequested ? "업데이트 다운로드를 중단했습니다." : "연결 시간이 초과됐어요. 업데이트 확인을 다시 눌러주세요."; }
-        catch (Exception error) when (error is HttpRequestException or IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException or FormatException)
+        catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException or FormatException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = error is InvalidDataException ? error.Message : "업데이트를 확인하거나 내려받지 못했어요. 잠시 후 다시 시도해주세요."; }
         finally
         {
@@ -220,14 +225,17 @@ public sealed partial class MainWindow
         ShowUpdateDetails(null, _localUpdatePreview, preview: true);
     }
 
-    private void ShowUpdateDetails(Version? version, string notes, bool preview = false)
+    private void ShowUpdateDetails(Version? version, string notes, IReadOnlyList<UpdateHistoryEntry>? history = null, bool preview = false)
     {
-        UpdateDetailsExpander.Header = preview ? "다음 업데이트 내용 미리보기" : $"{version?.ToString(4)} 업데이트 내용";
+        var oldest = history?.LastOrDefault()?.Version;
+        UpdateDetailsExpander.Header = preview ? "다음 업데이트 내용 미리보기"
+            : history is { Count: > 1 } ? $"{oldest?.ToString(4)} ~ {version?.ToString(4)} 업데이트 내용"
+            : $"{version?.ToString(4)} 업데이트 내용";
         UpdateDetailsHint.Text = preview ? "검토용 빌드에만 표시되는 초안입니다. 아직 사용자에게 배포되지 않았습니다." : "설치하기 전에 변경사항을 확인하세요.";
         UpdateDetailsHint.Visibility = Visibility.Visible;
-        UpdateDetailsText.Text = string.IsNullOrWhiteSpace(notes)
+        MarkdownText.Set(UpdateDetailsText, string.IsNullOrWhiteSpace(notes)
             ? "이번 버전의 상세 변경사항이 등록되지 않았습니다."
-            : notes;
+            : notes);
         UpdateDetailsExpander.Visibility = Visibility.Visible;
         UpdateDetailsExpander.IsExpanded = true;
     }
@@ -236,8 +244,11 @@ public sealed partial class MainWindow
     {
         if (_updateHistoryDialogOpen || _closed || _dataDeleting) return;
         _updateHistoryDialogOpen = true;
+        var source = sender as Button;
+        if (source is not null) source.IsEnabled = false;
         try
         {
+            var history = UpdateHistoryCatalog.Parse(await _githubDocuments.UpdateHistoryAsync(allowCachedFallback: true, _supportLifetime.Token));
             var page = 0;
             var entries = new StackPanel { Spacing = 0 };
             var previous = new Button { Content = "이전", MinWidth = 84 };
@@ -253,7 +264,7 @@ public sealed partial class MainWindow
             void RenderPage()
             {
                 entries.Children.Clear();
-                foreach (var entry in UpdateHistoryCatalog.Page(page))
+                foreach (var entry in UpdateHistoryCatalog.Page(history, page))
                 {
                     var item = new StackPanel { Spacing = 8, Padding = new Thickness(0, 16, 0, 16) };
                     item.Children.Add(new TextBlock
@@ -262,13 +273,7 @@ public sealed partial class MainWindow
                         FontSize = 16,
                         FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
                     });
-                    item.Children.Add(new TextBlock
-                    {
-                        Text = entry.Notes,
-                        TextWrapping = TextWrapping.Wrap,
-                        IsTextSelectionEnabled = true,
-                        LineHeight = 22
-                    });
+                    item.Children.Add(MarkdownText.Create(entry.Notes));
                     entries.Children.Add(new Border
                     {
                         BorderBrush = AppTheme.Brush("LineBrush"),
@@ -277,13 +282,14 @@ public sealed partial class MainWindow
                     });
                 }
                 previous.IsEnabled = page > 0;
-                next.IsEnabled = page + 1 < UpdateHistoryCatalog.PageCount;
-                pageText.Text = $"{page + 1} / {UpdateHistoryCatalog.PageCount}";
-                AutomationProperties.SetName(pageText, $"{UpdateHistoryCatalog.PageCount}페이지 중 {page + 1}페이지");
+                var pages = UpdateHistoryCatalog.PageCount(history);
+                next.IsEnabled = page + 1 < pages;
+                pageText.Text = $"{page + 1} / {pages}";
+                AutomationProperties.SetName(pageText, $"{pages}페이지 중 {page + 1}페이지");
             }
 
             previous.Click += (_, _) => { if (page > 0) { page--; RenderPage(); } };
-            next.Click += (_, _) => { if (page + 1 < UpdateHistoryCatalog.PageCount) { page++; RenderPage(); } };
+            next.Click += (_, _) => { if (page + 1 < UpdateHistoryCatalog.PageCount(history)) { page++; RenderPage(); } };
             RenderPage();
             var content = new Grid { Width = Math.Max(320, Math.Min(680, Root.ActualWidth - 96)) };
             content.RowDefinitions.Add(new() { Height = new GridLength(1, GridUnitType.Star) });
@@ -306,7 +312,16 @@ public sealed partial class MainWindow
             };
             await dialog.ShowAsync();
         }
-        finally { _updateHistoryDialogOpen = false; }
+        catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException or JsonException or OperationCanceledException)
+        {
+            if (!_closed && !_dataDeleting)
+                await new ContentDialog
+                {
+                    XamlRoot = Root.XamlRoot, RequestedTheme = Root.RequestedTheme, Title = "업데이트 내역을 불러오지 못했어요",
+                    Content = "GitHub 연결을 확인한 뒤 다시 시도해주세요.", CloseButtonText = "닫기"
+                }.ShowAsync();
+        }
+        finally { if (source is not null) source.IsEnabled = true; _updateHistoryDialogOpen = false; }
     }
 
     private void NotifyPreparedUpdate()

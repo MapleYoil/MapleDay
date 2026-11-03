@@ -949,7 +949,7 @@
                             <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Padding="0,8,8,12" Spacing="10">
                                     <TextBlock x:Name="UpdateDetailsHint" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
-                                    <TextBlock x:Name="UpdateDetailsText" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="22" />
+                                    <RichTextBlock x:Name="UpdateDetailsText" TextWrapping="Wrap" IsTextSelectionEnabled="True" LineHeight="22" />
                                 </StackPanel>
                             </ScrollViewer>
                         </Expander>

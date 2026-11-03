@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Text.Json;
+
 namespace MapleDay.Core;
 
 public sealed record UpdateHistoryEntry(Version Version, DateOnly Date, string Notes);
@@ -5,53 +8,46 @@ public sealed record UpdateHistoryEntry(Version Version, DateOnly Date, string N
 public static class UpdateHistoryCatalog
 {
     public const int PageSize = 5;
-    private static UpdateHistoryEntry Entry(string version, int year, int month, int day, string notes) =>
-        new(new Version(version), new DateOnly(year, month, day), notes);
 
-    public static IReadOnlyList<UpdateHistoryEntry> Entries { get; } =
-    [
-        Entry("1.1.39.0", 2026, 11, 4, "• 설정 화면에서 원하는 항목으로 빠르게 이동할 수 있습니다.\n• 앱 업데이트 알림과 동기화·웹·앱 데이터 설정 위치를 정리했습니다.\n• 개인정보처리방침을 최신 내용으로 정리했습니다."),
-        Entry("1.1.35.0", 2026, 11, 3, "• 공지사항 메뉴를 추가하고 중요한 안내를 앱에서 확인할 수 있습니다.\n• 공지 알림을 따로 켜고 끌 수 있으며 기본은 켜짐입니다.\n• 읽지 않은 공지는 ①로 표시하고 읽을 때까지 앱을 시작할 때마다 Windows 알림으로 알려드립니다."),
-        Entry("1.1.34.0", 2026, 11, 1, "• 설정의 앱 업데이트 영역을 맨 위로 옮겼습니다.\n• 새 버전의 변경사항을 확인한 뒤 업데이트 여부를 결정할 수 있습니다.\n• 모든 업데이트 내역에서 버전과 날짜, 변경사항을 최신순으로 5개씩 볼 수 있습니다.\n• 스케줄러 보스 인원이 주간 초기화나 데이터 갱신 뒤 1인으로 돌아가던 문제를 수정했습니다."),
-        Entry("1.1.33.0", 2026, 11, 1, "• 수익 집계 재생을 별도 탭으로 분리했습니다.\n• 보스·사냥 기록을 선택해 재생하고 MP4·GIF·PNG·WEBP로 내보낼 수 있습니다.\n• 재생 준비 상태를 즉시 표시하고 재생 화면으로 자동 이동합니다."),
-        Entry("1.1.32.0", 2026, 10, 30, "• 스케줄러 마지막 갱신 후 2시간이 지나면 갱신 필요 버튼을 강조합니다.\n• 첫 조회 이후에는 저장 결과를 먼저 보여주고, 사용자가 갱신할 때만 API를 다시 조회합니다.\n• 내 캐릭터에서 API 키 계정을 바로 전환할 수 있습니다.\n• 문의·건의사항의 추가 답변과 삭제 확인 흐름을 개선했습니다."),
-        Entry("1.1.29.0", 2026, 10, 30, "• Microsoft Store, GitHub 설치판, 직접 설치한 MSIX를 정확히 구분하도록 앱의 설치 방식 식별을 개선했습니다."),
-        Entry("1.1.28.0", 2026, 10, 30, "• 목요일에 새 주가 시작되어도 마지막 보스 파티 인원을 이어받습니다.\n• 과거 주차별 인원 기록은 그대로 보존합니다."),
-        Entry("1.1.27.0", 2026, 10, 29, "• 파티 분배금 계산기의 판매 금액과 실수령액 입력에 천 단위 쉼표를 실시간 표시합니다.\n• 입력 중 커서 위치와 계산 결과가 자연스럽게 유지됩니다."),
-        Entry("1.1.26.0", 2026, 10, 29, "• 여러 API 키의 캐릭터를 한 스케줄러에서 함께 조회할 수 있습니다.\n• API 키 화면에 키 추가 버튼을 넣었습니다.\n• 미접속 캐릭터의 저장된 스케줄러 항목이 누락되지 않도록 보완했습니다.\n• 기존 사냥 기록에 메소와 조각을 덧붙일 수 있습니다."),
-        Entry("1.1.23.0", 2026, 10, 22, "• 파티를 먼저 만든 뒤 보스와 난이도를 추가하는 방식으로 개선했습니다.\n• 파티원끼리 물욕템 판매·정산 현황을 공유할 수 있습니다.\n• 누적 수익의 집계 시작일을 직접 지정할 수 있습니다.\n• 캐릭터 삭제나 월드 리프 뒤에도 기존 기록을 유지합니다."),
-        Entry("1.1.21.0", 2026, 10, 20, "• 이전 문의 내용이 입력란에 자동 복원되지 않도록 수정했습니다.\n• 문의 초안이 있어도 업데이트할 수 있으며, 실제 전송 중일 때만 잠시 기다립니다."),
-        Entry("1.1.20.0", 2026, 10, 20, "• 스케줄러 캐릭터의 장비·캐시 장비·심볼을 보는 캐릭터 정보 메뉴를 추가했습니다.\n• 장비와 코디 프리셋, 아케인·어센틱·그랜드 어센틱 심볼을 지원합니다.\n• 아이템에 마우스를 올리면 강화·능력치·잠재능력 정보를 표시합니다."),
-        Entry("1.1.15.0", 2026, 10, 18, "• 사냥 수익에 메소 + 조각 표시를 추가했습니다.\n• 여러 PC 사이에서 기록을 암호화해 동기화할 수 있습니다.\n• 파티 구성·보스별 참여자·분배 비율을 저장할 수 있습니다.\n• 경매장과 전달 수수료를 반영한 파티 정산을 추가했습니다."),
-        Entry("1.1.14.0", 2026, 10, 10, "• 보스·일반 일정과 반복 일정을 관리하는 캘린더를 추가했습니다.\n• 썬데이 메이플 혜택과 최근 6개월의 종료된 썬데이를 확인할 수 있습니다.\n• 앱 업데이트·썬데이 알림 설정과 수익 설정을 추가했습니다.\n• 사냥 메소와 솔 에르다 조각을 함께 입력할 수 있습니다."),
-        Entry("1.1.13.0", 2026, 10, 9, "• 전체·보스·사냥 탭에 각각 캘린더를 추가했습니다.\n• 전체 캘린더에서 결정·물욕템·사냥 수익을 함께 합산합니다.\n• 사냥 날짜별 메소와 조각 수익을 확인할 수 있습니다."),
-        Entry("1.1.12.0", 2026, 10, 9, "• 수익 집계에서 메소 입자 하나당 금액을 설정할 수 있습니다. 기본값은 50억입니다.\n• 누적 물욕템을 합산 수익이 높은 순서로 표시합니다."),
-        Entry("1.1.11.0", 2026, 10, 9, "• 메소 제한 사용량을 직접 금액으로 입력하거나 최대치로 선택할 수 있습니다.\n• 메소·조각·조각 가격 입력 중 계산식과 일괄 입력 미리보기를 즉시 갱신합니다."),
-        Entry("1.1.10.0", 2026, 10, 9, "• 솔 에르다 조각 가격을 1만 메소 단위로 정확히 보존합니다.\n• 문의·건의사항에 접수 당시 앱 버전을 표시합니다."),
-        Entry("1.1.9.0", 2026, 10, 9, "• 사냥 메소와 솔 에르다 조각을 날짜 범위로 일괄 저장할 수 있습니다.\n• 기존 기록 유지·덮어쓰기·방금 입력 취소를 지원합니다.\n• 저장된 최신 조각 가격을 다시 불러올 수 있습니다."),
-        Entry("1.1.8.0", 2026, 10, 9, "• 수익 집계에서 솔 에르다 조각 100개마다 아이콘 하나가 떨어지도록 표현합니다.\n• 실제 조각 수량과 수익 계산은 그대로 유지합니다."),
-        Entry("1.1.7.0", 2026, 10, 9, "• 수익 집계 재생과 영상 내보내기의 끊김과 처리 시간을 개선했습니다.\n• 재생 시간을 지정하거나 최종 결과만 PNG·WEBP로 저장할 수 있습니다.\n• 사냥 수익 기록과 사냥 집계 재생을 추가했습니다."),
-        Entry("1.1.6.0", 2026, 10, 9, "• 수익 재생에서 모든 보스의 획득 물욕템을 누적해서 보여줍니다.\n• 같은 아이템의 수량과 수령 메소를 합산합니다.\n• 미리보기와 MP4·GIF 내보내기에 같은 누적 결과를 적용합니다."),
-        Entry("1.1.5.0", 2026, 10, 9, "• 보스 처치 기록의 날짜·보스·난이도·파티 인원을 수정하거나 삭제할 수 있습니다.\n• 보스 검색과 카드형 선택을 지원하는 기록 추가 화면을 개선했습니다.\n• 물욕템 참고 가격과 수익 집계 재생을 추가했습니다.\n• 1:1 문의에서 답변 후에도 대화를 이어갈 수 있습니다."),
-        Entry("1.1.1.0", 2026, 10, 9, "• 물욕템 금액 입력 중 억 단위 환산액과 분배 수령액을 즉시 표시합니다.\n• 보스 결정 가격과 수익 표시를 억 단위로 통일했습니다."),
-        Entry("1.1.0.0", 2026, 10, 9, "• 보스별 물욕템과 파티 분배 수익 기록을 추가했습니다.\n• 날짜별·기간별 보스 처치 기록 추가와 이번 주 남은 예상 수익을 지원합니다.\n• 수익 집계 영상과 MP4·GIF 내보내기를 추가했습니다.\n• 모바일에서 스케줄러·수익·레벨을 볼 수 있는 웹 조회를 추가했습니다."),
-        Entry("1.0.41.0", 2026, 10, 8, "• 익스트림 몬스터파크 퀘스트의 불필요한 진행 숫자를 제거했습니다.\n• 게임 내 스케줄러처럼 퀘스트 이름과 상태 버튼만 표시합니다."),
-        Entry("1.0.40.0", 2026, 10, 8, "• 과거 보스 수익 기록의 파티 인원을 개별 또는 전체 기간에 적용할 수 있습니다.\n• 건의사항의 반영 완료·반려 결과를 앱과 Windows 알림으로 확인할 수 있습니다."),
-        Entry("1.0.39.0", 2026, 10, 8, "• 새 버전 알림을 자동 업데이트 확인과 별도로 켜고 끌 수 있습니다.\n• 알림을 꺼도 자동 확인과 다운로드는 계속 사용할 수 있습니다."),
-        Entry("1.0.38.0", 2026, 10, 8, "• 모든 주간 퀘스트와 주간 보스 알림에 각각 요일 설정을 적용했습니다.\n• 지정한 요일 외에는 앱 시작 알림도 보내지 않습니다."),
-        Entry("1.0.37.0", 2026, 10, 8, "• 다크 모드를 추가했습니다.\n• 미접속 캐릭터는 마지막 스케줄러를 복원하고 지난 초기화 항목만 갱신합니다.\n• 주간 보스 알림의 요일과 시간을 설정할 수 있습니다."),
-        Entry("1.0.36.0", 2026, 10, 7, "• 설치기 창 없이 변경된 파일만 내려받아 업데이트하고 다시 시작할 수 있습니다.\n• 업데이트 실패 시 기존 파일을 복구합니다.\n• 문의·건의사항의 접수와 답변 알림 흐름을 개선했습니다."),
-        Entry("1.0.35.0", 2026, 10, 7, "• 앱 오류를 필요한 정보만 추려 자동 보고하는 기능을 추가했습니다.\n• 설정에서 사용량 집계와 오류 보고를 각각 끌 수 있습니다.\n• 문의 답변을 앱과 Windows 알림으로 확인할 수 있습니다."),
-        Entry("1.0.34.0", 2026, 10, 7, "• 앱 실행 시와 6시간마다 새 버전을 자동 확인하는 기능을 추가했습니다.\n• 다운로드 파일의 크기와 SHA-256을 검증한 뒤 업데이트합니다.\n• 설정에서 자동 확인을 끄거나 직접 확인할 수 있습니다."),
-        Entry("1.0.33.0", 2026, 10, 7, "• 앱과 배포 파일에 라이선스 및 제3자 자료 고지를 추가했습니다.\n• 설치 프로그램에서 이용 조건을 확인할 수 있습니다."),
-        Entry("1.0.32.0", 2026, 10, 7, "• 메요일의 첫 공개 버전입니다.\n• 캐릭터 목록, 스케줄러, 보스 수익 캘린더, 레벨·경험치 기록과 알림을 제공합니다.\n• Windows x64용 설치 프로그램과 MSIX를 제공합니다.")
-    ];
-
-    public static int PageCount => (Entries.Count + PageSize - 1) / PageSize;
-
-    public static IReadOnlyList<UpdateHistoryEntry> Page(int page)
+    public static IReadOnlyList<UpdateHistoryEntry> Parse(string json)
     {
-        if (page < 0 || page >= PageCount) return [];
-        return Entries.Skip(page * PageSize).Take(PageSize).ToArray();
+        using var document = JsonDocument.Parse(json, new JsonDocumentOptions { MaxDepth = 8 });
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object || root.GetProperty("format").GetInt32() != 1)
+            throw new InvalidDataException("업데이트 내역 형식이 올바르지 않습니다.");
+        var values = root.GetProperty("entries");
+        if (values.ValueKind != JsonValueKind.Array || values.GetArrayLength() is 0 or > 200)
+            throw new InvalidDataException("업데이트 내역 수가 올바르지 않습니다.");
+        var result = new List<UpdateHistoryEntry>();
+        var versions = new HashSet<Version>();
+        foreach (var item in values.EnumerateArray())
+        {
+            if (!Version.TryParse(item.GetProperty("version").GetString(), out var version)
+                || !DateOnly.TryParseExact(item.GetProperty("date").GetString(), "yyyy-MM-dd", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out var date))
+                throw new InvalidDataException("업데이트 버전 또는 날짜가 올바르지 않습니다.");
+            var notes = AppUpdatePolicy.NormalizeReleaseNotes(item.GetProperty("notes").GetString());
+            if (string.IsNullOrWhiteSpace(notes) || !versions.Add(version))
+                throw new InvalidDataException("업데이트 내역이 비어 있거나 중복됩니다.");
+            result.Add(new(version, date, notes));
+        }
+        if (result.Zip(result.Skip(1)).Any(pair => pair.First.Version <= pair.Second.Version))
+            throw new InvalidDataException("업데이트 내역이 최신순이 아닙니다.");
+        return result;
     }
+
+    public static IReadOnlyList<UpdateHistoryEntry> Between(IReadOnlyList<UpdateHistoryEntry> entries, Version current, Version latest)
+        => entries.Where(entry => entry.Version > current && entry.Version <= latest).ToArray();
+
+    public static int PageCount(IReadOnlyList<UpdateHistoryEntry> entries)
+        => (entries.Count + PageSize - 1) / PageSize;
+
+    public static IReadOnlyList<UpdateHistoryEntry> Page(IReadOnlyList<UpdateHistoryEntry> entries, int page)
+    {
+        if (page < 0 || page >= PageCount(entries)) return [];
+        return entries.Skip(page * PageSize).Take(PageSize).ToArray();
+    }
+
+    public static string ToMarkdown(IEnumerable<UpdateHistoryEntry> entries)
+        => string.Join("\n\n", entries.Select(entry => $"## {entry.Version.ToString(4)} · {entry.Date:yyyy.MM.dd}\n{entry.Notes}"));
 }
