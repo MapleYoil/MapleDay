@@ -3,7 +3,7 @@ using MapleDay.Core;
 
 namespace MapleDay.Services;
 
-/// <summary>Crash-safe, bounded queue of allowlisted fields; contains no raw log.</summary>
+/// <summary>Crash-safe, bounded queue of allowlisted fields and a locally sanitized exception message.</summary>
 public sealed class DiagnosticQueue(string? directory = null)
 {
     private readonly string _directory = directory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MapleDay", "diagnostics");

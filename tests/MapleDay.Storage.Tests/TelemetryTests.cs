@@ -76,7 +76,7 @@ public sealed class TelemetryTests : IDisposable
         queue.Capture(new IOException("secret path"),"storage",new(1,0,35,0));
         await Assert.ThrowsAsync<HttpRequestException>(()=>client.SendAsync([],new(1,0,35,0),queue,false,default));
         Assert.Single(queue.Pending());Assert.Single(server.Requests);
-        Assert.EndsWith("/errors",server.Requests[0].Path);Assert.DoesNotContain("secret path",server.Requests[0].Body);
+        Assert.EndsWith("/errors",server.Requests[0].Path);Assert.Contains("secret path",server.Requests[0].Body);
         server.Fail=false;await client.SendAsync([],new(1,0,35,0),queue,false,default);
         Assert.Empty(queue.Pending());
     }

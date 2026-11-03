@@ -6,7 +6,7 @@ namespace MapleDay.Core.Tests;
 public sealed class AppDiagnosticsTests
 {
     [Fact]
-    public void ReportsIncludeOnlyAllowlistedFieldsAndNeverExceptionMessagesOrData()
+    public void ReportsIncludeSanitizedExceptionMessagesAndNeverSecretsOrData()
     {
         var error = new InvalidOperationException("live_secret https://host/private?api-key=secret C:\\Users\\Nickname");
         error.Data["api-key"] = "private-key";
@@ -14,6 +14,7 @@ public sealed class AppDiagnosticsTests
         var raw = JsonSerializer.Serialize(report);
         Assert.DoesNotContain("live_secret",raw); Assert.DoesNotContain("private-key",raw);
         Assert.DoesNotContain("Nickname",raw); Assert.DoesNotContain("https:",raw);
+        Assert.Contains("[API 키]",report.Message); Assert.Contains("[URL]",report.Message); Assert.Contains("[경로]",report.Message);
         Assert.Equal("System.InvalidOperationException",report.ExceptionType);
         Assert.Equal(32,report.Id.Length); Assert.Equal(64,report.Fingerprint.Length);
     }

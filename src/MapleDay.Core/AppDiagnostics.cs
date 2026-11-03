@@ -7,23 +7,33 @@ using System.Text.RegularExpressions;
 namespace MapleDay.Core;
 
 public sealed record DiagnosticReport(string Id, string Category, string ExceptionType, int Hresult,
-    string[] Frames, string Version, string OsVersion, bool Fatal, long Occurred)
+    string[] Frames, string Version, string OsVersion, bool Fatal, long Occurred, string? Message = null)
 {
     public static DiagnosticReport Create(Exception error, string category, Version version, bool fatal)
     {
         if (error is AggregateException aggregate && aggregate.Flatten().InnerExceptions.FirstOrDefault() is { } inner) error = inner;
-        // Never use Message, ToString, StackTrace strings, Data, URLs or paths.
         var frames = new StackTrace(error, false).GetFrames() ?? [];
         var symbols = frames.Select(frame => frame.GetMethod())
             .Where(method => method?.DeclaringType?.FullName?.StartsWith("MapleDay.", StringComparison.Ordinal) == true)
             .Select(method => Symbol(method!.DeclaringType!.FullName + "." + method.Name)).Distinct().Take(12).ToArray();
         var os = Environment.OSVersion.Version;
         return new(Guid.NewGuid().ToString("N"), category, Symbol(error.GetType().FullName ?? "System.Exception"),
-            error.HResult, symbols, FourParts(version), FourParts(os), fatal, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            error.HResult, symbols, FourParts(version), FourParts(os), fatal, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), SafeMessage(error.Message));
     }
     private static string FourParts(Version version) => new Version(Math.Clamp(version.Major, 0, 65535),
         Math.Clamp(version.Minor, 0, 65535), Math.Clamp(version.Build, 0, 65535), Math.Clamp(version.Revision, 0, 65535)).ToString(4);
     private static string Symbol(string symbol) => Regex.Replace(symbol, "[^A-Za-z0-9_.+<>`\\[\\]-]", "_")[..Math.Min(symbol.Length, 180)];
+    private static string? SafeMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message)) return null;
+        var safe = Regex.Replace(message, @"live_[A-Za-z0-9_-]{6,}", "[API 키]", RegexOptions.IgnoreCase);
+        safe = Regex.Replace(safe, @"https?://[^\s]+", "[URL]", RegexOptions.IgnoreCase);
+        safe = Regex.Replace(safe, @"(?<![A-Za-z0-9])[A-Za-z]:\\[^\r\n\t]*", "[경로]");
+        safe = Regex.Replace(safe, @"(?<![A-Za-z0-9])/(?:Users|home)/[^\r\n\t ]+", "[경로]", RegexOptions.IgnoreCase);
+        safe = Regex.Replace(safe, @"(?<![A-Za-z0-9])[A-Fa-f0-9]{32,}(?![A-Za-z0-9])", "[비밀값]");
+        safe = Regex.Replace(safe, @"[\r\n\t]+", " ").Trim();
+        return safe.Length == 0 ? null : safe[..Math.Min(safe.Length, 1000)];
+    }
     public string Fingerprint => Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(
         JsonSerializer.Serialize(new { Category, ExceptionType, Hresult, Frames }))));
 }

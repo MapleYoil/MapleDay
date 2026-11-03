@@ -71,7 +71,7 @@ public sealed class TelemetryClient : IDisposable
                 token.ThrowIfCancellationRequested();
                 var report = pending.Report;
                 using var sent = await _http.PostAsJsonAsync("errors", new { report.Id, _identity.Installation, report.Category,
-                    report.ExceptionType, report.Hresult, report.Frames, report.Version, report.OsVersion, report.Fatal, report.Occurred }, _json, token);
+                    report.ExceptionType, report.Hresult, report.Frames, report.Version, report.OsVersion, report.Fatal, report.Occurred, report.Message }, _json, token);
                 if (sent.StatusCode == System.Net.HttpStatusCode.BadRequest) { queue.Acknowledge(pending.Path); continue; }
                 sent.EnsureSuccessStatusCode();
                 queue.Acknowledge(pending.Path);
