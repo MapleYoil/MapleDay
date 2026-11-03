@@ -50,7 +50,7 @@ public sealed partial class MainWindow
         var showSections = args.NewSize.Width >= 760;
         SettingsSectionNavigation.Visibility = showSections ? Visibility.Visible : Visibility.Collapsed;
         SettingsContent.Padding = showSections
-            ? new Thickness(184, 24, 24, 24)
+            ? new Thickness(179, 24, 24, 24)
             : new Thickness(24);
         if (showSections) UpdateSettingsSectionNavigation();
     }
