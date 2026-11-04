@@ -73,6 +73,27 @@ public sealed class AppSettings
         foreach (var notice in ReminderNotices.Where(notice => !notice.Read)) { notice.Read = true; changed = true; }
         return changed;
     }
+    public bool MarkInstalledUpdateNoticesRead(Version currentVersion)
+    {
+        var changed = false;
+        foreach (var notice in ReminderNotices.Where(notice => !notice.Read))
+        {
+            if (notice.UpdateVersion() is not { } version || version > currentVersion) continue;
+            notice.Read = true;
+            changed = true;
+        }
+        return changed;
+    }
+    public bool MarkUpdateNoticesRead()
+    {
+        var changed = false;
+        foreach (var notice in ReminderNotices.Where(notice => !notice.Read && notice.AnnouncementTitle == "앱 업데이트"))
+        {
+            notice.Read = true;
+            changed = true;
+        }
+        return changed;
+    }
     private static string FilePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MapleDay", "settings.json");
 
     public static AppSettings Load(string? path = null)

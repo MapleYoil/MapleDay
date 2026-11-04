@@ -24,6 +24,47 @@ public sealed class WindowsNotificationTests
         Assert.Equal(3, restored.ReminderNotices.Count);
     }
 
+    [Fact]
+    public void InstalledUpdateNotificationsAreMarkedReadIncludingLegacyNotices()
+    {
+        var settings = new AppSettings
+        {
+            ReminderNotices =
+            [
+                new() { Id = "older", AnnouncementTitle = "앱 업데이트", AnnouncementVersion = "1.1.39.0", Read = false },
+                new() { Id = "current-legacy", AnnouncementTitle = "앱 업데이트", AnnouncementText = "1.2.0.0 버전이 준비됐어요.", Read = false },
+                new() { Id = "newer", AnnouncementTitle = "앱 업데이트", AnnouncementVersion = "1.2.1.0", Read = false },
+                new() { Id = "sunday", AnnouncementTitle = "썬데이 메이플", AnnouncementText = "1.1.0.0 혜택", Read = false }
+            ]
+        };
+
+        Assert.True(settings.MarkInstalledUpdateNoticesRead(new Version(1, 2, 0, 0)));
+        Assert.True(settings.ReminderNotices.Single(notice => notice.Id == "older").Read);
+        Assert.True(settings.ReminderNotices.Single(notice => notice.Id == "current-legacy").Read);
+        Assert.False(settings.ReminderNotices.Single(notice => notice.Id == "newer").Read);
+        Assert.False(settings.ReminderNotices.Single(notice => notice.Id == "sunday").Read);
+        Assert.False(settings.MarkInstalledUpdateNoticesRead(new Version(1, 2, 0, 0)));
+    }
+
+    [Fact]
+    public void StoreUpdateNoticesCanBeDismissedWithoutAStorePackageUpdate()
+    {
+        var settings = new AppSettings
+        {
+            NotifiedUpdateVersion = "1.2.0.0",
+            ReminderNotices =
+            [
+                new() { Id = "update", AnnouncementTitle = "앱 업데이트", AnnouncementVersion = "1.2.0.0" },
+                new() { Id = "boss", AnnouncementTitle = "주간 보스" }
+            ]
+        };
+
+        Assert.True(settings.MarkUpdateNoticesRead());
+        Assert.True(settings.ReminderNotices.Single(notice => notice.Id == "update").Read);
+        Assert.False(settings.ReminderNotices.Single(notice => notice.Id == "boss").Read);
+        Assert.False(settings.MarkUpdateNoticesRead());
+    }
+
     [Theory]
     [InlineData("reminder", "notice-123")]
     [InlineData("ticket", "문의;=& 한글")]

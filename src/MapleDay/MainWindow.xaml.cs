@@ -175,6 +175,7 @@ public sealed partial class MainWindow : Window
         // Opening the notification menu always returns to its content list,
         // including clicking the same sidebar item or activating a toast.
         if (page == "notifications") ShowNotificationSettings(false);
+        if (page == "settings") MarkUpdateNoticesRead();
         if (page != "income") IncomeReplayPanel?.Pause();
         if (page == _currentPage) return;
         if (remember) _backStack.Push(_currentPage);

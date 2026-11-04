@@ -119,8 +119,8 @@ public sealed partial class MainWindow
         try { _settings.Save(); ReminderMessage.IsOpen = false; }
         catch (Exception error) when (IsStorageError(error)) { ShowReminderMessage("알림 설정을 저장하지 못했어요. 이번 실행에만 적용됩니다.", InfoBarSeverity.Warning); }
         UpdateReminderSchedule();
-        RefreshUpdateBadge();
         if (_updatesInitialized) NotifyPreparedUpdate();
+        RefreshUpdateBadge();
         UpdateSundayReminderSchedule();
     }
 
@@ -334,10 +334,12 @@ public sealed partial class MainWindow
     private void ShowReminderMessage(string message, InfoBarSeverity severity)
     { ReminderMessage.Title = message; ReminderMessage.Severity = severity; ReminderMessage.IsOpen = true; }
 
-    private bool AddAnnouncementNotice(string title, string text, string url, string? sundayKey = null)
+    private bool AddAnnouncementNotice(string title, string text, string url, string? sundayKey = null, string? version = null)
     {
         var notice = new ReminderNotice { AnnouncementTitle = title, AnnouncementText = text, AnnouncementUrl = url,
-            CreatedAt = DateTimeOffset.UtcNow, Read = AppWindow.IsVisible && _currentPage == "notifications" && !_notificationSettingsOpen };
+            AnnouncementVersion = version, CreatedAt = DateTimeOffset.UtcNow,
+            Read = AppWindow.IsVisible && (_currentPage == "notifications" && !_notificationSettingsOpen
+                || url == "mapleday:update" && _currentPage == "settings") };
         var previous = _settings.ReminderNotices;
         _settings.ReminderNotices = new[] { notice }.Concat(previous).Take(100).ToList();
         var hadCheckpoint = sundayKey is not null && _settings.CheckedReminders.TryGetValue(sundayKey, out _);

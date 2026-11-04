@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
+using Windows.Services.Store;
 
 namespace MapleDay;
 
@@ -22,6 +23,8 @@ public sealed partial class MainWindow
     private AppUpdate? _readyUpdate;
     private PreparedUpdate? _preparedUpdate;
     private TaskbarUpdateBadge? _taskbarUpdateBadge;
+    private StoreContext? _storeContext;
+    private bool _storeUpdateAvailable;
     private bool IsStoreInstall => WindowsStartup.IsPackaged && Windows.ApplicationModel.Package.Current.SignatureKind == Windows.ApplicationModel.PackageSignatureKind.Store;
     private Version CurrentAppVersion
     {
@@ -35,8 +38,16 @@ public sealed partial class MainWindow
 
     private void InitializeUpdates()
     {
-        _taskbarUpdateBadge = new TaskbarUpdateBadge(WinRT.Interop.WindowNative.GetWindowHandle(this));
+        var window = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        _taskbarUpdateBadge = new TaskbarUpdateBadge(window);
         AppVersionText.Text = $"현재 버전 {CurrentAppVersion.ToString(4)}";
+        if (_settings.MarkInstalledUpdateNoticesRead(CurrentAppVersion))
+        {
+            try { _settings.Save(); }
+            catch (Exception error) when (IsStorageError(error))
+            { ShowReminderMessage("업데이트 알림의 읽음 상태를 저장하지 못했어요.", InfoBarSeverity.Warning); }
+            RefreshReminderList();
+        }
         AutomaticUpdatesToggle.IsOn = _settings.AutomaticUpdates;
         UpdateNotificationsToggle.IsOn = _settings.UpdateNotifications;
         AutomaticUpdatesToggle.IsEnabled = !WindowsStartup.IsPackaged;
@@ -107,8 +118,8 @@ public sealed partial class MainWindow
             ShowReminderMessage("앱 업데이트 알림 설정을 저장하지 못했어요.", InfoBarSeverity.Warning);
             return;
         }
-        RefreshUpdateBadge();
         NotifyPreparedUpdate();
+        RefreshUpdateBadge();
         if (WindowsStartup.IsPackaged)
         {
             if (_settings.UpdateNotifications) StartAutomaticUpdates();
@@ -118,7 +129,10 @@ public sealed partial class MainWindow
 
     private void RefreshUpdateBadge()
     {
-        var visible = _readyUpdate is not null && (_preparedUpdate is not null || WindowsStartup.IsPackaged) && _settings.UpdateNotifications
+        var available = IsStoreInstall ? _storeUpdateAvailable
+            : _readyUpdate is not null && (_preparedUpdate is not null || WindowsStartup.IsPackaged);
+        var unread = _settings.ReminderNotices.Any(notice => !notice.Read && notice.AnnouncementTitle == "앱 업데이트");
+        var visible = available && unread && _settings.UpdateNotifications
             && _settings.RemindersEnabled
             && !_closed && !_dataDeleting && !_updateInstalling;
         SettingsUpdateBadge.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
@@ -128,6 +142,38 @@ public sealed partial class MainWindow
         _taskbarUpdateBadge?.SetVisible(visible);
     }
 
+    private void MarkUpdateNoticesRead(bool clearUnavailableStoreVersion = false)
+    {
+        if (_closed || _dataDeleting) return;
+        var changed = _settings.MarkUpdateNoticesRead();
+        if (clearUnavailableStoreVersion && !string.IsNullOrEmpty(_settings.NotifiedUpdateVersion))
+        {
+            _settings.NotifiedUpdateVersion = "";
+            changed = true;
+        }
+        if (changed)
+        {
+            try { _settings.Save(); }
+            catch (Exception error) when (IsStorageError(error))
+            { ShowReminderMessage("업데이트 알림의 읽음 상태를 저장하지 못했어요.", InfoBarSeverity.Warning); }
+            RefreshReminderList();
+        }
+        RefreshUpdateBadge();
+    }
+
+    private async Task<bool> CheckStoreUpdateAsync(CancellationToken token)
+    {
+        if (_storeContext is null)
+        {
+            _storeContext = StoreContext.GetDefault();
+            WinRT.Interop.InitializeWithWindow.Initialize(_storeContext, WinRT.Interop.WindowNative.GetWindowHandle(this));
+        }
+        var currentPackage = Windows.ApplicationModel.Package.Current.Id.Name;
+        var updates = await _storeContext.GetAppAndOptionalStorePackageUpdatesAsync();
+        token.ThrowIfCancellationRequested();
+        return updates.Any(update => string.Equals(update.Package.Id.Name, currentPackage, StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task CheckForUpdatesAsync()
     {
         if (_updateChecking || _updateInstalling || _closed || _dataDeleting) return;
@@ -135,9 +181,22 @@ public sealed partial class MainWindow
         var request = new CancellationTokenSource();
         _updateRequest = request;
         CheckUpdateButton.IsEnabled = InstallUpdateButton.IsEnabled = false;
-        UpdateStatusText.Text = "GitHub에서 새 버전 확인 중…";
+        UpdateStatusText.Text = IsStoreInstall ? "Microsoft Store에서 새 버전 확인 중…" : "GitHub에서 새 버전 확인 중…";
         try
         {
+            _storeUpdateAvailable = false;
+            if (IsStoreInstall)
+            {
+                _storeUpdateAvailable = await CheckStoreUpdateAsync(request.Token);
+                if (!_storeUpdateAvailable)
+                {
+                    _readyUpdate = null;
+                    MarkUpdateNoticesRead(clearUnavailableStoreVersion: true);
+                    UpdateStatusText.Text = "Microsoft Store에서 최신 버전을 사용 중입니다.";
+                    ShowLocalUpdatePreview();
+                    return;
+                }
+            }
             var update = await _updates.CheckAsync(CurrentAppVersion, request.Token);
             if (_closed || _dataDeleting) return;
             _readyUpdate = null;
@@ -147,6 +206,13 @@ public sealed partial class MainWindow
             RefreshUpdateBadge();
             if (update is null)
             {
+                if (IsStoreInstall)
+                {
+                    InstallUpdateButton.Visibility = Visibility.Visible;
+                    UpdateStatusText.Text = "Microsoft Store에 설치 가능한 새 버전이 있어요.";
+                    NotifyPreparedUpdate(); RefreshUpdateBadge();
+                    return;
+                }
                 UpdateStatusText.Text = "최신 버전을 사용 중입니다.";
                 ShowLocalUpdatePreview();
                 return;
@@ -161,7 +227,7 @@ public sealed partial class MainWindow
                 _readyUpdate = update;
                 InstallUpdateButton.Visibility = Visibility.Visible;
                 UpdateStatusText.Text = $"{update.Version} 새 버전이 있어요. 변경사항을 확인한 뒤 업데이트할 수 있습니다.";
-                RefreshUpdateBadge(); NotifyPreparedUpdate();
+                NotifyPreparedUpdate(); RefreshUpdateBadge();
                 return;
             }
             UpdateDownloadProgress.Value = 0;
@@ -183,12 +249,11 @@ public sealed partial class MainWindow
             _readyUpdate = update; _preparedUpdate = prepared;
             InstallUpdateButton.Visibility = Visibility.Visible;
             UpdateStatusText.Text = $"{update.Version} 준비 완료 · 변경 {prepared.ChangedFiles}개 · 다운로드 {prepared.DownloadSize / 1024.0 / 1024.0:0.0}MB. 설치기 없이 적용하고 다시 시작합니다.";
-            RefreshUpdateBadge();
-            NotifyPreparedUpdate();
+            NotifyPreparedUpdate(); RefreshUpdateBadge();
         }
         catch (OperationCanceledException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = request.IsCancellationRequested ? "업데이트 다운로드를 중단했습니다." : "연결 시간이 초과됐어요. 업데이트 확인을 다시 눌러주세요."; }
-        catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException or FormatException)
+        catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException or FormatException or System.Runtime.InteropServices.COMException)
         { if (!_closed && !_dataDeleting) UpdateStatusText.Text = error is InvalidDataException ? error.Message : "업데이트를 확인하거나 내려받지 못했어요. 잠시 후 다시 시도해주세요."; }
         finally
         {
@@ -326,15 +391,18 @@ public sealed partial class MainWindow
 
     private void NotifyPreparedUpdate()
     {
-        if (_readyUpdate is null || _preparedUpdate is null && !WindowsStartup.IsPackaged || !_settings.UpdateNotifications || !_settings.RemindersEnabled
+        var available = IsStoreInstall ? _storeUpdateAvailable
+            : _readyUpdate is not null && (_preparedUpdate is not null || WindowsStartup.IsPackaged);
+        if (!available || !_settings.UpdateNotifications || !_settings.RemindersEnabled
             || _closed || _dataDeleting || _updateInstalling) return;
-        var version = _readyUpdate.Version.ToString();
+        var version = _readyUpdate?.Version.ToString() ?? "store";
         if (_settings.NotifiedUpdateVersion == version) return;
         var previous = _settings.NotifiedUpdateVersion;
         _settings.NotifiedUpdateVersion = version;
-        var message = WindowsStartup.IsPackaged ? $"{version} 새 버전이 있어요. 설정에서 변경사항을 확인하고 업데이트할 수 있습니다."
+        var message = IsStoreInstall && _readyUpdate is null ? "Microsoft Store에 설치 가능한 새 버전이 있어요. 설정에서 업데이트할 수 있습니다."
+            : WindowsStartup.IsPackaged ? $"{version} 새 버전이 있어요. 설정에서 변경사항을 확인하고 업데이트할 수 있습니다."
             : $"{version} 버전이 준비됐어요. 설정에서 변경사항을 확인하고 업데이트할 수 있습니다.";
-        if (!AddAnnouncementNotice("앱 업데이트", message, "mapleday:update"))
+        if (!AddAnnouncementNotice("앱 업데이트", message, "mapleday:update", version: _readyUpdate?.Version.ToString()))
             _settings.NotifiedUpdateVersion = previous;
     }
 
@@ -342,11 +410,11 @@ public sealed partial class MainWindow
     {
         if (WindowsStartup.IsPackaged)
         {
-            if (_readyUpdate is null || _updateChecking || _closed || _dataDeleting) return;
+            if ((IsStoreInstall ? !_storeUpdateAvailable : _readyUpdate is null) || _updateChecking || _closed || _dataDeleting) return;
             try
             {
                 var target = IsStoreInstall ? new Uri("ms-windows-store://downloadsandupdates")
-                    : _readyUpdate.ReleasePage ?? new Uri("https://github.com/MapleYoil/MapleDay/releases/latest");
+                    : _readyUpdate!.ReleasePage ?? new Uri("https://github.com/MapleYoil/MapleDay/releases/latest");
                 await Launcher.LaunchUriAsync(target);
             }
             catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
