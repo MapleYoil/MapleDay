@@ -76,7 +76,8 @@ try {
         "/Fo$(Join-Path $launcherBuild 'update-tests.obj')" "/Fe$updaterTest" update-tests.cpp `
         /link /SUBSYSTEM:CONSOLE kernel32.lib bcrypt.lib
     if ($LASTEXITCODE -ne 0) { throw 'Native update tests compilation failed.' }
-    & $updaterTest (Join-Path $launcherBuild 'update-fixture')
+    $updaterFixture = Join-Path $launcherBuild ("update-fixture-" + [Guid]::NewGuid().ToString('N'))
+    & $updaterTest $updaterFixture
     if ($LASTEXITCODE -ne 0) { throw 'Native update replacement/rollback tests failed.' }
     & (Join-Path $compilerBin 'cl.exe') /nologo /O2 /W4 /MT /EHsc /std:c++17 /utf-8 /DUNICODE /D_UNICODE `
         "/Fo$(Join-Path $launcherBuild 'media.obj')" "/Fe$(Join-Path $appDirectory 'MapleDay.Media.exe')" `
