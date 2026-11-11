@@ -12,7 +12,7 @@ public sealed partial class MainWindow
     private readonly LootMarketClient _lootMarket = new();
     private void IncomeCalendar_BossAddRequested(object? sender, DateOnly date) => OpenLootDialog(null, addDate: date);
     private void IncomeCalendar_LootRequested(object? sender, CalendarBossRecord clear)
-        => OpenLootDialog(StoredLoot.FirstOrDefault(loot => BossLoot.ForClear(loot, clear.Ocid, clear.Boss)), clear);
+        => OpenLootDialog(null, clear);
     private async void OpenLootDialog(BossLootRecord? existing, CalendarBossRecord? source = null, DateOnly? addDate = null)
     {
         if (_closed || _dataDeleting || _lootDialogOpen || SchedulerAvatars.Count == 0) return;
@@ -71,14 +71,21 @@ public sealed partial class MainWindow
             var preview = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = 16, Foreground = AppTheme.Brush("AccentBrush") };
             var errorText = new TextBlock { TextWrapping = TextWrapping.Wrap, Foreground = AppTheme.Brush("DangerTextBrush") };
             var lootEnabled = new CheckBox { Content = "물욕템 함께 기록", IsChecked = addDate is null, Visibility = addDate is null ? Visibility.Collapsed : Visibility.Visible };
-            var recordChoice = new ComboBox { Header = "물욕템 기록", HorizontalAlignment = HorizontalAlignment.Stretch, Visibility = source is null ? Visibility.Collapsed : Visibility.Visible };
-            recordChoice.Items.Add(new ComboBoxItem { Content = "새 아이템·정산 추가" });
+            var recordChoice = new ComboBox { Header = "물욕템 기록 선택", HorizontalAlignment = HorizontalAlignment.Stretch, Visibility = source is null ? Visibility.Collapsed : Visibility.Visible };
+            recordChoice.Items.Add(new ComboBoxItem { Content = "새 물욕템 추가" });
             if (source is not null)
                 foreach (var saved in StoredLoot.Where(loot => BossLoot.ForClear(loot, source.Ocid, source.Boss)).OrderBy(loot => loot.Date))
                     recordChoice.Items.Add(new ComboBoxItem { Content = $"{saved.ItemName} · {saved.Date:MM.dd} · {CurrentIncomeDisplay.Format(saved.Received)}", Tag = saved });
             recordChoice.SelectedItem = recordChoice.Items.Cast<ComboBoxItem>().FirstOrDefault(option => option.Tag is BossLootRecord saved && saved.Id == existing?.Id) ?? recordChoice.Items[0];
+            var recordHint = new TextBlock
+            {
+                Text = source is null ? "" : $"저장된 물욕템 {recordChoice.Items.Count - 1}건 · 새 항목을 추가하거나 기존 기록을 선택해 수정할 수 있어요.",
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Visibility = source is null ? Visibility.Collapsed : Visibility.Visible
+            };
             var content = new StackPanel { Spacing = 12, MinWidth = 340 };
-            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, lootEnabled, mode, item, marketPanel, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
+            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, recordHint, lootEnabled, mode, item, marketPanel, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
             if (source is not null) { content.Children.Remove(character); content.Children.Remove(boss); content.Children.Remove(difficulty); }
             if (addDate is not null)
             {
@@ -87,8 +94,8 @@ public sealed partial class MainWindow
             }
             content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정의 주간 12개 제한과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
             content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
-            var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 기록", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
-                PrimaryButtonText = "저장", CloseButtonText = "취소", DefaultButton = ContentDialogButton.Primary,
+            var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 관리", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
+                PrimaryButtonText = existing is null && source is not null ? "물욕템 추가" : "저장", CloseButtonText = "취소", DefaultButton = ContentDialogButton.Primary,
                 SecondaryButtonText = source is null ? "" : "기록 삭제", IsSecondaryButtonEnabled = existing is not null,
                 Content = new ScrollViewer { Content = content, MaxHeight = 440, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
             ManualWeeklyClear ClearDraft()
@@ -269,6 +276,7 @@ public sealed partial class MainWindow
                 if (existing?.Settlement is { } savedSettlement) { settlement.Load(savedSettlement); settlement.SetSale(existing.Amount); }
                 else { settlement.SetPartySize((int)party.Value); settlement.SetSale(existing?.Amount ?? 0); }
                 mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, "settlement" => 3, null => 3, _ => 0 };
+                dialog.PrimaryButtonText = existing is null ? "물욕템 추가" : "수정 저장";
                 dialog.IsSecondaryButtonEnabled = existing is not null;
                 ReloadItems();
             };
@@ -303,6 +311,7 @@ public sealed partial class MainWindow
                 if (_closed || _dataDeleting) { errorText.Text = "앱 상태가 바뀌었어요. 창을 다시 열어주세요."; return; }
                 try
                 {
+                    var addingLoot = existing is null;
                     var clear = addDate is not null ? ClearDraft() : null;
                     var record = lootEnabled.IsChecked == true ? Draft() : null;
                     var ocid = clear?.Ocid ?? record!.Ocid;
@@ -319,7 +328,9 @@ public sealed partial class MainWindow
                         _settings.BossPartySizes = new(previousParties) { [ManualWeeklyHistory.Key(clear)] = (int)party.Value };
                     }
                     try { _settings.Save(); } catch { _settings.BossLootRecords = previous; _settings.ManualWeeklyClears = previousClears; _settings.BossPartySizes = previousParties; _settings.BossClearChanges = previousChanges; throw; }
-                    RefreshManualIncome(); IncomeCalendarPanel.ShowActionStatus(clear is null ? "물욕템 기록을 저장했어요." : "선택한 날짜에 보스 기록을 추가했어요."); args.Cancel = false;
+                    RefreshManualIncome(); IncomeCalendarPanel.ShowActionStatus(clear is null
+                        ? addingLoot ? "물욕템 기록을 추가했어요." : "물욕템 기록을 수정했어요."
+                        : "선택한 날짜에 보스 기록을 추가했어요."); args.Cancel = false;
                 }
                 catch (ArgumentException error) { errorText.Text = error.Message; }
                 catch (Exception error) when (IsStorageError(error)) { errorText.Text = "기록을 저장하지 못했어요. 저장 공간과 접근 권한을 확인한 뒤 다시 시도해주세요."; }

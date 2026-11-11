@@ -66,6 +66,25 @@ public sealed class IncomeCalendarTests
     }
 
     [Fact]
+    public void BossBreakdownSeparatesCrystalsFromEveryLootRecordForTheSameClear()
+    {
+        var date = new DateOnly(2026, 11, 10);
+        var result = new BossIncomeResult([
+            new("clear", "스우", "hard", BossCycle.Weekly, date, date, date, false, null, 2, 300_000_000, true)
+        ], date, date, new HashSet<DateOnly> { date });
+        BossLootRecord[] loot = [
+            new("loot-1", "character", date, "스우", "one", "첫 물욕템", "received", 100_000_000, 1, ClearId: "clear"),
+            new("loot-2", "character", date, "스우", "two", "둘째 물욕템", "received", 250_000_000, 1, ClearId: "clear")
+        ];
+
+        var breakdown = BossIncomeBreakdowns.Calculate([result], loot, date, date);
+
+        Assert.Equal(300_000_000, breakdown.Crystal);
+        Assert.Equal(350_000_000, breakdown.Loot);
+        Assert.Equal(650_000_000, breakdown.Total);
+    }
+
+    [Fact]
     public void HistoricalHuntingIncludesFragmentOnlyAndMesoOnlyDaysWithoutDuplicatesOrInvalidRecords()
     {
         var date = new DateOnly(2026, 1, 31);

@@ -47,7 +47,7 @@ public sealed class IncomeCalendarBoss(CalendarBossRecord record, IncomeDisplay?
 {
     public IReadOnlyList<BossLootRow> Loot { get; } = (loot ?? []).Where(item => BossLoot.ForClear(item, record.Ocid, record.Boss))
         .OrderBy(item => item.Date).Select(item => new BossLootRow(item, record.CharacterName, display ?? new())).ToArray();
-    public string LootLabel => Loot.Count == 0 ? "물욕템 기록" : $"물욕템 수정 · {Loot.Count}건";
+    public string LootLabel => Loot.Count == 0 ? "물욕템 추가" : $"물욕템 관리 · {Loot.Count}건";
     public CalendarBossRecord Record { get; } = record;
     public string CharacterName => Record.CharacterName;
     public string EditLabel => $"{Record.CharacterName} · {Record.Boss.Name} · {Record.Boss.Date:yyyy.MM.dd} 인원 수정";

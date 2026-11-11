@@ -575,6 +575,35 @@
                             </StackPanel>
                             <StackPanel x:Name="BossIncomeDetails" Spacing="14">
                             <TextBlock x:Name="IncomeScope" Style="{StaticResource SecondaryText}" FontSize="12" />
+                            <Grid x:Name="BossIncomeSplitGrid" RowSpacing="8" ColumnSpacing="14" Visibility="Collapsed">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="92" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="1" Text="이번 주" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                <TextBlock Grid.Column="2" Text="이번 달" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                <TextBlock Grid.Column="3" Text="누적" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                <TextBlock Grid.Row="1" Text="결정석" FontWeight="SemiBold" />
+                                <TextBlock x:Name="BossCrystalWeeklyAmount" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossCrystalMonthlyAmount" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossCrystalTotalAmount" Grid.Row="1" Grid.Column="3" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="2" Text="물욕템" FontWeight="SemiBold" />
+                                <TextBlock x:Name="BossLootWeeklyAmount" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossLootMonthlyAmount" Grid.Row="2" Grid.Column="2" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossLootTotalAmount" Grid.Row="2" Grid.Column="3" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="3" Text="합계" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock x:Name="BossCombinedWeeklyAmount" Grid.Row="3" Grid.Column="1" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossCombinedMonthlyAmount" Grid.Row="3" Grid.Column="2" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                <TextBlock x:Name="BossCombinedTotalAmount" Grid.Row="3" Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                            </Grid>
                             <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
                             <Border Padding="14" CornerRadius="10" Background="{StaticResource AccentSoftBrush}">

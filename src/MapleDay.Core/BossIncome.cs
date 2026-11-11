@@ -37,6 +37,17 @@ public sealed record BossIncomeRecord(string Id, string Name, string Difficulty,
 }
 
 public sealed record IncomePeriod(BossCycle Cycle, DateOnly Start, DateOnly End, long Meso, int Count, bool CompleteRange);
+public sealed record BossIncomeBreakdown(long Crystal, long Loot)
+{
+    public long Total => Crystal + Loot;
+}
+
+public static class BossIncomeBreakdowns
+{
+    public static BossIncomeBreakdown Calculate(IEnumerable<BossIncomeResult> incomes, IEnumerable<BossLootRecord> loot,
+        DateOnly start, DateOnly end) => new(incomes.Sum(income => income.Sum(start, end)), BossLoot.Sum(loot, start, end));
+}
+
 public sealed record BossIncomeResult(IReadOnlyList<BossIncomeRecord> Records, DateOnly Today, DateOnly? FirstDate, IReadOnlySet<DateOnly> KnownDates)
 {
     public int KnownDays => KnownDates.Count;
