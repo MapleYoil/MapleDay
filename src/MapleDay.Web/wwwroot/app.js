@@ -48,7 +48,7 @@ function income(root){
   if(date===new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul'}).format(new Date()))b.classList.add('today');
   b.onclick=()=>dayDetails(date,entries,items);grid.append(b);
  }
- calendar.append(grid,el('p','날짜를 누르면 보스·물욕템 목록과 분배 내역을 볼 수 있습니다. PC에 저장된 확정 기록만 집계합니다.','calendar-note'));root.append(calendar);
+ calendar.append(grid,el('p','날짜를 누르면 보스·물욕템 목록과 분배 내역을 볼 수 있습니다. 처치일을 확정할 수 없는 기록은 최초 확인일에 추정으로 표시합니다.','calendar-note'));root.append(calendar);
  const list=el('section',null,'card loot-list');list.append(el('h2','물욕템 획득 기록'));
  if(!loot.length)list.append(el('p','PC 앱의 수익 탭에서 물욕템 기록을 추가할 수 있어요.','muted'));
  loot.sort((a,b)=>b.date.localeCompare(a.date)).forEach(r=>list.append(lootRow(r)));root.append(list);
@@ -56,7 +56,7 @@ function income(root){
 function dayDetails(date,entries,items=[]){
  $('day-title').textContent=date;$('day-records').replaceChildren();
  if(!entries.length&&!items.length)$('day-records').append(el('p','이날 저장된 수익 기록이 없습니다.','muted'));
- entries.forEach(r=>{const row=el('div',null,'clear-record'),name=el('div',r.name+' · '+r.difficulty);name.append(el('small',r.character+' · '+r.partySize+'인'+(!r.included?' · 집계 제외':'')));append(row,name,el('strong',r.meso==null?'가격 정보 없음':incomeMoney(r.meso)));$('day-records').append(row);});
+ entries.forEach(r=>{const row=el('div',null,'clear-record'),name=el('div',r.name+' · '+r.difficulty);name.append(el('small',r.character+' · '+r.partySize+'인'+(r.estimated?' · 처치일 추정':'')+(!r.included?' · 집계 제외':'')));append(row,name,el('strong',r.meso==null?'가격 정보 없음':incomeMoney(r.meso)));$('day-records').append(row);});
  items.forEach(r=>$('day-records').append(lootRow(r)));$('day-dialog').showModal();
 }
 $('close-dialog').onclick=()=>$('day-dialog').close();$('day-dialog').onclick=e=>{if(e.target===$('day-dialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}};

@@ -84,14 +84,14 @@ public sealed class IncomeReplayTests
         Assert.Equal(300, replay.At(1).Bosses.Sum(row => row.Meso));
     }
     [Fact]
-    public void Replay_excludes_daily_monthly_unpriced_estimated_and_cap_excluded_records()
+    public void Replay_includes_estimated_weekly_but_excludes_daily_monthly_unpriced_and_cap_excluded_records()
     {
         var date = new DateOnly(2026, 10, 8);
         var record = new BossIncomeRecord("id", "스우", "hard", BossCycle.Weekly, date, date, date, false, null, 2, 123, true);
         var replay = new IncomeReplay(new[] { record, record with { Cycle = BossCycle.Daily }, record with { Cycle = BossCycle.Monthly },
-            record with { DateEstimated = true }, record with { Included = false }, record with { Meso = null } });
-        Assert.Single(replay.Clears); Assert.Equal(123, replay.Total);
-        Assert.Equal(1, replay.At(1).Count);
+            record with { Id = "estimated", Name = "데미안", DateEstimated = true }, record with { Included = false }, record with { Meso = null } });
+        Assert.Equal(2, replay.Clears.Count); Assert.Equal(246, replay.Total);
+        Assert.Equal(2, replay.At(1).Count);
     }
     [Fact]
     public void Empty_and_invalid_clock_values_are_safe()

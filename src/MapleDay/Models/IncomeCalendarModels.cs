@@ -54,6 +54,7 @@ public sealed class IncomeCalendarBoss(CalendarBossRecord record, IncomeDisplay?
     public string Name => $"{Record.Boss.Name} · {Record.Boss.DifficultyLabel}";
     public string? IconFile => SchedulerIconAssets.BossFile(Record.Boss.Name) is { } file ? "Scheduler/" + file : null;
     public string Amount => Record.Boss.Meso is { } meso ? (display ?? new()).Format(meso) : "가격 확인 필요";
-    public string Details => (Record.Boss.Manual ? "수동 추가 · " : "") + $"{(Record.Boss.Cycle == BossCycle.Weekly ? "주간" : "월간")} · {Record.Boss.PartySize}인 · "
+    public string Details => (Record.Boss.Manual ? "수동 추가 · " : Record.Boss.DateEstimated ? "처치일 추정 · " : "")
+        + $"{(Record.Boss.Cycle == BossCycle.Weekly ? "주간" : "월간")} · {Record.Boss.PartySize}인 · "
         + (!Record.Boss.Included ? "주간 12개 상한에서 제외" : Record.Boss.Meso is null ? "합산 제외" : (display ?? new()).Format(Record.Boss.Meso.Value));
 }

@@ -14,6 +14,6 @@ public sealed record WebEntry(string Name, string Difficulty, string Cycle, stri
 public sealed record WebIncome(long Weekly, long Monthly, long Total, IReadOnlyList<WebClear> Records,
     long RemainingWeekly = 0, int Unpriced = 0, IReadOnlyList<WebLoot>? Loot = null);
 public sealed record WebLoot(string Date, string Boss, string ItemName, string? Icon, int PartySize, string Distribution, long Received);
-public sealed record WebClear(string Date, string Name, string Difficulty, int PartySize, long? Meso, bool Included);
+public sealed record WebClear(string Date, string Name, string Difficulty, int PartySize, long? Meso, bool Included, bool Estimated = false);
 public sealed record WebLevel(string Today, string Average, string LevelUp, double Percent, IReadOnlyList<WebExpPoint> Points);
 public sealed record WebExpPoint(string Date, int Level, string Exp, double Percent);

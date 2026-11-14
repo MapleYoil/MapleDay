@@ -210,9 +210,9 @@ public sealed partial class MainWindow
                 group.Bosses.Concat(group.UnregisteredBosses).Select(WebTile).ToArray(),
                 new((income?.Weekly ?? 0) + BossLoot.Sum(loot, SchedulerBossHistory.Start(BossCycle.Weekly, today), today),
                     (income?.Monthly ?? 0) + BossLoot.Sum(loot, new(today.Year, today.Month, 1), today),
-                    (income?.Sum(cumulativeStart, today) ?? 0) + BossLoot.Sum(loot, cumulativeStart, today), income?.Records.Where(record => !record.DateEstimated)
+                    (income?.Sum(cumulativeStart, today) ?? 0) + BossLoot.Sum(loot, cumulativeStart, today), income?.Records
                     .Select(record => new WebClear(record.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), record.Name, record.Difficulty,
-                        record.PartySize, record.Meso, record.Included)).ToArray() ?? [], forecast?.Meso ?? 0, forecast?.Unpriced ?? 0,
+                        record.PartySize, record.Meso, record.Included, record.DateEstimated)).ToArray() ?? [], forecast?.Meso ?? 0, forecast?.Unpriced ?? 0,
                     loot.Select(record => new WebLoot(record.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), record.Boss
                         + (!string.IsNullOrEmpty(record.Difficulty) ? " · " + BossLootCatalog.DifficultyLabel(record.Difficulty) : ""),
                         record.ItemName, BossLootCatalog.Items.FirstOrDefault(item => item.Id == record.ItemId)?.Icon,

@@ -24,7 +24,7 @@ public static class IncomeCalendar
         var first = new DateOnly(month.Year, month.Month, 1);
         var start = first.AddDays(-(int)first.DayOfWeek);
         var grouped = (category == IncomeCalendarCategory.Hunting ? [] : records)
-            .Where(record => record.Boss.Cycle != BossCycle.Daily && !record.Boss.DateEstimated).GroupBy(record => record.Boss.Date)
+            .Where(record => record.Boss.Cycle != BossCycle.Daily).GroupBy(record => record.Boss.Date)
             .ToDictionary(group => group.Key, group => group.OrderBy(record => record.CharacterName, StringComparer.Ordinal)
                 .ThenByDescending(record => record.Boss.Meso).ToArray());
         var known = (category == IncomeCalendarCategory.Hunting ? [] : knownDates).ToArray();

@@ -21,14 +21,14 @@ public sealed class IncomeReplay
     public IReadOnlyList<string> Names { get; }
     public long Total { get; }
     public IncomeReplay(IEnumerable<BossIncomeRecord> records) : this(records
-        .Where(record => record.Cycle == BossCycle.Weekly && record.Included && !record.DateEstimated && record.Meso is > 0)
+        .Where(record => record.Cycle == BossCycle.Weekly && record.Included && record.Meso is > 0)
         .Select(record => new ReplayClear(record.Date, record.Name, record.Meso!.Value))) { }
     public IncomeReplay(IEnumerable<(string Ocid, BossIncomeRecord Clear)> records, IEnumerable<BossLootRecord> loot)
         : this(WithLoot(records, loot)) { }
     private static IEnumerable<ReplayClear> WithLoot(IEnumerable<(string Ocid, BossIncomeRecord Clear)> records, IEnumerable<BossLootRecord> loot)
     {
         var remaining = loot.Where(BossLoot.Valid).Where(item => item.Received > 0).DistinctBy(item => item.Id).ToList();
-        foreach (var (ocid, clear) in records.Where(row => row.Clear.Cycle == BossCycle.Weekly && !row.Clear.DateEstimated)
+        foreach (var (ocid, clear) in records.Where(row => row.Clear.Cycle == BossCycle.Weekly)
             .OrderBy(row => row.Clear.Date))
         {
             var drops = remaining.Where(item => BossLoot.ForClear(item, ocid, clear)).ToArray();
