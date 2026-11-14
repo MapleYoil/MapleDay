@@ -108,14 +108,15 @@ public static class BossIncome
                 .Select(day => (DateOnly?)day.Date).LastOrDefault();
             var earliest = lastIncomplete?.AddDays(1) ?? group.Key.Start;
             if (earliest < SchedulerBossHistory.FirstDate) earliest = SchedulerBossHistory.FirstDate;
-            // A first observed clear after a missing interval cannot be assigned
-            // to that observation date. Keep the snapshots, but omit this income.
-            if (earliest != date) continue;
+            // A first observed clear after a missing interval still belongs to
+            // this reset period. Count its reward, but keep it out of exact-date
+            // views until a later history refresh narrows the clear date.
+            var estimated = earliest != date;
             var price = CrystalPrices.Find(name, difficulty, date);
             var id = BossParty.RecordId(name, group.Key.Cycle, group.Key.Start);
             var party = BossParty.Clamp(name, partySize?.Invoke(id) ?? 1);
             records.Add(new(id, name, difficulty, group.Key.Cycle, group.Key.Start, date, earliest,
-                false, price, party, price?.Meso / party, true));
+                estimated, price, party, price?.Meso / party, true));
         }
         var existing = records.Select(record => record.Id).ToHashSet(StringComparer.Ordinal);
         foreach (var clear in (manual ?? []).Where(clear => clear.Date >= SchedulerBossHistory.FirstDate && clear.Date <= today)

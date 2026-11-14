@@ -106,7 +106,7 @@ public sealed class BossIncomeTests
     }
 
     [Fact]
-    public void KnownFalseToTrueTransitionMakesDateExactAndUnknownGapIsExcluded()
+    public void KnownFalseToTrueTransitionMakesDateExactAndUnknownGapCountsAsEstimated()
     {
         var oct1 = new DateOnly(2026, 10, 1);
         var oct3 = oct1.AddDays(2);
@@ -115,15 +115,17 @@ public sealed class BossIncomeTests
         Assert.False(Assert.Single(exact.Records).DateEstimated);
         Assert.True(exact.CompleteRange(BossCycle.Weekly));
         var gap = BossIncome.Calculate([Snapshot(oct1, Boss("스우", false)), Snapshot(oct3, Boss("스우", true))], oct3);
-        Assert.Empty(gap.Records);
-        Assert.Equal(0, gap.Weekly);
-        Assert.Equal(0, gap.Monthly);
-        Assert.Equal(0, gap.Total);
+        var estimated = Assert.Single(gap.Records);
+        Assert.True(estimated.DateEstimated);
+        Assert.Equal(oct1.AddDays(1), estimated.EarliestDate);
+        Assert.Equal(8350000L, gap.Weekly);
+        Assert.Equal(8350000L, gap.Monthly);
+        Assert.Equal(8350000L, gap.Total);
         Assert.False(gap.CompleteRange(BossCycle.Monthly));
     }
 
     [Fact]
-    public void EstimatedWeeklyAndMonthlyClearsDisappearUntilEarlierSnapshotConfirmsTheirDate()
+    public void EstimatedWeeklyAndMonthlyClearsCountUntilEarlierSnapshotConfirmsTheirDate()
     {
         var reset = new DateOnly(2026, 10, 1);
         var clearDate = reset.AddDays(3);
@@ -133,11 +135,13 @@ public sealed class BossIncomeTests
             Snapshot(clearDate, Boss("스우", true), Boss("데미안", true), Boss("검은 마법사", true, "hard", "monthly"))
         };
         var partial = BossIncome.Calculate(snapshots, clearDate);
-        Assert.Equal("데미안", Assert.Single(partial.Records).Name);
-        Assert.Equal(8750000L, partial.Weekly);
-        Assert.Equal(8750000L, partial.Monthly);
-        Assert.Equal(8750000L, partial.Total);
-        Assert.All(partial.Periods(BossCycle.Monthly), period => Assert.Equal(1, period.Count));
+        Assert.Equal(3, partial.Records.Count);
+        Assert.False(partial.Records.Single(record => record.Name == "데미안").DateEstimated);
+        Assert.All(partial.Records.Where(record => record.Name != "데미안"), record => Assert.True(record.DateEstimated));
+        Assert.Equal(8750000L + 8350000L + 465000000L, partial.Weekly);
+        Assert.Equal(8750000L + 8350000L + 465000000L, partial.Monthly);
+        Assert.Equal(8750000L + 8350000L + 465000000L, partial.Total);
+        Assert.All(partial.Periods(BossCycle.Monthly), period => Assert.Equal(3, period.Count));
         Assert.Equal(2, snapshots.Count);
 
         snapshots.Add(Snapshot(clearDate.AddDays(-1), Boss("스우", false), Boss("데미안", true),
