@@ -11,6 +11,7 @@ public sealed class PartySettlementView : UserControl
 {
     private readonly StackPanel _root = new() { Spacing = 12 };
     private readonly TextBox _sale = new() { Header = "아이템 판매 금액 (메소)", Text = "0" };
+    private readonly TextBlock _saleHint = new() { FontSize = 14, Foreground = AppTheme.Brush("AccentBrush"), TextWrapping = TextWrapping.Wrap };
     private readonly TextBox _net = new() { Header = "판매 수수료 차감 후 실수령액 (메소)", Text = "0" };
     private readonly ComboBox _fee = new() { Header = "경매장 판매 수수료", ItemsSource = new[] { "0%", "3%", "5%" }, SelectedIndex = 1 };
     private readonly ComboBox _transfer = new() { Header = "분배금 전달 방식", ItemsSource = new[] { "경매장 (선택한 판매 수수료 적용)", "직접 교환 (5%)", "전달 수수료 없음" }, SelectedIndex = 0 };
@@ -31,7 +32,8 @@ public sealed class PartySettlementView : UserControl
     public PartySettlementView()
     {
         Content = _root;
-        foreach (var element in new FrameworkElement[] { _sale, _net, _fee, _transfer, _count, _weights, _leader, _own, _state, _partial, _hint, _rows }) _root.Children.Add(element);
+        foreach (var element in new FrameworkElement[] { _sale, _saleHint, _net, _fee, _transfer, _count, _weights, _leader, _own, _state, _partial, _hint, _rows }) _root.Children.Add(element);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(_sale, "메소 정수를 입력하면 아래에 억 단위로 즉시 표시합니다.");
         _sale.TextChanged += (_, _) => { if (_updating) return; FormatAmount(_sale); Refresh(); };
         _net.TextChanged += (_, _) =>
         {
@@ -111,6 +113,9 @@ public sealed class PartySettlementView : UserControl
         try
         {
             _partial.Visibility = _state.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
+            _saleHint.Text = BossLoot.TryParseAmount(_sale.Text, out var sale)
+                ? BossIncome.Money(sale)
+                : "메소 금액을 정수로 입력하세요.";
             var snapshot = Snapshot(); var result = snapshot.Calculate(Sale);
             _net.Text = result.SaleNet.ToString("N0", CultureInfo.InvariantCulture);
             _hint.Text = $"판매 후 {BossIncome.Money(result.SaleNet)} · 총 수수료 {BossIncome.Money(result.Fees)}\n"
