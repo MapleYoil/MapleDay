@@ -49,6 +49,7 @@ public sealed class AppSettings
     public List<BossClearChange> BossClearChanges { get; set; } = [];
     public List<BossLootRecord> BossLootRecords { get; set; } = [];
     public List<HuntingIncomeRecord> HuntingIncomeRecords { get; set; } = [];
+    public List<IncomeExpenseRecord> IncomeExpenseRecords { get; set; } = [];
     public List<CalendarSchedule> CalendarSchedules { get; set; } = [];
     public List<PartyPreset> Parties { get; set; } = [];
     public List<SharedPartyLink> SharedPartyLinks { get; set; } = [];

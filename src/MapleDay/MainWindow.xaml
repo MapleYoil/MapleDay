@@ -512,7 +512,7 @@
                     <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                     <StackPanel Spacing="6">
                         <TextBlock Text="수익" FontSize="28" FontWeight="SemiBold" />
-                        <TextBlock Text="보스와 사냥 수익을 따로 보거나 전체 수익으로 합산하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
+                        <TextBlock Text="보스·사냥 수익과 지출을 기간별로 확인하고 순수익을 계산하세요." Style="{StaticResource SecondaryText}" TextWrapping="Wrap" />
                     </StackPanel>
                     <Button x:Name="IncomeSettingsButton" Grid.Column="1" VerticalAlignment="Top" AutomationProperties.Name="수익 설정 열기" AutomationProperties.AutomationId="IncomeSettingsButton">
                         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="14" /><TextBlock Text="수익 설정" /></StackPanel>
@@ -532,7 +532,7 @@
                         </Button.Flyout>
                     </Button>
                 </Grid>
-                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /><PivotItem Header="수익 집계" /></Pivot>
+                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /><PivotItem Header="지출" /><PivotItem Header="수익 집계" /></Pivot>
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
             <StackPanel Padding="0,0,0,20" Spacing="16">
                 <StackPanel x:Name="IncomeLogin" Spacing="8">
@@ -542,6 +542,14 @@
                 <StackPanel x:Name="IncomeControls" Visibility="Collapsed" Spacing="12">
                     <ComboBox x:Name="IncomeCharacterSelector" Header="캐릭터" ItemsSource="{x:Bind IncomeCharacters}" DisplayMemberPath="Label"
                               SelectionChanged="IncomeCharacterSelector_SelectionChanged" MinWidth="260" HorizontalAlignment="Left" AutomationProperties.Name="수익을 볼 캐릭터" />
+                    <Grid x:Name="IncomePeriodControls" ColumnSpacing="8" RowSpacing="8" MaxWidth="786" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="210" /><ColumnDefinition Width="220" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <Button x:Name="IncomePreviousWeekButton" Content="&#xE76B;" FontFamily="Segoe MDL2 Assets" Click="IncomePreviousWeek_Click" ToolTipService.ToolTip="이전 주" AutomationProperties.Name="이전 주" />
+                        <ComboBox x:Name="IncomeMonthSelector" Grid.Column="1" Header="조회 월" DisplayMemberPath="Label" SelectionChanged="IncomeMonthSelector_SelectionChanged" HorizontalAlignment="Stretch" />
+                        <ComboBox x:Name="IncomeWeekSelector" Grid.Column="2" Header="주차" DisplayMemberPath="Label" SelectionChanged="IncomeWeekSelector_SelectionChanged" HorizontalAlignment="Stretch" />
+                        <Button x:Name="IncomeNextWeekButton" Grid.Column="3" Content="&#xE76C;" FontFamily="Segoe MDL2 Assets" Click="IncomeNextWeek_Click" ToolTipService.ToolTip="다음 주" AutomationProperties.Name="다음 주" />
+                        <Button x:Name="IncomeCurrentWeekButton" Grid.Column="4" Content="이번 주" Click="IncomeCurrentWeek_Click" VerticalAlignment="Bottom" />
+                    </Grid>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button x:Name="IncomeRefreshButton" Content="새로고침" Click="SchedulerRefreshButton_Click" IsEnabled="False" />
                         <Button x:Name="IncomeCancelButton" Content="중단" Click="SchedulerCancelButton_Click" Visibility="Collapsed" />
@@ -560,8 +568,8 @@
                             <TextBlock x:Name="IncomeHeading" Text="전체 수익" FontSize="20" FontWeight="SemiBold" />
                             <Grid x:Name="IncomeSummaryGrid" ColumnSpacing="18">
                                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
-                                <StackPanel Spacing="6"><TextBlock Text="이번 주" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
-                                <StackPanel Grid.Column="1" Spacing="6"><TextBlock Text="이번 달" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="MonthlyIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
+                                <StackPanel Spacing="6"><TextBlock x:Name="WeeklyIncomeLabel" Text="이번 주" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" /><TextBlock x:Name="WeeklyIncomeAmount" FontSize="19" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" /></StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="6"><TextBlock x:Name="MonthlyIncomeLabel" Text="이번 달" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" /><TextBlock x:Name="MonthlyIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                                 <StackPanel Grid.Column="2" Spacing="6"><TextBlock x:Name="TotalIncomeLabel" Text="누적" Style="{StaticResource SecondaryText}" /><TextBlock x:Name="TotalIncomeAmount" FontSize="19" TextWrapping="Wrap" /></StackPanel>
                             </Grid>
                             <TextBlock x:Name="IncomeBreakdown" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
@@ -588,8 +596,8 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Column="1" Text="이번 주" Style="{StaticResource SecondaryText}" FontSize="12" />
-                                <TextBlock Grid.Column="2" Text="이번 달" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                <TextBlock Grid.Column="1" Text="선택 주차" Style="{StaticResource SecondaryText}" FontSize="12" />
+                                <TextBlock Grid.Column="2" Text="선택 월" Style="{StaticResource SecondaryText}" FontSize="12" />
                                 <TextBlock Grid.Column="3" Text="누적" Style="{StaticResource SecondaryText}" FontSize="12" />
                                 <TextBlock Grid.Row="1" Text="결정석" FontWeight="SemiBold" />
                                 <TextBlock x:Name="BossCrystalWeeklyAmount" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
@@ -604,9 +612,43 @@
                                 <TextBlock x:Name="BossCombinedMonthlyAmount" Grid.Row="3" Grid.Column="2" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
                                 <TextBlock x:Name="BossCombinedTotalAmount" Grid.Row="3" Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
                             </Grid>
+                            <StackPanel x:Name="BossLootSummaryPanel" Spacing="10" Visibility="Collapsed">
+                                <Grid ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="180" /></Grid.ColumnDefinitions>
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Text="물욕템 획득 현황" FontSize="17" FontWeight="SemiBold" />
+                                        <TextBlock Text="아이콘을 선택하면 획득 날짜와 수령액을 확인할 수 있습니다." FontSize="12" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+                                    </StackPanel>
+                                    <ComboBox x:Name="IncomeLootRangeSelector" Grid.Column="1" Header="조회 범위" SelectionChanged="IncomeLootRangeSelector_SelectionChanged">
+                                        <ComboBoxItem Content="선택 주차" /><ComboBoxItem Content="선택 월" /><ComboBoxItem Content="누적" />
+                                    </ComboBox>
+                                </Grid>
+                                <ItemsControl ItemsSource="{x:Bind IncomeLootRows}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:IncomeLootSummaryRow">
+                                            <Button Tag="{x:Bind}" Click="IncomeLootSummary_Click" Width="238" MinHeight="76" Margin="0,0,8,8" HorizontalContentAlignment="Stretch" ToolTipService.ToolTip="{x:Bind Detail}">
+                                                <Grid ColumnSpacing="10">
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                                    <Border Width="46" Height="46" CornerRadius="8" Background="{StaticResource StageBrush}">
+                                                        <Image services:CachedImage.File="{x:Bind IconFile}" Width="38" Height="38" Stretch="Uniform" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{x:Bind CountText}" FontSize="12" Style="{StaticResource SecondaryText}" />
+                                                        <TextBlock Text="{x:Bind Amount}" FontSize="12" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock x:Name="IncomeLootEmpty" Text="이 기간에 저장된 물욕템이 없습니다." Style="{StaticResource SecondaryText}" />
+                                <TextBlock x:Name="IncomeLootDetail" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" />
+                            </StackPanel>
                             <TextBlock x:Name="IncomeOverviewStatus" Style="{StaticResource SecondaryText}" FontSize="12" TextWrapping="Wrap" />
                             <TextBlock x:Name="WeeklyCrystalCount" FontSize="12" Style="{StaticResource SecondaryText}" />
-                            <Border Padding="14" CornerRadius="10" Background="{StaticResource AccentSoftBrush}">
+                            <Border x:Name="RemainingWeeklyIncomePanel" Padding="14" CornerRadius="10" Background="{StaticResource AccentSoftBrush}">
                                 <StackPanel Spacing="6">
                                     <TextBlock Text="이번 주 남은 예상 결정 수익" FontWeight="SemiBold" />
                                     <TextBlock x:Name="RemainingWeeklyIncomeAmount" FontSize="23" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
@@ -635,10 +677,14 @@
                             </StackPanel>
                             <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
                             <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" />
+                            <views:IncomeExpenseView x:Name="IncomeExpensePanel" RecordsChanged="IncomeExpense_RecordsChanged" />
                         </StackPanel>
                     </Border>
             </StackPanel>
             </ScrollViewer>
+        </Grid>
+        <Grid x:Name="BossRecordPage" Visibility="Collapsed">
+            <ContentControl x:Name="BossRecordEditorHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
         </Grid>
         <ScrollViewer x:Name="CalendarPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <views:ScheduleCalendarView x:Name="CalendarPanel" Margin="24,24,24,20" MaxWidth="1000" HorizontalAlignment="Stretch"/>

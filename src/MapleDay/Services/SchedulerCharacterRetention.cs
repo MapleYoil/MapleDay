@@ -80,6 +80,8 @@ public static class SchedulerCharacterRetention
             .DistinctBy(item => item.Id).ToList();
         settings.HuntingIncomeRecords = settings.HuntingIncomeRecords.Select(item => item.Ocid == oldOcid ? item with { Ocid = newOcid } : item)
             .DistinctBy(item => item.Id).ToList();
+        settings.IncomeExpenseRecords = settings.IncomeExpenseRecords.Select(item => item.Ocid == oldOcid ? item with { Ocid = newOcid } : item)
+            .DistinctBy(item => item.Id).ToList();
         settings.CalendarSchedules = settings.CalendarSchedules.Select(item => item with
             {
                 Ocid = item.Ocid == oldOcid ? newOcid : item.Ocid,

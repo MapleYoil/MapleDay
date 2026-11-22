@@ -30,7 +30,8 @@ public sealed partial class HuntingIncomeView : UserControl
     private HuntCharacter? Character => CharacterInput.SelectedItem as HuntCharacter;
     private DateOnly Date => DateOnly.FromDateTime((DateInput.Date ?? DateTimeOffset.Now).DateTime);
     private int RecordLevel => Existing?.Level is >= 1 and <= 300 ? Existing.Level : Character?.Level ?? 300;
-    private HuntingIncomeRecord? Existing => (_settings?.HuntingIncomeRecords ?? []).FirstOrDefault(row => row.Ocid == Character?.Ocid && row.Date == Date);
+    private HuntingIncomeRecord? Existing => HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? [])
+        .FirstOrDefault(row => row.Ocid == Character?.Ocid && row.Date == Date);
     public HuntingIncomeView() { InitializeComponent(); }
     public void SetContext(AppSettings settings, IEnumerable<SchedulerCharacter> characters, string? selectedOcid, IncomeDisplay display)
     {
@@ -265,7 +266,7 @@ public sealed partial class HuntingIncomeView : UserControl
         }
         meso.TextChanged += Update; fragments.TextChanged += Update; Update();
         if (await dialog.ShowAsync() != ContentDialogResult.Primary || merged is null) return;
-        Persist(_settings.HuntingIncomeRecords.Where(row => row.Id != existing.Id).Append(merged).ToList(), merged,
+        Persist(_settings.HuntingIncomeRecords.Where(row => row.Ocid != existing.Ocid || row.Date != existing.Date).Append(merged).ToList(), merged,
             $"기존 기록에 메소 {merged.Meso - existing.Meso:N0}, 조각 {merged.Fragments - existing.Fragments:N0}개를 추가했어요.");
     }
     private async void Delete_Click(object sender, RoutedEventArgs args)
@@ -285,7 +286,7 @@ public sealed partial class HuntingIncomeView : UserControl
                 DefaultButton = ContentDialogButton.Close
             };
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Id != row.Id).ToList(), null);
+                Persist(_settings.HuntingIncomeRecords.Where(saved => saved.Ocid != row.Ocid || saved.Date != row.Date).ToList(), null);
         }
         finally { _deleteDialogOpen = false; }
     }
@@ -293,9 +294,14 @@ public sealed partial class HuntingIncomeView : UserControl
     {
         if (_settings is null) return false;
         var previous = _settings.HuntingIncomeRecords; var bonus = _settings.HuntingMesoBonus; var price = _settings.HuntingFragmentPriceMan;
-        _settings.HuntingIncomeRecords = records;
+        _settings.HuntingIncomeRecords = HuntingIncome.Normalize(records).ToList();
         if (saved is not null) { _settings.HuntingMesoBonus = saved.MesoBonus; _settings.HuntingFragmentPriceMan = (int)(saved.FragmentUnitPrice / 10000); }
-        try { _saving = true; _settings.Save(); RecordsChanged?.Invoke(this, EventArgs.Empty); LoadDay(); RefreshRecords(); Status.Text = successMessage ?? (saved is null ? "기록을 삭제했어요." : "사냥 기록을 저장했어요."); return true; }
+        try
+        {
+            _saving = true; _settings.Save(); LoadDay(); RefreshRecords();
+            Status.Text = successMessage ?? (saved is null ? "기록을 삭제했어요." : "사냥 기록을 저장했어요.");
+            RecordsChanged?.Invoke(this, EventArgs.Empty); return true;
+        }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         { _settings.HuntingIncomeRecords = previous; _settings.HuntingMesoBonus = bonus; _settings.HuntingFragmentPriceMan = price; Status.Text = "저장하지 못했어요. 저장 공간과 접근 권한을 확인해주세요."; return false; }
         finally { _saving = false; Calculate(); }
@@ -303,7 +309,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private void RefreshRecords()
     {
         var characters = (CharacterInput.ItemsSource as HuntCharacter[] ?? []).ToDictionary(owner => owner.Ocid);
-        Records.ItemsSource = (_settings?.HuntingIncomeRecords ?? []).Where(HuntingIncome.Valid).Where(row => characters.ContainsKey(row.Ocid))
+        Records.ItemsSource = HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? []).Where(row => characters.ContainsKey(row.Ocid))
             .OrderByDescending(row => row.Date).Select(row => new HuntRow(row, $"{row.Date:yyyy.MM.dd} · {characters[row.Ocid].Label} · {_display.Hunting(row.Meso, row.Fragments, row.Total)}" + (_display.ValidMode == "fragments" ? "" : $" · 조각 {row.Fragments:N0}개"))).ToArray();
     }
     private void Record_Selected(object sender, SelectionChangedEventArgs args)

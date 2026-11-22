@@ -9,11 +9,12 @@ namespace MapleDay;
 public sealed partial class MainWindow
 {
     private bool _lootDialogOpen;
+    private Action? _closeLootEditor;
     private readonly LootMarketClient _lootMarket = new();
     private void IncomeCalendar_BossAddRequested(object? sender, DateOnly date) => OpenLootDialog(null, addDate: date);
     private void IncomeCalendar_LootRequested(object? sender, CalendarBossRecord clear)
         => OpenLootDialog(null, clear);
-    private async void OpenLootDialog(BossLootRecord? existing, CalendarBossRecord? source = null, DateOnly? addDate = null)
+    private void OpenLootDialog(BossLootRecord? existing, CalendarBossRecord? source = null, DateOnly? addDate = null)
     {
         if (_closed || _dataDeleting || _lootDialogOpen || SchedulerAvatars.Count == 0) return;
         _lootDialogOpen = true;
@@ -68,6 +69,7 @@ public sealed partial class MainWindow
             var member = new NumberBox { Header = "내 순번 (비율의 왼쪽부터)", Minimum = 1, Maximum = 6,
                 Value = existing?.OwnMember ?? 1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
             var ratioHint = new TextBlock { Text = "예: 3인, 2:1:1, 내 순번 1 → 총액의 절반을 수령합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap };
+            var soloReceipt = new Button { Content = "내 몫만 1로 설정", HorizontalAlignment = HorizontalAlignment.Left };
             var preview = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = 16, Foreground = AppTheme.Brush("AccentBrush") };
             var errorText = new TextBlock { TextWrapping = TextWrapping.Wrap, Foreground = AppTheme.Brush("DangerTextBrush") };
             var lootEnabled = new CheckBox { Content = "물욕템 함께 기록", IsChecked = addDate is null, Visibility = addDate is null ? Visibility.Collapsed : Visibility.Visible };
@@ -84,20 +86,87 @@ public sealed partial class MainWindow
                 TextWrapping = TextWrapping.Wrap,
                 Visibility = source is null ? Visibility.Collapsed : Visibility.Visible
             };
-            var content = new StackPanel { Spacing = 12, MinWidth = 340 };
-            foreach (var control in new FrameworkElement[] { character, date, boss, difficulty, party, recordChoice, recordHint, lootEnabled, mode, item, marketPanel, amount, amountHint, ratio, member, ratioHint, preview, errorText }) content.Children.Add(control);
-            if (source is not null) { content.Children.Remove(character); content.Children.Remove(boss); content.Children.Remove(difficulty); }
-            if (addDate is not null)
+            var content = new StackPanel { Spacing = 12 };
+            foreach (var control in new FrameworkElement[] { recordChoice, recordHint, lootEnabled, mode, item, marketPanel, amount, amountHint, ratio, member, soloReceipt, ratioHint, preview, errorText }) content.Children.Add(control);
+            if (source is not null) content.Children.Insert(0, date);
+            content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정 수익과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
+            content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
+
+            var leftContent = new StackPanel { Spacing = 12 };
+            if (source is not null)
             {
-                content.Children.Remove(boss); content.Children.Remove(difficulty); content.Children.Insert(2, clearChoice);
-                content.Children.Insert(3, new TextBlock { Text = "하드 스우 이상 체력 · 체력 낮은 순서", FontSize = 12, TextWrapping = TextWrapping.Wrap });
+                var owner = SchedulerAvatars.FirstOrDefault(value => value.Ocid == source.Ocid);
+                leftContent.Children.Add(new TextBlock { Text = owner?.Name ?? "캐릭터", FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+                leftContent.Children.Add(new TextBlock { Text = $"{source.Boss.Name} · {source.Boss.DifficultyLabel}", FontSize = 16, TextWrapping = TextWrapping.Wrap });
+                leftContent.Children.Add(new TextBlock { Text = $"처치일 {source.Boss.Date:yyyy.MM.dd}", Style = (Style)Application.Current.Resources["SecondaryText"] });
+                leftContent.Children.Add(new TextBlock { Text = "기존 처치 기록에 연결된 물욕템을 추가하거나 수정합니다.", TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
             }
-            content.Children.Add(new TextBlock { Text = "금액은 직접 입력한 분배 기준 금액입니다. 정산 전에는 0으로 기록하고, 수령 후 수정할 수 있어요. 물욕템 수령액은 결정의 주간 12개 제한과 별도로 합산합니다.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
-            content.Children.Add(new TextBlock { Text = "컨티뉴어스 링·리스트레인트 링은 보스의 반지 상자를 열어 얻은 4레벨 반지를 기록합니다. 녹옥 상자만 주는 난이도에는 표시하지 않아요.", FontSize = 12, TextWrapping = TextWrapping.Wrap });
-            var dialog = new ContentDialog { Title = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 관리", XamlRoot = Content.XamlRoot, RequestedTheme = Root.RequestedTheme,
-                PrimaryButtonText = existing is null && source is not null ? "물욕템 추가" : "저장", CloseButtonText = "취소", DefaultButton = ContentDialogButton.Primary,
-                SecondaryButtonText = source is null ? "" : "기록 삭제", IsSecondaryButtonEnabled = existing is not null,
-                Content = new ScrollViewer { Content = content, MaxHeight = 440, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } };
+            else
+            {
+                leftContent.Children.Add(character);
+                leftContent.Children.Add(date);
+                if (addDate is not null)
+                {
+                    leftContent.Children.Add(clearChoice);
+                    leftContent.Children.Add(new TextBlock { Text = "하드 스우 이상 · 체력이 낮은 보스부터 표시", FontSize = 12, TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
+                }
+                else
+                {
+                    leftContent.Children.Add(boss);
+                    leftContent.Children.Add(difficulty);
+                }
+            }
+            leftContent.Children.Add(party);
+
+            Border Section(string title, string description, UIElement body)
+            {
+                var panel = new StackPanel { Spacing = 14 };
+                panel.Children.Add(new TextBlock { Text = title, FontSize = 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+                panel.Children.Add(new TextBlock { Text = description, TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
+                panel.Children.Add(body);
+                return new Border { Padding = new Thickness(20), CornerRadius = new CornerRadius(16), Background = AppTheme.Brush("CardBrush"), BorderBrush = AppTheme.Brush("LineBrush"), BorderThickness = new Thickness(1), Child = panel };
+            }
+
+            var saveButton = new Button { Content = existing is null && source is not null ? "물욕템 추가" : "저장", Style = (Style)Application.Current.Resources["AccentButtonStyle"], MinWidth = 110 };
+            var cancelButton = new Button { Content = "취소", MinWidth = 90 };
+            var deleteButton = new Button { Content = "기록 삭제", MinWidth = 100, Visibility = source is null || existing is null ? Visibility.Collapsed : Visibility.Visible };
+
+            var bodyGrid = new Grid { ColumnSpacing = 18, MinWidth = 740 };
+            bodyGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.86, GridUnitType.Star) });
+            bodyGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.14, GridUnitType.Star) });
+            var clearSection = Section(source is null ? "보스 처치 기록" : "연결된 보스 기록", source is null
+                ? "캐릭터와 날짜, 보스 난이도 및 파티 인원을 한 번에 확인하세요."
+                : "물욕템은 이 처치 기록에 연결되어 수익 캘린더에 함께 표시됩니다.", leftContent);
+            var lootSection = Section("물욕템 및 정산", addDate is not null
+                ? "물욕템을 함께 기록하려면 선택한 뒤 판매·분배 정보를 입력하세요."
+                : "획득 아이템과 실제 분배 방식을 입력하면 내 수령액을 바로 계산합니다.", content);
+            bodyGrid.Children.Add(clearSection); Grid.SetColumn(lootSection, 1); bodyGrid.Children.Add(lootSection);
+
+            var heading = new StackPanel { Spacing = 5 };
+            heading.Children.Add(new TextBlock { Text = addDate is not null ? "보스 기록 추가" : $"{source?.Boss.Name} · 물욕템 관리", FontSize = 28, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+            heading.Children.Add(new TextBlock { Text = "처치 기록과 물욕템 정산을 확인한 뒤 저장하세요.", TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["SecondaryText"] });
+            var footer = new Grid { ColumnSpacing = 8 };
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            footer.Children.Add(deleteButton); Grid.SetColumn(deleteButton, 1); footer.Children.Add(cancelButton); Grid.SetColumn(cancelButton, 2); footer.Children.Add(saveButton); Grid.SetColumn(saveButton, 3);
+            var page = new Grid { Padding = new Thickness(24, 24, 24, 20), RowSpacing = 16, MaxWidth = 1040, HorizontalAlignment = HorizontalAlignment.Stretch };
+            page.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            page.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            page.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            page.Children.Add(heading);
+            var scroller = new ScrollViewer { Content = bodyGrid, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollMode = ScrollMode.Auto, Padding = new Thickness(0, 0, 6, 8) };
+            Grid.SetRow(scroller, 1); page.Children.Add(scroller); Grid.SetRow(footer, 2); page.Children.Add(footer);
+
+            void CloseEditor()
+            {
+                if (!_lootDialogOpen) return;
+                _lootDialogOpen = false;
+                _closeLootEditor = null;
+                BossRecordEditorHost.Content = null;
+            }
+            _closeLootEditor = CloseEditor;
             ManualWeeklyClear ClearDraft()
             {
                 if (character.SelectedItem is not SchedulerCharacter owner || boss.SelectedItem is not string name || date.Date is null)
@@ -168,9 +237,9 @@ public sealed partial class MainWindow
                     var receipt = lootEnabled.IsChecked == true ? Draft() : null;
                     preview.Text = (clear is null ? "" : $"{(clear.Cycle == BossCycle.Weekly ? "주간" : "월간")} · 결정 수익 " + (CrystalPrices.Find(clear.Name, clear.Difficulty, clear.Date) is { } price ? CurrentIncomeDisplay.Format(price.Meso / (int)party.Value) : "가격 확인 필요"))
                         + (receipt is null ? "" : (clear is null ? "" : "\n") + "물욕템 내 수령액 · " + CurrentIncomeDisplay.Format(receipt.Received));
-                    errorText.Text = ""; dialog.IsPrimaryButtonEnabled = true;
+                    errorText.Text = ""; saveButton.IsEnabled = true;
                 }
-                catch (ArgumentException error) { preview.Text = ""; errorText.Text = error.Message; dialog.IsPrimaryButtonEnabled = false; }
+                catch (ArgumentException error) { preview.Text = ""; errorText.Text = error.Message; saveButton.IsEnabled = false; }
                 }
                 finally { previewUpdating = false; }
             }
@@ -199,7 +268,7 @@ public sealed partial class MainWindow
                 mode.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
                 amount.Visibility = amountHint.Visibility = enabled && mode.SelectedIndex != 3 ? Visibility.Visible : Visibility.Collapsed;
                 party.Visibility = enabled && mode.SelectedIndex == 3 ? Visibility.Collapsed : Visibility.Visible;
-                ratio.Visibility = member.Visibility = ratioHint.Visibility = enabled && proportional ? Visibility.Visible : Visibility.Collapsed;
+                ratio.Visibility = member.Visibility = soloReceipt.Visibility = ratioHint.Visibility = enabled && proportional ? Visibility.Visible : Visibility.Collapsed;
                 item.Visibility = enabled && mode.SelectedIndex != 2 ? Visibility.Visible : Visibility.Collapsed;
                 amount.Header = mode.SelectedIndex == 2 ? "실제 받은 금액 (메소)" : "분배할 총액 (메소)";
                 UpdateMarket();
@@ -259,6 +328,14 @@ public sealed partial class MainWindow
             item.SelectionChanged += (_, _) => UpdateMode();
             character.SelectionChanged += (_, _) => ReloadDifficulty(); date.DateChanged += (_, _) => UpdatePreview();
             ratio.TextChanged += (_, _) => UpdatePreview();
+            soloReceipt.Click += (_, _) =>
+            {
+                if (!double.IsFinite(party.Value) || !double.IsFinite(member.Value)) return;
+                var count = Math.Clamp((int)party.Value, 1, 6);
+                var own = Math.Clamp((int)member.Value, 1, count);
+                ratio.Text = string.Join(':', Enumerable.Range(1, count).Select(index => index == own ? "1" : "0"));
+                ratioHint.Text = $"{count}인 중 내 순번 {own}만 수령하도록 설정했습니다. 0인 구성원은 분배금이 없습니다.";
+            };
             amount.TextChanged += (_, _) => UpdatePreview(); party.ValueChanged += (_, _) => { if (double.IsFinite(party.Value)) member.Maximum = Math.Max(1, party.Value); UpdatePreview(); };
             member.ValueChanged += (_, _) => UpdatePreview(); mode.SelectionChanged += (_, _) => UpdateMode();
             lootEnabled.Checked += (_, _) => UpdateMode(); lootEnabled.Unchecked += (_, _) => UpdateMode();
@@ -276,8 +353,8 @@ public sealed partial class MainWindow
                 if (existing?.Settlement is { } savedSettlement) { settlement.Load(savedSettlement); settlement.SetSale(existing.Amount); }
                 else { settlement.SetPartySize((int)party.Value); settlement.SetSale(existing?.Amount ?? 0); }
                 mode.SelectedIndex = existing?.Mode switch { "ratio" => 1, "received" => 2, "settlement" => 3, null => 3, _ => 0 };
-                dialog.PrimaryButtonText = existing is null ? "물욕템 추가" : "수정 저장";
-                dialog.IsSecondaryButtonEnabled = existing is not null;
+                saveButton.Content = existing is null ? "물욕템 추가" : "수정 저장";
+                deleteButton.Visibility = existing is null ? Visibility.Collapsed : Visibility.Visible;
                 ReloadItems();
             };
             if (existing?.Settlement is { } savedSettlement) { settlement.Load(savedSettlement); settlement.SetSale(existing.Amount); }
@@ -305,9 +382,8 @@ public sealed partial class MainWindow
                 if (!_closed && _lootDialogOpen) UpdateMarket();
             }
             _ = LoadMarket();
-            dialog.PrimaryButtonClick += (_, args) =>
+            saveButton.Click += (_, _) =>
             {
-                args.Cancel = true;
                 if (_closed || _dataDeleting) { errorText.Text = "앱 상태가 바뀌었어요. 창을 다시 열어주세요."; return; }
                 try
                 {
@@ -330,22 +406,40 @@ public sealed partial class MainWindow
                     try { _settings.Save(); } catch { _settings.BossLootRecords = previous; _settings.ManualWeeklyClears = previousClears; _settings.BossPartySizes = previousParties; _settings.BossClearChanges = previousChanges; throw; }
                     RefreshManualIncome(); IncomeCalendarPanel.ShowActionStatus(clear is null
                         ? addingLoot ? "물욕템 기록을 추가했어요." : "물욕템 기록을 수정했어요."
-                        : "선택한 날짜에 보스 기록을 추가했어요."); args.Cancel = false;
+                        : "선택한 날짜에 보스 기록을 추가했어요.");
+                    CloseEditor();
+                    if (_currentPage == "boss-record") GoBack();
                 }
                 catch (ArgumentException error) { errorText.Text = error.Message; }
                 catch (Exception error) when (IsStorageError(error)) { errorText.Text = "기록을 저장하지 못했어요. 저장 공간과 접근 권한을 확인한 뒤 다시 시도해주세요."; }
             };
-            dialog.SecondaryButtonClick += (_, args) =>
+            deleteButton.Click += (_, _) =>
             {
-                args.Cancel = true;
                 if (_closed || _dataDeleting || existing is null) return;
                 var previous = _settings.BossLootRecords;
                 _settings.BossLootRecords = previous.Where(saved => saved.Id != existing.Id).ToList();
-                try { _settings.Save(); RefreshIncomeOverview(); PublishWebSnapshot(); IncomeCalendarPanel.ShowActionStatus("물욕템 기록을 삭제했어요."); args.Cancel = false; }
+                try
+                {
+                    _settings.Save(); RefreshIncomeOverview(); PublishWebSnapshot(); IncomeCalendarPanel.ShowActionStatus("물욕템 기록을 삭제했어요.");
+                    CloseEditor();
+                    if (_currentPage == "boss-record") GoBack();
+                }
                 catch (Exception error) when (IsStorageError(error)) { _settings.BossLootRecords = previous; errorText.Text = "기록을 삭제하지 못했어요. 다시 시도해주세요."; }
             };
-            await dialog.ShowAsync();
+            cancelButton.Click += (_, _) =>
+            {
+                CloseEditor();
+                if (_currentPage == "boss-record") GoBack();
+            };
+            BossRecordEditorHost.Content = page;
+            NavigateTo("boss-record");
         }
-        finally { _lootDialogOpen = false; }
+        catch
+        {
+            _lootDialogOpen = false;
+            _closeLootEditor = null;
+            BossRecordEditorHost.Content = null;
+            throw;
+        }
     }
 }

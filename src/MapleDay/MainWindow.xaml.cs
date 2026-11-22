@@ -172,6 +172,13 @@ public sealed partial class MainWindow : Window
 
     private void NavigateTo(string page, bool remember = true)
     {
+        if (_currentPage == "boss-record" && page != "boss-record")
+        {
+            _closeLootEditor?.Invoke();
+            // A page editor is transient. Keep its parent in the back stack instead of the closed editor.
+            if (_backStack.TryPeek(out var parent) && parent == page) _backStack.Pop();
+            remember = false;
+        }
         // Opening the notification menu always returns to its content list,
         // including clicking the same sidebar item or activating a toast.
         if (page == "notifications") ShowNotificationSettings(false);
@@ -180,6 +187,9 @@ public sealed partial class MainWindow : Window
         if (page == _currentPage) return;
         if (remember) _backStack.Push(_currentPage);
         _currentPage = page;
+        var editorPage = page == "boss-record";
+        ShellNavigation.IsPaneVisible = !editorPage;
+        PaneToggleButton.Visibility = editorPage ? Visibility.Collapsed : Visibility.Visible;
         var isKeyPage = page == "key";
         KeyPage.Visibility = isKeyPage ? Visibility.Visible : Visibility.Collapsed;
         CharacterPage.Visibility = page == "characters" ? Visibility.Visible : Visibility.Collapsed;
@@ -188,13 +198,14 @@ public sealed partial class MainWindow : Window
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         SchedulerPage.Visibility = page == "scheduler" ? Visibility.Visible : Visibility.Collapsed;
         IncomePage.Visibility = page == "income" ? Visibility.Visible : Visibility.Collapsed;
+        BossRecordPage.Visibility = page == "boss-record" ? Visibility.Visible : Visibility.Collapsed;
         PartyPage.Visibility = page == "party" ? Visibility.Visible : Visibility.Collapsed;
         CalendarPage.Visibility = page == "calendar" ? Visibility.Visible : Visibility.Collapsed;
         LevelPage.Visibility = page == "level" ? Visibility.Visible : Visibility.Collapsed;
         NotificationsPage.Visibility = page == "notifications" ? Visibility.Visible : Visibility.Collapsed;
         AnnouncementsPage.Visibility = page == "announcements" ? Visibility.Visible : Visibility.Collapsed;
         ConnectState.Visibility = !_hasLoadedCharacters && string.IsNullOrEmpty(_apiKey) ? Visibility.Visible : Visibility.Collapsed;
-        ShellNavigation.SelectedItem = page switch { "character-info" => CharacterInfoNavigationItem, "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "announcements" => AnnouncementsNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
+        ShellNavigation.SelectedItem = page switch { "character-info" => CharacterInfoNavigationItem, "key" => KeyNavigationItem, "support" => SupportNavigationItem, "settings" => SettingsNavigationItem, "scheduler" => SchedulerNavigationItem, "income" or "boss-record" => IncomeNavigationItem, "party" => PartyNavigationItem, "calendar" => CalendarNavigationItem, "level" => LevelNavigationItem, "announcements" => AnnouncementsNavigationItem, "notifications" => NotificationsNavigationItem, _ => CharactersNavigationItem };
         BackButton.IsEnabled = _backStack.Count > 0;
         if (isKeyPage)
         {

@@ -29,7 +29,7 @@
                             IsEnabled="{x:Bind Enabled}" Opacity="{x:Bind Opacity}" AutomationProperties.Name="{x:Bind AccessibleName}" ToolTipService.ToolTip="{x:Bind Tooltip}">
                         <StackPanel Spacing="4">
                             <TextBlock Text="{x:Bind Day}" FontSize="12"/>
-                            <TextBlock Text="{x:Bind Amount}" FontSize="{x:Bind AmountFontSize}" TextWrapping="Wrap" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            <TextBlock Text="{x:Bind Amount}" FontSize="{x:Bind AmountFontSize}" TextWrapping="Wrap" FontWeight="SemiBold" Foreground="{x:Bind AmountBrush}"/>
                             <TextBlock Text="{x:Bind Note}" FontSize="10" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Button>
@@ -115,6 +115,21 @@
                             <TextBlock Text="{x:Bind UnitPrice}" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{x:Bind Amount}" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Top"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{x:Bind Expenses}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:IncomeCalendarExpense">
+                    <Grid Padding="8,10" ColumnSpacing="12" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Bind Category}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind CharacterName}" FontSize="12"/>
+                            <TextBlock Text="{x:Bind Memo}" FontSize="12" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" Visibility="{x:Bind MemoVisibility}"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{x:Bind Amount}" FontWeight="SemiBold" Foreground="{StaticResource DangerTextBrush}" VerticalAlignment="Top"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

@@ -30,7 +30,7 @@ public sealed class RecordSyncView : UserControl
     {
         Content = _root;
         _root.Children.Add(new TextBlock { Text = "PC 간 기록 동기화", FontSize = 18, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-        _root.Children.Add(new TextBlock { Text = "사냥·보스·물욕템 기록, 캘린더, 파티와 스케줄러 등록 목록을 다른 PC와 연결합니다. API 키와 조회 캐시는 각 PC에서 따로 설정하세요. 기록은 기기에서 암호화하며 서버에 복호화 키를 보내지 않습니다.", TextWrapping = TextWrapping.Wrap });
+        _root.Children.Add(new TextBlock { Text = "사냥·보스·물욕템·지출 기록, 캘린더, 파티와 스케줄러 등록 목록을 다른 PC와 연결합니다. API 키와 조회 캐시는 각 PC에서 따로 설정하세요. 기록은 기기에서 암호화하며 서버에 복호화 키를 보내지 않습니다.", TextWrapping = TextWrapping.Wrap });
         _root.Children.Add(_status); _root.Children.Add(_offline); _root.Children.Add(_online);
         _offline.Children.Add(_name); _offline.Children.Add(_code);
         Add(_offline, "새 동기화 만들기", async () => await ConnectAsync(""));
@@ -171,7 +171,7 @@ public sealed class RecordSyncView : UserControl
         if (row.ValueKind != JsonValueKind.Object) return row.ToString();
         var parts = new List<string>();
         foreach (var (key, label) in new[] { ("Date", "날짜"), ("Name", "이름"), ("Title", "제목"), ("Boss", "보스"), ("Difficulty", "난이도"),
-            ("ItemName", "아이템"), ("Meso", "획득 메소"), ("Fragments", "조각 수"), ("FragmentUnitPrice", "조각 단가"), ("Amount", "금액"), ("PartySize", "인원"),
+            ("ItemName", "아이템"), ("Category", "분류"), ("Meso", "획득 메소"), ("Fragments", "조각 수"), ("FragmentUnitPrice", "조각 단가"), ("Amount", "금액"), ("PartySize", "인원"),
             ("Ratios", "분배 비율"), ("OwnMember", "내 순번"), ("Time", "시간"), ("Weekly", "매주 반복"), ("RepeatUntil", "반복 종료일"), ("Note", "메모") })
             if (Read(row, key) is { Length: > 0 } text) parts.Add(label + ": " + text);
         if (row.TryGetProperty("Members", out var members) && members.ValueKind == JsonValueKind.Array)

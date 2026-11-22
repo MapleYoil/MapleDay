@@ -10,13 +10,22 @@ public class HuntingSettingsTests
     public void Legacy_settings_default_to_no_hunting_and_saved_rates_survive_round_trip()
     {
         var legacy = JsonSerializer.Deserialize<AppSettings>("{}")!;
-        Assert.Empty(legacy.HuntingIncomeRecords); Assert.Equal(0, legacy.HuntingMesoBonus); Assert.Equal(1, legacy.HuntingFragmentPriceMan);
+        Assert.Empty(legacy.HuntingIncomeRecords); Assert.Empty(legacy.IncomeExpenseRecords);
+        Assert.Equal(0, legacy.HuntingMesoBonus); Assert.Equal(1, legacy.HuntingFragmentPriceMan);
         var record = new HuntingIncomeRecord("record", "owner", new(2026, 10, 9), 420000000, 20, 1230000, 100, 100, 291);
         var settings = new AppSettings { HuntingIncomeRecords = [record], HuntingMesoBonus = 100, HuntingFragmentPriceMan = 123 };
         var restored = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(settings))!;
         Assert.Equal(record, Assert.Single(restored.HuntingIncomeRecords));
         restored.HuntingFragmentPriceMan = 9999;
         Assert.Equal(444600000, restored.HuntingIncomeRecords[0].Total);
+    }
+
+    [Fact]
+    public void Expense_records_survive_settings_round_trip()
+    {
+        var expense = new IncomeExpenseRecord("expense", new(2026, 11, 16), 20_000_000, "강화", "스타포스", "owner");
+        var restored = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(new AppSettings { IncomeExpenseRecords = [expense] }))!;
+        Assert.Equal(expense, Assert.Single(restored.IncomeExpenseRecords));
     }
     [Fact]
     public void Absolute_limit_usage_round_trips_and_legacy_percent_remains_readable()

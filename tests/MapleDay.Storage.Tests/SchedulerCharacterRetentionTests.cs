@@ -35,6 +35,7 @@ public sealed class SchedulerCharacterRetentionTests
             BossLootRecords = [new BossLootRecord("loot", "old", new(2026, 10, 22), "스우", "", "아이템", "settlement", 100, 2)
                 { Settlement = settlement }],
             HuntingIncomeRecords = [new("hunt", "old", new(2026, 10, 22), 100, 1, 10)],
+            IncomeExpenseRecords = [new("expense", new(2026, 10, 22), 100, "기타", Ocid: "old")],
             CalendarSchedules = [new CalendarSchedule("schedule", ScheduleKind.Boss, "일정", new(2026, 10, 22),
                 Ocid: "old", CharacterName: "캐릭터", Boss: "스우", Difficulty: "hard", PartySize: 2) { Party = party }],
             Parties = [party],
@@ -53,6 +54,7 @@ public sealed class SchedulerCharacterRetentionTests
         var loot = Assert.Single(settings.BossLootRecords);
         Assert.Equal("new", loot.Ocid); Assert.Equal("new", loot.Settlement!.Members[0].Ocid);
         Assert.Equal("new", Assert.Single(settings.HuntingIncomeRecords).Ocid);
+        Assert.Equal("new", Assert.Single(settings.IncomeExpenseRecords).Ocid);
         var schedule = Assert.Single(settings.CalendarSchedules);
         Assert.Equal("new", schedule.Ocid); Assert.Equal("new", schedule.Party!.Members[0].Ocid);
         Assert.Equal("new", Assert.Single(settings.Parties).Members[0].Ocid);
@@ -96,5 +98,17 @@ public sealed class SchedulerCharacterRetentionTests
         SyncRecords.Apply(restored, SyncRecords.Capture(source));
 
         Assert.Equal(source.SchedulerCharacters, restored.SchedulerCharacters);
+    }
+
+    [Fact]
+    public void SyncRoundTripIncludesExpenses()
+    {
+        var expense = new IncomeExpenseRecord("expense", new(2026, 11, 16), 500_000_000, "장비 구매", "보조무기", "ocid");
+        var source = new AppSettings { IncomeExpenseRecords = [expense] };
+
+        var restored = new AppSettings();
+        SyncRecords.Apply(restored, SyncRecords.Capture(source));
+
+        Assert.Equal(expense, Assert.Single(restored.IncomeExpenseRecords));
     }
 }

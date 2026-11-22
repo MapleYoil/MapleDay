@@ -77,6 +77,8 @@ public static class HuntingIncome
         && (record.LimitPercent is null || record.LimitPercent is >= 0 and <= 100)
         && (record.LimitMeso is null || (record.Level is >= 1 and <= 300 && record.LimitMeso >= 0 && record.LimitMeso <= DailyLimit(record.Level)))
         && (record.Meso > 0 || record.Fragments > 0);
+    public static IReadOnlyList<HuntingIncomeRecord> Normalize(IEnumerable<HuntingIncomeRecord> records) => records
+        .Where(Valid).GroupBy(record => (record.Ocid, record.Date)).Select(group => group.Last()).ToArray();
     public static HuntingIncomeRecord Add(HuntingIncomeRecord existing, HuntingIncomeRecord addition)
     {
         if (!Valid(existing) || !Valid(addition) || existing.Ocid != addition.Ocid || existing.Date != addition.Date)

@@ -17,6 +17,7 @@ public sealed class PartySettlementView : UserControl
     private readonly ComboBox _transfer = new() { Header = "분배금 전달 방식", ItemsSource = new[] { "경매장 (선택한 판매 수수료 적용)", "직접 교환 (5%)", "전달 수수료 없음" }, SelectedIndex = 0 };
     private readonly NumberBox _count = new() { Header = "파티 인원 (인)", Minimum = 1, Maximum = 6, Value = 2, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline };
     private readonly TextBox _weights = new() { Header = "실수령액 분배 비율", Text = "1:1", PlaceholderText = "예: 2:1:1" };
+    private readonly Button _solo = new() { Content = "내 구성원만 수령", HorizontalAlignment = HorizontalAlignment.Left };
     private readonly ComboBox _leader = new() { Header = "파티장", DisplayMemberPath = "Name" };
     private readonly ComboBox _own = new() { Header = "내 구성원", DisplayMemberPath = "Name" };
     private readonly ComboBox _state = new() { Header = "수령 상태", ItemsSource = new[] { "미정산 (수익 0)", "부분 수령", "정산 완료" }, SelectedIndex = 2 };
@@ -32,7 +33,7 @@ public sealed class PartySettlementView : UserControl
     public PartySettlementView()
     {
         Content = _root;
-        foreach (var element in new FrameworkElement[] { _sale, _saleHint, _net, _fee, _transfer, _count, _weights, _leader, _own, _state, _partial, _hint, _rows }) _root.Children.Add(element);
+        foreach (var element in new FrameworkElement[] { _sale, _saleHint, _net, _fee, _transfer, _count, _weights, _leader, _own, _solo, _state, _partial, _hint, _rows }) _root.Children.Add(element);
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(_sale, "메소 정수를 입력하면 아래에 억 단위로 즉시 표시합니다.");
         _sale.TextChanged += (_, _) => { if (_updating) return; FormatAmount(_sale); Refresh(); };
         _net.TextChanged += (_, _) =>
@@ -53,6 +54,12 @@ public sealed class PartySettlementView : UserControl
             Refresh();
         };
         _weights.TextChanged += (_, _) => Refresh(); _leader.SelectionChanged += (_, _) => Refresh(); _own.SelectionChanged += (_, _) => Refresh();
+        _solo.Click += (_, _) =>
+        {
+            var own = _own.SelectedItem as PartyMember;
+            if (own is null) return;
+            _weights.Text = string.Join(":", _members.Select(member => member.Id == own.Id ? "1" : "0"));
+        };
         _state.SelectionChanged += (_, _) => Refresh();
         _partial.TextChanged += (_, _) => { if (_updating) return; FormatAmount(_partial); Refresh(); };
         SetMembers([new("1", "파티장"), new("2", "파티원 1")]); Refresh();

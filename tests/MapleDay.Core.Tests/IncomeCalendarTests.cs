@@ -10,6 +10,7 @@ public sealed class IncomeCalendarTests
     [InlineData(12_300_000L, "+1230만")]
     [InlineData(700L, "+700")]
     [InlineData(0L, "+0")]
+    [InlineData(-630_000_000L, "-6.3억")]
     public void CalendarUsesCompactKoreanIncome(long amount, string expected) => Assert.Equal(expected, IncomeCalendar.CompactMoney(amount));
 
     [Fact]
@@ -102,5 +103,23 @@ public sealed class IncomeCalendarTests
         Assert.Equal(50_000_000, following.Meso);
         Assert.Equal(HuntingIncome.Sum(records.Select(item => item.Hunting), new(2026, 1, 1), date),
             month.Where(day => day.InMonth).Sum(day => day.Meso));
+    }
+
+    [Fact]
+    public void ExpensesArePositiveInExpenseViewAndSubtractedFromAllIncome()
+    {
+        var date = new DateOnly(2026, 11, 16);
+        var hunting = new CalendarHuntingRecord("캐릭터", new("hunt", "c", date, 100_000_000, 0, 10_000));
+        var expense = new CalendarExpenseRecord("캐릭터", new("expense", date, 30_000_000, "기타", Ocid: "c"));
+
+        var all = IncomeCalendar.Month(date, [], [], huntingRecords: [hunting], expenseRecords: [expense])
+            .Single(day => day.Date == date);
+        var spending = IncomeCalendar.Month(date, [], [], category: IncomeCalendarCategory.Expense, expenseRecords: [expense])
+            .Single(day => day.Date == date);
+
+        Assert.Equal(70_000_000, all.Meso);
+        Assert.Equal(30_000_000, spending.Meso);
+        Assert.Single(all.Expenses!);
+        Assert.Single(spending.Expenses!);
     }
 }
