@@ -16,10 +16,11 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
 {
     public DateOnly Date => day.Date;
     public string Day => day.Date.Day.ToString();
-    public bool Enabled => (day.Date >= SchedulerBossHistory.FirstDate || day.Loot?.Count > 0 || day.Hunting?.Count > 0 || day.Expenses?.Count > 0) && day.Date <= today;
+    public bool Enabled => (day.Date >= (category == IncomeCalendarCategory.Expense ? IncomeExpenses.FirstDate : SchedulerBossHistory.FirstDate)
+        || day.Loot?.Count > 0 || day.Hunting?.Count > 0 || day.Expenses?.Count > 0) && day.Date <= today;
     public double Opacity => day.InMonth ? 1 : 0.4;
     public string Amount => day.Bosses.Count > 0 || day.KnownCharacters > 0 || day.Loot?.Count > 0 || day.Hunting?.Count > 0 || day.Expenses?.Count > 0
-        ? category == IncomeCalendarCategory.Expense ? (display ?? new()).Format(-day.Meso, true)
+        ? category == IncomeCalendarCategory.Expense ? (display ?? new()).Format(day.Meso, true)
         : day.Hunting?.Count > 0 ? (display ?? new()).Hunting(day.Meso - day.Hunting.Sum(row => row.Hunting.Total - row.Hunting.Meso),
             day.Hunting.Sum(row => (long)row.Hunting.Fragments), day.Meso, true) : (display ?? new()).Format(day.Meso, true) : "";
     public double AmountFontSize => display?.ValidMode is "both" or "fragments" ? 11 : 15;
@@ -28,13 +29,13 @@ public sealed class IncomeCalendarDay(CalendarIncomeDay day, DateOnly selectedDa
         day.Bosses.Count > 0 ? $"보스 {day.Bosses.Count}" : null,
         day.Loot?.Count > 0 ? $"물욕템 {day.Loot.Count}" : null,
         day.Hunting?.Count > 0 ? $"사냥 {day.Hunting.Count}" : null,
-        day.Expenses?.Count > 0 ? $"지출 {day.Expenses.Count}" : null
+        day.Expenses?.Count > 0 ? $"가계부 {day.Expenses.Count}" : null
     }.Where(text => text is not null)) is { Length: > 0 } note ? note : Enabled && day.KnownCharacters == 0 ? "기록 없음" : "";
     public Brush Background { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentSoftBrush" : "CardBrush");
     public Brush BorderBrush { get; } = AppTheme.Brush(day.Date == selectedDate ? "AccentBrush" : "LineBrush");
-    public Brush AmountBrush { get; } = AppTheme.Brush(category == IncomeCalendarCategory.Expense ? "DangerTextBrush" : "AccentBrush");
+    public Brush AmountBrush { get; } = AppTheme.Brush(day.Meso < 0 ? "DangerTextBrush" : "AccentBrush");
     public Thickness BorderThickness => new(day.Date == selectedDate ? 2 : 1);
-    public string AccessibleName => $"{day.Date:yyyy년 M월 d일}, {Amount}, 보스 {day.Bosses.Count}마리, 물욕템 {day.Loot?.Count ?? 0}건, 사냥 {day.Hunting?.Count ?? 0}건, 지출 {day.Expenses?.Count ?? 0}건";
+    public string AccessibleName => $"{day.Date:yyyy년 M월 d일}, {Amount}, 보스 {day.Bosses.Count}마리, 물욕템 {day.Loot?.Count ?? 0}건, 사냥 {day.Hunting?.Count ?? 0}건, 가계부 {day.Expenses?.Count ?? 0}건";
     public string Tooltip => AccessibleName + $"\n조회 기록 {day.KnownCharacters}/{expectedCharacters}캐릭터";
 }
 
@@ -44,7 +45,8 @@ public sealed class IncomeCalendarExpense(CalendarExpenseRecord record, IncomeDi
     public string Category => record.Expense.Category;
     public string Memo => record.Expense.Memo;
     public Visibility MemoVisibility => record.Expense.Memo.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-    public string Amount => display.Format(-record.Expense.Amount);
+    public string Amount => (record.Expense.IsIncome ? "+" : "") + display.Format(record.Expense.NetAmount);
+    public Brush AmountBrush => AppTheme.Brush(record.Expense.IsIncome ? "AccentBrush" : "DangerTextBrush");
 }
 
 public sealed class IncomeCalendarHunting(CalendarHuntingRecord record, IncomeDisplay display)

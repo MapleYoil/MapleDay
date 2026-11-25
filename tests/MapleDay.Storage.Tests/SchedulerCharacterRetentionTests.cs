@@ -101,14 +101,16 @@ public sealed class SchedulerCharacterRetentionTests
     }
 
     [Fact]
-    public void SyncRoundTripIncludesExpenses()
+    public void SyncRoundTripIncludesExistingExpensesAndNewLedgerCategories()
     {
         var expense = new IncomeExpenseRecord("expense", new(2026, 11, 16), 500_000_000, "장비 구매", "보조무기", "ocid");
-        var source = new AppSettings { IncomeExpenseRecords = [expense] };
+        var outfit = new IncomeExpenseRecord("outfit", expense.Date, 700_000_000, "코디");
+        var sale = new IncomeExpenseRecord("sale", expense.Date, 900_000_000, IncomeExpenses.SaleCategory);
+        var source = new AppSettings { IncomeExpenseRecords = [expense, outfit, sale] };
 
         var restored = new AppSettings();
         SyncRecords.Apply(restored, SyncRecords.Capture(source));
 
-        Assert.Equal(expense, Assert.Single(restored.IncomeExpenseRecords));
+        Assert.Equal(source.IncomeExpenseRecords, restored.IncomeExpenseRecords);
     }
 }

@@ -129,7 +129,7 @@
                             <TextBlock Text="{x:Bind CharacterName}" FontSize="12"/>
                             <TextBlock Text="{x:Bind Memo}" FontSize="12" TextWrapping="Wrap" Style="{StaticResource SecondaryText}" Visibility="{x:Bind MemoVisibility}"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="1" Text="{x:Bind Amount}" FontWeight="SemiBold" Foreground="{StaticResource DangerTextBrush}" VerticalAlignment="Top"/>
+                        <TextBlock Grid.Column="1" Text="{x:Bind Amount}" FontWeight="SemiBold" Foreground="{x:Bind AmountBrush}" VerticalAlignment="Top"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

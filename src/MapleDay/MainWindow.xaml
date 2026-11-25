@@ -532,7 +532,7 @@
                         </Button.Flyout>
                     </Button>
                 </Grid>
-                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /><PivotItem Header="지출" /><PivotItem Header="수익 집계" /></Pivot>
+                <Pivot x:Name="IncomeTabs" Grid.Row="1" SelectionChanged="IncomeTabs_SelectionChanged"><PivotItem Header="전체" /><PivotItem Header="보스" /><PivotItem Header="사냥" /><PivotItem Header="가계부" /><PivotItem Header="수익 집계" /></Pivot>
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
             <StackPanel Padding="0,0,0,20" Spacing="16">
                 <StackPanel x:Name="IncomeLogin" Spacing="8">
@@ -675,9 +675,9 @@
                                 </StackPanel>
                             </Expander>
                             </StackPanel>
-                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
-                            <views:HuntingIncomeView x:Name="HuntingIncomePanel" RecordsChanged="HuntingIncome_RecordsChanged" />
-                            <views:IncomeExpenseView x:Name="IncomeExpensePanel" RecordsChanged="IncomeExpense_RecordsChanged" />
+                            <views:IncomeCalendarView x:Name="IncomeCalendarPanel" DateSelected="IncomeCalendar_DateSelected" PartySizeRequested="IncomeCalendar_PartySizeRequested" BossAddRequested="IncomeCalendar_BossAddRequested" LootRequested="IncomeCalendar_LootRequested" BossEditRequested="IncomeCalendar_BossEditRequested" />
+                            <views:HuntingIncomeView x:Name="HuntingIncomePanel" DateSelected="IncomeEditor_DateSelected" RecordsChanged="HuntingIncome_RecordsChanged" />
+                            <views:IncomeExpenseView x:Name="IncomeExpensePanel" DateSelected="IncomeEditor_DateSelected" RecordsChanged="IncomeExpense_RecordsChanged" />
                         </StackPanel>
                     </Border>
             </StackPanel>

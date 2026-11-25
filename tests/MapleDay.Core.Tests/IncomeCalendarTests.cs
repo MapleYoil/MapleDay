@@ -106,20 +106,25 @@ public sealed class IncomeCalendarTests
     }
 
     [Fact]
-    public void ExpensesArePositiveInExpenseViewAndSubtractedFromAllIncome()
+    public void LedgerAddsItemSalesAndSubtractsExpensesFromAllIncome()
     {
         var date = new DateOnly(2026, 11, 16);
         var hunting = new CalendarHuntingRecord("캐릭터", new("hunt", "c", date, 100_000_000, 0, 10_000));
-        var expense = new CalendarExpenseRecord("캐릭터", new("expense", date, 30_000_000, "기타", Ocid: "c"));
+        var expense = new CalendarExpenseRecord("캐릭터", new("expense", date, 130_000_000, "코디", Ocid: "c"));
+        var sale = new CalendarExpenseRecord("공통", new("sale", date, 50_000_000, IncomeExpenses.SaleCategory));
+        CalendarExpenseRecord[] ledger = [expense, sale, sale];
 
-        var all = IncomeCalendar.Month(date, [], [], huntingRecords: [hunting], expenseRecords: [expense])
+        var all = IncomeCalendar.Month(date, [], [], huntingRecords: [hunting], expenseRecords: ledger)
             .Single(day => day.Date == date);
-        var spending = IncomeCalendar.Month(date, [], [], category: IncomeCalendarCategory.Expense, expenseRecords: [expense])
+        var transactions = IncomeCalendar.Month(date, [], [], category: IncomeCalendarCategory.Expense, expenseRecords: ledger)
+            .Single(day => day.Date == date);
+        var huntingOnly = IncomeCalendar.Month(date, [], [], huntingRecords: [hunting], category: IncomeCalendarCategory.Hunting, expenseRecords: ledger)
             .Single(day => day.Date == date);
 
-        Assert.Equal(70_000_000, all.Meso);
-        Assert.Equal(30_000_000, spending.Meso);
-        Assert.Single(all.Expenses!);
-        Assert.Single(spending.Expenses!);
+        Assert.Equal(20_000_000, all.Meso);
+        Assert.Equal(-80_000_000, transactions.Meso);
+        Assert.Equal(100_000_000, huntingOnly.Meso);
+        Assert.Equal(2, all.Expenses!.Count);
+        Assert.Equal(2, transactions.Expenses!.Count);
     }
 }

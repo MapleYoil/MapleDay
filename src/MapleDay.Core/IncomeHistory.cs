@@ -26,21 +26,38 @@ public static class IncomeHistory
     }
 }
 
-public sealed record IncomeExpenseRecord(string Id, DateOnly Date, long Amount, string Category, string Memo = "", string Ocid = "");
+public sealed record IncomeExpenseRecord(string Id, DateOnly Date, long Amount, string Category, string Memo = "", string Ocid = "")
+{
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool IsIncome => Category == IncomeExpenses.SaleCategory;
+    [System.Text.Json.Serialization.JsonIgnore]
+    public long NetAmount => IsIncome ? Amount : -Amount;
+}
+
+public readonly record struct IncomeLedgerTotals(long Sales, long Spending)
+{
+    public long Net => Sales - Spending;
+}
 
 public static class IncomeExpenses
 {
     public const long MaximumAmount = 1_000_000_000_000_000;
-    public static IReadOnlyList<string> Categories { get; } = ["장비 구매", "강화", "소모품", "거래·수수료", "기타"];
+    public static readonly DateOnly FirstDate = new(2003, 4, 29);
+    public const string SaleCategory = "아이템 판매";
+    public static IReadOnlyList<string> Categories { get; } = ["장비 구매", "강화", "소모품", "거래·수수료", "기타", "코디"];
 
     public static bool Valid(IncomeExpenseRecord? record) => record is not null
         && !string.IsNullOrWhiteSpace(record.Id) && record.Id.Length <= 100
-        && record.Date >= new DateOnly(2003, 4, 29)
+        && record.Date >= FirstDate
         && record.Amount is > 0 and <= MaximumAmount
-        && Categories.Contains(record.Category)
+        && (record.IsIncome || Categories.Contains(record.Category))
         && record.Memo.Length <= 200 && record.Ocid.Length <= 200;
 
-    public static long Sum(IEnumerable<IncomeExpenseRecord> records, DateOnly start, DateOnly end)
-        => records.Where(Valid).Where(record => record.Date >= start && record.Date <= end)
-            .DistinctBy(record => record.Id).Sum(record => record.Amount);
+    public static IncomeLedgerTotals Totals(IEnumerable<IncomeExpenseRecord> records, DateOnly start, DateOnly end)
+    {
+        var rows = records.Where(Valid).Where(record => record.Date >= start && record.Date <= end)
+            .DistinctBy(record => record.Id).ToArray();
+        return new(rows.Where(record => record.IsIncome).Sum(record => record.Amount),
+            rows.Where(record => !record.IsIncome).Sum(record => record.Amount));
+    }
 }

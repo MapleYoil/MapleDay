@@ -48,13 +48,12 @@ public static class IncomeCalendar
             var bosses = grouped.GetValueOrDefault(date) ?? [];
             var items = loot.GetValueOrDefault(date) ?? [];
             var hunts = hunting.GetValueOrDefault(date) ?? [];
-            var spending = expenses.GetValueOrDefault(date) ?? [];
+            var ledger = expenses.GetValueOrDefault(date) ?? [];
+            var adjustment = ledger.Sum(item => item.Expense.NetAmount);
             var income = bosses.Where(record => record.Boss.Included).Sum(record => record.Boss.Meso ?? 0) + items.Sum(item => item.Loot.Received)
                 + hunts.Sum(record => record.Hunting.Total);
             return new CalendarIncomeDay(date, date.Month == first.Month && date.Year == first.Year,
-                category == IncomeCalendarCategory.Expense ? spending.Sum(item => item.Expense.Amount)
-                    : category == IncomeCalendarCategory.All ? income - spending.Sum(item => item.Expense.Amount) : income,
-                bosses, known.Count(dates => dates.Contains(date)), items, hunts, spending);
+                income + adjustment, bosses, known.Count(dates => dates.Contains(date)), items, hunts, ledger);
         }).ToArray();
     }
 }

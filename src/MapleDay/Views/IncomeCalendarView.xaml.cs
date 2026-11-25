@@ -14,6 +14,8 @@ public sealed partial class IncomeCalendarView : UserControl
     public event EventHandler<DateOnly>? BossAddRequested;
     public event EventHandler<CalendarBossRecord>? LootRequested;
     public event EventHandler<CalendarBossRecord>? BossEditRequested;
+    public event EventHandler<DateOnly>? DateSelected;
+    public DateOnly SelectedDate => _selectedDate;
     public void ShowActionStatus(string message) => ActionStatus.Text = message;
     public ObservableCollection<IncomeCalendarDay> Days { get; } = [];
     public ObservableCollection<IncomeCalendarBoss> Bosses { get; } = [];
@@ -53,8 +55,9 @@ public sealed partial class IncomeCalendarView : UserControl
             .Select(record => new CalendarLootRecord(selected.First(owner => owner.Ocid == record.Ocid).Name, record)).ToArray();
         _hunting = (hunting ?? []).Where(record => selected.Any(owner => owner.Ocid == record.Ocid) && HuntingIncome.Valid(record))
             .Select(record => new CalendarHuntingRecord(selected.First(owner => owner.Ocid == record.Ocid).Name, record)).ToArray();
-        _expenses = (expenses ?? []).Where(IncomeExpenses.Valid).Where(record => record.Ocid.Length == 0 || selected.Any(owner => owner.Ocid == record.Ocid))
-            .Select(record => new CalendarExpenseRecord(record.Ocid.Length == 0 ? "공통 지출" : selected.First(owner => owner.Ocid == record.Ocid).Name, record)).ToArray();
+        var names = selected.ToDictionary(owner => owner.Ocid, owner => owner.Name);
+        _expenses = (expenses ?? []).Where(IncomeExpenses.Valid)
+            .Select(record => new CalendarExpenseRecord(record.Ocid.Length == 0 ? "공통" : names.GetValueOrDefault(record.Ocid, "이전 캐릭터"), record)).ToArray();
         _records = selected.Where(character => character.Income is not null)
             .SelectMany(character => character.Income!.Records.Select(record => new CalendarBossRecord(character.Ocid, character.Name, record))).ToArray();
         _knownDates = selected.Where(character => character.Income is not null).Select(character => character.Income!.KnownDates).ToArray();
@@ -77,11 +80,11 @@ public sealed partial class IncomeCalendarView : UserControl
     private DateOnly FirstDate => (_category is IncomeCalendarCategory.All or IncomeCalendarCategory.Boss ? _loot.Select(item => item.Loot.Date) : [])
         .Concat(_category is IncomeCalendarCategory.All or IncomeCalendarCategory.Hunting ? _hunting.Select(item => item.Hunting.Date) : [])
         .Concat(_category is IncomeCalendarCategory.Boss or IncomeCalendarCategory.Hunting ? [] : _expenses.Select(item => item.Expense.Date))
-        .Append(SchedulerBossHistory.FirstDate).Min();
+        .Append(_category == IncomeCalendarCategory.Expense ? IncomeExpenses.FirstDate : SchedulerBossHistory.FirstDate).Min();
     private void Refresh()
     {
         _days = IncomeCalendar.Month(_month, _records, _knownDates, _loot, _hunting, _category, _expenses);
-        var label = _category == IncomeCalendarCategory.Boss ? "보스" : _category == IncomeCalendarCategory.Hunting ? "사냥" : _category == IncomeCalendarCategory.Expense ? "지출" : "전체";
+        var label = _category switch { IncomeCalendarCategory.Boss => "보스", IncomeCalendarCategory.Hunting => "사냥", IncomeCalendarCategory.Expense => "가계부", _ => "전체" };
         CalendarTitle.Text = label + " 캘린더";
         MonthTitle.Text = $"{_month:yyyy년 M월}";
         PreviousButton.IsEnabled = _month > FirstOfMonth(FirstDate);
@@ -92,10 +95,10 @@ public sealed partial class IncomeCalendarView : UserControl
         {
             var rows = days.ToArray(); var hunts = rows.SelectMany(day => day.Hunting ?? []).Select(row => row.Hunting).ToArray();
             var total = rows.Sum(row => row.Meso);
-            return _category == IncomeCalendarCategory.Expense ? _display.Format(-total)
-                : _category != IncomeCalendarCategory.Boss ? _display.Hunting(total - hunts.Sum(row => row.Total - row.Meso), hunts.Sum(row => (long)row.Fragments), total) : _display.Format(total);
+            return _category is IncomeCalendarCategory.All or IncomeCalendarCategory.Hunting
+                ? _display.Hunting(total - hunts.Sum(row => row.Total - row.Meso), hunts.Sum(row => (long)row.Fragments), total) : _display.Format(total);
         }
-        MonthAmount.Text = $"이 달의 {label} {Amount(_days.Where(day => day.InMonth))}";
+        MonthAmount.Text = $"이 달의 {(_category == IncomeCalendarCategory.Expense ? "가계부 순수입" : label)} {Amount(_days.Where(day => day.InMonth))}";
         var chosen = _days.FirstOrDefault(day => day.Date == _selectedDate);
         SelectedTitle.Text = $"{_selectedDate:M월 d일} · {label} 기록";
         SelectedAmount.Text = chosen is { } selectedDay && (selectedDay.Bosses.Count > 0 || selectedDay.KnownCharacters > 0 || selectedDay.Loot?.Count > 0 || selectedDay.Hunting?.Count > 0 || selectedDay.Expenses?.Count > 0) ? Amount([selectedDay]) : "—";
@@ -106,29 +109,30 @@ public sealed partial class IncomeCalendarView : UserControl
             if (!(chosen?.Bosses ?? []).Any(record => BossLoot.ForClear(item.Loot, record.Ocid, record.Boss)))
                 Loot.Add(new(item.Loot, item.CharacterName, _display, _records.Any(record => BossLoot.ForClear(item.Loot, record.Ocid, record.Boss))));
         Hunting.Clear();
-        foreach (var item in chosen?.Hunting ?? []) Hunting.Add(new(item, _display));
+        if (_category != IncomeCalendarCategory.Hunting)
+            foreach (var item in chosen?.Hunting ?? []) Hunting.Add(new(item, _display));
         Expenses.Clear();
-        foreach (var item in chosen?.Expenses ?? []) Expenses.Add(new(item, _display));
+        if (_category != IncomeCalendarCategory.Expense)
+            foreach (var item in chosen?.Expenses ?? []) Expenses.Add(new(item, _display));
         AddBossButton.Visibility = BossHint.Visibility = _category is IncomeCalendarCategory.Hunting or IncomeCalendarCategory.Expense ? Visibility.Collapsed : Visibility.Visible;
         AddBossButton.IsEnabled = _expectedCharacters > 0 && _selectedDate >= SchedulerBossHistory.FirstDate && _selectedDate <= _today;
         ActionStatus.Text = "";
         var receipts = chosen?.Loot?.Count ?? 0;
         var hunts = chosen?.Hunting?.Count ?? 0;
-        var spending = chosen?.Expenses?.Count ?? 0;
-        DayStatus.Text = chosen is null || chosen.KnownCharacters == 0 && chosen.Bosses.Count == 0 && receipts == 0 && hunts == 0 && spending == 0
+        var ledger = chosen?.Expenses?.Count ?? 0;
+        DayStatus.Text = _category == IncomeCalendarCategory.Hunting ? "아래에서 선택한 날짜의 사냥 기록을 저장하거나 수정할 수 있어요."
+            : _category == IncomeCalendarCategory.Expense ? "아래에서 수입이나 지출을 추가할 수 있어요. 기존 기록을 선택하면 수정합니다."
+            : chosen is null || chosen.KnownCharacters == 0 && chosen.Bosses.Count == 0 && receipts == 0 && hunts == 0 && ledger == 0
             ? "이 날짜에 저장된 수익 기록이 없어요."
-            : _category == IncomeCalendarCategory.Hunting ? $"사냥 {hunts}건 · 획득 메소 + 조각 수익"
-            : _category == IncomeCalendarCategory.Expense ? $"지출 {spending}건 · 직접 기록한 사용 내역"
             : $"보스 {chosen.Bosses.Count}마리 · 물욕템 {receipts}건"
-                + (_category == IncomeCalendarCategory.All ? $" · 사냥 {hunts}건 · 지출 {spending}건" : "")
+                + (_category == IncomeCalendarCategory.All ? $" · 사냥 {hunts}건 · 가계부 {ledger}건" : "")
                 + $" · 보스 조회 기록 {chosen.KnownCharacters}/{_expectedCharacters}캐릭터";
     }
     private void Day_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: DateOnly date }) return;
-        _selectedDate = date;
-        _month = FirstOfMonth(date);
-        Refresh();
+        ShowDate(date);
+        DateSelected?.Invoke(this, _selectedDate);
     }
     private void PartySize_Click(object sender, RoutedEventArgs e)
     {
@@ -156,13 +160,19 @@ public sealed partial class IncomeCalendarView : UserControl
         var first = FirstDate;
         if (_selectedDate < first) _selectedDate = first;
         Refresh();
+        DateSelected?.Invoke(this, _selectedDate);
     }
     private void Previous_Click(object sender, RoutedEventArgs e) => MoveMonth(-1);
     private void Next_Click(object sender, RoutedEventArgs e) => MoveMonth(1);
-    private void Today_Click(object sender, RoutedEventArgs e) { _selectedDate = _today; _month = FirstOfMonth(_today); Refresh(); }
+    private void Today_Click(object sender, RoutedEventArgs e)
+    {
+        ShowDate(_today);
+        DateSelected?.Invoke(this, _selectedDate);
+    }
     public void ShowDate(DateOnly date)
     {
         if (date > _today) date = _today;
+        if (_selectedDate == date && _month == FirstOfMonth(date)) return;
         _selectedDate = date; _month = FirstOfMonth(date); Refresh();
     }
 }

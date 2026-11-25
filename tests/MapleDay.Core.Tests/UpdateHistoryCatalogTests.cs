@@ -18,7 +18,7 @@ public sealed class UpdateHistoryCatalogTests
     public void EveryPublishedVersionHasDatedNonEmptyNotesInNewestFirstOrder()
     {
         var history = ReadRepositoryHistory();
-        Assert.Equal(42, history.Count);
+        Assert.Equal(43, history.Count);
         Assert.Equal(history.Count, history.Select(item => item.Version).Distinct().Count());
         Assert.All(history, item => Assert.False(string.IsNullOrWhiteSpace(item.Notes)));
         Assert.DoesNotContain(history, item => item.Notes.Contains("관리자", StringComparison.Ordinal));
@@ -33,7 +33,7 @@ public sealed class UpdateHistoryCatalogTests
         Assert.Equal(9, UpdateHistoryCatalog.PageCount(history));
         Assert.Equal(5, UpdateHistoryCatalog.Page(history, 0).Count);
         Assert.Equal(5, UpdateHistoryCatalog.Page(history, 7).Count);
-        Assert.Equal(2, UpdateHistoryCatalog.Page(history, 8).Count);
+        Assert.Equal(3, UpdateHistoryCatalog.Page(history, 8).Count);
         Assert.Empty(UpdateHistoryCatalog.Page(history, -1));
         Assert.Empty(UpdateHistoryCatalog.Page(history, UpdateHistoryCatalog.PageCount(history)));
     }
@@ -42,12 +42,13 @@ public sealed class UpdateHistoryCatalogTests
     public void SkippedVersionsIncludeEveryReleaseThroughLatest()
     {
         var history = ReadRepositoryHistory();
-        var pending = UpdateHistoryCatalog.Between(history, new Version(1, 1, 33, 0), new Version(1, 2, 7, 0));
+        var pending = UpdateHistoryCatalog.Between(history, new Version(1, 1, 33, 0), new Version(1, 2, 8, 0));
 
-        Assert.Equal([new Version(1, 2, 7, 0), new Version(1, 2, 5, 0), new Version(1, 2, 4, 0), new Version(1, 2, 3, 0), new Version(1, 2, 2, 0), new Version(1, 2, 1, 0), new Version(1, 2, 0, 0),
+        Assert.Equal([new Version(1, 2, 8, 0), new Version(1, 2, 7, 0), new Version(1, 2, 5, 0), new Version(1, 2, 4, 0), new Version(1, 2, 3, 0), new Version(1, 2, 2, 0), new Version(1, 2, 1, 0), new Version(1, 2, 0, 0),
             new Version(1, 1, 39, 0), new Version(1, 1, 35, 0), new Version(1, 1, 34, 0)],
             pending.Select(item => item.Version));
         var markdown = UpdateHistoryCatalog.ToMarkdown(pending);
+        Assert.Contains("## 1.2.8.0", markdown, StringComparison.Ordinal);
         Assert.Contains("## 1.2.7.0", markdown, StringComparison.Ordinal);
         Assert.Contains("## 1.2.5.0", markdown, StringComparison.Ordinal);
         Assert.Contains("## 1.2.4.0", markdown, StringComparison.Ordinal);

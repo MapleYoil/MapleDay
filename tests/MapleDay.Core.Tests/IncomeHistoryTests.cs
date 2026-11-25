@@ -25,12 +25,17 @@ public sealed class IncomeHistoryTests
     }
 
     [Fact]
-    public void ExpensesValidateAndSumDistinctRecords()
+    public void LedgerTotalsValidateAndSumDistinctRecordsWithinPeriod()
     {
         var first = new IncomeExpenseRecord("a", new(2026, 11, 1), 20_000_000_000, "강화", "스타포스", "c");
-        var second = new IncomeExpenseRecord("b", new(2026, 11, 2), 1_000_000_000, "기타");
+        var second = new IncomeExpenseRecord("b", new(2026, 11, 2), 1_000_000_000, "코디");
+        var sale = new IncomeExpenseRecord("sale", new(2026, 11, 3), 25_000_000_000, IncomeExpenses.SaleCategory);
+        var outside = sale with { Id = "outside", Date = new(2026, 10, 31) };
         Assert.True(IncomeExpenses.Valid(first));
-        Assert.Equal(21_000_000_000, IncomeExpenses.Sum([first, first, second], new(2026, 11, 1), new(2026, 11, 30)));
+        var totals = IncomeExpenses.Totals([first, first, second, sale, sale, outside], new(2026, 11, 1), new(2026, 11, 30));
+        Assert.Equal(21_000_000_000, totals.Spending);
+        Assert.Equal(25_000_000_000, totals.Sales);
+        Assert.Equal(4_000_000_000, totals.Net);
         Assert.False(IncomeExpenses.Valid(first with { Amount = 0 }));
         Assert.False(IncomeExpenses.Valid(first with { Category = "알 수 없음" }));
     }

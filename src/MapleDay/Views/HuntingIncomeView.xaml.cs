@@ -13,6 +13,7 @@ public sealed record HuntRow(HuntingIncomeRecord Record, string Label) { public 
 public sealed partial class HuntingIncomeView : UserControl
 {
     public event EventHandler? RecordsChanged;
+    public event EventHandler<DateOnly>? DateSelected;
     private AppSettings? _settings;
     private IncomeDisplay _display = new();
     private readonly LootMarketClient _market = new();
@@ -24,38 +25,60 @@ public sealed partial class HuntingIncomeView : UserControl
     private bool _loading;
     private bool _saving;
     private bool _deleteDialogOpen;
+    private HuntingIncomeRecord? _loadedRecord;
     private int _marketGeneration;
     private List<HuntingIncomeRecord>? _bulkUndo;
     private List<HuntingIncomeRecord>? _bulkApplied;
     private HuntCharacter? Character => CharacterInput.SelectedItem as HuntCharacter;
-    private DateOnly Date => DateOnly.FromDateTime((DateInput.Date ?? DateTimeOffset.Now).DateTime);
+    private DateOnly Date => DateOnly.FromDateTime((DateInput.Date ?? DateInput.MaxDate).DateTime);
     private int RecordLevel => Existing?.Level is >= 1 and <= 300 ? Existing.Level : Character?.Level ?? 300;
-    private HuntingIncomeRecord? Existing => HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? [])
+    private HuntingIncomeRecord? Existing => DateInput.Date is null ? null : HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? [])
         .FirstOrDefault(row => row.Ocid == Character?.Ocid && row.Date == Date);
     public HuntingIncomeView() { InitializeComponent(); }
     public void SetContext(AppSettings settings, IEnumerable<SchedulerCharacter> characters, string? selectedOcid, IncomeDisplay display)
     {
         _ready = false; _settings = settings; _display = display;
-        var previous = Character?.Ocid;
+        var previous = Character;
+        var previousDate = DateInput.Date;
         var choices = characters.Where(owner => selectedOcid is null || owner.Ocid == selectedOcid)
             .Select(owner => new HuntCharacter(owner.Ocid, owner.Name + " · " + owner.Character.World, owner.Character.Level, owner.Character.World)).ToArray();
         CharacterInput.ItemsSource = choices;
-        CharacterInput.SelectedItem = choices.FirstOrDefault(owner => owner.Ocid == previous) ?? choices.FirstOrDefault();
+        CharacterInput.SelectedItem = choices.FirstOrDefault(owner => owner.Ocid == previous?.Ocid) ?? choices.FirstOrDefault();
         var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
         DateInput.MaxDate = new DateTimeOffset(today.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(9));
         DateInput.Date ??= DateInput.MaxDate;
         BulkStart.MaxDate = BulkEnd.MaxDate = DateInput.MaxDate;
         BulkStart.Date ??= DateInput.MaxDate.AddDays(-6);
         BulkEnd.Date ??= DateInput.MaxDate;
-        _ready = true; LoadDay(); RefreshRecords(); _ = LoadMarketAsync();
+        _ready = true;
+        if (previous != Character || previousDate != DateInput.Date || Existing != _loadedRecord) LoadDay();
+        else Calculate();
+        RefreshRecords();
+        if (previous != Character) _ = LoadMarketAsync();
     }
     private void Character_Changed(object sender, SelectionChangedEventArgs args)
     { if (_ready) { LoadDay(); _ = LoadMarketAsync(); } }
-    private void Date_Changed(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args) { if (_ready) LoadDay(); }
+    public void SelectDate(DateOnly date)
+    {
+        if (!_ready || DateInput.Date is not null && Date == date) return;
+        _ready = false;
+        DateInput.Date = new DateTimeOffset(date.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(9));
+        _ready = true;
+        LoadDay();
+        RefreshRecords();
+    }
+    private void Date_Changed(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
+    {
+        if (!_ready) return;
+        LoadDay();
+        RefreshRecords();
+        if (args.NewDate is not null) DateSelected?.Invoke(this, Date);
+    }
     private void LoadDay()
     {
         _loading = true; _liveNumbers.Clear();
-        var row = Existing;
+        var row = _loadedRecord = Existing;
+        SaveButton.Content = row is null ? "기록 저장" : "수정 저장";
         MesoInput.Text = (row?.Meso ?? 0).ToString("N0", CultureInfo.CurrentCulture); FragmentCount.Text = (row?.Fragments ?? 0).ToString("N0", CultureInfo.CurrentCulture);
         FragmentPrice.Value = row is null ? Math.Clamp(_settings?.HuntingFragmentPriceMan ?? 1, 1, 9999) : row.FragmentUnitPrice / 10000d;
         BonusInput.Value = (double)(row?.MesoBonus ?? Math.Clamp(_settings?.HuntingMesoBonus ?? 0, 0, 10000));
@@ -139,7 +162,7 @@ public sealed partial class HuntingIncomeView : UserControl
             LimitText.Text = $"Lv. {row.Level} · 기본 메소 제한 {IncomeReplay.CompactMeso(HuntingIncome.DailyLimit(row.Level))} 메소";
             Calculation.Text = _display.ValidMode == "fragments" ? _display.Hunting(row.Meso, row.Fragments, row.Total)
                 : $"메소 {_display.Format(row.Meso)} + 조각 {row.Fragments:N0}개 × {IncomeReplay.CompactMeso(row.FragmentUnitPrice)} = {_display.Format(row.Total)}";
-            SaveButton.IsEnabled = HuntingIncome.Valid(row) && !_saving;
+            SaveButton.IsEnabled = DateInput.Date is not null && HuntingIncome.Valid(row) && !_saving;
         }
         catch (Exception error) when (error is ArgumentException or OverflowException)
         { SaveButton.IsEnabled = false; Calculation.Text = "캐릭터와 유효한 금액·수량을 입력해주세요."; }
@@ -208,7 +231,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private void Market_Click(object sender, RoutedEventArgs args) { if (_price is { } price) FragmentPrice.Value = price.InputPriceMan; }
     private void Save_Click(object sender, RoutedEventArgs args)
     {
-        if (_settings is null || _saving) return;
+        if (_settings is null || _saving || DateInput.Date is null) return;
         try
         {
             var row = Draft(); if (!HuntingIncome.Valid(row)) return;
@@ -309,7 +332,7 @@ public sealed partial class HuntingIncomeView : UserControl
     private void RefreshRecords()
     {
         var characters = (CharacterInput.ItemsSource as HuntCharacter[] ?? []).ToDictionary(owner => owner.Ocid);
-        Records.ItemsSource = HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? []).Where(row => characters.ContainsKey(row.Ocid))
+        Records.ItemsSource = HuntingIncome.Normalize(_settings?.HuntingIncomeRecords ?? []).Where(row => DateInput.Date is not null && row.Date == Date && characters.ContainsKey(row.Ocid))
             .OrderByDescending(row => row.Date).Select(row => new HuntRow(row, $"{row.Date:yyyy.MM.dd} · {characters[row.Ocid].Label} · {_display.Hunting(row.Meso, row.Fragments, row.Total)}" + (_display.ValidMode == "fragments" ? "" : $" · 조각 {row.Fragments:N0}개"))).ToArray();
     }
     private void Record_Selected(object sender, SelectionChangedEventArgs args)
@@ -317,7 +340,6 @@ public sealed partial class HuntingIncomeView : UserControl
         if (Records.SelectedItem is not HuntRow row) return;
         _ready = false;
         CharacterInput.SelectedItem = (CharacterInput.ItemsSource as HuntCharacter[] ?? []).FirstOrDefault(owner => owner.Ocid == row.Record.Ocid);
-        DateInput.Date = new DateTimeOffset(row.Record.Date.ToDateTime(TimeOnly.MinValue), TimeSpan.FromHours(9));
         _ready = true; LoadDay(); _ = LoadMarketAsync();
     }
 }

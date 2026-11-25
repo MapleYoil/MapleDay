@@ -58,7 +58,7 @@
                 </StackPanel>
             </StackPanel>
         </Expander>
-        <TextBlock Text="저장된 사냥 기록 · 선택하면 수정" FontWeight="SemiBold" />
+        <TextBlock Text="이 날짜의 사냥 기록 · 선택하면 수정" FontWeight="SemiBold" />
         <ListView x:Name="Records" MaxHeight="360" SelectionChanged="Record_Selected" />
     </StackPanel>
 </UserControl>
