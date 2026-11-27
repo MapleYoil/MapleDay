@@ -42,7 +42,7 @@ public sealed class BossPartyTests
     }
 
     [Fact]
-    public void SavedDefaultStaysFixedForCurrentWeekWhileHistoricalExactValuesRemain()
+    public void ExplicitPeriodValuesTakePrecedenceOverAnUndatedDefault()
     {
         var today = new DateOnly(2026, 10, 30);
         var current = BossParty.RecordId("스우", BossCycle.Weekly, today);
@@ -53,7 +53,7 @@ public sealed class BossPartyTests
         };
 
         Assert.Equal("Default:Weekly:Bosses/icon_13.png", BossParty.PreferenceId(current));
-        Assert.Equal(5, BossParty.Resolve(sizes, "character", current, today));
+        Assert.Equal(2, BossParty.Resolve(sizes, "character", current, today));
         var previous = BossParty.RecordId("스우", BossCycle.Weekly, today.AddDays(-7));
         sizes["character|" + previous] = 2;
         Assert.Equal(2, BossParty.Resolve(sizes, "character", previous, today));
@@ -70,11 +70,73 @@ public sealed class BossPartyTests
         var sizes = new Dictionary<string, int>();
 
         BossParty.SetCurrentPreference(sizes, "character", current, 4, today);
-        BossParty.SetCurrentPreference(sizes, "character", previous, 2, today);
+        BossParty.SetPeriodSize(sizes, "character", previous, 2);
 
         Assert.Equal(4, sizes["character|" + current]);
         Assert.Equal(4, sizes["character|" + BossParty.PreferenceId(current)]);
         Assert.Equal(2, sizes["character|" + previous]);
+        Assert.Equal(4, BossParty.Resolve(sizes, "character", current, today.AddDays(7)));
+        Assert.Equal(4, BossParty.Resolve(sizes, "character",
+            BossParty.RecordId("스우", BossCycle.Weekly, today.AddDays(7)), today.AddDays(7)));
+    }
+
+    [Theory]
+    [InlineData("스우", BossCycle.Weekly, "weekly")]
+    [InlineData("검은 마법사", BossCycle.Monthly, "monthly")]
+    public void InheritedPartySizeDoesNotBecomeSoloAfterTheNextReset(string boss, BossCycle cycle, string apiCycle)
+    {
+        const string difficulty = "hard";
+        var before = new DateOnly(2026, 10, 1);
+        var clearDate = SchedulerBossHistory.End(cycle, before).AddDays(1);
+        var nextPeriod = SchedulerBossHistory.End(cycle, clearDate).AddDays(1);
+        var oldId = BossParty.RecordId(boss, cycle, before);
+        var clearId = BossParty.RecordId(boss, cycle, clearDate);
+        var sizes = new Dictionary<string, int> { ["character|" + oldId] = 2, ["character|" + BossParty.PreferenceId(oldId)] = 2 };
+        var snapshot = new SchedulerSnapshot(clearDate, new()
+        {
+            Bosses = [new() { Name = boss, Difficulty = difficulty, Cycle = apiCycle, Complete = JsonSerializer.SerializeToElement(true) }]
+        }, true, DateTimeOffset.UtcNow);
+
+        Assert.Equal(2, BossParty.Resolve(sizes, "character", clearId, clearDate));
+        var result = BossIncome.Calculate([snapshot], nextPeriod, id => BossParty.Resolve(sizes, "character", id, nextPeriod));
+        var record = Assert.Single(result.Records);
+        Assert.Equal(2, record.PartySize);
+        Assert.Equal(CrystalPrices.Find(boss, difficulty, clearDate)!.Meso / 2, record.Meso);
+    }
+
+    [Fact]
+    public void LaterDefaultsAndOneOffEditsDoNotChangeInheritedPastSizes()
+    {
+        var first = new DateOnly(2026, 11, 5);
+        var intervening = first.AddDays(7);
+        var today = first.AddDays(21);
+        string Id(DateOnly date) => BossParty.RecordId("스우", BossCycle.Weekly, date);
+        var sizes = new Dictionary<string, int>();
+        BossParty.SetCurrentPreference(sizes, "character", Id(first), 2, first);
+        BossParty.SetPeriodSize(sizes, "character", Id(intervening), 6);
+        // The scheduler can still display a tile from the prior week at reset.
+        BossParty.SetCurrentPreference(sizes, "character", Id(today.AddDays(-7)), 3, today);
+
+        Assert.Equal(6, BossParty.Resolve(sizes, "character", Id(intervening), today));
+        Assert.Equal(2, BossParty.Resolve(sizes, "character", Id(intervening.AddDays(7)), today));
+        Assert.Equal(3, BossParty.Resolve(sizes, "character", Id(today), today));
+        Assert.Equal(1, BossParty.Resolve(sizes, "character", Id(first.AddDays(-7)), today));
+        BossParty.SetPeriodSize(sizes, "character", Id(today), 4);
+        Assert.Equal(4, BossParty.Resolve(sizes, "character", Id(today), today));
+        Assert.Equal(3, BossParty.Resolve(sizes, "character", Id(today.AddDays(7)), today.AddDays(7)));
+    }
+
+    [Fact]
+    public void EditingAnOldPeriodKeepsItsLegacySizeForMissingWeeks()
+    {
+        var first = new DateOnly(2026, 11, 5);
+        var today = first.AddDays(28);
+        string Id(int week) => BossParty.RecordId("스우", BossCycle.Weekly, first.AddDays(7 * week));
+        var sizes = new Dictionary<string, int> { ["character|" + Id(0)] = 2, ["character|" + Id(2)] = 3 };
+        BossParty.SetPeriodSize(sizes, "character", Id(0), 6);
+        Assert.Equal(6, BossParty.Resolve(sizes, "character", Id(0), today));
+        Assert.Equal(2, BossParty.Resolve(sizes, "character", Id(1), today));
+        Assert.Equal(3, BossParty.Resolve(sizes, "character", Id(3), today));
     }
 
     [Fact]

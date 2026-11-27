@@ -415,16 +415,14 @@ public sealed partial class MainWindow
             if (_dataDeleting || !apply.IsEnabled || !_schedulerCharacters.TryGetValue(row.Ocid, out var active)
                 || !ReferenceEquals(owner, active)) { flyout.Hide(); return; }
             var today = SchedulerBossHistory.KoreanToday(DateTimeOffset.UtcNow);
-            var recordKey = row.Ocid + "|" + row.PartyId;
-            var preferenceKey = row.Ocid + "|" + BossParty.PreferenceId(row.PartyId);
-            var hadRecord = _settings.BossPartySizes.TryGetValue(recordKey, out var previousRecord);
-            var hadPreference = _settings.BossPartySizes.TryGetValue(preferenceKey, out var previousPreference);
-            BossParty.SetCurrentPreference(_settings.BossPartySizes, row.Ocid, row.PartyId, (int)number.Value, today);
+            var previous = _settings.BossPartySizes;
+            var updated = new Dictionary<string, int>(previous);
+            BossParty.SetCurrentPreference(updated, row.Ocid, row.PartyId, (int)number.Value, today);
+            _settings.BossPartySizes = updated;
             try { _settings.Save(); }
             catch (Exception error) when (IsStorageError(error))
             {
-                if (hadRecord) _settings.BossPartySizes[recordKey] = previousRecord; else _settings.BossPartySizes.Remove(recordKey);
-                if (hadPreference) _settings.BossPartySizes[preferenceKey] = previousPreference; else _settings.BossPartySizes.Remove(preferenceKey);
+                _settings.BossPartySizes = previous;
                 SchedulerMessage.Title = "파티 인원을 저장하지 못했어요";
                 SchedulerMessage.Message = "저장 공간과 접근 권한을 확인한 뒤 다시 시도해주세요.";
                 SchedulerMessage.Severity = InfoBarSeverity.Warning; SchedulerMessage.IsOpen = true;

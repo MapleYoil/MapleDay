@@ -186,7 +186,8 @@ public sealed partial class MainWindow
                 _settings.ManualWeeklyClears = previous.Concat(pending.Select(item => item.Clear)).ToList();
                 _settings.BossClearChanges = BossClearHistory.Restore(previousChanges, pending.Select(item => item.Clear));
                 _settings.BossPartySizes = new(previousParties);
-                foreach (var item in pending) _settings.BossPartySizes[ManualWeeklyHistory.Key(item.Clear)] = item.Party;
+                foreach (var item in pending)
+                    BossParty.SetPeriodSize(_settings.BossPartySizes, item.Clear.Ocid, ManualWeeklyHistory.Id(item.Clear), item.Party);
                 try { _settings.Save(); }
                 catch (Exception error) when (IsStorageError(error))
                 {

@@ -401,7 +401,8 @@ public sealed partial class MainWindow
                     {
                         _settings.ManualWeeklyClears = previousClears.Append(clear).ToList();
                         _settings.BossClearChanges = BossClearHistory.Restore(previousChanges, [clear]);
-                        _settings.BossPartySizes = new(previousParties) { [ManualWeeklyHistory.Key(clear)] = (int)party.Value };
+                        _settings.BossPartySizes = new(previousParties);
+                        BossParty.SetPeriodSize(_settings.BossPartySizes, clear.Ocid, ManualWeeklyHistory.Id(clear), (int)party.Value);
                     }
                     try { _settings.Save(); } catch { _settings.BossLootRecords = previous; _settings.ManualWeeklyClears = previousClears; _settings.BossPartySizes = previousParties; _settings.BossClearChanges = previousChanges; throw; }
                     RefreshManualIncome(); IncomeCalendarPanel.ShowActionStatus(clear is null

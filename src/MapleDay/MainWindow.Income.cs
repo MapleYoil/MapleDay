@@ -316,7 +316,7 @@ public sealed partial class MainWindow
                 : [record.Boss.Id];
             var previous = _settings.BossPartySizes;
             var updated = new Dictionary<string, int>(previous);
-            foreach (var id in ids) BossParty.SetCurrentPreference(updated, record.Ocid, id, (int)number.Value, today);
+            foreach (var id in ids) BossParty.SetPeriodSize(updated, record.Ocid, id, (int)number.Value);
             _settings.BossPartySizes = updated;
             try { _settings.Save(); }
             catch (Exception error) when (IsStorageError(error))

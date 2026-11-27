@@ -86,7 +86,8 @@ public sealed partial class MainWindow
                 _settings.BossClearChanges = plan.Changes.ToList(); _settings.BossLootRecords = plan.Loot.ToList();
                 _settings.ManualWeeklyClears = previousManual.Where(clear => clear.Ocid != source.Ocid || ManualWeeklyHistory.Id(clear) != source.Boss.Id).ToList();
                 _settings.BossPartySizes = new(previousParties);
-                if (replacement is not null) _settings.BossPartySizes[ManualWeeklyHistory.Key(replacement)] = (int)party.Value;
+                if (replacement is not null)
+                    BossParty.SetPeriodSize(_settings.BossPartySizes, replacement.Ocid, ManualWeeklyHistory.Id(replacement), (int)party.Value);
                 try { _settings.Save(); }
                 catch { _settings.BossClearChanges = previousChanges; _settings.BossLootRecords = previousLoot;
                     _settings.ManualWeeklyClears = previousManual; _settings.BossPartySizes = previousParties; throw; }
